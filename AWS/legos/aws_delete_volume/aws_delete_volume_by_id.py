@@ -1,5 +1,5 @@
 ##
-##  Copyright (c) 2021 unSkript, Inc
+##  Copyright (c) 2022 unSkript, Inc
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
@@ -35,7 +35,7 @@ def aws_delete_volumes(handle, volume_id: str, region: str) -> str:
     result = []
 
     ec2Client = handle.client('ec2',region_name=region)
-    
+
     # Adding logic for deletion criteria
     try:
         response = ec2Client.delete_volume(VolumeId=volume_id,)
@@ -44,4 +44,3 @@ def aws_delete_volumes(handle, volume_id: str, region: str) -> str:
         result.append(e)
 
     return result
-

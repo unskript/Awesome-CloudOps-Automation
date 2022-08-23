@@ -42,15 +42,15 @@ def mongodb_kill_queries(handle, op_id: int) -> Dict:
 
         :rtype: Result of the killOp operation for the given op_id in a Dict form.
     """
-    # Check the MongoDB 
-    try: 
+    # Check the MongoDB
+    try:
         reachable(handle)
     except Exception as e:
         raise e
     try:
         resp = handle.admin.command("killOp", op=op_id)
         if resp.get('ok') == 1:
-            # Let us make sure when the KillOp was issued, it 
+            # Let us make sure when the KillOp was issued, it
             # really did kill the query identified by the id.
             # Poll for 10 seconds, if it does not return False
             # raise Exception. else return success message
@@ -60,7 +60,7 @@ def mongodb_kill_queries(handle, op_id: int) -> Dict:
                               step=1,
                               timeout=10)
                 return {'info': f'Successfully Killed OpID {op_id}', 'ok': 1}
-            except Exception as e: 
+            except Exception as e:
                 raise e
         else:
             raise Exception("Unable to Get Response from server for killOp command")

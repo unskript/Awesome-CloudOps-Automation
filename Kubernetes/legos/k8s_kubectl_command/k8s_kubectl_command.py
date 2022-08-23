@@ -16,12 +16,12 @@ class InputSchema(BaseModel):
 
 def k8s_kubectl_command_printer(output):
     if output is None:
-        return 
+        return
     print(output)
 
 
 def k8s_kubectl_command(handle, kubectl_command: str) -> str:
-    """k8s_kubectl_command executes the given kubectl command on the pod 
+    """k8s_kubectl_command executes the given kubectl command on the pod
 
         :type handle: object
         :param handle: Object returned from the Task validate method

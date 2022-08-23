@@ -21,22 +21,22 @@ def mongodb_list_long_running_queries_printer(output):
     if output is None:
         return
     if len(output.get('inprog')) == 0:
-        print("No Long Queries detected") 
+        print("No Long Queries detected")
         return
     results = [['appName', 'active', 'op', 'ns', 'secs_running', 'desc']]
     try:
         for idx,query in enumerate(output.get('inprog')):
-                result = []
-                if 'appName' in query.keys():
-                    result.append(query.get('appName'))
-                else:
-                    result.append('None')
-                result.append(query.get('active'))
-                result.append(query.get('op'))
-                result.append(query.get('ns'))
-                result.append(query.get('secs_running'))
-                result.append(query.get('desc'))
-                results.append(result)
+            result = []
+            if 'appName' in query.keys():
+                result.append(query.get('appName'))
+            else:
+                result.append('None')
+            result.append(query.get('active'))
+            result.append(query.get('op'))
+            result.append(query.get('ns'))
+            result.append(query.get('secs_running'))
+            result.append(query.get('desc'))
+            results.append(result)
     except Exception as e:
         print(f"Exception occured {e}")
 
@@ -52,8 +52,8 @@ def mongodb_list_long_running_queries(handle, query_secs_running_threshold=5) ->
 
         :rtype: Result of the query in the Dictionary form.
     """
-    # Check the MongoDB 
-    try: 
+    # Check the MongoDB
+    try:
         reachable(handle)
     except Exception as e:
         raise e

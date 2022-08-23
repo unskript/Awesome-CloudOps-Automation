@@ -37,11 +37,11 @@ class InputSchema(BaseModel):
 
 def k8s_change_pvc_size_printer(output):
     if output is None:
-        return 
-    
+        return
+
     pprint.pprint(output)
-    
-    
+
+
 
 def k8s_change_pvc_size(handle, namespace: str, name: str, resize_option: SizingOption, resize_value: float) -> str:
     # Get the current size.

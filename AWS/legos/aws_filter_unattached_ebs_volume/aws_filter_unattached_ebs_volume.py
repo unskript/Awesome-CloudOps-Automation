@@ -38,4 +38,3 @@ def aws_filter_ebs_unattached_volumes(handle, region: str) -> List:
             result.append(volume.id)
 
     return result
-

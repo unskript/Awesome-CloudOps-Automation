@@ -2,7 +2,7 @@
 ##  Copyright (c) 2022 unSkript, Inc
 ##  All rights reserved.
 ##
-from pymongo.errors import * 
+from pymongo.errors import *
 
 '''
 Collection of utility function used by MongoDB legos
@@ -19,5 +19,5 @@ def reachable(handle) -> bool:
     except Exception as e:
         print("[UNSKRIPT]: Error Connecting: ", e.__str__())
         raise e
-    
+
     return retval

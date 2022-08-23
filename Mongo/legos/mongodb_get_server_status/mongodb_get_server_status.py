@@ -51,21 +51,21 @@ def mongodb_get_server_status(handle) -> Dict:
 
         :type handle: object
         :param handle: Object returned by the task.validate(...) method
-        
+
         :rtype: Dict containg server status.
     """
-    # Check the MongoDB 
-    try: 
+    # Check the MongoDB
+    try:
         reachable(handle)
     except Exception as e:
         raise e
-    
+
     # Result will store output from handle.admin.command(...)
-    # We will use this 
+    # We will use this
     result = {}
     try:
         result = handle.admin.command("serverStatus")
     except Exception as e:
         raise e
-    
+
     return result

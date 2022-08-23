@@ -15,7 +15,7 @@ class InputSchema(BaseModel):
     region: str = Field(
         title='Region',
         description='AWS Region of the instance.')
-        
+
 
 def aws_get_instances_printer(output):
     if output is None:
