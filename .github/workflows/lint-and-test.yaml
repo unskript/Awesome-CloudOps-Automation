@@ -1,0 +1,78 @@
+name: Run Unit Tests
+
+on: 
+  pull_request:
+      types: [opened, reopened, edited, ready_for_review]
+  pull_request_review:
+      types: [edited, dismissed]
+  push:
+
+permissions:
+      id-token: write
+      contents: read    # This is required for actions/checkout
+
+env:
+    UNSKRIPT_MODE: true
+    GITHUB_CICD: true
+   
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        mongodb-version: ['5.0']
+  
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v2
+    
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.7.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-username: root
+        mongodb-password: "ImUiJ104ORWdQMjO1arlUHY9ZVAVkX21IN6q2Hq8fuw="
+        mongodb-db: "test-db"
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-region: us-west-2
+          role-to-assume: arn:aws:iam::100498623390:role/GithubActionRole
+          role-session-name: UnskriptGitHubAction
+    
+    - name: Installing Python packages
+      run: |
+        /usr/bin/env python -m pip install -r requirements.txt
+        /usr/bin/env python -m pip install pytest-cov
+
+    - name: Install K3S 
+      uses: debianmaster/actions-k3s@master
+      id: k3s
+      with: 
+        version: 'latest'
+    
+    - name: Create K3S Test Pod with PVC Resizing
+      run: |
+          curl -X GET -L https://gist.githubusercontent.com/jayasimha-raghavan-unskript/18585ef6313978be1c96bb44c8059dc5/raw/626709ec716c4bc57110ff5cebc192ad4c72b5ab/sample-web-pod.yaml > /tmp/sample-web.yaml
+          kubectl apply -f /tmp/sample-web.yaml
+
+    - name: Sleep for 60 seconds for PVC/POD to get provisioned
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '60s'
+
+    - name: Run pytest 
+      run: |
+          sudo apt install -y awscli
+          aws sts get-caller-identity	
+          kubectl version
+          kubectl get ns
+          kubectl get pods -A
+          kubectl get pvc -A -o yaml 
+          # Update secrets manager with new kubeconfig 
+          aws secretsmanager put-secret-value --secret-id test/CONNECTOR_TYPE_K8S/github --secret-string `python -c "import base64;import json;from pathlib import Path;d=(Path('/tmp/output')/'kubeconfig-latest.yaml').read_text();e={'kubeconfig': d};f=base64.b64encode(json.dumps(e).encode('utf-8'));print(str(f));"  | cut -d"'" -f 2`
+          make test
+          kubectl delete -f /tmp/sample-web.yaml
+          rm -rf /tmp/sample-web.yaml
