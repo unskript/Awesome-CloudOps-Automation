@@ -54,15 +54,15 @@ Once you run the above command, point your browser to any of these URL to open t
 6. http://127.0.0.1:8888/lab/tree/Configure-url-endpoint-on-a-cloudwatch-alarm.ipynb
 7. http://127.0.0.1:8888/lab/tree/Detect-ECS-failed-deployment.ipynb
 8. http://127.0.0.1:8888/lab/tree/Display-postgresql-long-running.ipynb
-9. http://127.0.0.1:8888/lab/tree/ec2-disk-cleanup.ipynb
-10. http://127.0.0.1:8888/lab/tree/fetch-jenkins-build-logs.ipynb
-11. http://127.0.0.1:8888/lab/tree/get-aws-elb-unhealthy-instances.ipynb
-12. http://127.0.0.1:8888/lab/tree/get-kube-system-config-map.ipynb
-13. http://127.0.0.1:8888/lab/tree/k8s-get-candidate-nodes-given-config.ipynb
-14. http://127.0.0.1:8888/lab/tree/resize-ebs-volume.ipynb
-15. http://127.0.0.1:8888/lab/tree/resize-pvc.ipynb
-16. http://127.0.0.1:8888/lab/tree/restart-aws-instance-given-tag.ipynb
-17. http://127.0.0.1:8888/lab/tree/restart-unhealthy-services-target-group.ipynb
+9. http://127.0.0.1:8888/lab/tree/EC2-Disk-Cleanup.ipynb
+10. http://127.0.0.1:8888/lab/tree/Fetch-Jenkins-Build-Logs.ipynb
+11. http://127.0.0.1:8888/lab/tree/Get-Aws-Elb-Unhealthy-Instances.ipynb
+12. http://127.0.0.1:8888/lab/tree/Get-Kube-System-Config-Map.ipynb
+13. http://127.0.0.1:8888/lab/tree/K8S-Get-Candidate-Nodes-Given-Config.ipynb
+14. http://127.0.0.1:8888/lab/tree/Resize-EBS-Volume.ipynb
+15. http://127.0.0.1:8888/lab/tree/Resize_PVC.ipynb
+16. http://127.0.0.1:8888/lab/tree/Restart-Aws-Instance-given-Tag.ipynb
+17. http://127.0.0.1:8888/lab/tree/Restart-Unhealthy-Services-Target-Group.ipynb
 
 
 # Where data is stored
@@ -74,10 +74,11 @@ to retain the changes done on the `docker`.
 # Documentation
 Detail documentation at [docs](https://unskript.gitbook.io/unskript-product-documentation/open-source/docker-for-oss)
 
+# Community
+Join us on Slack @ http://awesome-runbooks.slack.com/ 
+
 # TODO
 
 1. Update build pipelines to take care of pushing to public repo (need new build target)
-2. Create a symlink in the docker, so that URL is always same across different dockers for different runbooks
-3. Need to package awesome legos
-4. AWS v2 credential needs to be packaged and tested
+2. Package testcases
 
