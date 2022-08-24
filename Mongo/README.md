@@ -4,4 +4,4 @@
 <br>
 ## MongoDB Runbooks
 
-1. [MongoDB Long Running Query Runbook](./MongoDB_Server_Connectivity.ipynb)
+1. [MongoDB Server Connectivity Runbook](./MongoDB_Server_Connectivity.ipynb)
