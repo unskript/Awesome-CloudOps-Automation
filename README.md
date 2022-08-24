@@ -50,6 +50,8 @@ Inside the docker there is `/data` folder that is where we store the `credential
 So if you would like to retain the `connectors` and `runbooks` you can use the docker's `-v` option
 to retain the changes done on the `docker`.
 
+# Documentation
+Detail documentation at (docs)[https://unskript.gitbook.io/unskript-product-documentation/open-source/docker-for-oss]
 
 # TODO
 
