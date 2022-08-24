@@ -4,17 +4,38 @@
 
 # unSkript Runbooks
 
-This Directory has unSkript runbooks seperated by each category. Please choose the Links Below to navigate to the respective Runbook.
+This Repository has unSkript runbooks seperated by each category. Please choose the Links Below to navigate to the respective Runbooks.
 
-1. [MongoDB](./mongodb/README.md)
-2. [K8S](./k8s/README.md)
-3. [AWS](./aws/README.md)
+1. [MongoDB](./Mongo/README.md)
+2. [K8S](./Kubernetes/README.md)
+3. [AWS](./AWS/README.md)
+4. [Jenkins](./Jenkins/README.md)
+5. [Postgresql](./Postgresql/README.md)
 
 
 # How to bring up on Intel based platform (x86 based) (Windows/Linux/Mac)
 
 ```
-docker run -it -p 8888:8888 -v $HOME/.unskript:/data -e NB_USER=jovyan -e CHOWN_HOME=yes -e CHOWN_EXTRA_OPTS='-R' --user root -w /home/jovyan public.ecr.aws/unskript/awesome-runbooks:latest
+docker run -it -p 8888:8888 \
+     -v $HOME/.unskript:/data \
+     -e NB_USER=jovyan \
+     -e CHOWN_HOME=yes \
+     -e CHOWN_EXTRA_OPTS='-R' \
+     --user root \
+     -w /home/jovyan \ 
+     public.ecr.aws/unskript/awesome-runbooks:latest
+```
+
+# How to bring up on Arm based platform (arm64) (Windows/Linux/Mac)
+```
+docker run -it -p 8888:8888 \
+    -v $HOME/.unskript:/data  \
+    -e NB_USER=jovyan \
+    -e CHOWN_HOME=yes \
+    -e CHOWN_EXTRA_OPTS='-R' \
+    --user root \
+    -w /home/jovyan \
+   public.ecr.aws/unskript/awesome-runbooks:v0.6.0-arm64
 ```
 
 New files are created inside the docker and will persist unless --rm option is given (which we have not suggested)
@@ -23,7 +44,7 @@ Save-As function can be used, but user has to remember the file name and insert 
 
 
 # Using the Runbook
-Point your browser to any of these URL to open the Runbook.
+Once you run the above command, point your browser to any of these URL to open the Runbook.
 
 1. http://127.0.0.1:8888/lab/tree/K8S_Pod_Stuck_In_CrashLoopBack_State.ipynb
 2. http://127.0.0.1:8888/lab/tree/MongoDB_Server_Connectivity.ipynb
