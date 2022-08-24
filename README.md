@@ -1,10 +1,10 @@
-[<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
+[<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png)
 <h1>unSkript Runbooks</h1>
 
 
 # unSkript Runbooks
 
-This Directory has unSkript runbooks seperated by each category. Please choose the Links Below to navigate to the respective Runbook. 
+This Directory has unSkript runbooks seperated by each category. Please choose the Links Below to navigate to the respective Runbook.
 
 1. [MongoDB](./mongodb/README.md)
 2. [K8S](./k8s/README.md)
@@ -13,14 +13,9 @@ This Directory has unSkript runbooks seperated by each category. Please choose t
 
 # How to bring up on Intel based platform (x86 based) (Windows/Linux/Mac)
 
-`docker run -it -p 8888:8888 \
-    -v $HOME/.unskript:/data  \
-    -e NB_USER=jovyan \
-    -e CHOWN_HOME=yes \
-    -e CHOWN_EXTRA_OPTS='-R' \
-    --user root \
-    -w /home/jovyan \
-    public.ecr.aws/unskript/awesome-runbooks:latest`
+```
+docker run -it -p 8888:8888 -v $HOME/.unskript:/data -e NB_USER=jovyan -e CHOWN_HOME=yes -e CHOWN_EXTRA_OPTS='-R' --user root -w /home/jovyan public.ecr.aws/unskript/awesome-runbooks:latest
+```
 
 New files are created inside the docker and will persist unless --rm option is given (which we have not suggested)
 ie
@@ -53,7 +48,7 @@ Point your browser to any of these URL to open the Runbook.
 
 Inside the docker there is `/data` folder that is where we store the `credentials` and `runbooks`.
 So if you would like to retain the `connectors` and `runbooks` you can use the docker's `-v` option
-to retain the changes done on the `docker`. 
+to retain the changes done on the `docker`.
 
 
 # TODO
