@@ -1,0 +1,27 @@
+[<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
+<h1>AWS Change ACL Permission of public S3 Bucket</h1>
+
+## Description
+This Lego Change ACL Permission of public S3 Bucket and gives a dict of change bucket info.
+
+
+## Lego Details
+
+    aws_put_bucket_acl(handle: object, name: str, acl: str, region: str)
+
+        handle: Object of type unSkript AWS Connector.
+        name: AWS S3 Bucket Name.
+        acl: "canned ACL type - 'private'|'public-read'|'public-read-write'|'authenticated-read'."
+        region: Used to filter the volume for specific region.
+
+## Lego Input
+This Lego takes take three input name, acl, region.
+
+## Lego Output
+Here is a sample output.
+<img src="./1.png">
+
+
+## See it in Action
+
+You can see this Lego in action following this link [unSkript Live](https://unskript.com)
