@@ -14,7 +14,7 @@ This Lego Get Schedule To Retire AWS EC2 Instance and gives a list of Instances.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego takes take one inputs instance_ids and region. 
+This Lego take two inputs instance_ids and region. 
 
 
 ## See it in Action

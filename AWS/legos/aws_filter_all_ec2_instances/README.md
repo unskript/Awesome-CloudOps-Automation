@@ -13,7 +13,7 @@ This Lego filter the AWS EC2 Instance and gives a list of Instances.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego takes take one inputs region. 
+This Lego take one input region. 
 
 ## Lego Output
 Here is a sample output.
