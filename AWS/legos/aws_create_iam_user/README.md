@@ -15,8 +15,12 @@ This Lego Create New IAM User and gives a dict of user info.
         tag_value: Tag Value assign to new User.
 
 ## Lego Input
-This Lego takes take three input user_name, tag_key and tag_value.
+This Lego take four inputs handle, user_name, tag_key and tag_value.
 
+## Lego Output
+Here is a sample output.
+
+<img src="./1.png">
 
 ## See it in Action
 

@@ -12,7 +12,7 @@ This Lego Restart the AWS EC2 Instance and gives a dict as output.
         handle: Object of type unSkript AWS Connector
 
 ## Lego Input
-This Lego takes take three inputs region, instance_ids.
+This Lego take three inputs region, instance_ids.
 
 ## Lego Output
 Here is a sample output.

@@ -14,8 +14,11 @@ This Lego Create Login profile for IAM User and gives a dict of profile info.
         Password: temporary password for new User.
 
 ## Lego Input
-This Lego takes take two input UserName, Password.
+This Lego take three inputs handle, UserName and Password.
 
+## Lego Output
+Here is a sample output.
+<img src="./1.png">
 
 ## See it in Action
 
