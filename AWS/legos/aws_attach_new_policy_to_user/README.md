@@ -14,7 +14,7 @@ This Lego AWS Attach New Policy to User and gives a dict of policy info.
         PolicyName: Policy name to apply the permissions to the user.
 
 ## Lego Input
-This Lego takes take two input UserName and PolicyName. 
+This Lego takes three inputs handle, UserName and PolicyName. 
 
 
 ## See it in Action

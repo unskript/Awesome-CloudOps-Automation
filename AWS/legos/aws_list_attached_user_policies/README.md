@@ -13,7 +13,7 @@ This Lego AWS list Attached User Policies and gives a list of policies.
         UserName: IAM user whose policies need to fetched.
 
 ## Lego Input
-This Lego takes take one input UserName. 
+This Lego takes two inputs handle and UserName. 
 
 
 ## See it in Action
