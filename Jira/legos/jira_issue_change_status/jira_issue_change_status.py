@@ -10,9 +10,9 @@ import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
 
-
 from beartype import beartype
-def legoPrinter(func):
+
+def jira_issue_change_status_Printer(func):
     def Printer(*args, **kwargs):
         output = func(*args, **kwargs)
         print('\n')
@@ -20,7 +20,6 @@ def legoPrinter(func):
     return Printer
 
 
-@legoPrinter
 @beartype
 def jira_issue_change_status(hdl: JIRA, issue_id: str, status: str, transition: str = ""):
     """jira_get_issue_status gets the status of a given Jira issue.

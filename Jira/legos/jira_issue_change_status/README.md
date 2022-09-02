@@ -14,7 +14,7 @@ This Lego Change JIRA Issue Status and update status.
         status: New status to update.
 
 ## Lego Input
-This Lego takes take two input issue_id and status.
+This Lego take three inputs issue_id, status and transition.
 
 ## See it in Action
 
