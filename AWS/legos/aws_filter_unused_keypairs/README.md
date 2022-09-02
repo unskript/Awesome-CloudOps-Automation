@@ -13,7 +13,7 @@ This Lego Filter AWS Unused Keypairs and gives a list of keypairs.
         region: Region to filter instances.
 
 ## Lego Input
-This Lego takes take one input region. 
+This Lego take two inputs handle and region. 
 
 ## Lego Output
 Here is a sample output.

@@ -14,7 +14,7 @@ This Lego Post Slack Messageand gives a message sent status.
         message: Message sent to channel.
 
 ## Lego Input
-This Lego takes take one input region. 
+This Lego takes three inputs handle, channel and message. 
 
 ## Lego Output
 Here is a sample output.

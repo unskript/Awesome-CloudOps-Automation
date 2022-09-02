@@ -24,6 +24,9 @@ def aws_filter_unused_keypairs_printer(output):
 def aws_filter_unused_keypairs(handle, region: str) -> List:
     """aws_filter_unused_keypairs Returns an array of KeyPair.
 
+        :type handle: object
+        :param handle: Object returned from task.validate(...).
+        
         :type region: object
         :param region: Object containing global params for the notebook.
 
