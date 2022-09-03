@@ -4,10 +4,6 @@
 ##
 from pymongo.errors import AutoReconnect, ServerSelectionTimeoutError
 
-"""
-Collection of utility function used by MongoDB legos
-"""
-
 def reachable(handle) -> bool:
     retval = False
     try:
