@@ -1,23 +1,20 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Filter AWS Unattached EBS Volume </h1>
+<h1>Change JIRA Issue Status </h1>
 
 ## Description
-This Lego filter AWS EBS volumes and gives a list of unattached volumes.
+This Lego Change JIRA Issue Status and update status.
 
 
 ## Lego Details
 
-    aws_filter_ebs_unattached_volumes(handle: object, region: str)
+    jira_issue_change_status(handle: object, issue_id: str, status: str, transition: str)
 
         handle: Object of type unSkript AWS Connector.
-        region: Used to filter the volume for specific region.
+        issue_id: Issue ID needed to Update.
+        status: New status to update.
 
 ## Lego Input
-This Lego take two inputs handle and region.
-
-
-## Lego Output
-Here is a sample output.
+This Lego take three inputs issue_id, status and transition.
 
 ## See it in Action
 

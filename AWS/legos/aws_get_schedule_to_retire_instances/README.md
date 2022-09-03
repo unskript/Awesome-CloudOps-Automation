@@ -1,23 +1,21 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Filter AWS Unattached EBS Volume </h1>
+<h1>Get Schedule To Retire AWS EC2 Instance </h1>
 
 ## Description
-This Lego filter AWS EBS volumes and gives a list of unattached volumes.
+This Lego Get Schedule To Retire AWS EC2 Instance and gives a list of Instances.
 
 
 ## Lego Details
 
-    aws_filter_ebs_unattached_volumes(handle: object, region: str)
+    aws_get_schedule_to_retire_instances(handle: object, instance_ids: list, region: str)
 
-        handle: Object of type unSkript AWS Connector.
+        handle: Object of type unSkript AWS Connector
+        instance_ids: List of Instances.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego take two inputs handle and region.
+This Lego take two inputs instance_ids and region. 
 
-
-## Lego Output
-Here is a sample output.
 
 ## See it in Action
 

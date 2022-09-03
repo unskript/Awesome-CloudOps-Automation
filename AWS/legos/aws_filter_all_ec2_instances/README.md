@@ -1,23 +1,26 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Filter AWS Unattached EBS Volume </h1>
+<h1>Filter All AWS EC2 Instances </h1>
 
 ## Description
-This Lego filter AWS EBS volumes and gives a list of unattached volumes.
+This Lego filter the AWS EC2 Instance and gives a list of Instances.
 
 
 ## Lego Details
 
-    aws_filter_ebs_unattached_volumes(handle: object, region: str)
+    aws_filter_ec2_instances(handle: object, region: str)
 
-        handle: Object of type unSkript AWS Connector.
+        handle: Object of type unSkript AWS Connector
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego take two inputs handle and region.
-
+This Lego take one input region. 
 
 ## Lego Output
 Here is a sample output.
+
+<img src="./1.png">
+
+
 
 ## See it in Action
 
