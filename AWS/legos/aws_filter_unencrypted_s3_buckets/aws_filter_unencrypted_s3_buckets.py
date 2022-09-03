@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from botocore.exceptions import ClientError
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from botocore.exceptions import ClientError
 
 
 class InputSchema(BaseModel):
@@ -45,4 +45,3 @@ def aws_filter_unencrypted_s3_buckets(handle, region: str) -> List:
             result.append(bucket['Name'])
 
     return result
-

@@ -3,9 +3,9 @@
 ##  All rights reserved.
 ##
 import pprint
+from typing import Dict
 import polling2
 from pydantic import BaseModel, Field
-from typing import Dict
 from mongodb.legos.mongodb_util import reachable
 
 from beartype import beartype
@@ -32,7 +32,8 @@ def check_id_exists(handle, op_id) -> bool:
 
 @beartype
 def mongodb_kill_queries(handle, op_id: int) -> Dict:
-    """mongodb_kill_queries can kill queries (read operations) that are running on more than one shard in a cluster.
+    """mongodb_kill_queries can kill queries (read operations) that are
+       running on more than one shard in a cluster.
 
         :type handle: object
         :param handle: Object returned by task.validate(...).

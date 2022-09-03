@@ -1,13 +1,13 @@
-"""aws_apply_default_encryption_for_s3_bucket"""
 #
-##  Copyright (c) 2021 unSkript, Inc
-##  All rights reserved.
+# Copyright (c) 2021 unSkript, Inc
+# All rights reserved.
 #
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
 
-"""InputSchema"""
+from typing import Dict
+from pydantic import BaseModel, Field
+
+
 class InputSchema(BaseModel):
     region: str = Field(
         title='Region',
@@ -17,10 +17,12 @@ class InputSchema(BaseModel):
         title='Bucket Name',
         description='AWS S3 Bucket Name.')
 
+
 def aws_put_bucket_encryption_printer(output):
     if output is None:
         return
     pprint.pprint(output)
+
 
 def aws_put_bucket_encryption(handle, name: str, region: str) -> Dict:
     """aws_put_bucket_encryption Puts default encryption configuration for bucket.
@@ -44,9 +46,10 @@ def aws_put_bucket_encryption(handle, name: str, region: str) -> Dict:
             Bucket=name,
             ServerSideEncryptionConfiguration={
                 "Rules": [
-                    {"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}
+                    {"ApplyServerSideEncryptionByDefault": {
+                        "SSEAlgorithm": "AES256"}}
                 ]},
-            )
+        )
         result['Response'] = response
 
     except Exception as e:

@@ -1,12 +1,11 @@
-"""aws_filter_ec2_without_lifetime_tag"""
 ##
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 
 
 class InputSchema(BaseModel):
@@ -56,4 +55,3 @@ def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str) 
                 result.append(instance['InstanceId'])
 
     return result
-

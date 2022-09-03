@@ -2,13 +2,12 @@
 ##  Copyright (c) 2022 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-import matplotlib.pyplot as plt
 from typing import Dict
-from pymongo.errors import *
+import matplotlib.pyplot as plt
+#from pymongo.errors import *
 
 from pydantic import BaseModel
-from mongodb.legos.mongodb_util import reachable
+from Mongo.legos.mongodb_util import reachable
 
 
 class InputSchema(BaseModel):

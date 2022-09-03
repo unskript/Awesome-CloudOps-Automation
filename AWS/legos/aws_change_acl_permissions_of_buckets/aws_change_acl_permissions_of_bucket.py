@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     region: str = Field(
@@ -15,7 +15,8 @@ class InputSchema(BaseModel):
         description='AWS S3 Bucket Name.')
     acl: str = Field(
         title='ACL',
-        description="canned ACL type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.")
+        description='''Canned ACL type - 'private'|'public-read'|
+                       'public-read-write'|'authenticated-read'.''')
 
 
 def aws_put_bucket_acl_printer(output):
@@ -34,7 +35,8 @@ def aws_put_bucket_acl(handle, name: str, acl: str, region: str = None) -> Dict:
             :param name: S3 bucket name where to set ACL on
 
             :type acl: str
-            :param acl: canned ACL type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.
+            :param acl: Canned ACL type - 'private'|'public-read'|
+                        'public-read-write'|'authenticated-read'.
 
             :type region: string
             :param region: location of the bucket.

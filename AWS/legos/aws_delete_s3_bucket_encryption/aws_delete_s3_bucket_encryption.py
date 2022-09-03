@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -34,7 +34,7 @@ def aws_delete_bucket_encryption(handle, name: str, region: str) -> Dict:
       """
     s3Client = handle.client('s3',
                              region_name=region)
-    
+
     result = {}
 
     # Setup default encryption configuration
@@ -45,5 +45,5 @@ def aws_delete_bucket_encryption(handle, name: str, region: str) -> Dict:
 
     except Exception as e:
         result['Error'] = e
-        
+
     return result

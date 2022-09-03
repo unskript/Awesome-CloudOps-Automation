@@ -29,9 +29,10 @@ def k8s_kubectl_command(handle, kubectl_command: str) -> str:
         :type kubectl_command: str
         :param kubectl_command: The Actual kubectl command, like kubectl get ns, etc..
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format or
+                Empty String in case of Error.
     """
-    if handle.client_side_validation != True:
+    if handle.client_side_validation is not True:
         print(f"K8S Connector is invalid: {handle}")
         return str()
 
