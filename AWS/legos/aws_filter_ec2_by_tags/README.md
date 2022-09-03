@@ -12,7 +12,7 @@ This Lego filter the AWS EC2 Instance and gives a list of Instances.
         handle: Object of type unSkript AWS Connector
 
 ## Lego Input
-This Lego takes take three inputs region, tag_key, tag_value. 
+This Lego take three inputs region, tag_key, tag_value. 
 
 ## Lego Output
 Here is a sample output.

@@ -1,20 +1,20 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Delete AWS EBS Volume </h1>
+<h1>Change JIRA Issue Status </h1>
 
 ## Description
-This Lego delete AWS EBS volume and gives a list of deletion status.
+This Lego Change JIRA Issue Status and update status.
 
 
 ## Lego Details
 
-    aws_delete_volumes(handle: object, volume_id: str, region: str)
+    jira_issue_change_status(handle: object, issue_id: str, status: str, transition: str)
 
         handle: Object of type unSkript AWS Connector.
-        volume_id: Volume ID needed to delete particular volume.
-        region: Used to filter the volume for specific region.
+        issue_id: Issue ID needed to Update.
+        status: New status to update.
 
 ## Lego Input
-This Lego take two input volume_id and region.
+This Lego take three inputs issue_id, status and transition.
 
 ## See it in Action
 
