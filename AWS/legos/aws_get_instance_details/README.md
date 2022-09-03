@@ -12,7 +12,8 @@ This Lego gives the AWS EC2 Instances details.
         handle: Object of type unSkript AWS Connector
 
 ## Lego Input
-This Lego take three inputs region and instance_ids.
+This Lego take three inputs handle, region and instance_ids.
+
 
 ## Lego Output
 Here is a sample output.
