@@ -1,20 +1,20 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Delete AWS EBS Volume </h1>
+<h1>Get Schedule To Retire AWS EC2 Instance </h1>
 
 ## Description
-This Lego delete AWS EBS volume and gives a list of deletion status.
+This Lego Get Schedule To Retire AWS EC2 Instance and gives a list of Instances.
 
 
 ## Lego Details
 
-    aws_delete_volumes(handle: object, volume_id: str, region: str)
+    aws_get_schedule_to_retire_instances(handle: object, instance_ids: list, region: str)
 
-        handle: Object of type unSkript AWS Connector.
-        volume_id: Volume ID needed to delete particular volume.
+        handle: Object of type unSkript AWS Connector
+        instance_ids: List of Instances.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego take two input volume_id and region.
+This Lego take two inputs instance_ids and region. 
 
 
 ## See it in Action

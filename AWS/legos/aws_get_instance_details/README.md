@@ -14,6 +14,7 @@ This Lego gives the AWS EC2 Instances details.
 ## Lego Input
 This Lego take three inputs handle, region and instance_ids.
 
+
 ## Lego Output
 Here is a sample output.
 
