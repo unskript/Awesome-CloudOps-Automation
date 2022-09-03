@@ -2,7 +2,7 @@
 <h1>Delete AWS EBS Volume </h1>
 
 ## Description
-This Lego delete AWS EBS volume and gives a list of deletion status.
+This Lego deletes AWS EBS volume and gives a list of deletion status.
 
 
 ## Lego Details
@@ -14,7 +14,7 @@ This Lego delete AWS EBS volume and gives a list of deletion status.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego take two input volume_id and region.
+This Lego take three inputs handle, volume_id and region.
 
 
 ## See it in Action
