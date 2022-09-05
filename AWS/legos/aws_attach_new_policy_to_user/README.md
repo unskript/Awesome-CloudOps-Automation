@@ -16,6 +16,10 @@ This Lego AWS Attach New Policy to User and gives a dict of policy info.
 ## Lego Input
 This Lego takes three inputs handle, UserName and PolicyName. 
 
+## Lego Output
+Here is a sample output.
+
+<img src="./1.png">
 
 ## See it in Action
 

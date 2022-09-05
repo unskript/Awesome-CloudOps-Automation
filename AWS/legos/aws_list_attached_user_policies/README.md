@@ -15,6 +15,10 @@ This Lego AWS list Attached User Policies and gives a list of policies.
 ## Lego Input
 This Lego takes two inputs handle and UserName. 
 
+## Lego Output
+Here is a sample output.
+
+<img src="./1.png">
 
 ## See it in Action
 
