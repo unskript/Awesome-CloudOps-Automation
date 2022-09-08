@@ -13,7 +13,7 @@ This Lego filter AWS EBS volumes and gives a list of unattached volumes.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego take one input region.
+This Lego take two inputs handle and region.
 
 ## Lego Output
 Here is a sample output.

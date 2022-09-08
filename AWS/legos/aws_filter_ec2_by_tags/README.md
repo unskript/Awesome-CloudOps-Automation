@@ -7,18 +7,20 @@ This Lego filter the AWS EC2 Instance and gives a list of Instances.
 
 ## Lego Details
 
-    aws_filter_ec2_by_tags(handle: object)
+    aws_filter_ec2_by_tags(handle: object, tag_key: str, tag_value: str, region: str)
 
-        handle: Object of type unSkript AWS Connector
+        handle: Object of type unSkript AWS Connector.
+        tag_key: Key for the EC2 instance tag.
+        tag_value: value for the EC2 instance tag.
+        region: EC2 instance region.
 
 ## Lego Input
-This Lego take three inputs region, tag_key, tag_value. 
+This Lego take four inputs handle, tag_key, tag_value and region. 
 
 ## Lego Output
 Here is a sample output.
 
 <img src="./1.png">
-
 
 
 ## See it in Action

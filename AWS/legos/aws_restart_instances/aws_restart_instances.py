@@ -25,16 +25,16 @@ def aws_restart_ec2_instances_printer(output):
 def aws_restart_ec2_instances(handle, instance_ids: List, region: str) -> Dict:
     """aws_restart_instances Restarts instances.
 
-        :type nbParamsObj: object
-        :param nbParamsObj: Object containing global params for the notebook.
+        :type handle: object
+        :param handle: Object returned by the task.validate(...) method.
 
-        :type credentialsDict: dict
-        :param credentialsDict: Dictionary of credentials info.
+        :type instance_ids: list
+        :param instance_ids: List of instance ids.
 
-        :type inputParamsJson: string
-        :param inputParamsJson: Json string of the input params.
+        :type region: string
+        :param region: Region for instance.
 
-        :rtype: Dict with the stopped instances state info.
+        :rtype: Dict with the restarted instances info.
     """
 
     ec2Client = handle.client('ec2', region_name=region)

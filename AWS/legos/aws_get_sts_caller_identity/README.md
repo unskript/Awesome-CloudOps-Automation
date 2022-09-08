@@ -12,7 +12,7 @@ This Lego Get STS Caller Identity and gives a dict of profile info.
         handle: Object of type unSkript AWS Connector.
 
 ## Lego Input
-This Lego did't take any input.
+This Lego take one input handle.
 
 ## Lego Output
 Here is a sample output.

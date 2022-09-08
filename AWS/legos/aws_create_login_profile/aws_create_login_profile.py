@@ -28,6 +28,9 @@ def aws_create_user_login_profile_printer(output):
 def aws_create_user_login_profile(handle, UserName: str, Password: str) -> Dict:
     """aws_create_user_login_profile Create login profile for IAM User.
 
+        :type handle: object
+        :param handle: Object returned by the task.validate(...) method.
+
         :type UserName: string
         :param UserName: Name of new IAM User.
 

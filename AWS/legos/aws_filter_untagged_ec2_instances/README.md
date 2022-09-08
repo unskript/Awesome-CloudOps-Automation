@@ -13,10 +13,11 @@ This Lego filter the AWS Untagged EC2 Instances and gives a list of Instances.
         region: Region to filter instances.
 
 ## Lego Input
-This Lego take one input region. 
+This Lego take two inputs handle and region. 
 
 ## Lego Output
 Here is a sample output.
+<img src="./1.png">
 
 ## See it in Action
 

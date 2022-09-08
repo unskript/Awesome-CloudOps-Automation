@@ -30,6 +30,9 @@ def aws_create_iam_user_printer(output):
 def aws_create_iam_user(handle, user_name: str, tag_key: str, tag_value: str) -> Dict:
     """aws_create_iam_user Creates new IAM User.
 
+        :type handle: object
+        :param handle: Object returned by the task.validate(...) method
+        
         :type user_name: string
         :param user_name: Name of new IAM User.
 
