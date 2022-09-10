@@ -32,7 +32,7 @@ To make CloudOps automation simpler for developers and DevOps engineers.
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Are you looking for a script to automate your Kubernetes management? Or do you need a script to restart the pod that is OOMkilled? We will cover that for you. 
 
-# Runbooks
+## Runbooks
 | Category                                                                                               | Directory                                                                                              | Runbooks                                                                                                                                                                 |
 | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | MongoDB        | [/mongo](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Mongo/README.md)        | [MongoDB Server Connectivity Runbook](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Mongo/MongoDB_Server_Connectivity.ipynb)                       |
@@ -55,15 +55,13 @@ A single repository to satisfy all your day-to-day CloudOps automation needs. Ar
 |                                                                                                        |                                                                                                        | [Stop Untagged EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Stop_Untagged_EC2_Instances.ipynb)                                 |
 | Jenkins     | [/jenkins](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/jenkins/README.md)    | [Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Jenkins/Fetch-Jenkins-Build-Logs.ipynb)                                   |
 | Postgresql | [/postgresql](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/postgresql/README.md) | [Display Long running Queries](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Postgresql/Display-postgresql-long-running.ipynb)                     |
-|                                                                                                        |                                                                                                        |                                                                                                                                                                          |
+|                                                                                                                                                                                                               
+## Quick start
 
-# Quick start with Awesome CloudOps Automation
+### Get started with docker
+#### Linux/Mac/Windows (x86)
 
-
-## Get started with docker
-### Linux/Mac/Windows (x86)
-
-```
+```s
 docker run -it -p 8888:8888 \
      -v $HOME/.unskript:/data \
      -e NB_USER=jovyan \
@@ -74,8 +72,8 @@ docker run -it -p 8888:8888 \
      public.ecr.aws/unskript/awesome-runbooks:latest
 ```
 
-### Linux/Mac/Windows (arm64)
-```
+#### Linux/Mac/Windows (arm64)
+```s
 docker run -it -p 8888:8888 \
     -v $HOME/.unskript:/data  \
     -e NB_USER=jovyan \
@@ -90,7 +88,7 @@ docker run -it -p 8888:8888 \
 
 > Note: New files are created inside the docker and will persist unless --rm option is given (which we have not suggested) i.e. `Save-As` function can be used, but user has to remember the file name and insert in the URL
 
-## Open the Runbook
+### Open the Runbook
 Once you run the above command, here's the table which will help you find the URL for runbook of your choice. 
 
 | Category                                                                                               | Runbooks                                                                                                                                                                 | URL                                                                                                    |
