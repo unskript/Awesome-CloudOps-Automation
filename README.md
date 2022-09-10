@@ -3,7 +3,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![Twitter][twitter-shield]][twitter-url]
-[![Twitter][twitter-shield]][twitter-url]
 ![awesome-cloudops][awesome-shield]
 
 <br />
