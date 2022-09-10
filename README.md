@@ -7,6 +7,10 @@
 
 <br />
 <p align="center">
+  <a href="https://github.com/unskript/Awesome-CloudOps-Automation">
+    <img src="https://unskript.com/assets/favicon.png" alt="Logo" width="80" height="80">
+  </a>
+<p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
     CloudOps automation made simpler!
@@ -54,8 +58,7 @@ A single repository to satisfy all your day-to-day CloudOps automation needs. Ar
 |                                                                                                        |                                                                                                        | [Restart UnHealthy Services Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Restart-Unhealthy-Services-Target-Group.ipynb)         |
 |                                                                                                        |                                                                                                        | [Stop Untagged EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Stop_Untagged_EC2_Instances.ipynb)                                 |
 | Jenkins     | [/jenkins](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/jenkins/README.md)    | [Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Jenkins/Fetch-Jenkins-Build-Logs.ipynb)                                   |
-| Postgresql | [/postgresql](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/postgresql/README.md) | [Display Long running Queries](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Postgresql/Display-postgresql-long-running.ipynb)                     |
-|                                                                                                                                                                                                               
+| Postgresql | [/postgresql](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/postgresql/README.md) | [Display Long running Queries](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Postgresql/Display-postgresql-long-running.ipynb)                     |                                                                                                                                                                                                              
 ## Quick start
 
 ### Get started with docker
