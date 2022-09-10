@@ -3,7 +3,8 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![Twitter][twitter-shield]][twitter-url]
-
+[![Twitter][twitter-shield]][twitter-url]
+![awesome-cloudops][awesome-shield]
 
 <br />
 <p align="center">
@@ -148,3 +149,6 @@ Unless required by applicable law or agreed to in writing, project distributed u
 [issues-url]: https://github.com/unskript/awesome-cloudops-automation/issues
 [twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=for-the-badge&logo=twitter&colorB=555
 [twitter-url]: https://twitter.com/unskript
+[awesome-shield]: https://img.shields.io/badge/awesome-cloudops-orange?style=for-the-badge&logo=bookstack 
+
+
