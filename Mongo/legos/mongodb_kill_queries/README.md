@@ -26,4 +26,4 @@ The Input that was given was `1132332` which is the Operation ID we intended to 
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)
