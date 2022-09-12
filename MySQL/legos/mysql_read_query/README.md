@@ -17,4 +17,4 @@ This Lego takes twoinput query and param.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)
