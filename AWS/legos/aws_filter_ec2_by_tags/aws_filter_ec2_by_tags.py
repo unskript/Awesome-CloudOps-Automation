@@ -30,14 +30,18 @@ def aws_filter_ec2_by_tags_printer(output):
 def aws_filter_ec2_by_tags(handle, tag_key: str, tag_value: str, region: str) -> List:
     """aws_filter_ec2_by_tags Returns an array of instances matching tags.
 
-        :type nbParamsObj: object
-        :param nbParamsObj: Object containing global params for the notebook.
+        :type handle: object
+        :param handle: Object returned by the task.validate(...) method
 
-        :type credentialsDict: dict
-        :param credentialsDict: Dictionary of credentials info.
+        :type tag_key: string
+        :param tag_key: AWS Tag Key that was used ex: ServiceName, ClusterName, etc..
 
-        :type inputParamsJson: string
-        :param inputParamsJson: Json string of the input params.
+        :type tag_value: string
+        :param tag_value: The Value for the Above Key, example "vpn-1" so the Lego will search
+                          only the required texts in the Lego.
+        
+        :type region: string
+        :param region: The AWS Region, For example `us-west-2`
 
         :rtype: Array of instances matching tags.
     """
