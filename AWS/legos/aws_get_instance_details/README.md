@@ -7,12 +7,14 @@ This Lego gives the AWS EC2 Instances details.
 
 ## Lego Details
 
-    aws_get_instance_details(handle: object)
+    aws_get_instance_details(handle: object, instance_id: str, region: str,)
 
-        handle: Object of type unSkript AWS Connector
+        handle: Object of type unSkript AWS Connector.
+        instance_id : Id of instance.
+        region: Region to filter instances.
 
 ## Lego Input
-This Lego takes three inputs handle, region, instance_ids.
+This Lego take three inputs handle, instance_ids and region.
 
 ## Lego Output
 Here is a sample output.
