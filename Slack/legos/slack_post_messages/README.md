@@ -14,12 +14,11 @@ This Lego Post Slack Messageand gives a message sent status.
         message: Message sent to channel.
 
 ## Lego Input
-This Lego takes three inputs handle, channel and message. 
+This Lego take three inputs handle, channel and message.
 
 ## Lego Output
 Here is a sample output.
 <img src="./1.png">
 
 ## See it in Action
-
 You can see this Lego in action following this link [unSkript Live](https://unskript.com)

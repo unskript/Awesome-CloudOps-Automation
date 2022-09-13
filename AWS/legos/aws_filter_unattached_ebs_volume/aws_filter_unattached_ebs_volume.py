@@ -23,7 +23,7 @@ def aws_filter_ebs_unattached_volumes(handle, region: str) -> List:
     """aws_filter_ebs_unattached_volumes Returns an array of ebs volumes.
 
         :type handle: object
-        :param handle: Object returned from task.validate(...).
+        :param handle: Object returned by the task.validate(...) method.
         
         :type region: string
         :param region: Used to filter the volume for specific region.

@@ -15,6 +15,9 @@ This Lego filter the AWS Untagged EC2 Instances and gives a list of Instances.
 ## Lego Input
 This Lego take two inputs handle and region. 
 
-## See it in Action
+## Lego Output
+Here is a sample output.
+<img src="./1.png">
 
+## See it in Action
 You can see this Lego in action following this link [unSkript Live](https://unskript.com)
