@@ -2,19 +2,19 @@
 <h1>AWS Attach New Policy to User </h1>
 
 ## Description
-This Lego AWS Attach New Policy to User and gives a dict of policy info.
+This Lego attaches a new AWS Policy to User and returns the policy information as a python dictionary.
 
 
 ## Lego Details
 
-    aws_attache_iam_policy(handle: object, UserName: str, PolicyName: str)
+    aws_attach_iam_policy(handle: object, UserName: str, PolicyName: str)
 
         handle: Object of type unSkript AWS Connector
         UserName: IAM user whose policies need to fetched.
         PolicyName: Policy name to apply the permissions to the user.
 
 ## Lego Input
-This Lego takes three inputs handle, UserName and PolicyName. 
+This Lego take three inputs handle, UserName and PolicyName. 
 
 ## Lego Output
 Here is a sample output.

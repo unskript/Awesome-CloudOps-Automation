@@ -16,26 +16,26 @@ class InputSchema(BaseModel):
         description='Policy name to apply the permissions to the user.')
 
 @beartype
-def aws_attache_iam_policy_printer(output):
+def aws_attach_iam_policy_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
 @beartype
-def aws_attache_iam_policy(handle, UserName: str, PolicyName: str) -> Dict:
+def aws_attach_iam_policy(handle, UserName: str, PolicyName: str) -> Dict:
     """aws_attache_iam_policy used to provide user permissions.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
 
-        :type UserName: dict
+        :type UserName: string
         :param UserName: Dictionary of credentials info.
 
         :type PolicyName: string
         :param PolicyName: Policy name to apply the permissions to the user.
 
-        :rtype: Dict with User policy info.
+        :rtype: Dict with User policy information.
     """
     result = {}
     iamResource = handle.resource('iam')

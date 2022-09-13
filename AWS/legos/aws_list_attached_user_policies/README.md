@@ -2,7 +2,7 @@
 <h1>AWS List Attached User Policies </h1>
 
 ## Description
-This Lego AWS list Attached User Policies and gives a list of policies.
+This Lego returns the list of Policies attached to a User.
 
 
 ## Lego Details
@@ -10,10 +10,10 @@ This Lego AWS list Attached User Policies and gives a list of policies.
     aws_list_attached_user_policies(handle: object, UserName: str)
 
         handle: Object of type unSkript AWS Connector
-        UserName: IAM user whose policies need to fetched.
+        UserName: IAM user name whose policies need to fetched.
 
 ## Lego Input
-This Lego takes two inputs handle and UserName. 
+This Lego take two inputs handle and UserName. 
 
 ## Lego Output
 Here is a sample output.
