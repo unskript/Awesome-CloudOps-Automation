@@ -24,11 +24,20 @@ def aws_get_instances_printer(output):
 
 
 @beartype
-def aws_get_instance_details(
-    handle,
-    instance_id: str,
-    region: str,
-) -> Dict:
+def aws_get_instance_details(handle, instance_id: str, region: str) -> Dict:
+    """aws_get_instance_details Returns instance details.
+
+        :type handle: object
+        :param handle: Object returned by the task.validate(...) method.
+
+        :type instance_ids: list
+        :param instance_ids: List of instance ids.
+
+        :type region: string
+        :param region: Region for instance.
+
+        :rtype: Dict with the instance details.
+    """
 
     ec2client = handle.client('ec2', region_name=region)
     instances = []

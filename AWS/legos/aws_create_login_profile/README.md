@@ -1,21 +1,20 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Delete AWS EBS Volume </h1>
+<h1>Create Login profile for IAM User </h1>
 
 ## Description
-This Lego deletes AWS EBS volume and gives a list of deletion status.
+This Lego Create Login profile for IAM User and gives a dict of profile info.
 
 
 ## Lego Details
 
-    aws_delete_volumes(handle: object, volume_id: str, region: str)
+    aws_create_user_login_profile(handle: object, UserName: str, Password: str)
 
         handle: Object of type unSkript AWS Connector.
-        volume_id: Volume ID to delete particular volume.
-        region: Used to filter the volume for specific region.
+        UserName: Name of new IAM User.
+        Password: temporary password for new User.
 
 ## Lego Input
-
-This Lego take three inputs handle, volume_id and region.
+This Lego take three inputs handle, UserName and Password.
 
 ## Lego Output
 Here is a sample output.

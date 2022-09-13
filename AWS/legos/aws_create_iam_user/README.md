@@ -1,24 +1,25 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Delete AWS EBS Volume </h1>
+<h1>Create New IAM User </h1>
 
 ## Description
-This Lego deletes AWS EBS volume and gives a list of deletion status.
+This Lego Create New IAM User and gives a dict of user info.
 
 
 ## Lego Details
 
-    aws_delete_volumes(handle: object, volume_id: str, region: str)
+    aws_create_iam_user(handle: object, user_name: str, tag_key: str, tag_value: str)
 
         handle: Object of type unSkript AWS Connector.
-        volume_id: Volume ID to delete particular volume.
-        region: Used to filter the volume for specific region.
+        user_name: Name of new IAM User.
+        tag_key: Tag Key assign to new User.
+        tag_value: Tag Value assign to new User.
 
 ## Lego Input
-
-This Lego take three inputs handle, volume_id and region.
+This Lego take four inputs handle, user_name, tag_key and tag_value.
 
 ## Lego Output
 Here is a sample output.
+
 <img src="./1.png">
 
 ## See it in Action

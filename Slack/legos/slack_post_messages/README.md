@@ -1,20 +1,20 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Filter AWS Untagged EC2 Instances </h1>
+<h1>Post Slack Message </h1>
 
 ## Description
-This Lego filter the AWS Untagged EC2 Instances and gives a list of Instances.
+This Lego Post Slack Messageand gives a message sent status.
 
 
 ## Lego Details
 
-    aws_filter_untagged_ec2_instances(handle: object, region: str)
+    slack_post_message(handle: object, channel: str, message: str)
 
         handle: Object of type unSkript AWS Connector
-        region: Region to filter instances.
+        channel: Name of slack channel.
+        message: Message sent to channel.
 
 ## Lego Input
-
-This Lego take two inputs handle and region.
+This Lego take three inputs handle, channel and message.
 
 ## Lego Output
 Here is a sample output.
