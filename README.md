@@ -126,7 +126,9 @@ See the [open issues](https://github.com/unskript/awesome-cloudops-automation/is
 
 ## Contributing
 
-Contributions are what make the open community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/awesome-cloudops-automation/blob/main/.github/CONTRIBUTING.md) for more details. 
+Contributions are what make the open community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
+
+Here is the Link for the [Developer Guide](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/DEVELOPERGUIDE.md)
 
 ## License
 Except as otherwise noted this project is licensed under the `Apache License, Version 2.0` .
