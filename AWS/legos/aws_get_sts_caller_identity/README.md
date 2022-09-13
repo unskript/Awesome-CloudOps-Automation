@@ -2,7 +2,7 @@
 <h1>Get STS Caller Identity </h1>
 
 ## Description
-This Lego Get STS Caller Identity and gives a dict of profile info.
+This Lego get STS caller identity and gives a dict of profile info.
 
 
 ## Lego Details
