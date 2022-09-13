@@ -20,5 +20,4 @@ Here is a sample output.
 <img src="./1.png">
 
 ## See it in Action
-
 You can see this Lego in action following this link [unSkript Live](https://unskript.com)

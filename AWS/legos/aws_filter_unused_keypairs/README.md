@@ -1,24 +1,24 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Post Slack Message </h1>
+<h1>Filter AWS Unused Keypairs </h1>
 
 ## Description
-This Lego Post Slack Messageand gives a message sent status.
+This Lego Filter AWS Unused Keypairs and gives a list of keypairs.
 
 
 ## Lego Details
 
-    slack_post_message(handle: object, channel: str, message: str)
+    aws_filter_unused_keypairs(handle: object, region: str)
 
         handle: Object of type unSkript AWS Connector
-        channel: Name of slack channel.
-        message: Message sent to channel.
+        region: Region to filter instances.
 
 ## Lego Input
-This Lego take three inputs handle, channel and message.
+This Lego take two inputs handle and region. 
 
 ## Lego Output
 Here is a sample output.
 <img src="./1.png">
 
 ## See it in Action
+
 You can see this Lego in action following this link [unSkript Live](https://unskript.com)

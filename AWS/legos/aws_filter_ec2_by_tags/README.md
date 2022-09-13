@@ -15,7 +15,9 @@ This Lego filter the AWS EC2 Instance and gives a list of Instances.
         region: EC2 instance region.
 
 ## Lego Input
+
 This Lego take four inputs handle, tag_key, tag_value and region. 
+
 
 ## Lego Output
 Here is a sample output.
