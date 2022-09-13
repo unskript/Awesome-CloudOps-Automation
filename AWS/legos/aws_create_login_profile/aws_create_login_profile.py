@@ -11,7 +11,7 @@ from beartype import beartype
 
 class InputSchema(BaseModel):
     UserName: str = Field(
-        title='UserName',
+        title='User Name',
         description='IAM User Name.')
     Password: str = Field(
         title='Password',

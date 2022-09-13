@@ -10,7 +10,7 @@ from beartype import beartype
 
 class InputSchema(BaseModel):
     user_name: str = Field(
-        title='UserName',
+        title='User Name',
         description='IAM User Name.')
     tag_key: str = Field(
         title='Tag Key',
