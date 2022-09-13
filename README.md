@@ -62,7 +62,7 @@ A single repository to satisfy all your day-to-day CloudOps automation needs. Ar
 ## Quick start
 
 ### Get started with docker
-#### Linux/Mac/Windows (x86)
+#### Linux/Mac/Windows (x86-64/arm64)
 
 ```s
 docker run -it -p 8888:8888 \
@@ -75,22 +75,11 @@ docker run -it -p 8888:8888 \
      public.ecr.aws/unskript/awesome-runbooks:latest
 ```
 
-#### Linux/Mac/Windows (arm64)
-```s
-docker run -it -p 8888:8888 \
-    -v $HOME/.unskript:/data  \
-    -e NB_USER=jovyan \
-    -e CHOWN_HOME=yes \
-    -e CHOWN_EXTRA_OPTS='-R' \
-    --user root \
-    -w /home/jovyan \
-   public.ecr.aws/unskript/awesome-runbooks:v0.6.0-arm64
-```
 
 > Inside the docker there is `/data` folder that is where we store the `credentials` and `runbooks`. So if you would like to retain the `connectors` and `runbooks` you can use the docker's `-v` option to retain the changes done on the `docker`.
 
-> Note: New files are created inside the docker and will persist unless --rm option is given (which we have not suggested) i.e. `Save-As` function can be used, but user has to remember the file name and insert in the URL
-
+> Note: New files are created inside the docker and will persist unless --rm option is used.
+> 
 ### Open the Runbook
 Once you run the above command, here's the table which will help you find the URL for runbook of your choice. 
 
