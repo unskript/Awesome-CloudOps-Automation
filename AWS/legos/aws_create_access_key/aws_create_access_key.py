@@ -35,4 +35,10 @@ def aws_create_access_key(
     """
     iamClient = handle.client('iam')
     result = iamClient.create_access_key(UserName=aws_username)
-    return result
+    retVal = {}
+    temp_list = []
+    for key, value in result.items():
+        if key not in temp_list:
+            temp_list.append(key)
+            retVal[key] = value
+    return retVal

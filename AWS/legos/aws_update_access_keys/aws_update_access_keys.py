@@ -49,4 +49,10 @@ def aws_update_access_key(
     """
     iamClient = handle.client('iam')
     result = iamClient.update_access_key(UserName=aws_username, AccessKeyId=aws_access_key_id, Status=status)
-    return result
+    retVal = {}
+    temp_list = []
+    for key, value in result.items():
+        if key not in temp_list:
+            temp_list.append(key)
+            retVal[key] = value
+    return retVal

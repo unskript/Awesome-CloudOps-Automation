@@ -35,6 +35,11 @@ def aws_list_access_keys(
                 :rtype: Result Dictionary of result
     """
     iamClient = handle.client('iam')
-    paginator = iamClient.get_paginator('list_access_keys')
-    for response in paginator.paginate(UserName=aws_username):
-        return response
+    result = iamClient.list_access_keys(UserName=aws_username)
+    retVal = {}
+    temp_list = []
+    for key, value in result.items():
+        if key not in temp_list:
+            temp_list.append(key)
+            retVal[key] = value
+    return retVal
