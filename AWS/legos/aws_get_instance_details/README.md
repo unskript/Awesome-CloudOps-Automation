@@ -14,7 +14,6 @@ This Lego gives the AWS EC2 Instances details.
         region: Region to filter instances.
 
 ## Lego Input
-
 This Lego take three inputs handle, instance_ids and region.
 
 ## Lego Output

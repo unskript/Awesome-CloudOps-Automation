@@ -14,6 +14,7 @@ This Lego deletes AWS EBS volume and gives a list of deletion status.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
+
 This Lego take three inputs handle, volume_id and region.
 
 ## Lego Output

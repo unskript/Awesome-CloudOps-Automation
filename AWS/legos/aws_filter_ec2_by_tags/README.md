@@ -21,7 +21,6 @@ This Lego take four inputs handle, tag_key, tag_value and region.
 
 ## Lego Output
 Here is a sample output.
-
 <img src="./1.png">
 
 
