@@ -23,7 +23,10 @@ class InputSchema(BaseModel):
 def aws_check_ssl_certificate_expiry_printer(output):
     if output is None:
         return
-    pprint.pprint("Your SSL certificate is expiring in " + str(output) + " " + "days")
+    if output > 0:
+        pprint.pprint("Your SSL certificate is expiring in " + str(output) + " " + "days")
+    else:
+        pprint.pprint("Your SSL certificate has expired " + str(-output) + " " + "days ago")
 
 
 def aws_check_ssl_certificate_expiry(
@@ -52,5 +55,10 @@ def aws_check_ssl_certificate_expiry(
             right_now = datetime.datetime.now(dateutil.tz.tzlocal())
             diff = expiry_date-right_now
             days_remaining = diff.days
-            if days_remaining < 30:
-                return days_remaining
+            if days_remaining < 30 and days_remaining > 0:
+                days = days_remaining
+            elif days_remaining < 0:
+                days = days_remaining
+            elif days_remaining > 30:
+                days = days_remaining
+            return days

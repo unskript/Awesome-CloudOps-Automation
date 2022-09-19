@@ -24,8 +24,7 @@ def aws_create_access_key(
     handle,
     aws_username: str
 ) -> Dict:
-    """aws_check_ssl_certificate_expiry checks the expiry date of an ACM SSL certificate .
-
+    """aws_create_access_key creates a new access key for the given user.
             :type handle: object
             :param handle: Object returned from Task Validate
 

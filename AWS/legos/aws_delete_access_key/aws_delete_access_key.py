@@ -30,8 +30,7 @@ def aws_delete_access_key(
     aws_username: str,
     aws_access_key_id: str,
 ) -> Dict:
-    """aws_check_ssl_certificate_expiry checks the expiry date of an ACM SSL certificate .
-
+    """aws_delete_access_key deleted the given access key.
                     :type handle: object
                     :param handle: Object returned from Task Validate
 

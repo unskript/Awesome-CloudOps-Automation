@@ -7,4 +7,3 @@
     "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
     "action_supports_poll": true,
     "action_supports_iteration": true
-  }

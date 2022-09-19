@@ -3,7 +3,7 @@
 # All rights reserved.
 ##
 from pydantic import BaseModel, Field, SecretStr
-from typing import Dict,List
+from typing import Dict, List
 import pprint
 
 
@@ -21,10 +21,10 @@ def aws_list_access_keys_printer(output):
 
 
 def aws_list_access_keys(
-    handle,
-    aws_username: str
-) -> List:
-    """aws_check_ssl_certificate_expiry checks the expiry date of an ACM SSL certificate .
+        handle,
+        aws_username: str
+) -> Dict:
+    """aws_list_access_keys lists all the access keys for a user
 
                 :type handle: object
                 :param handle: Object returned from Task Validate
@@ -36,7 +36,5 @@ def aws_list_access_keys(
     """
     iamClient = handle.client('iam')
     paginator = iamClient.get_paginator('list_access_keys')
-    for response in paginator.paginate(UserName= aws_username):
-        for key,value in response.items():
-            if key == "AccessKeyMetadata":
-                return value
+    for response in paginator.paginate(UserName=aws_username):
+        return response

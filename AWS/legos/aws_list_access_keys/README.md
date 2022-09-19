@@ -17,7 +17,7 @@ This Lego Lists all the Access Keys of a user.
 This Lego take two inputs handle and aws_username.
 
 ## Lego Output
-<img src="./1.png">
+<img src="./2.png">
 
 ## See it in Action
 

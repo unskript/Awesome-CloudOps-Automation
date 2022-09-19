@@ -35,8 +35,7 @@ def aws_update_access_key(
     aws_access_key_id: str,
     status: str
 ) -> Dict:
-    """aws_check_ssl_certificate_expiry checks the expiry date of an ACM SSL certificate .
-
+    """aws_update_access_key updates the status of an access key to Inactive/Active
                     :type handle: object
                     :param handle: Object returned from Task Validate
 
