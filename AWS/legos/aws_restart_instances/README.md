@@ -7,9 +7,11 @@ This Lego Restart the AWS EC2 Instance and gives a dict as output.
 
 ## Lego Details
 
-    aws_restart_ec2_instances(handle: object)
+    aws_restart_ec2_instances(handle: object, instance_ids: List, region: str)
 
         handle: Object of type unSkript AWS Connector
+        instance_ids: List of instance ids
+        region: Region for instance.
 
 ## Lego Input
 This Lego take three inputs handle, region and instance_ids.
@@ -18,8 +20,6 @@ This Lego take three inputs handle, region and instance_ids.
 Here is a sample output.
 
 <img src="./1.png">
-
-
 
 ## See it in Action
 

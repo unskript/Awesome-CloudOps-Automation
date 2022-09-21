@@ -10,12 +10,16 @@ This Lego deletes AWS EBS volume and gives a list of deletion status.
     aws_delete_volumes(handle: object, volume_id: str, region: str)
 
         handle: Object of type unSkript AWS Connector.
-        volume_id: Volume ID needed to delete particular volume.
+        volume_id: Volume ID to delete particular volume.
         region: Used to filter the volume for specific region.
 
 ## Lego Input
+
 This Lego take three inputs handle, volume_id and region.
 
+## Lego Output
+Here is a sample output.
+<img src="./1.png">
 
 ## See it in Action
 

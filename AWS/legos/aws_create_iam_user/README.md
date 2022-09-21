@@ -1,24 +1,27 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Filter AWS Unattached EBS Volume </h1>
+<h1>Create New IAM User </h1>
 
 ## Description
-This Lego filter AWS EBS volumes and gives a list of unattached volumes.
+This Lego Create New IAM User and gives a dict of user info.
 
 
 ## Lego Details
 
-    aws_filter_ebs_unattached_volumes(handle: object, region: str)
+    aws_create_iam_user(handle: object, user_name: str, tag_key: str, tag_value: str)
 
         handle: Object of type unSkript AWS Connector.
-        region: Used to filter the volume for specific region.
+        user_name: Name of new IAM User.
+        tag_key: Tag Key assign to new User.
+        tag_value: Tag Value assign to new User.
 
 ## Lego Input
-This Lego take two inputs handle and region.
+This Lego take four inputs handle, user_name, tag_key and tag_value.
 
 ## Lego Output
 Here is a sample output.
+
 <img src="./1.png">
 
-
 ## See it in Action
+
 You can see this Lego in action following this link [unSkript Live](https://unskript.com)
