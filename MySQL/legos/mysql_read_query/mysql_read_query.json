@@ -1,0 +1,10 @@
+{
+    "action_title": "Long Running MySQL Query",
+    "action_description": "Long Running MySQL Query",
+    "action_type": "LEGO_TYPE_MYSQL",
+    "action_entry_function": "mysql_read_query",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_poll": true,
+    "action_supports_iteration": true
+  }
