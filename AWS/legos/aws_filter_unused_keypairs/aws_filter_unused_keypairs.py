@@ -6,21 +6,19 @@ from pydantic import BaseModel, Field
 from typing import List
 from unskript.connectors.aws import aws_get_paginator
 import pprint
-from beartype import beartype
 
 class InputSchema(BaseModel):
     region: str = Field(
         title='Region',
         description='AWS Region.')
-        
-@beartype
+
+
 def aws_filter_unused_keypairs_printer(output):
     if output is None:
         return
     pprint.pprint({"Instances": output})
 
 
-@beartype
 def aws_filter_unused_keypairs(handle, region: str) -> List:
     """aws_filter_unused_keypairs Returns an array of KeyPair.
 

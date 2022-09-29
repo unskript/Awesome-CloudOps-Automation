@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from typing import List
 import pprint
 
+
 class InputSchema(BaseModel):
     region: str = Field(
         title='Region',
@@ -21,11 +22,14 @@ def aws_get_s3_buckets_printer(output):
 def aws_get_s3_buckets(handle, region: str) -> List:
     """aws_get_s3_buckets List all the S3 buckets.
 
-          :type region: string
-          :param region: location of the bucket
+        :type handle: object
+        :param handle: Object returned from task.validate(...).
 
-          :rtype: List all the S3 buckets
-      """
+        :type region: string
+        :param region: location of the bucket
+
+        :rtype: List all the S3 buckets
+    """
     # connect to the S3 using resource
     s3Session = handle.resource("s3", region_name=region)
 

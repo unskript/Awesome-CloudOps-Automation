@@ -10,7 +10,7 @@ class InputSchema(BaseModel):
     region: str = Field(
         title='Region',
         description='AWS Region.')
-    name: str = Field(
+    bucket_name: str = Field(
         title='Bucket Name',
         description='AWS S3 Bucket Name.')
     acl: str = Field(
@@ -24,14 +24,14 @@ def aws_put_bucket_acl_printer(output):
     pprint.pprint(output)
 
 
-def aws_put_bucket_acl(handle, name: str, acl: str, region: str = None) -> Dict:
+def aws_put_bucket_acl(handle, bucket_name: str, acl: str, region: str = None) -> Dict:
     """ aws_put_bucket_acl get Dict of buckets ACL change info.
 
             :type handle: Session
             :param handle: Object returned by the task.validate(...) method
         
-            :type name: str
-            :param name: S3 bucket name where to set ACL on
+            :type bucket_name: string
+            :param bucket_name: S3 bucket name where to set ACL on.
 
             :type acl: str
             :param acl: canned ACL type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.
@@ -47,7 +47,7 @@ def aws_put_bucket_acl(handle, name: str, acl: str, region: str = None) -> Dict:
 
     # Put bucket ACL for the permissions grant
     response = s3Client.put_bucket_acl(
-                    Bucket=name,
+                    Bucket=bucket_name,
                     ACL=acl )
 
     return response

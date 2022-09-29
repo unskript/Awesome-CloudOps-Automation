@@ -12,26 +12,30 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region.')
 
-    name: str = Field(
+    bucket_name: str = Field(
         title='Bucket Name',
         description='AWS S3 Bucket Name.')
+
 
 def aws_delete_bucket_encryption_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-def aws_delete_bucket_encryption(handle, name: str, region: str) -> Dict:
+
+def aws_delete_bucket_encryption(handle, bucket_name: str, region: str) -> Dict:
     """aws_put_bucket_encryption Puts default encryption configuration for bucket.
+        :type handle: object
+        :param handle: Object returned by the task.validate(...) method.
 
-          :type name: string
-          :param name: Name of the S3 bucket.
+        :type bucket_name: string
+        :param bucket_name: Name of the S3 bucket.
 
-          :type region: string
-          :param region: location of the bucket
+        :type region: string
+        :param region: location of the bucket
 
-          :rtype: Dict with the response info.
-      """
+        :rtype: Dict with the response info.
+    """
     s3Client = handle.client('s3',
                              region_name=region)
     
@@ -39,7 +43,7 @@ def aws_delete_bucket_encryption(handle, name: str, region: str) -> Dict:
 
     # Setup default encryption configuration
     try:
-        response = s3Client.delete_bucket_encryption(Bucket=name)
+        response = s3Client.delete_bucket_encryption(Bucket=bucket_name)
 
         result['Response'] = response
 
