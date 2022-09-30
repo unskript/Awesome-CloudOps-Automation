@@ -2,7 +2,7 @@
 <h1>Run Command via AWS CLI </h1>
 
 ## Description
-This Lego find the Redundant Trails in AWS and returns list of trail details.
+This Lego can be used to run any aws cli command just like `aws sts get-caller-identity` etc...
 
 ## Lego Details
 
@@ -12,7 +12,8 @@ This Lego find the Redundant Trails in AWS and returns list of trail details.
         aws_command: AWS command.
 
 ## Lego Input
-This Lego take two inputs handle, aws_command.
+This Lego take two inputs handle, aws_command. The aws_command is the actual command
+starting with the `aws` keyword.
 
 ## Lego Output
 Here is a sample output.
