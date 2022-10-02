@@ -64,15 +64,15 @@ A single repository to satisfy all your day-to-day CloudOps automation needs. Ar
 ### Get started with docker
 #### Linux/Mac/Windows (x86-64/arm64)
 
-```s
+```
 docker run -it -p 8888:8888 \
-     -v $HOME/.unskript:/data \
-     -e NB_USER=jovyan \
-     -e CHOWN_HOME=yes \
-     -e CHOWN_EXTRA_OPTS='-R' \
-     --user root \
-     -w /home/jovyan \ 
-     public.ecr.aws/unskript/awesome-runbooks:latest
+ -v $HOME/.unskript:/data \
+ -e NB_USER=jovyan \
+ -e CHOWN_HOME=yes \
+ -e CHOWN_EXTRA_OPTS='-R' \
+ --user root \
+ -w /home/jovyan \
+ public.ecr.aws/unskript/awesome-runbooks:latest
 ```
 
 
