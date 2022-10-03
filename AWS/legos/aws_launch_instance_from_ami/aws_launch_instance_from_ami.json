@@ -1,6 +1,6 @@
 {
     "action_title": "Launch AWS EC2 Instance From an AMI",
-    "action_description": "Use this instance to Launch an AWS EC2 Instnace from an AMI",
+    "action_description": "Use this instance to Launch an AWS EC2 instance from an AMI",
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_launch_instance_from_ami",
     "action_needs_credential": true,

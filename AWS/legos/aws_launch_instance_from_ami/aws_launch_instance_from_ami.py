@@ -25,14 +25,14 @@ def aws_launch_instance_from_ami_printer(output):
 def aws_launch_instance_from_ami(handle, ami_id: str, region: str) -> List:
     """aws_launch_instance_from_ami Launch instances from a particular image.
 
-        :type nbParamsObj: object
-        :param nbParamsObj: Object containing global params for the notebook.
+        :type handle: object
+        :param handle: Object returned from task.validate(...).
 
-        :type credentialsDict: dict
-        :param credentialsDict: Dictionary of credentials info.
+        :type ami_id: string
+        :param ami_id: AMI Id Information required to launch an instance.
 
-        :type inputParamsJson: string
-        :param inputParamsJson: Json string of the input params.
+        :type region: string
+        :param region: Region to filter instances.
 
         :rtype: Dict with launched instances info.
     """
