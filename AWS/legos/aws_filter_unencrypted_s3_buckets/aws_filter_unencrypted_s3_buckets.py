@@ -23,10 +23,13 @@ def aws_filter_unencrypted_s3_buckets_printer(output):
 def aws_filter_unencrypted_s3_buckets(handle, region: str) -> List:
     """aws_filter_unencrypted_s3_buckets List of unencrypted bucket name .
 
-          :type region: string
-          :param region: Filter S3 buckets.
+        :type handle: object
+        :param handle: Object returned from task.validate(...).
+       
+        :type region: string
+        :param region: Filter S3 buckets.
 
-          :rtype: List with unencrypted bucket name.
+        :rtype: List with unencrypted bucket name.
     """
     s3Client = handle.client('s3',
                              region_name=region)

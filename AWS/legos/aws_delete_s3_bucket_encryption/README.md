@@ -2,7 +2,7 @@
 <h1>Delete AWS Default Encryption for S3 Bucket </h1>
 
 ## Description
-This Lego Delete AWS Default Encryption for S3 Bucket and gives a dict of s3 bucket info.
+This Lego removes AWS default encryption for S3 bucket.
 
 
 ## Lego Details
@@ -14,7 +14,7 @@ This Lego Delete AWS Default Encryption for S3 Bucket and gives a dict of s3 buc
         region: Location of the S3 buckets.
 
 ## Lego Input
-This Lego takes take two input name and region. 
+This Lego take three inputs handle, name and region.
 
 ## Lego Output
 Here is a sample output.

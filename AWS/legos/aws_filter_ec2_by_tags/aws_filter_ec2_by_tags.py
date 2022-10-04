@@ -39,18 +39,17 @@ def aws_filter_ec2_by_tags(handle, tag_key: str, tag_value: str, region: str) ->
         :type tag_value: string
         :param tag_value: The Value for the Above Key, example "vpn-1" so the Lego will search
                           only the required texts in the Lego.
-        
+      
         :type region: string
         :param region: The AWS Region, For example `us-west-2`
 
         :rtype: Array of instances matching tags.
     """
-    # Input param validation.
 
     ec2Client = handle.client('ec2', region_name=region)
     res = aws_get_paginator(ec2Client, "describe_instances", "Reservations",
                             Filters=[{'Name': 'tag:' + tag_key, 'Values': [tag_value]}])
-
+   
     result = []
     for reservation in res:
         for instance in reservation['Instances']:

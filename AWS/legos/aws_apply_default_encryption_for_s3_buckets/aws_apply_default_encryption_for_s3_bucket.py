@@ -13,7 +13,8 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region.')
 
-    name: str = Field(
+
+    bucket_name: str = Field(
         title='Bucket Name',
         description='AWS S3 Bucket Name.')
 
@@ -24,35 +25,33 @@ def aws_put_bucket_encryption_printer(output):
     pprint.pprint(output)
 
 
-def aws_put_bucket_encryption(handle, name: str, region: str) -> Dict:
+def aws_put_bucket_encryption(handle, bucket_name: str, region: str) -> Dict:
     """aws_put_bucket_encryption Puts default encryption configuration for bucket.
+        :type handle: object
+        :param handle: Object returned from task.validate(...).
 
-          :type name: string
-          :param name: NAme of the S3 bucket.
+        :type bucket_name: string
+        :param bucket_name: Name of the S3 bucket.
 
-          :type region: string
-          :param region: location of the bucket
+        :type region: string
+        :param region: location of the bucket
 
-          :rtype: Dict with the response info.
-      """
-    s3Client = handle.client('s3',
-                             region_name=region)
-
+        :rtype: Dict with the response info.
+    """
+    s3Client = handle.client('s3', region_name=region)
     result = {}
-
     # Setup default encryption configuration
     try:
         response = s3Client.put_bucket_encryption(
-            Bucket=name,
+            Bucket=bucket_name,
             ServerSideEncryptionConfiguration={
                 "Rules": [
-                    {"ApplyServerSideEncryptionByDefault": {
-                        "SSEAlgorithm": "AES256"}}
+                    {"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}
                 ]},
-        )
+            )
         result['Response'] = response
 
     except Exception as e:
         result['Error'] = e
-
+        
     return result

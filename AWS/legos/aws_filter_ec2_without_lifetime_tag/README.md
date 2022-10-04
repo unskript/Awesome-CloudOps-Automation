@@ -2,7 +2,7 @@
 <h1>Filter AWS EC2 Instances Without Lifetime Tag </h1>
 
 ## Description
-This Lego filter the AWS EC2 Instances which don't have Lifetime Tag and gives a list of Instances.
+This Lego displays the AWS EC2 Instances which don't have Lifetime Tag.
 
 
 ## Lego Details
@@ -14,7 +14,7 @@ This Lego filter the AWS EC2 Instances which don't have Lifetime Tag and gives a
         region: Region to filter instances.
 
 ## Lego Input
-This Lego takes take two input lifetime_tag and region. 
+This Lego take three inputs handle, lifetime_tag and region.
 
 
 ## See it in Action

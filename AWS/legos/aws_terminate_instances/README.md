@@ -14,7 +14,7 @@ This Lego Terminate AWS Instances and gives a dict as output.
         region: Region to filter instances.
 
 ## Lego Input
-This Lego takes take two input instance_ids and region.
+This Lego take three inputs handle, instance_ids and region.
 
 
 ## See it in Action

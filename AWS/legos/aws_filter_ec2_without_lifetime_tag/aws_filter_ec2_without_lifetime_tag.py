@@ -25,7 +25,7 @@ def aws_filter_ec2_without_lifetime_tag_printer(output):
 
 
 def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str) -> List:
-    """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
+    """aws_filter_ec2_without_lifetime_tag Returns an List of instances which do not have lifetime tag.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).

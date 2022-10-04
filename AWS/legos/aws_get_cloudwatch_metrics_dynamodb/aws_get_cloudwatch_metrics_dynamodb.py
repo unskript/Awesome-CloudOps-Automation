@@ -66,9 +66,6 @@ def aws_get_cloudwatch_metrics_dynamodb(
     :type dimensions: List[dict]
     :param dimensions: A dimension is a name/value pair that is part of the identity of a metric.
 
-    :type period: int
-    :param period: The granularity, in seconds, of the returned data points.
-
     :type timeSince: int
     :param timeSince: Starting from now, window (in seconds) for which you want
                       to get the datapoints for.
@@ -79,6 +76,9 @@ def aws_get_cloudwatch_metrics_dynamodb(
 
     :type region: string
     :param region: AWS Region of the cloudwatch.
+    
+    :type period: int
+    :param period: The granularity, in seconds, of the returned data points.
 
     :rtype: Shows ploted statistics.
     """

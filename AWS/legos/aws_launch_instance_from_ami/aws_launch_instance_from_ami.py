@@ -29,12 +29,12 @@ def aws_launch_instance_from_ami(handle, ami_id: str, region: str) -> List:
         :param handle: Object returned from task.validate(...).
 
         :type ami_id: string
-        :param ami_id: AMI Id.
+        :param ami_id: AMI Id Information required to launch an instance.
 
         :type region: string
-        :param region: Used to filter the instance for specific region.
+        :param region: Region to filter instances.
 
-        :rtype: List with launched instances info.
+        :rtype: Dict with launched instances info.
     """
     ec2Client = handle.client('ec2', region_name=region)
 

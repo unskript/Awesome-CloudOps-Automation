@@ -12,14 +12,14 @@ This Lego gives the AWS Cloudwatch Metrics for DynamoDB.
         hdl: Object of type unSkript AWS Connector
         metric_name: The name of the metric, with or without spaces.
         dimensions: A dimension is a name/value pair that is part of the identity of a metric.
-        period: The granularity, in seconds, of the returned data points.
         timeSince: Starting from now, window (in seconds) for which you want to get the datapoints for.
         statistics: Cloudwatch metric statistics. Possible values: SampleCount, Average, Sum, Minimum, Maximum.
         region: AWS Region of the cloudwatch.
+        period: The granularity, in seconds, of the returned data points.
 
 
 ## Lego Input
-This Lego takes take seven inputs hdl, metric_name, dimensions,period,timeSince,statistics,region.
+This Lego take seven inputs hdl, metric_name, dimensions, timeSince, statistics, region and period.
 
 
 ## See it in Action

@@ -2,7 +2,7 @@
 <h1>AWS Change ACL Permission of public S3 Bucket</h1>
 
 ## Description
-This Lego Change ACL Permission of public S3 Bucket and gives a dict of change bucket info.
+This Lego changes ACL permission of a public S3 bucket.
 
 
 ## Lego Details
@@ -15,7 +15,7 @@ This Lego Change ACL Permission of public S3 Bucket and gives a dict of change b
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego takes take three input name, acl, region.
+This Lego take four inputs handle, name, acl and region.
 
 ## Lego Output
 Here is a sample output.

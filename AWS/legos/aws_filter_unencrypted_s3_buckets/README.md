@@ -2,7 +2,7 @@
 <h1>Filter AWS Unencrypted S3 Buckets </h1>
 
 ## Description
-This Lego filter AWS unencrypted S3 buckets and gives a list of unencrypted s3 buckets.
+This Lego lists all unencrypted AWS s3 buckets.
 
 
 ## Lego Details
@@ -13,7 +13,7 @@ This Lego filter AWS unencrypted S3 buckets and gives a list of unencrypted s3 b
         region: Location of the S3 buckets.
 
 ## Lego Input
-This Lego takes take one input region. 
+This Lego take two inputs handle and region.
 
 ## Lego Output
 Here is a sample output.

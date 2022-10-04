@@ -32,15 +32,13 @@ def mysql_read_query(handle, query: str, params: List = List[Any]) -> List:
         :param handle: Object returned from task.validate(...).
 
         :type query: str
-        :param query: The query need to get long running.
+        :param query: MySQL Query
 
         :type params: list
-        :param params: The process command needed to get process ids.
+        :param params: Parameters used in MySQL query.
 
         :rtype: Result of the query in the List form.
       """
-    # Input param validation.
-
     cur = handle.cursor()
     cur.execute(query, params)
 
