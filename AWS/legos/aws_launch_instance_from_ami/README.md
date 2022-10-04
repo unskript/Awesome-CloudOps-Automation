@@ -2,11 +2,10 @@
 <h1>Launch AWS EC2 Instance From an AMI</h1>
 
 ## Description
-This Lego Launch AWS EC2 Instance From an AMI and return dict of launched instance details.
+This Lego Launch AWS EC2 Instance From an AMI.
 
 
 ## Lego Details
-
     aws_launch_instance_from_ami(handle, ami_id: str, region: str)
 
         handle: Object of type unSkript AWS Connector.
@@ -20,6 +19,7 @@ This Lego take three inputs handle, ami_id and region.
 ## Lego Output
 <img src="./1.png">
 
+
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

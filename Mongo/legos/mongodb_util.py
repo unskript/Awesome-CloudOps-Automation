@@ -2,18 +2,14 @@
 ##  Copyright (c) 2022 unSkript, Inc
 ##  All rights reserved.
 ##
-from pymongo.errors import *
-
-'''
-Collection of utility function used by MongoDB legos
-'''
+from pymongo.errors import AutoReconnect, ServerSelectionTimeoutError
 
 def reachable(handle) -> bool:
     retval = False
     try:
         handle.server_info()
         retval = True
-    except (pymongo.errors.AutoReconnect, pymongo.errors.ServerSelectionTimeoutError) as e:
+    except (AutoReconnect, ServerSelectionTimeoutError) as e:
         print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", e.__str__())
         raise e
     except Exception as e:

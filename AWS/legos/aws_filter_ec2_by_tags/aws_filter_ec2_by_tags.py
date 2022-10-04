@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 from beartype import beartype
 
 class InputSchema(BaseModel):
@@ -31,16 +31,17 @@ def aws_filter_ec2_by_tags(handle, tag_key: str, tag_value: str, region: str) ->
     """aws_filter_ec2_by_tags Returns an array of instances matching tags.
 
         :type handle: object
-        :param handle: Object returned by the task.validate(...) method.
+        :param handle: Object returned by the task.validate(...) method
 
         :type tag_key: string
-        :param tag_key: Key for the EC2 instance tag.
+        :param tag_key: AWS Tag Key that was used ex: ServiceName, ClusterName, etc..
 
         :type tag_value: string
-        :param tag_value: value for the EC2 instance tag.
-
+        :param tag_value: The Value for the Above Key, example "vpn-1" so the Lego will search
+                          only the required texts in the Lego.
+      
         :type region: string
-        :param region: EC2 instance region.
+        :param region: The AWS Region, For example `us-west-2`
 
         :rtype: Array of instances matching tags.
     """
@@ -48,7 +49,7 @@ def aws_filter_ec2_by_tags(handle, tag_key: str, tag_value: str, region: str) ->
     ec2Client = handle.client('ec2', region_name=region)
     res = aws_get_paginator(ec2Client, "describe_instances", "Reservations",
                             Filters=[{'Name': 'tag:' + tag_key, 'Values': [tag_value]}])
-    
+   
     result = []
     for reservation in res:
         for instance in reservation['Instances']:

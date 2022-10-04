@@ -1,16 +1,18 @@
-##
-##  Copyright (c) 2021 unSkript, Inc
-##  All rights reserved.
-##
-from pydantic import BaseModel, Field
-from typing import Dict
+#
+# Copyright (c) 2021 unSkript, Inc
+# All rights reserved.
+#
 import pprint
+
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
     region: str = Field(
         title='Region',
         description='AWS Region.')
+
 
     bucket_name: str = Field(
         title='Bucket Name',
@@ -25,7 +27,6 @@ def aws_put_bucket_encryption_printer(output):
 
 def aws_put_bucket_encryption(handle, bucket_name: str, region: str) -> Dict:
     """aws_put_bucket_encryption Puts default encryption configuration for bucket.
-        
         :type handle: object
         :param handle: Object returned from task.validate(...).
 

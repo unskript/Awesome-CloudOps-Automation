@@ -2,13 +2,12 @@
 ##  Copyright (c) 2022 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from pydantic import BaseModel, Field
 from typing import Dict
+from pydantic import BaseModel, Field
 from tabulate import tabulate
-from mongodb.legos.mongodb_util import reachable
-
 from beartype import beartype
+from Mongo.legos.mongodb_util import reachable
+
 
 class InputSchema(BaseModel):
     query_secs_running_threshold: int = Field(
@@ -25,7 +24,7 @@ def mongodb_list_long_running_queries_printer(output):
         return
     results = [['appName', 'active', 'op', 'ns', 'secs_running', 'desc']]
     try:
-        for idx,query in enumerate(output.get('inprog')):
+        for _ ,query in enumerate(output.get('inprog')):
             result = []
             if 'appName' in query.keys():
                 result.append(query.get('appName'))
@@ -59,7 +58,8 @@ def mongodb_list_long_running_queries(handle, query_secs_running_threshold=5) ->
         raise e
 
     try:
-        resp = handle.admin.command("currentOp", {"secs_running": {"$gt": query_secs_running_threshold}})
+        resp = handle.admin.command("currentOp",
+                  {"secs_running": {"$gt": query_secs_running_threshold}})
         return resp
     except Exception as e:
         raise e

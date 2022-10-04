@@ -1,10 +1,10 @@
-##
+#
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
-##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
+#
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     region: str = Field(
@@ -25,7 +25,7 @@ def aws_put_bucket_acl_printer(output):
 
 
 def aws_put_bucket_acl(handle, bucket_name: str, acl: str, region: str = None) -> Dict:
-    """ aws_put_bucket_acl get Dict of buckets ACL change info.
+    """ aws_put_bucket_acl apply ACL on s3 bucket.
 
             :type handle: Session
             :param handle: Object returned by the task.validate(...) method
@@ -39,7 +39,7 @@ def aws_put_bucket_acl(handle, bucket_name: str, acl: str, region: str = None) -
             :type region: string
             :param region: location of the bucket.
 
-            :rtype: Dict of buckets ACL change info
+            :rtype: ACL changed info as a Dict.
     """
     # connect to the S3 using client
     s3Client = handle.client('s3',

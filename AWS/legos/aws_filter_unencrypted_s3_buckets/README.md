@@ -2,7 +2,7 @@
 <h1>Filter AWS Unencrypted S3 Buckets </h1>
 
 ## Description
-This Lego filter AWS unencrypted S3 buckets and gives a list of unencrypted s3 buckets.
+This Lego lists all unencrypted AWS s3 buckets.
 
 
 ## Lego Details
@@ -22,4 +22,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

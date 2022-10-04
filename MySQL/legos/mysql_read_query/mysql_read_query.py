@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List,Any
-from tabulate import tabulate
 import pprint
+from typing import List,Any
+from pydantic import BaseModel, Field
+from tabulate import tabulate
 
 
 class InputSchema(BaseModel):
@@ -39,8 +39,6 @@ def mysql_read_query(handle, query: str, params: List = List[Any]) -> List:
 
         :rtype: Result of the query in the List form.
       """
-    # Input param validation.
-
     cur = handle.cursor()
     cur.execute(query, params)
 

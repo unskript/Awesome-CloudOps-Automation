@@ -2,7 +2,7 @@
 <h1>AWS Change ACL Permission of public S3 Bucket</h1>
 
 ## Description
-This Lego change ACL permission of public S3 bucket and gives a dict of change bucket info.
+This Lego changes ACL permission of a public S3 bucket.
 
 
 ## Lego Details
@@ -24,4 +24,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

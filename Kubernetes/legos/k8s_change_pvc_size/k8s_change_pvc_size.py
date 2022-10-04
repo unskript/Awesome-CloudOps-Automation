@@ -3,10 +3,10 @@
 # All rights reserved.
 #
 
-from pydantic import BaseModel, Field
-from typing import Optional
-from unskript.enums.aws_k8s_enums import SizingOption
 import pprint
+from typing import Optional
+from pydantic import BaseModel, Field
+from unskript.enums.aws_k8s_enums import SizingOption
 
 class InputSchema(BaseModel):
     namespace: str = Field(
@@ -43,9 +43,14 @@ def k8s_change_pvc_size_printer(output):
 
 
 
-def k8s_change_pvc_size(handle, namespace: str, name: str, resize_option: SizingOption, resize_value: float) -> str:
+def k8s_change_pvc_size(handle,
+    namespace: str,
+    name: str,
+    resize_option: SizingOption,
+    resize_value: float) -> str:
     # Get the current size.
-    kubectl_command = f'kubectl get pvc {name} -n {namespace}  -o jsonpath={{.status.capacity.storage}}'
+    kubectl_command = \
+        f'kubectl get pvc {name} -n {namespace}  -o jsonpath={{.status.capacity.storage}}'
     result = handle.run_native_cmd(kubectl_command)
     if result.stderr:
         print(
@@ -60,7 +65,10 @@ def k8s_change_pvc_size(handle, namespace: str, name: str, resize_option: Sizing
         newSizeInt = currentSizeInt * resize_value
     newSize = str(newSizeInt) + "Gi"
     print(f'Current size {currentSize}, new Size {newSize}')
-    kubectl_command = f'kubectl patch pvc {name} -n {namespace} -p \'{{"spec":{{"resources":{{"requests": {{"storage": "{newSize}"}}}}}}}}\''
+    kubectl_command = \
+        f'kubectl patch pvc \
+        {name} -n {namespace} \
+        -p \'{{"spec":{{"resources":{{"requests": {{"storage": "{newSize}"}}}}}}}}\''
     result = handle.run_native_cmd(kubectl_command)
     if result.stderr:
         print(

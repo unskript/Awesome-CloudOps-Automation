@@ -1,10 +1,10 @@
-##
-##  Copyright (c) 2021 unSkript, Inc
-##  All rights reserved.
-##
-from pydantic import BaseModel, Field
-from typing import Dict
+#
+#  Copyright (c) 2021 unSkript, Inc
+#  All rights reserved.
+#
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -24,7 +24,7 @@ def aws_delete_bucket_encryption_printer(output):
 
 
 def aws_delete_bucket_encryption(handle, bucket_name: str, region: str) -> Dict:
-    """aws_put_bucket_encryption Puts default encryption configuration for bucket.
+    """aws_delete_bucket_encryption Removes S3 Bucket Encryption.
         :type handle: object
         :param handle: Object returned by the task.validate(...) method.
 
@@ -38,7 +38,7 @@ def aws_delete_bucket_encryption(handle, bucket_name: str, region: str) -> Dict:
     """
     s3Client = handle.client('s3',
                              region_name=region)
-    
+  
     result = {}
 
     # Setup default encryption configuration
