@@ -35,30 +35,7 @@ To make CloudOps automation simpler for developers and DevOps engineers.
 
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Are you looking for a script to automate your Kubernetes management? Or do you need a script to restart the pod that is OOMkilled? We will cover that for you. 
-
-## Runbooks
-| **Category**                                                                                               | **Directory**                                                                                              | **Runbooks**                                                                                                                                                                 |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| MongoDB        | [/mongo](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Mongo/README.md)        | [MongoDB Server Connectivity Runbook](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Mongo/MongoDB_Server_Connectivity.ipynb)                       |
-| K8S     |                                                                                                        | [Pod Stuck in ImagePullBackOff State](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Kubernetes/K8S_Pod_Stuck_In_ImagePullBackOff_State.ipynb)      |
-|                                                                                                        |                                                                                                        | [Pod Stuck in Terminating State](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Kubernetes/K8S_Pod_Stuck_In_Terminating_State.ipynb)                |
-|                                                                                                        |                                                                                                        | [Pod Stuck in CrashLoopback State](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Kubernetes/K8S_Pod_Stuck_In_CrashLoopBack_State.ipynb)            |
-|                                                                                                        |                                                                                                        | [Get Kube System Config Map](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Kubernetes/Get-Kube-System-Config-Map.ipynb)                            |
-|                                                                                                        |                                                                                                        | [Get K8S Candidate Nodes For a given config](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Kubernetes/K8S-Get-Candidate-Nodes-Given-Config.ipynb)  |
-| AWS               | [/aws](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/README.md)            | [Configure Url Endpoint on Cloudwatch Alarm](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Configure-url-endpoint-on-a-cloudwatch-alarm.ipynb) |
-|                                                                                                        |                                                                                                        | [Delete Unattached EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Delete_Unattached_EBS_Volume.ipynb)                              |
-|                                                                                                        |                                                                                                        | [Detect ECS Failed Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Detect-ECS-failed-deployment.ipynb)                               |
-|                                                                                                        |                                                                                                        | [EC2 Disk Cleanup](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/EC2-Disk-Cleanup.ipynb)                                                       |
-|                                                                                                        |                                                                                                        | [Get AWS ELB Unhealthy Instances](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Get-Aws-Elb-Unhealthy-Instances.ipynb)                         |
-|                                                                                                        |                                                                                                        | [Resize EBS Volume](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Resize-EBS-Volume.ipynb)                                                     |
-|                                                                                                        |                                                                                                        | [Resize List of PVCs](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Resize-List-Of-Pvcs.ipynb)                                                 |
-|                                                                                                        |                                                                                                        | [Resize EKS PVC](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Resize_PVC.ipynb)                                                               |
-|                                                                                                        |                                                                                                        | [Restart AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Restart_AWS_EC2_Instances.ipynb)                                      |
-|                                                                                                        |                                                                                                        | [Restart AWS EC2 Instance by Tag](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Restart-Aws-Instance-given-Tag.ipynb)                          |
-|                                                                                                        |                                                                                                        | [Restart UnHealthy Services Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Restart-Unhealthy-Services-Target-Group.ipynb)         |
-|                                                                                                        |                                                                                                        | [Stop Untagged EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/AWS/Stop_Untagged_EC2_Instances.ipynb)                                 |
-| Jenkins     | [/jenkins](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/jenkins/README.md)    | [Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Jenkins/Fetch-Jenkins-Build-Logs.ipynb)                                   |
-| Postgresql | [/postgresql](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/postgresql/README.md) | [Display Long running Queries](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Postgresql/Display-postgresql-long-running.ipynb)                     |                                                                                                                                                                                                              
+                                                               
 ## Quick start
 
 ### Get started with docker
@@ -67,12 +44,8 @@ A single repository to satisfy all your day-to-day CloudOps automation needs. Ar
 ```
 docker run -it -p 8888:8888 \
  -v $HOME/.unskript:/data \
- -e NB_USER=jovyan \
- -e CHOWN_HOME=yes \
- -e CHOWN_EXTRA_OPTS='-R' \
  --user root \
- -w /home/jovyan \
- public.ecr.aws/unskript/awesome-runbooks:latest
+ docker.io/unskript/awesome-runbooks:latest
 ```
 
 
