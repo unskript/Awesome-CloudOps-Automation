@@ -120,6 +120,10 @@ Here is the Link for the [Developer Guide](https://github.com/unskript/Awesome-C
 9. Expect a feedback and merge in the next 48h-72h
 10. Once merged, promote your work on LinkedIn, Twitter and other social media channels! (Optional, but people need to know you are awesome 😉)
 
+An example run for the above can be seen in the [screencast](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/onboarding_hfest_2022.gif)
+
+<img src="https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/onboarding_hfest_2022.gif">
+
 ## License
 Except as otherwise noted this project is licensed under the `Apache License, Version 2.0` .
 
