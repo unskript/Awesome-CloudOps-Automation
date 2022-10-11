@@ -1,0 +1,7 @@
+{
+    "action_title": "Your lego title",
+    "action_description": "Your lego description",
+    "action_entry_function": "name_of_the_function_implemented",
+    "action_supports_poll": true,
+    "action_supports_iteration": true
+}
