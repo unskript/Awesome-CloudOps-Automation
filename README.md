@@ -112,7 +112,7 @@ Here is the Link for the [Developer Guide](https://github.com/unskript/Awesome-C
 5. Create a branch
 6. Copy over the template directory (cp -r templates/legos your_connector/legos/your_lego_name e.g. cp -r templates/legos GCP/legos/gcp_filter_instance_by_label)
 7. You need to populate 4 files
-- lego.json : add the description and headline
+- lego.json : add the description, headline and function_name
 - lego.py : copy over the code you wrote inside the Jupyter interface into this file
 - README.md : some description about what the lego does
 - 1.png : a screenshot of the output of your code
