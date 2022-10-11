@@ -92,6 +92,34 @@ Contributions are what make the open community such an amazing place to be learn
 
 Here is the Link for the [Developer Guide](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/DEVELOPERGUIDE.md)
 
+### How to contribute?
+
+#### Pre-requisites:
+1. You can use the docker environment (see instructions above) with your infrastructure credentials for validating your changes. We also have a sandbox where you can do testing : open a free account on [unSkript](https://us.app.unskript.io) to access the sandbox. 
+2. Join our [Slack Community](https://join.slack.com/t/cloud-ops-community/shared_invite/zt-1fvuobp10-~r_KyK9BxPhGiebOvl3h_w) so you can present yourself and get support
+
+#### Step by step process for Hacktoberfest
+1. Find or propose an issue you want to work on. 
+2. Prepare the issue before you start working on it. 
+- Make sure the description is clear. 
+- Tag yourself in Assignees section. 
+3. If using Docker
+- pick up a file from [templates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/templates/runbooks)
+- load it in the Jupyter interface
+4. If using unSkript sandbox
+- Onboarding will drop you into runbook creation with sandbox credentials
+- Start building your lego from the proposed handle (GCP, k8s et al)
+5. Create a branch
+6. Copy over the template directory (cp -r templates/legos your_connector/legos/your_lego_name e.g. cp -r templates/legos GCP/legos/gcp_filter_instance_by_label)
+7. You need to populate 4 files
+- lego.json : add the description and headline
+- lego.py : copy over the code you wrote inside the Jupyter interface into this file
+- README.md : some description about what the lego does
+- 1.png : a screenshot of the output of your code
+7. Open a Pull Request and add a member of the core team as Reviewer (Jayasimha, Shloka, Amit, Abhishek)
+9. Expect a feedback and merge in the next 48h-72h
+10. Once merged, promote your work on LinkedIn, Twitter and other social media channels! (Optional, but people need to know you are awesome 😉)
+
 ## License
 Except as otherwise noted this project is licensed under the `Apache License, Version 2.0` .
 
@@ -113,5 +141,3 @@ Unless required by applicable law or agreed to in writing, project distributed u
 [twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=for-the-badge&logo=twitter&colorB=555
 [twitter-url]: https://twitter.com/unskript
 [awesome-shield]: https://img.shields.io/badge/awesome-cloudops-orange?style=for-the-badge&logo=bookstack 
-
-
