@@ -95,7 +95,7 @@ Here is the Link for the [Developer Guide](https://github.com/unskript/Awesome-C
 ### How to contribute?
 
 #### Pre-requisites:
-1. You can use the docker environment (see instructions above) with your infrastructure credentials for validating your changes. We also have a sandbox where you can do testing : open a free account on [unSkript](https://us.app.unskript.io) to access the sandbox. 
+1. You can use the docker environment (see instructions above) with your infrastructure credentials for validating your changes. We also have a sandbox where you can do testing : open a free account on [unSkript](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) to access the sandbox. 
 2. Join our [Slack Community](https://join.slack.com/t/cloud-ops-community/shared_invite/zt-1fvuobp10-~r_KyK9BxPhGiebOvl3h_w) so you can present yourself and get support
 
 #### Step by step process for Hacktoberfest
