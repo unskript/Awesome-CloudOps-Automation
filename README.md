@@ -124,6 +124,10 @@ An example run for the above can be seen in the [screencast](https://github.com/
 
 <img src="https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/onboarding_hfest_2022.gif">
 
+## HacktoberFest 2022 Resource
+
+The resource that are avilable for testing for our hacktoberfest is [here](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/hfest_2022_resource.md)
+
 ## License
 Except as otherwise noted this project is licensed under the `Apache License, Version 2.0` .
 
