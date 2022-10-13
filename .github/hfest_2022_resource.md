@@ -2,21 +2,21 @@
 
 <h1>Hacktoberfest 2022 Resource</h1>
 
-## Google Cloud Resource Available for Tests
+## Google cloud resource available for testing
 
-### Storage Buckets (Object store) available for test
+### Storage Buckets (Object store) 
   1. gs://hacktoberfest_bucket_1/
   2. gs://hacktoberfest_bucket_2/
   3. gs://hacktoberfest_public_bucket/
 
 
-### Compute instances (Compute Engine Instances) available for test
+### Compute instances (Compute Engine Instances) 
 ```NAME                    ZONE        MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP  STATUS
 hacktoberfest-tagged    us-west1-b  e2-micro                   10.138.0.4                RUNNING
 hacktoberfest-untagged  us-west1-b  e2-micro                   10.138.0.3                RUNNING
 ```
 
-### IAM user available for test
+### IAM user
 ```
 DISPLAY NAME                            EMAIL                                                               DISABLED
 
@@ -24,7 +24,7 @@ hacktober-test-user                     hacktober-test-user@hacktoberfest-2022.i
 
 ```
 
-### Filestore available for test
+### Filestore
 ```
 INSTANCE_NAME            LOCATION    TIER       CAPACITY_GB  FILE_SHARE_NAME  IP_ADDRESS      STATE     CREATE_TIME
 hacktoberfest-filestore  us-west1-b  BASIC_HDD  1024         hacktoberfest    10.101.128.210  CREATING  2022-10-11T23:12:25

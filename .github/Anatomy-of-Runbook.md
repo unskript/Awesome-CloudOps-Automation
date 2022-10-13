@@ -1,4 +1,5 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
+
 <h1>Anatomy of a unSkript Runbook</h1>
 
 
@@ -17,7 +18,7 @@ In a computer sytem or network, a runbook is a compilation of routine procedures
 
 ## unSkript Runbook
 
-`unSkript Runbooks` is a collection of atomic `Routines` called unSkript `Actions`. Think of it like a build blocks (like Legos) with which you can construct any model you wish. These `Actions` are nothing but modular python `functions` that accomplish a well defined task. Using these `Actions` you can construct a unSkript Runbook to accomplish a given task.  In that sense `unSkript Runbooks` is a collection of such `Actions` and/or Information `Text` that accomplish a pre-defined task. 
+unSkript Runbooks is a collection of atomic Routines called unSkript Actions. Think of it like a building blocks (like Legos) with which you can construct any model you wish. These Actions are nothing but modular python functions that accomplish a well defined task. Using these Actions you can construct a unSkript Runbook to accomplish a given task.  In that sense unSkript Runbooks is a collection of such Actions and/or Information Text that accomplish a pre-defined task. 
 
 <image src="https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/images/anatomy.png">
 <br>
@@ -27,7 +28,7 @@ In a computer sytem or network, a runbook is a compilation of routine procedures
 
 ## Action 
 
-`Action` sometimes referred to here as `Lego` are the Atomic part of a unSkript Runbook. Here is a sample `Action` that performs a well defined task. 
+Action sometimes referred to here as Lego are the Atomic part of a unSkript Runbook. Here is a sample Action that performs a well defined task. 
 
 ```
 def aws_get_instance_details(handle, instance_id: str, region: str) -> Dict:
@@ -62,6 +63,6 @@ This Action expects three parameters as inputs.
   3. `region` is the `aws region` where the `aws ec2` can be found
 
 
-unSkript `Action` are tied to a Connector. What this means is that we need to 
-create a `AWS connector` before using this `Action`. You can create any supported
-connector by clicking `Credentials` -> Add New Credential. 
+Actions depned on the respective connector. What this means is that we need to 
+create a AWS connector before using this AWS Action. You can create any supported
+connector by clicking on `Credentials` -> Add New Credential. 
