@@ -101,24 +101,29 @@ Here is the Link for the [Developer Guide](https://github.com/unskript/Awesome-C
 #### Step by step process for Hacktoberfest
 1. Find or propose an issue you want to work on. 
 2. Prepare the issue before you start working on it. 
-- Make sure the description is clear. 
-- Tag yourself in Assignees section. 
+    - Make sure the description is clear. 
+    - Tag yourself in Assignees section. 
 3. If using Docker
-- pick up a file from [templates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/templates/runbooks)
-- load it in the Jupyter interface
+  `On your Host machine`:
+   1. git clone https://github.com/unskript/Awesome-CloudOps-Automation
+   2. cd Awesome-CloudOps-Automation
+   3. CONTAINER=`docker ps -l | grep awesome-runbooks | awk '{print $1}'`
+   4. docker cp templates/runbooks/GCP.ipynb $CONTAINER:/home/jovyan/runbooks/<YOUR_RUNBOOK_NAME.ipynb>
+
+  - Point your browser to `http://127.0.0.1:8888/lab/tree/<YOUR_RUNBOOK_NAME.ipynb>`
 4. If using unSkript sandbox
-- Onboarding will drop you into runbook creation with sandbox credentials
-- Start building your lego from the proposed handle (GCP, k8s et al)
+    - Onboarding will drop you into runbook creation with sandbox credentials
+    - Start building your lego from the proposed handle (GCP, k8s et al)
 5. Create a branch
 6. Copy over the template directory 
 ```
 cp -r templates/legos your_connector/legos/your_lego_name e.g. cp -r templates/legos GCP/legos/gcp_filter_instance_by_label
 ```
 7. You need to populate 4 files
-- lego.json : add the description, headline and function_name
-- lego.py : copy over the code you wrote inside the Jupyter interface into this file
-- README.md : some description about what the lego does
-- 1.png : a screenshot of the output of your code
+    - lego.json : add the description, headline and function_name
+    - lego.py : copy over the code you wrote inside the Jupyter interface into this file
+    - README.md : some description about what the lego does
+    - 1.png : a screenshot of the output of your code
 7. Open a Pull Request and add a member of the core team as Reviewer (Jayasimha, Shloka, Amit, Abhishek)
 9. Expect a feedback and merge in the next 48h-72h
 10. Once merged, promote your work on LinkedIn, Twitter and other social media channels! (Optional, but people need to know you are awesome 😉)
@@ -126,6 +131,14 @@ cp -r templates/legos your_connector/legos/your_lego_name e.g. cp -r templates/l
 An example run for the above can be seen in the [screencast](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/onboarding_hfest_2022.gif)
 
 <img src="https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/onboarding_hfest_2022.gif">
+
+##### Anatomy of a Runbook
+
+You can read about the [Anatomy of a Runbook](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/Anatomy-of-Runbook.md)
+
+## HacktoberFest 2022 Resource
+
+The resource that are avilable for testing for our hacktoberfest is [here](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/hfest_2022_resource.md)
 
 ## License
 Except as otherwise noted this project is licensed under the `Apache License, Version 2.0` .
