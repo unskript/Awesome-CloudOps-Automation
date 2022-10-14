@@ -80,7 +80,7 @@ Once you run the above command, here's the table which will help you find the UR
 | [Postgresql](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Postgresql/README.md) | [Display Long-running Queries](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/Postgresql/Display-postgresql-long-running.ipynb)                     | [Open in browser](http://127.0.0.1:8888/lab/tree/Display-postgresql-long-running.ipynb)              |
 
 ## Community
-[Join the CloudOps Community Workspace](https://join.slack.com/t/cloud-ops-community/shared_invite/zt-1fvuobp10-~r_KyK9BxPhGiebOvl3h_w) on Slack to connect with other users, contributors and awesome people behind awesome CloudOps automation project. 
+[Join the CloudOps Community Workspace](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) on Slack to connect with other users, contributors and awesome people behind awesome CloudOps automation project. 
 
 ## Roadmap
 
@@ -96,7 +96,7 @@ Here is the Link for the [Developer Guide](https://github.com/unskript/Awesome-C
 
 #### Pre-requisites:
 1. You can use the docker environment (see instructions above) with your infrastructure credentials for validating your changes. We also have a sandbox where you can do testing : open a free account on [unSkript](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) to access the sandbox. 
-2. Join our [Slack Community](https://join.slack.com/t/cloud-ops-community/shared_invite/zt-1fvuobp10-~r_KyK9BxPhGiebOvl3h_w) so you can present yourself and get support
+2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) so you can present yourself and get support
 
 #### Step by step process for Hacktoberfest
 1. Find or propose an issue you want to work on. 
