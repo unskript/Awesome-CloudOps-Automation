@@ -136,6 +136,11 @@ An example run for the above can be seen in the [screencast](https://github.com/
 
 You can read about the [Anatomy of a Runbook](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/Anatomy-of-Runbook.md)
 
+##### Guideline to create Runbook
+
+You can read the [Guideline for creating a Runbook](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/guidelines-to-creating-runbook.md)
+
+
 ## HacktoberFest 2022 Resource
 
 The resource that are avilable for testing for our hacktoberfest is [here](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/hfest_2022_resource.md)
