@@ -20,6 +20,10 @@
 
 ## Lego Authoring Guidelines
 
+Legos (also known as Actions) are the atomic units of xRunBooks.  All xRunBooks are composed of Legos, and each Lego is a step that porgresses the xRunBook.
+
+In this document, we'll walk through the anatomy of a Lego/Action, how they are created, and how they work.
+
 The Directory structure Followed on Awesome-CloudOps-Automation is 
 
 ```
