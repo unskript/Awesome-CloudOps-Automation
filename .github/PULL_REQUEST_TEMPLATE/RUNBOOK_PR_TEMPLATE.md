@@ -16,12 +16,18 @@ This is optional. If the Runbook was developed on say unSkript hosted tenants, P
 specify the URL to the Runbook.  
 -->
 
+### Checks
+Please include the list of checks this runbook has implemented. 
+
+> Eg: This runbook implements health check for MongoDB Server.
+
 ### Checklist:
 - [ ] My runbook has parameters
 - [ ] Runbook parameters have default values
 - [ ] Have included Runbook URL
 - [ ] Have attached Screenshot of the Runbook
-- [ ] Runbook has remediation included 
+- [ ] Runbook has checks included 
+- [ ] Runbook has remediation included
 
 ### Documentation
 Make sure that you have documented corresponding changes in this repository. 
