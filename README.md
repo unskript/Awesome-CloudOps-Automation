@@ -131,7 +131,7 @@ cp -r templates/legos <your_connector>/legos/<your_lego_name>
 ```
 >For Example: `cp -r templates/legos GCP/legos/gcp_filter_instance_by_label` will create a gcp_filter_instance_by_label xRunBook in the GCP directory.
 
-7. You need to populate 4 files
+7. To create a Lego/action, you need to populate 4 files
     - lego.json : add the description, headline and function_name
     - lego.py : copy over the code you wrote inside the Jupyter interface into this file. 
       * To Copy foober.ipynb from Docker to your local machine:

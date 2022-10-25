@@ -18,13 +18,22 @@
 </p>
 
 
-## Lego Authoring Guidelines
+# Legos (AKA Actions)
 
 Legos (also known as Actions) are the atomic units of xRunBooks.  All xRunBooks are composed of Legos, and each Lego is a step that porgresses the xRunBook.
 
 In this document, we'll walk through the anatomy of a Lego/Action, how they are created, and how they work.
 
-The Directory structure Followed on Awesome-CloudOps-Automation is 
+# Lego Authoring Guidelines
+
+## Directory Structure
+
+The Directory structure followed on Awesome-CloudOps-Automation is:
+
+1. CONNECTOR is a directory of xRunBooks and Lego/Actions that are run for a particular service/API/etc. (for example: Redis, AWS or Slack)
+2. Inside the CONNECTOR Directory will by Jupyter files for each xRunBook, and a subDirectory will hold all of the legos.
+
+In this document, we'll walk through the steps in creating a Lego/Action.
 
 ```
 CONNECTOR
@@ -48,7 +57,7 @@ CONNECTOR
 ```          
           
           
-Example:
+Here's an Example structure for AWS, with a Lego called aws_delete_volume:
 ```
 AWS
  |- Resize_PVC.ipynb
@@ -62,132 +71,95 @@ AWS
              |- aws_delete_volume.py
 
 ```
+
  1. Every Directory under the CONNECTOR will have __init__.py file (Essential to distinguish as a module/sub-module)
 
  2. Every CONNECTOR will have a legos Directory. (Example: AWS/legos)
 
  3. Underneath of legos directory, Every Lego will have the same Name Directory Example: aws_delete_volume will have aws_delete_volume.py underneath of it. 
 
- 4. Every Lego Directory will have 
+ 4. Every Lego Directory will have:
+    1. [README.md](#readmemd)
+    2. [JSON File](#json-file)
+    3. [py file](#python-file) 
+    
+    You may have additional files if your readme has images.
 
-    1. A README.md explaining what the LEGO is supposed to do, It should contain
 
-      a. Lego Title. 
-      
+## README.md
+
+The  README.md explains what the LEGO is supposed to do, It should contain:
+
+  1. **Lego Title** 
+      ```
         Example:
           <h2>Delete AWS EBS Volume </h2>
+      ```
 
-      b. Description,  explaining what the Lego is intended to do
+  2.  **Description**: explains what the Lego is intended to do.
 
-      c. Lego Details,  here we explain the Lego signature, what are the different input fields to the Lego. And should also be substituted with an Example. 
+      ```
+      This Lego deletes AWS EBS volume and gives a list of deletion status.
+      ```
 
-         Like:
-           aws_delete_volumes(handle: object, volume_id: str, region: str)
+  3. **Lego Details**: here we explain the Lego signature, what are the different input fields to the Lego.  It's also nice to add an example of how the Lego might be used:
 
-           handle: Object of type unSkript AWS Connector
-           volume_id: Volume ID needed to delete particular volume
-           region: Used to filter the volume for specific region
+      ```
+      aws_delete_volumes(handle: object, volume_id: str, region: str)
+
+      handle: Object of type unSkript AWS Connector
+      volume_id: Volume ID needed to delete particular volume
+      region: Used to filter the volume for specific region
+      ```
         
-         Example Usage:
+      Example Usage:
+
            aws_delete_volumes(handle,
                            "vol-039ce61146a4d7901",
                            "us-west-2")
     
- 5. README.md should have a Lego Input Section. That basically explains how many parameters is needed for the Lego. Which of them are Mandatory, which of them are optional. 
+ 5. **Lego Input**: explains how many parameters are needed for the Lego. Which of them are Mandatory, which of them are optional. 
 
- 6. README.md should have a Lego Output Section. Either you can take a screenshot of the Actual Lego being run on a Runbook and include it in the Runbook or just copy paste it below the Lego Output Section. 
+ ```
 
-     Example: 
-     ## Lego Output
-     Here is a sample output
-       ```
-        Sample Output For the Lego
-       ```
+This Lego take three inputs handle, volume_id and region. All three are required.
+ ```
 
-###  Legos' Corresponding JSON file
+ 6. **Lego Output** A sample output from the Lego/Action upon completion.  Ensure to remove sensitive values. 
 
+
+## Lego JSON file
+
+The JSON file lists 
 Example:
 
+```json
 {
-    "action_title": "Filter AWS EC2 Instance",
-    "action_description": "Filter AWS EC2 Instance",
+    "action_title": "Delete AWS EBS Volume by Volume ID",
+    "action_description": "Delete AWS Volume by Volume ID",
     "action_type": "LEGO_TYPE_AWS",
-    "action_entry_function": "aws_filter_ec2_by_tags",
+    "action_entry_function": "aws_delete_volumes",
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_poll": true,
     "action_supports_iteration": true
   }
   
+```
+All of these fields are Mandatory.
 
-Here action_title represents the Action Title
-
-Most are self explanatory fields. All of these fields are Mandatory.
-
-* Actual Lego (Python) file
-
-This would be the actual Python file
-
-    Example
-
-    ##
-    ##  Copyright (c) 2021 unSkript, Inc
-    ##  All rights reserved.
-    ##
-    import pprint
-    from typing import List
-    from pydantic import BaseModel, Field
-    from unskript.connectors.aws import aws_get_paginator
-    from beartype import beartype
-
-    class InputSchema(BaseModel):
-        tag_key: str = Field(
-            title='Tag Key',
-            description='The key of the tag.')
-        tag_value: str = Field(
-            title='Tag Value',
-            description='The value of the key.')
-        region: str = Field(
-            title='Region',
-            description='AWS Region.')
-
-    @beartype
-    def aws_filter_ec2_by_tags_printer(output):
-        if output is None:
-            return
-        pprint.pprint({"Instances": output})
+* **Action Title**: The human readable title of your Lego
+* **Action Description**: a text description of what the Lego does
+* **Action Type**:
+* Action Entry Function:
+* **Action Needs Credential**: Boolean - are the credentials for this connector required?
+* **Action Output Type**:
+* **Action Supports Poll**:
 
 
-    @beartype
-    def aws_filter_ec2_by_tags(handle, tag_key: str, tag_value: str, region: str) -> List:
-        """aws_filter_ec2_by_tags Returns an array of instances matching tags.
+## Python file
 
-            :type handle: object
-            :param handle: Object returned by the task.validate(...) method
-
-            :type tag_key: string
-            :param tag_key: AWS Tag Key that was used ex: ServiceName, ClusterName, etc..
-
-            :type tag_value: string
-            :param tag_value: The Value for the Above Key, example "vpn-1" so the Lego will search
-                            only the required texts in the Lego.
-            
-            :type region: string
-            :param region: The AWS Region, For example `us-west-2`
-
-            :rtype: Array of instances matching tags.
-        """
-        # Input param validation.
-
-        ec2Client = handle.client('ec2', region_name=region)
-        res = aws_get_paginator(ec2Client, "describe_instances", "Reservations",
-                                Filters=[{'Name': 'tag:' + tag_key, 'Values': [tag_value]}])
-
-        result = []
-        for reservation in res:
-            for instance in reservation['Instances']:
-                result.append(instance['InstanceId'])
-        return result
+This is the Python file that is run in the xRunBook.  Examples can be found in the various Lego directories in this repository.
 
 
-
+##
