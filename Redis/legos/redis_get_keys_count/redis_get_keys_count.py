@@ -22,7 +22,10 @@ def redis_get_keys_count_printer(output):
 def redis_get_keys_count(handle, pattern: str):
     """redis_get_keys_count returns the matched keys count.
 
-       :rtype: Matched keys count
+       :type pattern: string
+       :param pattern: Pattern for the searched keys.
+
+       :rtype: Matched keys count.
     """
 
     output = 0
