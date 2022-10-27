@@ -1,0 +1,23 @@
+name: Generate Readme
+on:
+  push:
+    branches:
+      - master
+jobs:
+  generate-readme:
+    if: "!startsWith(github.event.head_commit.message, 'generateReadme:')"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        token: '${{ secrets.GENERATE_README }}'
+    - run: "pip install MarkupSafe==2.0.1"
+    - run: "pip install notebook"
+    - run: "pip install naas_drivers[markdown]"
+    - run: "pip install papermill"
+    - run: "pip install Markdown==3.3.7"
+    - run: "jupyter nbconvert --execute generate_readme.ipynb --inplace"
+    - run: "jupyter nbconvert --clear-output --inplace generate_readme.ipynb"
+    - uses: EndBug/add-and-commit@v7.2.1
+      with:
+        message: 'generateReadme: Refresh'
