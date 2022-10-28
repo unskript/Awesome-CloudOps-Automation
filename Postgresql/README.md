@@ -1,6 +1,5 @@
-[<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h2>unSkript Postgresql Runbooks</h2>
-<br>
+<img align="center" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding: 5px">
 
-# Postgresql Runbooks
-1. [Display Long running Queries](./Display-postgresql-long-running.ipynb)
+ # Postgresql xRunBooks
+
+* [Display postgresql long running](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
