@@ -148,6 +148,11 @@ cp -r templates/legos <your_connector>/legos/<your_lego_name>
 ![](https://github.com/unskript/Awesome-CloudOps-Automation/blob/9ca0b1a41bf0215933f09c2651a0d199cd702b90/.github/onboarding_hfest_2022.gif?raw=true)
 
 
+##### Guideline to create Runbook
+
+You can read the [Guideline for creating a Runbook](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/guidelines-to-creating-runbook.md)
+
+
 ## HacktoberFest 2022 Resource
 
 The resources that are available for testing for our HacktoberFest are [here](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/hfest_2022_resource.md)
