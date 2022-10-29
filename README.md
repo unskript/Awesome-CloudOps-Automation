@@ -111,21 +111,7 @@ These xRunBooks are included in every install.  Use them as is, or make a copy t
 
 
 
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
-
 ### How to Contribute?
-
-1. Work with us on any of our [open issues](https://github.com/unskript/awesome-cloudops-automation/issues).
-2. Create a new Action. Read the [Action developer guide](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/DEVELOPERGUIDE.md) for more details.
-3. Combine Actions into a xRunBook.  Your xRunBook will be featured on the ReadMe.  [What's a xRunBook?](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/Anatomy-of-Runbook.md)
-
-
-
-### Contribution Tips:
-1. Use the [Docker environment](#get-started-with-docker), or our free [cloud sandbox](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) for testing your contribution.
-2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) so you can present yourself and get support.
 
 ### Step by step process for HacktoberFest
 #### Issues
@@ -164,10 +150,6 @@ cp -r templates/legos <your_connector>/legos/<your_lego_name>
 7. Open a Pull Request and add a member of the core team as Reviewer (Jayasimha, Shloka, Amit, Abhishek)
 9. Expect feedback and merge in the next 48h-72h.
 10. Once merged, promote your work on LinkedIn, Twitter and other social media channels! (Optional, but people need to know you are awesome 😉)
-
-
-![](https://github.com/unskript/Awesome-CloudOps-Automation/blob/9ca0b1a41bf0215933f09c2651a0d199cd702b90/.github/onboarding_hfest_2022.gif?raw=true)
-
 
 ##### Guideline to create Runbook
 
