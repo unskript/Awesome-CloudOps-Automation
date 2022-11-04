@@ -18,9 +18,9 @@
 </p>
 
 
-# Legos (AKA Actions)
+# Actions (AKA Legos)
 
-Legos (also known as Actions) are the atomic units of xRunBooks.  All xRunBooks are composed of Legos, and each Lego is a step that porgresses the xRunBook.
+Actions (also known as Legos) are the atomic units of xRunBooks.  All xRunBooks are composed of Actions, and each Action is a step that progresses the xRunBook.
 
 In this document, we'll walk through the anatomy of a Lego/Action, how they are created, and how they work.
 
@@ -31,7 +31,7 @@ In this document, we'll walk through the anatomy of a Lego/Action, how they are 
 The Directory structure followed on Awesome-CloudOps-Automation is:
 
 1. CONNECTOR is a directory of xRunBooks and Lego/Actions that are run for a particular service/API/etc. (for example: Redis, AWS or Slack)
-2. Inside the CONNECTOR Directory will by Jupyter files for each xRunBook, and a subDirectory will hold all of the legos.
+2. Inside the CONNECTOR Directory will be Jupyter files for each xRunBook, and the Lego subDirectory will hold all of the Actions.
 
 In this document, we'll walk through the steps in creating a Lego/Action.
 
