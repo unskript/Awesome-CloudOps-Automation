@@ -8,7 +8,7 @@
 <p style='margin-top:1em; text-align:center'>
 <b>Runbook Definition</b></p>
 <p style='margin-left:1em;'>
-In a computer sytem or network, a runbook is a compilation of routine procedures and operations that the system administrator or operator carries out. System adminsistrators in IT department and NOCs use runbooks as a reference. 
+In a computer system or network, a Runbook is a compilation of routine procedures and operations that the system administrator or operator carries out. System administrators in IT department and NOCs use Runbooks as a reference. 
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> <b>- Wikipedia</b> <i>(https://en.wikipedia.org/wiki/Runbook)</i>
 </p></span>
@@ -18,7 +18,7 @@ In a computer sytem or network, a runbook is a compilation of routine procedures
 
 ## unSkript Runbook
 
-unSkript Runbooks is a collection of atomic Routines called unSkript Actions. Think of it like a building blocks (like Legos) with which you can construct any model you wish. These Actions are nothing but modular python functions that accomplish a well defined task. Using these Actions you can construct a unSkript Runbook to accomplish a given task.  In that sense unSkript Runbooks is a collection of such Actions and/or Information Text that accomplish a pre-defined task. 
+unSkript Runbooks is a collection of atomic Routines called unSkript Actions. Think of it like a building blocks (like Legos) with which you can construct any model you wish. These Actions are nothing but modular Python functions that accomplish a well defined task. Using these Actions you can construct a unSkript Runbook to accomplish a given task.  In that sense unSkript Runbooks is a collection of such Actions and/or Information Text that accomplish a pre-defined task. 
 
 <image src="https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/images/anatomy.png">
 <br>
@@ -26,9 +26,9 @@ unSkript Runbooks is a collection of atomic Routines called unSkript Actions. Th
 <br>
 
 
-## Action 
+## Actions
 
-Action sometimes referred to here as Lego are the Atomic part of a unSkript Runbook. Here is a sample Action that performs a well defined task. 
+Actions (sometimes referred to here as Legos) are the Atomic part of a unSkript Runbook. Here is a sample Action that performs a well defined task. 
 
 ```
 def aws_get_instance_details(handle, instance_id: str, region: str) -> Dict:
@@ -63,6 +63,6 @@ This Action expects three parameters as inputs.
   3. `region` is the `aws region` where the `aws ec2` can be found
 
 
-Actions depned on the respective connector. What this means is that we need to 
+Actions depend on the respective connector. What this means is that we need to 
 create a AWS connector before using this AWS Action. You can create any supported
 connector by clicking on `Credentials` -> Add New Credential. 

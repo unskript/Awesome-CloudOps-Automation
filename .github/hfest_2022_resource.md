@@ -1,11 +1,13 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
 
+
+
 <h1>Hacktoberfest 2022 Resource</h1>
 
 ## Google cloud resource available for testing
 
 ### Storage Buckets (Object store) 
-Your computer's filesystem uses directories to organise data which are then stored in files. Similarly Data is kept on the cloud are in the form of objects, which are then gathered in buckets(a bucket is basically a container used to store objects).
+Your computer's filesystem uses directories to organize data which are then stored in files. Similarly, data that is kept on the Cloud are in the form of objects, which are then gathered in buckets(a bucket is basically a container used to store objects).
   
   ###### Examples
   1. gs://hacktoberfest_bucket_1/
@@ -22,7 +24,7 @@ hacktoberfest-untagged  us-west1-b  e2-micro                   10.138.0.3       
 ```
 
 ### Identity Access Management (IAM) user
-IAM (Identity and Access Management) allows administrators to authorise who can take actions on specific resources, giving you complete control and visibility over Google Cloud resources.
+IAM (Identity and Access Management) allows administrators to authorize who can take actions on specific resources, giving you complete control and visibility over Google Cloud resources.
 
 ```
 DISPLAY NAME                            EMAIL                                                               DISABLED
