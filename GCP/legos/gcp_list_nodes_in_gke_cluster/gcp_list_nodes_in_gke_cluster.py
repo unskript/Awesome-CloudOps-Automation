@@ -12,6 +12,10 @@ class InputSchema(BaseModel):
         title = "Zone",
         description = "GCP Zone where instance list should be gotten from"
     )
+    cluster_name: str = Field(
+        title = "Cluster Name",
+        description = "Name of the GKE cluster."
+    )
 
 
 def get_gcp_instance_list_printer(output):
@@ -19,8 +23,8 @@ def get_gcp_instance_list_printer(output):
         return
     pprint.pprint(output)
 
-def list_gke_cluster(handle, project_id: str, zone: str) -> List:
-    """list_gke_cluster Returns the list of cluster
+def list_nodes_of_gke_cluster(handle, project_id: str, zone: str, cluster_name: str) -> List:
+    """list_nodes_of_gke_cluster Returns the list of cluster nodes
 
         :type project_id: string
         :param project_id: Google Cloud Platform Project
@@ -28,16 +32,20 @@ def list_gke_cluster(handle, project_id: str, zone: str) -> List:
         :type zone: string
         :param zone: Zone to which the cluster in the project should be fetched.
 
-        :rtype: list of cluster
+        :type cluster_name: string
+        :param cluster_name: Name of the GKE cluster.
+
+        :rtype: list of cluster nodes
     """
     # Create a client
-    cluster_list = []
+    node_list = []
     client = container_v1.ClusterManagerClient(credentials=handle)
     try:
-        response = client.list_clusters(project_id=project_id, zone=zone)
-        for cluster in response.clusters:
-            cluster_list.append(cluster.name)
+        response = client.list_node_pools(project_id=project_id, zone=zone,
+                                        cluster_id=cluster_name)
+        for nodes in response.node_pools:
+            node_list.append(nodes.name)
     except Exception as error:
-        cluster_list.append(error)
-    
-    return cluster_list
+        node_list.append(error)
+
+    return node_list
