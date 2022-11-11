@@ -25,7 +25,7 @@ def gcp_fetch_objects_from_bucket(handle, bucket_name: str) -> List:
     """gcp_fetch_objects_from_bucket returns a List of objects in the Bucket
 
         :type bucket_name: string
-        :param bucket_name: Name of the bucket to be deleted
+        :param bucket_name: Name of the bucket to fetch objects/blobs from
 
         :rtype: List of Bucket Objects
     """
