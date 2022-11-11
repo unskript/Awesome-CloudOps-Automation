@@ -1,22 +1,20 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Upload an Object/Blob to a GCP Bucket</h1>
+<h1>Delete an Object from a GCP Bucket</h1>
 
 ## Description
-This Lego upload an Object/Blob to a GCP Bucket.
+This Lego delete an Object/Blob from a GCP Bucket.
 
 ## Lego Details
 
-    gcp_upload_file_to_bucket(handle: object, blob_name: str, bucket_name: str, data: str)
+    gcp_delete_object_from_bucket(handle: object, blob_name: str, bucket_name: str)
 
         handle: Object of type unSkript GCP Connector
-        blob_name: String, Blob Name to be given
+        blob_name: String, Blob Name to be deleted
         bucket_name: String, Bucket name
-        data: String, String of data to be uploaded to blob/object
 
 ## Lego Input
 blob_name: Blob name. eg- "test-blob"
 bucket_name: New bucket name. eg- "unskript-test2"
-data: Data to be uploaded. eg- " dummy data for testing"
 
 ## Lego Output
 Here is a sample output.
