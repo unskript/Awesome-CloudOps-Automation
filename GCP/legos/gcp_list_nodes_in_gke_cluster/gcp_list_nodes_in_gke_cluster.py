@@ -18,7 +18,7 @@ class InputSchema(BaseModel):
     )
 
 
-def get_gcp_instance_list_printer(output):
+def list_nodes_of_gke_cluster_printer(output):
     if len(output) == 0:
         return
     pprint.pprint(output)

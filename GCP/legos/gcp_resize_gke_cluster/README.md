@@ -1,23 +1,27 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>GCP List Nodes in GKE Cluster</h1>
+<h1>GCP Resize a GKE cluster</h1>
 
 ## Description
-This Lego list nodes of GKE cluster for a given Project and Zone.
+This Lego resize a GKE cluster by modifying nodes for a given Project, cluster and Zone.
 
 ## Lego Details
 
-    list_nodes_of_gke_cluster(handle: object, project_id: str, zone: str, cluster_name: str)
+    resize_gke_cluster(handle: object, project_id: str, zone: str, cluster_name: str, node_id: str, node_count:int)
 
         handle: Object of type unSkript GCP Connector
         project_id: String GCP Project name
         zone: Zone to which the cluster in the project should be fetched.
         cluster_name: Name of the GKE cluster.
+        node_id: Name of the GKE cluster Node.
+        node_count: Node count of GKE cluster.
 
 
 ## Lego Input
  project:  GCP Project name eg. "acme-dev"
  zone: GCP Zone eg. "us-west1-b"
  cluster_name: cluster Name
+ node_id: Node Name
+ node_count: cluster node count
 
 ## Lego Output
 Here is a sample output.

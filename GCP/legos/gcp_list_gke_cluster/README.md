@@ -9,7 +9,7 @@ This Lego list all GKE clusters for a given Project and Zone.
     list_gke_cluster(handle: object, project_id: str, zone: str)
 
         handle: Object of type unSkript GCP Connector
-        project: String GCP Project name
+        project_id: String GCP Project name
         zone: Zone to which the cluster in the project should be fetched.
 
 
