@@ -4,7 +4,6 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_get_handle",
     "action_needs_credential": true,
-    "action_supports_poll": true,
-    "action_supports_iteration": true
-    }
-    
+    "action_supports_poll": false,
+    "action_supports_iteration": false
+  }

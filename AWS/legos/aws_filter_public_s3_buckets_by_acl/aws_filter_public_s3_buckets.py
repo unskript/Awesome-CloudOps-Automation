@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from typing import List
 from pydantic import BaseModel, Field
+from typing import List
+import pprint
 
 
 class InputSchema(BaseModel):
@@ -42,7 +42,7 @@ def aws_get_public_s3_buckets(handle, bucket_list: list, permission: str, region
         :type region: string
         :param region: location of the bucket.
 
-        :rtype: Response as a List.
+        :rtype: Dict with the response info.
     """
     # connect to the S3 using client
     s3Client = handle.client('s3',
@@ -58,7 +58,7 @@ def aws_get_public_s3_buckets(handle, bucket_list: list, permission: str, region
                 if 'Permission' in grant.keys() and permission == grant["Permission"]:
                     if 'URI' in grant["Grantee"] and grant["Grantee"]["URI"] in public_check:
                         result.append(bucket)
-        except Exception:
+        except Exception as e:
             continue
 
     return result

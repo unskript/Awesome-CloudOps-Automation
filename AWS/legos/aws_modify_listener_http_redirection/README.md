@@ -2,7 +2,7 @@
 <h1>AWS Modify ALB Listeners HTTP Redirection </h1>
 
 ## Description
-This Lego modify AWS ALB listeners HTTP redirection and returns a list of listener.
+This Lego modify AWS ALB listeners HTTP redirection.
 
 
 ## Lego Details
@@ -23,4 +23,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

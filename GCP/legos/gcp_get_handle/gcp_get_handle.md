@@ -1,0 +1,9 @@
+{
+  "action_title": "Get GCP Handle",
+  "action_description": "Get GCP Handle",
+  "action_type": "LEGO_TYPE_GCP",
+  "action_entry_function": "gcp_get_handle",
+  "action_needs_credential": true,
+  "action_supports_poll": false,
+  "action_supports_iteration": false
+}

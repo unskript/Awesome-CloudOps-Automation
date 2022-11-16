@@ -2,7 +2,7 @@
 <h1>Filter AWS EC2 Instances </h1>
 
 ## Description
-This Lego filter the AWS EC2 Instance and gives a list of Instances.
+This Lego filter the AWS EC2 Instance.
 
 
 ## Lego Details

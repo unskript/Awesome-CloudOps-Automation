@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from typing import List
 from pydantic import BaseModel, Field
+from typing import List
 from unskript.connectors.aws import aws_get_paginator
+import pprint
 
 
 class InputSchema(BaseModel):
@@ -46,7 +46,7 @@ def aws_filter_untagged_ec2_instances(handle, region: str) -> List:
                 if len(tagged_instance) == 0:
                     result.append(instance['InstanceId'])
 
-            except Exception:
+            except Exception as e:
                 result.append(instance['InstanceId'])
 
     return result

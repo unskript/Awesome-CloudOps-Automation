@@ -2,7 +2,7 @@
 <h1>Create Login profile for IAM User </h1>
 
 ## Description
-This Lego Create Login profile for IAM User and gives a dict of profile info.
+This Lego create login profile for IAM user.
 
 
 ## Lego Details
@@ -22,4 +22,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

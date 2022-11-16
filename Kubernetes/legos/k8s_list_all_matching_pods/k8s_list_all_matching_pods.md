@@ -1,0 +1,18 @@
+{
+  "action_title": "List matching name pods",
+  "action_description": "List all pods matching a particular name string. The matching string can be a regular expression too",
+  "action_type": "LEGO_TYPE_K8S",
+  "action_entry_function": "k8s_list_all_matching_pods",
+  "action_needs_credential": true,
+  "action_supports_poll": true,
+  "action_supports_iteration": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_verbs": [
+    "list"
+  ],
+  "action_nouns": [
+    "matching",
+    "name",
+    "pods"
+  ]
+}

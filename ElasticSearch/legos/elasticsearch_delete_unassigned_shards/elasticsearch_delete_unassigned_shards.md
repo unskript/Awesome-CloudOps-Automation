@@ -1,0 +1,14 @@
+{
+"action_title": "Elasticsearch Delete Unassigned Shards",
+"action_description": "Elasticsearch Delete Corrupted/Lost Shards",
+"action_type": "LEGO_TYPE_ELASTICSEARCH",
+"action_entry_function": "elasticsearch_delete_unassigned_shards",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_STR",
+"action_supports_iteration": true,
+"action_verbs": ["delete", "shards"],
+"action_nouns": [
+"elasticsearch"
+]
+}

@@ -1,0 +1,11 @@
+{
+    "action_title": "Search for Jira issues matching JQL queries",
+    "action_description": "Use JQL to search all matching issues in Jira. Returns a List of the matching issues IDs/keys",
+    "action_type": "LEGO_TYPE_JIRA",
+    "action_entry_function": "jira_search_issue",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_example": "[<JIRA Issue: key='PLAY-2', id='10090'>, <JIRA Issue: key='PLAY-1', id='10025'>]"
+}
+    

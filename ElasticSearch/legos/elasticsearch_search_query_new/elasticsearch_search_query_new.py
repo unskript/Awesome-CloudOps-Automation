@@ -75,7 +75,11 @@ def elasticsearch_search_query_new(handle,
              :param host: URL of your Elasticsearch server
 
              :type port: int
+<<<<<<< HEAD
+             :param port: Port used by your Elasticsearch server
+=======
              :param host: Port used by your Elasticsearch server
+>>>>>>> master
 
              :type api_key: str
              :param api_key: API Key for authentication of the request

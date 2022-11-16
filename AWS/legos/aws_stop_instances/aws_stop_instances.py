@@ -1,9 +1,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from typing import Dict
 from pydantic import BaseModel, Field
+from typing import Dict
+import pprint
 
 
 class InputSchema(BaseModel):

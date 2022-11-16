@@ -2,7 +2,7 @@
 <h1>Restart AWS EC2 Instances </h1>
 
 ## Description
-This Lego Restart the AWS EC2 Instance and gives a dict as output.
+This Lego Restart the AWS EC2 Instance.
 
 
 ## Lego Details

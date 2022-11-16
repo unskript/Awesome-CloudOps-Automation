@@ -22,4 +22,4 @@ This Lego take three inputs handle, aws_access_key_id, and status.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

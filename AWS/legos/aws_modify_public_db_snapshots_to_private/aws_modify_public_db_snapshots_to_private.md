@@ -1,0 +1,16 @@
+{
+"action_title": "AWS Modify Publicly Accessible RDS Snapshots",
+"action_description": "AWS Modify Publicly Accessible RDS Snapshots",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_modify_public_db_snapshots",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+"action_supports_iteration": true,
+"action_verbs": [ "modify"],
+"action_nouns": [
+"aws",
+"rds",
+"snapshots"
+]
+}

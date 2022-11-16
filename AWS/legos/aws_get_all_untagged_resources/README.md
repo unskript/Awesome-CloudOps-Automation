@@ -2,7 +2,7 @@
 <h1>AWS Get Untagged Resources </h1>
 
 ## Description
-This Lego filters all the untagged resources of given region and returns list of resource ARNs.
+This Lego filters all the untagged resources of given region.
 
 
 ## Lego Details
@@ -22,4 +22,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

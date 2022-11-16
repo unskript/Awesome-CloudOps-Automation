@@ -2,7 +2,7 @@
 <h1>Filter AWS Untagged EC2 Instances </h1>
 
 ## Description
-This Lego filter the AWS Untagged EC2 Instances and gives a list of Instances.
+This Lego filter the AWS Untagged EC2 Instances.
 
 
 ## Lego Details
@@ -21,5 +21,4 @@ Here is a sample output.
 <img src="./1.png">
 
 ## See it in Action
-
 You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

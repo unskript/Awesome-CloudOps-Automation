@@ -2,7 +2,7 @@
 <h1>Terminate AWS Instances </h1>
 
 ## Description
-This Lego Terminate AWS Instances and gives a dict as output.
+This Lego Terminate AWS Instances.
 
 
 ## Lego Details

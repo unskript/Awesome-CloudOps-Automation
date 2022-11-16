@@ -2,7 +2,7 @@
 <h1>Get STS Caller Identity </h1>
 
 ## Description
-This Lego get STS caller identity and gives a dict of profile info.
+This Lego get STS caller identity.
 
 
 ## Lego Details
@@ -21,4 +21,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

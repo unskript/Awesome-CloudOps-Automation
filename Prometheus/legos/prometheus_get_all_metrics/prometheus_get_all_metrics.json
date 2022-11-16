@@ -1,0 +1,10 @@
+{
+"action_title": "Get All Prometheus Metrics",
+"action_description": "Get All Prometheus Metrics",
+"action_type": "LEGO_TYPE_PROMETHEUS",
+"action_entry_function": "prometheus_get_all_metrics",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+"action_supports_iteration": true
+}

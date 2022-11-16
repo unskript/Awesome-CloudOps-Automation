@@ -2,9 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from typing import List
 from pydantic import BaseModel, Field
+from typing import List
+import pprint
+
 
 class InputSchema(BaseModel):
     region: str = Field(

@@ -1,0 +1,10 @@
+{
+"action_title": "Execute commands in a PostgreSQL transaction.",
+"action_description": "Given a set of PostgreSQL commands, this actions run them inside a transaction.",
+"action_type": "LEGO_TYPE_POSTGRESQL",
+"action_entry_function": "postgresql_handling_transaction",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_supports_iteration": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_NONE"
+}

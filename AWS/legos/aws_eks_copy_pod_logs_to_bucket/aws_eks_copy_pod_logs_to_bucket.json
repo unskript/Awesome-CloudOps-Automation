@@ -1,0 +1,10 @@
+{
+"action_title": " Copy EKS Pod logs to bucket.",
+"action_description": " Copy given EKS pod logs to given S3 Bucket.",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_eks_copy_pod_logs_to_bucket",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_iteration": true
+}

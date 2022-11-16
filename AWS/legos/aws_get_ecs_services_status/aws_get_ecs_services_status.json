@@ -1,0 +1,10 @@
+{
+    "action_title": "Get AWS ECS Service Status",
+    "action_description": "Get the Status of an AWS ECS Service",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_get_ecs_services_status",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_supports_iteration": true
+}
