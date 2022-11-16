@@ -107,9 +107,6 @@ These xRunBooks are included in every install.  Use them as is, or make a copy t
 | Kubernetes | [K8S Pod Stuck In ImagePullBackOff State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Pod_Stuck_In_ImagePullBackOff_State.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/K8S_Pod_Stuck_In_ImagePullBackOff_State.ipynb)
 | Kubernetes | [K8S Pod Stuck In Terminating State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Pod_Stuck_In_Terminating_State.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/K8S_Pod_Stuck_In_Terminating_State.ipynb)
 | Kubernetes | [Rollback k8s Deployment and Update Jira](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/Rollback_k8s_Deployment_and_Update_Jira.ipynb)
-| Mongo | [MongoDB Server Connectivity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/MongoDB_Server_Connectivity.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/MongoDB_Server_Connectivity.ipynb)
-| MySQL | [MySQL Long Run Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MySQL/MySQL_Long_Run_Query.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/MySQL_Long_Run_Query.ipynb)
-| Postgresql | [Display postgresql long running](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_postgresql_long_running.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/Display_postgresql_long_running.ipynb)
 
 
 
