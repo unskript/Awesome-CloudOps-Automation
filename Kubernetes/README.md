@@ -8,3 +8,10 @@
 * [K8S Pod Stuck In ImagePullBackOff State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 * [K8S Pod Stuck In Terminating State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 * [Rollback k8s Deployment and Update Jira](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
+
+
+ # Kubernetes Actions 
+
+* K8s change pvc size.py
+* K8s kubectl command.py
+* K8s kubectl rollout deployment.py
