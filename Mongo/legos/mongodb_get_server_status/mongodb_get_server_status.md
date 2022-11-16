@@ -1,0 +1,18 @@
+{
+"action_title": "Get Mongo Server Status",
+"action_description": "Get Mongo Server Status",
+"action_type": "LEGO_TYPE_MONGODB",
+"action_entry_function": "mongodb_get_server_status",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_iteration": true,
+"action_verbs": [
+"get"
+],
+"action_nouns": [
+"mongo",
+"server",
+"status"
+]
+}

@@ -1,0 +1,10 @@
+{
+"action_title": "Get list of checkIDs given a hostname",
+"action_description": "Get list of checkIDs given a hostname. If no hostname provided, it lists all checkIDs.",
+"action_type": "LEGO_TYPE_PINGDOM",
+"action_entry_function": "pingdom_get_checkids",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+"action_supports_iteration": true
+}

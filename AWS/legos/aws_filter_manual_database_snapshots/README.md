@@ -2,7 +2,7 @@
 <h1>AWS Filter All Manual Databse Snapshots </h1>
 
 ## Description
-This Lego filter AWS manual database snapshots and returns a list of snapshots.
+This Lego filter AWS manual database snapshots.
 
 
 ## Lego Details
@@ -21,4 +21,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

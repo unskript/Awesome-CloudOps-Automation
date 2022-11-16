@@ -101,7 +101,7 @@ Contributions are what make the open source community such an amazing place to l
     2. `cd Awesome-CloudOps-Automation`
     3. ```CONTAINER=`docker ps -l | grep awesome-runbooks | awk '{print $1}'` ```
     4. `docker cp templates/runbooks/GCP.ipynb $CONTAINER:/home/jovyan/runbooks/`<YOUR_RUNBOOK_NAME.ipynb>
-    5. Point your browser to `http://127.0.0.1:8888/lab/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin editing.
+    5. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin editing.
   - **unSkript sandbox**:
     1. The onboarding flow will drop you into Runbook creation with sandbox credentials
     2.  Start building your lego from the proposed handle (GCP, k8s et al)

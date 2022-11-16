@@ -1,26 +1,23 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>MongoDB Server Status </h1>
+<h1>Get Mongo Server Status</h1>
 
 ## Description
-This Lego queries the server and retrieves vital statistics like
-Memory, Uptime, Connections, etc..
+This Lego Gets Mongo Server Status
 
 
 ## Lego Details
 
-    mongodb_get_server_status(handle: object)
+    mongodb_get_server_status(handle)
 
-        handle: Object of type unSkript MongoDB Connector
+        handle: Object of type unSkript Mongodb Connector.
+        
 
 ## Lego Input
-This Lego does not take any input. However it relies on the information provided in unSkript MongoDB Connector. 
+This Lego take only one input handle. 
 
 ## Lego Output
 Here is a sample output.
-
 <img src="./1.png">
-<img src="./2.png">
-
 
 
 ## See it in Action

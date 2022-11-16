@@ -2,7 +2,7 @@
 <h1>AWS List Publicly Accessible RDS Instances </h1>
 
 ## Description
-This Lego filter AWS publicly accessible RDS instances and returns list of public database instances.
+This Lego filter AWS publicly accessible RDS instances.
 
 
 ## Lego Details
@@ -22,4 +22,4 @@ Here is a sample output.
 
 
 ## See it in Action
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

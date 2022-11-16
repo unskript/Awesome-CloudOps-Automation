@@ -1,0 +1,10 @@
+{
+"action_title": "Get Pingdom Analysis Results for a specified Check",
+"action_description": "Get Pingdom Analysis Results for a specified Check",
+"action_type": "LEGO_TYPE_PINGDOM",
+"action_entry_function": "pingdom_get_analysis",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_iteration": true
+}

@@ -1,0 +1,23 @@
+{
+"action_title": "Attach a webhook endpoint to AWS Cloudwatch alarm",
+"action_description": "Attach a webhook endpoint to one of the SNS attached to the AWS Cloudwatch alarm.",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_cloudwatch_attach_webhook_notification_to_alarm",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_STR",
+"action_supports_iteration": true,
+"action_verbs": [
+"attach",
+"notify"
+],
+"action_nouns": [
+"cloudwatch",
+"alert",
+"aws",
+"alarm",
+"webhook",
+"notification",
+"url"
+]
+}

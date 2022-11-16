@@ -1,0 +1,16 @@
+{
+"action_title": "Get Jenkins Handle",
+"action_description": "Get Jenkins Handle",
+"action_type": "LEGO_TYPE_JENKINS",
+"action_entry_function": "jenkins_get_handle",
+"action_needs_credential": true,
+"action_supports_poll": false,
+"action_supports_iteration": false,
+"action_verbs": [
+"get"
+],
+"action_nouns": [
+"jenkins",
+"handle"
+]
+}

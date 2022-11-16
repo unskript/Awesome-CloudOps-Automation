@@ -2,7 +2,7 @@
 <h1>Get AWS S3 Buckets </h1>
 
 ## Description
-This Lego get AWS S3 buckets and gives a list of S3 buckets.
+This Lego get AWS S3 buckets.
 
 
 ## Lego Details

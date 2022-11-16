@@ -2,7 +2,7 @@
 <h1>AWS Change ACL Permission of public S3 Bucket</h1>
 
 ## Description
-This Lego changes ACL permission of a public S3 bucket.
+This Lego change ACL permission of public S3 bucket.
 
 
 ## Lego Details

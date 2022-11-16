@@ -1,0 +1,10 @@
+{
+"action_title": "MongoDB add new field in all collections",
+"action_description": "MongoDB add new field in all collections",
+"action_type": "LEGO_TYPE_MONGODB",
+"action_entry_function": "mongodb_add_new_field_in_collections",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+"action_supports_iteration": true 
+}

@@ -5,6 +5,7 @@
 * [AWS Access Key Rotation](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 * [Add new IAM user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 * [Configure url endpoint on a cloudwatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
+* [Copy ami to all given AWS regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 * [Delete Unattached EBS Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 * [Detach Instance from ASG and Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 * [Detect ECS failed deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)

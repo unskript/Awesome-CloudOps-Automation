@@ -1,0 +1,20 @@
+{
+"action_title": "Attach an EBS volume to an AWS EC2 Instance",
+"action_description": "Attach an EBS volume to an AWS EC2 Instance",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_attach_ebs_to_instances",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_iteration": true,
+"action_verbs": [
+"attach"
+],
+"action_nouns": [
+"ebs",
+"volume",
+"aws",
+"ec2",
+"instance"
+]
+}

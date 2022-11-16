@@ -2,7 +2,7 @@
 <h1>Filter AWS Unattached EBS Volume </h1>
 
 ## Description
-This Lego filter AWS EBS volumes and gives a list of unattached volumes.
+This Lego filter AWS EBS volumes.
 
 
 ## Lego Details
@@ -20,4 +20,5 @@ Here is a sample output.
 <img src="./1.png">
 
 
+## See it in Action
 You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

@@ -1,0 +1,18 @@
+{
+"action_title": "Filter AWS Target groups by tag name",
+"action_description": "Filter AWS Target groups which have the provided tag attached to it. It also returns the value of that tag for each target group",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_filter_target_groups_by_tags",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+"action_supports_iteration": true,
+"action_verbs": ["filter"],
+"action_nouns": [
+"aws",
+"target",
+"elbv2",
+"tag",
+"group"
+]
+}

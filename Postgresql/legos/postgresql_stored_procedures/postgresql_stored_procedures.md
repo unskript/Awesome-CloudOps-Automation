@@ -1,0 +1,18 @@
+{
+"action_title": "Call PostgreSQL Stored Procedure",
+"action_description": "Call PostgreSQL Stored Procedure",
+"action_type": "LEGO_TYPE_POSTGRESQL",
+"action_entry_function": "postgresql_stored_procedures",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_supports_iteration": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_NONE",
+"action_verbs": [
+"call"
+],
+"action_nouns": [
+"stored",
+"postgresql",
+"procedure"
+]
+}

@@ -1,0 +1,10 @@
+{
+"action_title": "Get Prometheus handle",
+"action_description": "Get Prometheus handle",
+"action_type": "LEGO_TYPE_PROMETHEUS",
+"action_entry_function": "prometheus_get_handle",
+"action_needs_credential": true,
+"action_supports_poll": false,
+"action_output_type": "ACTION_OUTPUT_TYPE_NONE",
+"action_supports_iteration": false
+}

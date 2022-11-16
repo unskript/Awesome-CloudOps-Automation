@@ -36,16 +36,16 @@ def aws_update_access_key(
     status: str
 ) -> Dict:
     """aws_update_access_key updates the status of an access key to Inactive/Active
-                    :type handle: object
-                    :param handle: Object returned from Task Validate
+        :type handle: object
+        :param handle: Object returned from Task Validate
 
-                    :type aws_username: str
-                    :param aws_username: Username of the IAM user to be looked up
+        :type aws_username: str
+        :param aws_username: Username of the IAM user to be looked up
 
-                    :type aws_access_key_id: str
-                    :param aws_access_key_id: Old Access Key ID of the user of which the status needs to be updated
+        :type aws_access_key_id: str
+        :param aws_access_key_id: Old Access Key ID of the user of which the status needs to be updated
 
-                    :rtype: Result Dictionary of result
+        :rtype: Result Dictionary of result
     """
     iamClient = handle.client('iam')
     result = iamClient.update_access_key(UserName=aws_username, AccessKeyId=aws_access_key_id, Status=status)

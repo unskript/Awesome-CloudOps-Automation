@@ -2,7 +2,7 @@
 <h1>Delete AWS Default Encryption for S3 Bucket </h1>
 
 ## Description
-This Lego removes AWS default encryption for S3 bucket.
+This Lego delete AWS default encryption for S3 bucket.
 
 
 ## Lego Details

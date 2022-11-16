@@ -5,9 +5,3 @@
 * [MongoDB Server Connectivity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
 
 
- # Mongo Actions 
-
-* Mongodb get server status.py
-* Mongodb kill queries.py
-* Mongodb list long running queries.py
-* Mongodb util.py

@@ -2,7 +2,7 @@
 <h1>Get AWS ALB Listeners Without HTTP Redirection </h1>
 
 ## Description
-This Lego Filter AWS ALB listeners without HTTP redirection and returns list of listeners.
+This Lego Filter AWS ALB listeners without HTTP redirection.
 
 
 ## Lego Details
@@ -22,4 +22,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

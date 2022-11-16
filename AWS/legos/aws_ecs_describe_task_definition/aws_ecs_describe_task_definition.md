@@ -1,0 +1,15 @@
+{
+"action_title": "AWS ECS Describe Task Definition.",
+"action_description": "Describe AWS ECS Task Definition.",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_ecs_describe_task_definition",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_iteration": true,
+"action_verbs": ["describe"],
+"action_nouns": [
+"ecs",
+"task"
+]
+}

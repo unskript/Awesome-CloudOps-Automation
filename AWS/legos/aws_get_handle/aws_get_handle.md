@@ -1,0 +1,16 @@
+{
+  "action_title": "Get AWS boto3 handle",
+  "action_description": "Get AWS boto3 handle",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_get_handle",
+  "action_needs_credential": true,
+  "action_supports_poll": false,
+  "action_supports_iteration": false,
+  "action_verbs": [
+    "get"
+  ],
+  "action_nouns": [
+    "boto",
+    "handle"
+  ]
+}

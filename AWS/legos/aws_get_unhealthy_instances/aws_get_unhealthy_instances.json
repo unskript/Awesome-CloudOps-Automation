@@ -1,0 +1,11 @@
+{
+    "action_title": "Get UnHealthy EC2 Instances for Classic ELB",
+    "action_description": "Get UnHealthy EC2 Instances for Classic ELB",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_get_unhealthy_instances",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true
+}
+    

@@ -1,0 +1,20 @@
+{
+"action_title": "AWS Change ACL Permission of public S3 Bucket",
+"action_description": "AWS Change ACL Permission public S3 Bucket",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_put_bucket_acl",
+"action_needs_credential": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_poll": true,
+"action_supports_iteration": true,
+"action_verbs": [
+"change"
+],
+"action_nouns": [
+"aws",
+"ACL",
+"permissions",
+"s3"
+]
+}
+  
