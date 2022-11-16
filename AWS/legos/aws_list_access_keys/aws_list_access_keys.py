@@ -26,13 +26,13 @@ def aws_list_access_keys(
 ) -> Dict:
     """aws_list_access_keys lists all the access keys for a user
 
-                :type handle: object
-                :param handle: Object returned from Task Validate
+        :type handle: object
+        :param handle: Object returned from Task Validate
 
-                :type aws_username: str
-                :param aws_username: Username of the IAM user to be looked up
+        :type aws_username: str
+        :param aws_username: Username of the IAM user to be looked up
 
-                :rtype: Result Dictionary of result
+        :rtype: Result Dictionary of result
     """
     iamClient = handle.client('iam')
     result = iamClient.list_access_keys(UserName=aws_username)

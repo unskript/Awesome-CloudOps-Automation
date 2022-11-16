@@ -2,7 +2,7 @@
 <h1>AWS Get Internet Gateway by VPC ID </h1>
 
 ## Description
-This Lego search for Internet Gateway available for given VPC id and gives a list of internet gateway.
+This Lego search for Internet Gateway available for given VPC id.
 
 
 ## Lego Details
@@ -25,4 +25,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

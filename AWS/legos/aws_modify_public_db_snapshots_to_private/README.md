@@ -2,7 +2,7 @@
 <h1>AWS Modify Publicly Accessible RDS Snapshots </h1>
 
 ## Description
-This Lego modify AWS publicly accessible RDS snapshots and returns a list of snapshot modify status.
+This Lego modify AWS publicly accessible RDS snapshots.
 
 
 ## Lego Details
@@ -22,4 +22,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

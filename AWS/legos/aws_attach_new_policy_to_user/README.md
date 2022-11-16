@@ -2,7 +2,7 @@
 <h1>AWS Attach New Policy to User </h1>
 
 ## Description
-This Lego attaches a new AWS Policy to User and returns the policy information as a python dictionary.
+This Lego attach new AWS Policy to User.
 
 
 ## Lego Details
@@ -23,4 +23,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

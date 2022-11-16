@@ -2,7 +2,7 @@
 <h1>Filter AWS Unused Keypairs </h1>
 
 ## Description
-This Lego Filter AWS Unused Keypairs and gives a list of keypairs.
+This Lego Filter AWS Unused Keypairs.
 
 
 ## Lego Details
@@ -21,4 +21,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

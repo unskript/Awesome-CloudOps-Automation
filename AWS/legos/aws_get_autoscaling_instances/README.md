@@ -2,7 +2,7 @@
 <h1>Get AWS Auto Scaling Group Instances </h1>
 
 ## Description
-This Lego filter AWS autoscaling group instances and returns list of instance id and group name.
+This Lego filter AWS autoscaling group instances.
 
 ## Lego Details
 
@@ -24,4 +24,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

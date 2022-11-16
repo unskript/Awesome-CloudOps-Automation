@@ -31,16 +31,16 @@ def aws_delete_access_key(
     aws_access_key_id: str,
 ) -> Dict:
     """aws_delete_access_key deleted the given access key.
-                    :type handle: object
-                    :param handle: Object returned from Task Validate
+        :type handle: object
+        :param handle: Object returned from Task Validate
 
-                    :type aws_username: str
-                    :param aws_username: Username of the IAM user to be looked up
+        :type aws_username: str
+        :param aws_username: Username of the IAM user to be looked up
 
-                    :type aws_access_key_id: str
-                    :param aws_access_key_id: Old Access Key ID of the user which needs to be deleted
+        :type aws_access_key_id: str
+        :param aws_access_key_id: Old Access Key ID of the user which needs to be deleted
 
-                    :rtype: Result Status Dictionary of result
+        :rtype: Result Status Dictionary of result
     """
     iamClient = handle.client('iam')
     result = iamClient.delete_access_key(UserName=aws_username, AccessKeyId=aws_access_key_id)

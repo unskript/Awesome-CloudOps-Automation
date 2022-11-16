@@ -2,7 +2,7 @@
 <h1>Apply AWS Default Encryption for S3 Bucket </h1>
 
 ## Description
-This Lego applies default encryption for AWS S3 bucket.
+This Lego apply AWS default encryption for S3 bucket.
 
 
 ## Lego Details
@@ -14,7 +14,7 @@ This Lego applies default encryption for AWS S3 bucket.
         region: Location of the S3 buckets.
 
 ## Lego Input
-This Lego take three input handle, name and region. 
+This Lego take three input handle, name and region.
 
 ## Lego Output
 Here is a sample output.
@@ -22,4 +22,5 @@ Here is a sample output.
 
 
 ## See it in Action
+
 You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

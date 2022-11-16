@@ -2,7 +2,7 @@
 <h1>Create New IAM User </h1>
 
 ## Description
-This Lego Create New IAM User and gives a dict of user info.
+This Lego create new IAM User.
 
 
 ## Lego Details
@@ -24,4 +24,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from typing import List,Any
 from pydantic import BaseModel, Field
+from typing import List,Any
 from tabulate import tabulate
+import pprint
 
 
 class InputSchema(BaseModel):
@@ -28,17 +28,19 @@ def mysql_read_query_printer(output):
 def mysql_read_query(handle, query: str, params: List = List[Any]) -> List:
     """mysql_read_query Runs mysql query with the provided parameters.
 
-        :type handle: object
-        :param handle: Object returned from task.validate(...).
+          :type handle: object
+          :param handle: Object returned from task.validate(...).
 
-        :type query: str
-        :param query: MySQL Query
+          :type query: str
+          :param query: MySQL get query.
 
-        :type params: list
-        :param params: Parameters used in MySQL query.
+          :type params: List
+          :param params: Parameters to the query in list format.
 
-        :rtype: Result of the query in the List form.
+          :rtype: List of  the results of the query.
       """
+    # Input param validation.
+
     cur = handle.cursor()
     cur.execute(query, params)
 

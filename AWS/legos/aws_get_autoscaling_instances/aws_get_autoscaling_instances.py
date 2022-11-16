@@ -23,7 +23,7 @@ def aws_get_auto_scaling_instances_printer(output):
     print(tabulate(output, headers='keys'))
 
 
-def aws_get_auto_scaling_instances(handle, instance_ids: List, region: str) -> List:
+def aws_get_auto_scaling_instances(handle, instance_ids: list, region: str) -> List:
     """aws_get_auto_scaling_instances List of Dict with instanceId and attached groups.
 
         :type handle: object

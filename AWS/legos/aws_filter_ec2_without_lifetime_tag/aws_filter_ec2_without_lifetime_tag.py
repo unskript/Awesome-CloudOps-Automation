@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from typing import List
 from pydantic import BaseModel, Field
+from typing import List
 from unskript.connectors.aws import aws_get_paginator
+import pprint
 
 
 class InputSchema(BaseModel):
@@ -25,7 +25,7 @@ def aws_filter_ec2_without_lifetime_tag_printer(output):
 
 
 def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str) -> List:
-    """aws_filter_ec2_without_lifetime_tag Returns an List of instances which do not have lifetime tag.
+    """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -51,7 +51,8 @@ def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str) 
                 if lifetime_tag not in tag_keys:
                     result.append(instance['InstanceId'])
 
-            except Exception:
+            except Exception as e:
                 result.append(instance['InstanceId'])
 
     return result
+

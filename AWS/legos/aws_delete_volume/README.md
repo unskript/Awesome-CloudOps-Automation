@@ -2,7 +2,7 @@
 <h1>Delete AWS EBS Volume </h1>
 
 ## Description
-This Lego deletes AWS EBS volume and gives a list of deletion status.
+This Lego deletes AWS EBS volume.
 
 
 ## Lego Details

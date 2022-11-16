@@ -1,27 +1,23 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>MongoDB Kill Query  </h1>
+<h1>MongoDB kill queries</h1>
 
 ## Description
-This Lego uses the `killop` command of MongoDB shell to kill the Job with the given operation ID.  
+This Lego kills MongoDb running queries.
+
 
 ## Lego Details
 
-    mongodb_kill_queries(handle: object, op_id: int)
+    mongodb_kill_queries(handle, op_id: int)
 
-        handle: Object: Object of type unSkript MongoDB Connector
-        op_id: Int: Operation ID (as an integer)
+        handle: Object of type unSkript Mongodb Connector.
+        op_id: An operation ID of running query.
 
 ## Lego Input
-This Lego takes Operation ID of the Query to kill. Like other MongoDB, this lego relies
-on information provided in unSkript MongoDB Connector. 
+This Lego take two inputs handle and op_id. 
 
 ## Lego Output
 Here is a sample output.
-
-    {'info': 'Successfully Killed OpID 1132332', 'ok': 1}
-
-The Input that was given was `1132332` which is the Operation ID we intended to kill.
-
+<img src="./1.png">
 
 
 ## See it in Action

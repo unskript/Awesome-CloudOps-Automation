@@ -2,7 +2,7 @@
 <h1>AWS Get Publicly Accessible DB Snapshots in RDS </h1>
 
 ## Description
-This Lego filter publicly accessible DB snapshots in RDS and returns a list of public snapshots.
+This Lego filter publicly accessible DB snapshots in RDS.
 
 
 ## Lego Details
@@ -22,4 +22,4 @@ Here is a sample output.
 
 ## See it in Action
 
-You can see this Lego in action following this link [unSkript Live](https://unskript.com)
+You can see this Lego in action following this link [unSkript Live](https://us.app.unskript.io)

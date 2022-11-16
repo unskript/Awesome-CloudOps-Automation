@@ -1,0 +1,20 @@
+{
+"action_title": "Kubernetes Execute a command on a POD in a given namespace and filter",
+"action_description": "Execute a command on Kubernetes POD in a given namespace and filter output",
+"action_type": "LEGO_TYPE_K8S",
+"action_entry_function": "k8s_exec_command_on_pods_and_filter",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_supports_iteration": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_verbs": [
+"execute"
+],
+"action_nouns": [
+"kubernetes",
+"command",
+"pod",
+"namespace",
+"filter"
+]
+}

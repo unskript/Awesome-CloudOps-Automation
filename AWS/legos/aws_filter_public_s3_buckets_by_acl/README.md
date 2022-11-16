@@ -2,20 +2,20 @@
 <h1>Get AWS public S3 Buckets</h1>
 
 ## Description
-This Lego gets publicly accessbiel AWS s3 buckets.
+This Lego Get AWS public S3 Buckets.
 
 
 ## Lego Details
 
-    aws_get_public_s3_buckets(handle: object, bucket_List: list, permission: str, region: str)
+    aws_get_public_s3_buckets(handle: object, Bucket_List: list, Permission: str, region: str)
 
         handle: Object of type unSkript AWS Connector.
-        bucket_List: list of S3 buckets.
-        permission: 'ACL type - "READ"|"WRITE"|"READ_ACP"|"WRITE_ACP"|"FULL_CONTROL".'
+        Bucket_List: list of S3 buckets.
+        Permission: 'ACL type - "READ"|"WRITE"|"READ_ACP"|"WRITE_ACP"|"FULL_CONTROL".'
         region: Used to filter the volume for specific region.
 
 ## Lego Input
-This Lego take four inputs handle, bucket_List, permission and region.
+This Lego take four inputs handle, Bucket_List, Permission and region.
 
 ## Lego Output
 Here is a sample output.

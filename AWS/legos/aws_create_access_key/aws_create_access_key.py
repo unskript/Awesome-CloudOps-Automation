@@ -25,13 +25,13 @@ def aws_create_access_key(
     aws_username: str
 ) -> Dict:
     """aws_create_access_key creates a new access key for the given user.
-            :type handle: object
-            :param handle: Object returned from Task Validate
+        :type handle: object
+        :param handle: Object returned from Task Validate
 
-            :type aws_username: str
-            :param aws_username: Username of the IAM user to be looked up
+        :type aws_username: str
+        :param aws_username: Username of the IAM user to be looked up
 
-            :rtype: Result Dictionary of result
+        :rtype: Result Dictionary of result
     """
     iamClient = handle.client('iam')
     result = iamClient.create_access_key(UserName=aws_username)

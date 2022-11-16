@@ -1,0 +1,10 @@
+{
+"action_title": "ECS detect failed deployment ",
+"action_description": "List of stopped tasks, associated with a deployment, along with their stopped reason",
+"action_type": "LEGO_TYPE_AWS",
+"action_entry_function": "aws_ecs_detect_failed_deployment",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+"action_supports_iteration": true
+}
