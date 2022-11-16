@@ -3,3 +3,8 @@
  # MySQL xRunBooks
 
 * [MySQL Long Run Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
+
+
+ # MySQL Actions 
+
+* Mysql read query.py
