@@ -23,6 +23,9 @@ Like all unSkript Legos this lego relies on the information provided in unSkript
 
 >Note: The input for the command should start with keyword `kubectl` 
 
+## Lego Output
+Here is a sample output.
+<img src="./1.png">
 
 ## See it in Action
 
