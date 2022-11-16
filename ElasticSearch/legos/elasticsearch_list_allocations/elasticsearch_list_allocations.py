@@ -35,11 +35,19 @@ def elasticsearch_list_allocations(handle,
                              api_key: str) -> str:
     """elasticsearch_list_allocations lists the allocations of an Elasticsearch cluster .
 
+<<<<<<< HEAD
         :type handle: object
         :param handle: Object returned from Task Validate
 
         :type host: str
         :param host: URL of your Elasticsearch server
+=======
+            :type handle: object
+            :param handle: Object returned from Task Validate
+
+            :type host: str
+            :param host: URL of your Elasticsearch server
+>>>>>>> master
 
             :type port: int
             :param port: Port number at which Elasticsearch is listening
@@ -47,8 +55,13 @@ def elasticsearch_list_allocations(handle,
             :type api_key: str
             :param api_key: API Key for authentication of the request
 
+<<<<<<< HEAD
         :rtype: Result String of result
     """
+=======
+            :rtype: Result String of result
+        """
+>>>>>>> master
 
     es_path = host + ":" + str(port) + "/_cat/allocation?v=true&pretty"
     es_header = "Authorization: ApiKey" + " " + api_key
