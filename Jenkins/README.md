@@ -10,17 +10,3 @@
 * Jenkins get handle.py
 * Jenkins get logs.py
 * Jenkins get plugins.py
-
-
- # Jenkins Actions 
-
-* Jenkins get handle.py
-* Jenkins get logs.py
-* Jenkins get plugins.py
-
-
- # Jenkins Actions 
-
-* Jenkins get handle.py
-* Jenkins get logs.py
-* Jenkins get plugins.py
