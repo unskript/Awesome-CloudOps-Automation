@@ -5,7 +5,8 @@
 from pydantic import BaseModel, Field
 import pprint
 from typing import List,Any, Dict
-from googleapiclient import discovery
+from google.oauth2 import service_account
+import googleapiclient.discovery
 
 
 class InputSchema(BaseModel):
