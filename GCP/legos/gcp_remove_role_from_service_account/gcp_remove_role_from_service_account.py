@@ -4,7 +4,7 @@
 ##
 from pydantic import BaseModel, Field
 import pprint
-from typing import List,Any, Dict
+from typing import Dict
 from googleapiclient import discovery
 
 
@@ -17,31 +17,25 @@ class InputSchema(BaseModel):
         title = "Role Name",
         description = "Role name from which member needs to remove e.g iam.serviceAccountUser"
     )
-    member_email: str = Field(
-        title = "Member Email",
-        description = "Member email which has GCP access e.g test@company.com"
-    )
     sa_id: str = Field(
         title = "Service Account Email",
         description = "Service Account email id e.g test-user@unskript-dev.iam.gserviceaccount.com"
     )
 
-def gcp_add_role_to_service_account_printer(output):
+def gcp_remove_role_from_service_account_printer(output):
     if output is None:
         return
     pprint(output)
 
-def gcp_add_role_to_service_account(handle, project_id: str, role: str, member_email:str, sa_id:str) -> Dict:
-    """gcp_add_role_to_service_account Returns a Dict of new policy details
+
+def gcp_remove_role_from_service_account(handle, project_id: str, role: str, sa_id:str) -> Dict:
+    """gcp_remove_role_from_service_account Returns a Dict of new policy details
 
         :type project_id: string
         :param project_id: Name of the project
 
         :type role: string
         :param role: Role name from which member needs to remove e.g iam.serviceAccountUser
-
-        :type member_email: string
-        :param member_email: Member email which has GCP access e.g test@company.com
 
         :type sa_id: string
         :param sa_id: Service Account email
@@ -53,27 +47,15 @@ def gcp_add_role_to_service_account(handle, project_id: str, role: str, member_e
     try:
         resource = 'projects/{}/serviceAccounts/{}'.format(project_id, sa_id)
         request = service.projects().serviceAccounts().getIamPolicy(resource=resource)
-        response = request.execute()
+        get_policy = request.execute()
 
-        member = "user:" + member_email
-        if "gserviceaccount" in member_email:
-            member = "serviceAccount:" + member_email
-        get_role = "roles/" + role
-        if "bindings" not in response:
-            add_role = {'version': 1,
-                 'bindings': [{'role': get_role,
-                 'members': [member]}]}
-            response = add_role
-        else:
-            add_role = {
-                  "role": get_role,
-                  "members": [member]}
-            response["bindings"].append(add_role)
-            
-        set_policy = service.projects().serviceAccounts().setIamPolicy(resource=resource, body={"policy": response})
+        get_role = "roles/"+role
+        binding = next(b for b in get_policy["bindings"] if b["role"] == get_role)
+        get_policy["bindings"].remove(binding)
+
+        set_policy = service.projects().serviceAccounts().setIamPolicy(resource=resource, body={"policy": get_policy})
         policy_output = set_policy.execute()
         result = policy_output
-
     except Exception as error:
         result = {"error": error}
 
