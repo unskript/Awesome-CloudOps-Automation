@@ -1,1 +1,6 @@
-this will be updated automatically
+
+
+ # Rest Actions 
+
+* Rest get handle.py
+* Rest methods.py
