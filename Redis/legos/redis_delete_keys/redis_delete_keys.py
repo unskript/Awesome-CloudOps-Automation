@@ -6,6 +6,7 @@
 import pprint
 from beartype import beartype
 from pydantic import BaseModel, Field
+from typing import List
 
 class InputSchema(BaseModel):
     pattern: str = Field(
@@ -13,25 +14,26 @@ class InputSchema(BaseModel):
         description='Pattern for the searched keys')
 
 
-def redis_delete_keys_printer(output) -> int:
+def redis_delete_keys_printer(output):
     if output is None:
         return
-    pprint.pprint("{} keys were deleted".format(output))
+    pprint.pprint("Deleted Keys: ")
+    pprint.pprint(output)
 
 
-def redis_delete_keys(handle, pattern: str):
+def redis_delete_keys(handle, pattern: str) -> List:
     """redis_delete_keys deleted the pattern matched keys.
 
        :type pattern: string
        :param pattern: Pattern for the searched keys.
 
-       :rtype: Count of deleted keys.
+       :rtype: List of deleted keys.
     """
-    result = 0
+    result = []
     try:
         for key in handle.scan_iter(pattern):
-            result = handle.delete(key)
-            result += result
+            result.append(key)
+            handle.delete(key)
     except Exception as e:
         print(e)
     return result

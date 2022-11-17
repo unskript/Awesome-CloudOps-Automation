@@ -1,16 +1,15 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Delete Redis keys</h1>
+<h1>Delete All Redis keys</h1>
 
 ## Description
-Returns list of deleted Redis keys matching pattern
+Returns list of all deleted Redis keys
 
 ## Lego Details
-    redis_delete_keys(handle, pattern: str)
+    redis_delete_all_keys(handle)
         handle: Object of type unSkript Redis Connector
-        pattern: Pattern for the searched keys
 
 ## Lego Input
-This Lego takes 2 inputs: handle and pattern.
+This Lego takes 1 input: handle
 
 
 ## Lego Output

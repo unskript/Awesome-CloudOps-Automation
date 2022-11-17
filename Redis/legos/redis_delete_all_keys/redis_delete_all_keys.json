@@ -1,7 +1,7 @@
 {
-    "action_title": "Delete Redis Keys",
-    "action_description": "Delete Redis keys matching pattern",
-    "action_entry_function": "redis_delete_keys",
+    "action_title": "Delete All Redis Keys",
+    "action_description": "Delete All Redis keys",
+    "action_entry_function": "redis_delete_all_keys",
     "action_type": "LEGO_TYPE_REDIS",
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
