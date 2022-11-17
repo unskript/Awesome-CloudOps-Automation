@@ -15,7 +15,7 @@ class InputSchema(BaseModel):
     )
     role: str = Field(
         title = "Role Name",
-        description = "Permission name assign to member e.g iam.serviceAccountUser"
+        description = "Role name from which member needs to remove e.g iam.serviceAccountUser"
     )
     member_email: str = Field(
         title = "Member Email",
@@ -26,19 +26,19 @@ class InputSchema(BaseModel):
         description = "Requested Policy Version"
     )
 
-def gcp_add_member_to_iam_role_printer(output):
+def gcp_remove_member_to_iam_role_printer(output):
     if output is None:
         return
     pprint(output)
 
-def gcp_add_member_to_iam_role(handle, project_id: str, role: str, member_email:str, version:int = 1) -> Dict:
-    """gcp_add_member_to_iam_role Returns a Dict of policy details
+def gcp_remove_member_to_iam_role(handle, project_id: str, role: str, member_email:str, version:int = 1) -> Dict:
+    """gcp_remove_member_to_iam_role Returns a Dict of new policy details
 
         :type project_id: string
         :param project_id: Name of the project
 
         :type role: string
-        :param role: Permission name assign to member e.g iam.serviceAccountUser
+        :param role: Role name from which member needs to remove e.g iam.serviceAccountUser
 
         :type member_email: string
         :param member_email: Member email which has GCP access e.g test@company.com
@@ -46,39 +46,30 @@ def gcp_add_member_to_iam_role(handle, project_id: str, role: str, member_email:
         :type version: int
         :param version: Requested Policy Version
 
-        :rtype: Dict of policy details
+        :rtype: Dict of new policy details
     """
     service = googleapiclient.discovery.build(
         "cloudresourcemanager", "v1", credentials=handle)
 
     result = {}
     try:
+        member = "user:" + member_email
+        if "gserviceaccount" in member_email:
+            member = "serviceAccount:" + member_email
         get_policy = (
             service.projects().getIamPolicy(
                     resource=project_id,
                     body={"options": {"requestedPolicyVersion": version}}).execute())
 
-        member = "user:" + member_email
-        if "gserviceaccount" in member_email:
-            member = "serviceAccount:" + member_email
-
-        binding = None
         get_role = "roles/" + role
-        for b in get_policy["bindings"]:
-            if b["role"] == get_role:
-                binding = b
-                break
-        if binding is not None:
-            binding["members"].append(member)
-        else:
-            binding = {"role": get_role, "members": [member]}
-            get_policy["bindings"].append(binding)
+        binding = next(b for b in get_policy["bindings"] if b["role"] == get_role)
+        if "members" in binding and member in binding["members"]:
+            binding["members"].remove(member)
 
-        add_member = (
+        remove_member = (
             service.projects()
             .setIamPolicy(resource=project_id, body={"policy": get_policy}).execute())
-            
-        result = add_member
+        result = remove_member
 
     except Exception as error:
         result = {"error": error}
