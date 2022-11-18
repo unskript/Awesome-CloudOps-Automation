@@ -3,9 +3,11 @@
  # GCP Actions 
 
 * Gcp create bucket.py
+* Gcp create filestore instance.py
 * Gcp create gke cluster.py
 * Gcp create service account.py
 * Gcp delete bucket.py
+* Gcp delete filestore instance.py
 * Gcp delete object from bucket.py
 * Gcp describe gke cluster.py
 * Gcp fetch objects from bucket.py
