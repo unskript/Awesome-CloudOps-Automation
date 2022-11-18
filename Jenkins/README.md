@@ -3,3 +3,10 @@
  # Jenkins xRunBooks
 
 * [Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master)
+
+
+ # Jenkins Actions 
+
+* Jenkins get handle.py
+* Jenkins get logs.py
+* Jenkins get plugins.py

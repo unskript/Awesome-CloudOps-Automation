@@ -1,1 +1,6 @@
-this will be updated automatically
+
+
+ # Grafana Actions 
+
+* Grafana get handle.py
+* Grafana list alerts.py
