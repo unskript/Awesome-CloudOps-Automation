@@ -9,7 +9,6 @@
 
 * Elasticsearch check health status.py
 * Elasticsearch cluster statistics.py
-* Elasticsearch cluster statistics.py
 * Elasticsearch delete unassigned shards.py
 * Elasticsearch disable shard allocation.py
 * Elasticsearch enable shard allocation.py

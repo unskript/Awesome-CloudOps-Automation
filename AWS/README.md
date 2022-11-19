@@ -107,7 +107,6 @@
 * Aws get cloudwatch metrics redshift.py
 * Aws get cloudwatch metrics sqs.py
 * Aws get cloudwatch statistics.py
-* Aws get ec2 instances all.py
 * Aws get ecs services status.py
 * Aws get handle.py
 * Aws get instance detail with private dns name.py
