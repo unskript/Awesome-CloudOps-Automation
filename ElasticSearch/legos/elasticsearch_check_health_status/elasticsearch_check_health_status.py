@@ -29,11 +29,7 @@ class InputSchema(BaseModel):
 def elasticsearch_check_health_status_printer(output):
     if output is None:
         return
-<<<<<<< HEAD
     print(output)
-=======
-    pprint.pprint(output)
->>>>>>> master
 
 
 def elasticsearch_check_health_status(handle,
@@ -49,29 +45,18 @@ def elasticsearch_check_health_status(handle,
             :param host: URL of your Elasticsearch server
 
             :type port: int
-<<<<<<< HEAD
             :param port: Port used by your Elasticsearch server
-=======
-            :param host: Port used by your Elasticsearch server
->>>>>>> master
 
             :type api_key: str
             :param api_key: API Key for authentication of the request
 
-<<<<<<< HEAD
-            :rtype: Result String of result
-=======
             :rtype: Result Dict of result
->>>>>>> master
     """
     es_path = host + ":"+str(port) + "/_cluster/health?pretty"
     es_header = "Authorization: ApiKey" + " " + api_key
     cmd = ["curl", "-k", "-XGET", "-H", es_header, es_path]
     try:
         raw_result = subprocess.check_output(cmd, stderr=PIPE, universal_newlines=True, shell=False)
-<<<<<<< HEAD
-        return raw_result
-=======
         new_result = raw_result.replace("\n", "")
         result_dict = json.loads(new_result)
         d = {}
@@ -79,6 +64,5 @@ def elasticsearch_check_health_status(handle,
             d[key] = result_dict[key]
         print("The status for " + d["cluster_name"] + " is " + d["status"])
         return d
->>>>>>> master
     except subprocess.CalledProcessError as e:
         return e.output
