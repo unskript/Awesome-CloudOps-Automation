@@ -80,3 +80,12 @@
 * Mysql kill queries.py
 * Mysql read query.py
 * Mysql write query.py
+
+
+ # MySQL Actions 
+
+* Mysql get handle.py
+* Mysql get long run queries.py
+* Mysql kill queries.py
+* Mysql read query.py
+* Mysql write query.py
