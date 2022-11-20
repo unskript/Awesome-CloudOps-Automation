@@ -12,14 +12,14 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region of the ECS service.')
 
-def aws_filter_ec2_instances_printer(output):
+def aws_get_all_ec2_instances_printer(output):
     if output is None:
         return
     pprint.pprint({"Instances": output})
 
 
-def aws_filter_ec2_instances(handle, region: str) -> List:
-    """aws_filter_ec2_instances Returns an array of instances.
+def aws_get_all_ec2_instances(handle, region: str) -> List:
+    """aws_get_all_ec2_instances Returns an array of instances.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
