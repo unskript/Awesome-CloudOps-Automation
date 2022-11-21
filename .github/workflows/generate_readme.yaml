@@ -20,3 +20,20 @@ jobs:
     - uses: EndBug/add-and-commit@v9.1.1
       with:
         message: 'generateReadme: Refresh'
+  copy-file:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Pushes test file
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: '${{ secrets.GENERATE_README }}'
+      with:
+        source_file: '/lists'
+        destination_repo: 'unskript/docs'
+        destination_folder: 'lists'
+        user_email: 'doug.sillars@gmail.com'
+        user_name: 'dougsillars'
+        commit_message: 'a new list of runbooks and actions!'
