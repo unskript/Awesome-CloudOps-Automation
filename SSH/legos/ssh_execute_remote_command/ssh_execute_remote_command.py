@@ -31,6 +31,19 @@ def ssh_execute_remote_command_printer(output):
 
 
 def ssh_execute_remote_command(sshClient, hosts: List[str], command: str, sudo: bool = False) -> Dict:
+    """ssh_execute_remote_command executes the given command on the remote
+
+        :type hosts: List[str]
+        :param hosts: List of hosts to connect to. For eg. ["host1", "host2"].
+
+        :type command: str
+        :param command: Command to be executed on the remote server.
+
+        :type sudo: bool
+        :param sudo: Run the command with sudo.
+
+        :rtype: dict of command output
+    """
 
     client = sshClient(hosts)
     runCommandOutput = client.run_command(command=command, sudo=sudo)
