@@ -1,0 +1,10 @@
+{
+  "name": "Detach EC2 Instance from ASG and Load balancer",
+  "description": "This runbook can be used to detatch an instance from Auto Scaling Group and Load Balancer. You can remove (detach) an instance that is in the InService state from an Auto Scaling group. After the instance is detached, you can manage it independently from the rest of the Auto Scaling group. By detaching an instance, you can move an instance out of one Auto Scaling group and attach it to a different group. For more information, see Attach EC2 instances to your Auto Scaling group.",
+  "uuid": "680ad9d119afab5f647e1afe7826b88d89bf35304954c3328e65a2fcf470f930",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
+

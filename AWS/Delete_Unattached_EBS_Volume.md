@@ -1,0 +1,10 @@
+{
+  "name": "Delete Unattached AWS EBS Volumes",
+  "description": "This runbook can be used to delete all unattached EBS Volumes within an AWS region. You can delete an Amazon EBS volume that you no longer need. After deletion, its data is gone and the volume can't be attached to any instance. So before deletion, you can store a snapshot of the volume, which you can use to re-create the volume later.",
+  "uuid": "da23633be34037f023e1c1f56220ec75eb2729d7d8eb2bca9badec15ed0fd2ca",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
+

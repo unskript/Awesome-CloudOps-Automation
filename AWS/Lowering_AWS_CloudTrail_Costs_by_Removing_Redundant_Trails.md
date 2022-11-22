@@ -1,0 +1,9 @@
+{
+  "name": "Lowering AWS CloudTrail Costs by Removing Redundant Trails",
+  "description": "The AWS CloudTrail service allows developers to enable policies managing compliance, governance, and auditing of their AWS account. In addition, AWS CloudTrail offers logging, monitoring, and storage of any activity around actions related to your AWS structures. The service activates from the moment you set up your AWS account and while it provides real-time activity visibility, it also means higher AWS costs. Here Finding Redundant Trails in AWS",
+  "uuid": "c4d55f5dd5bb964460f4ad7335daa8bb094792b0d64149dbddca019513f05598",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
