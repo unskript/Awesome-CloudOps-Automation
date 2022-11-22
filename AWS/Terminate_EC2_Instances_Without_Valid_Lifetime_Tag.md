@@ -1,0 +1,9 @@
+{
+  "name": "Terminate EC2 Instances Without Valid Lifetime Tag",
+  "description": "This runbook can be used to list all the EC2 instances which don't have a lifetime tag and then terminate them.",
+  "uuid": "29ce1935204c64d816fd1f01f4fe41e8d8bd47725b899535c6acee703a7bcf0d",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_COST_OPT" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
