@@ -5,5 +5,7 @@
     "action_entry_function": "gcp_fetch_objects_from_bucket",
     "action_needs_credential": true,
     "action_supports_poll": true,
-    "action_supports_iteration": true
+    "action_supports_iteration": true,
+    "action_verbs": ["list"],
+    "action_nouns": ["objects","bucket","gcp"]
 }
