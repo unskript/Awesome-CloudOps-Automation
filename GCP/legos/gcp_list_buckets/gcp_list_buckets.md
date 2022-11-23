@@ -5,7 +5,5 @@
     "action_entry_function": "gcp_list_buckets",
     "action_needs_credential": true,
     "action_supports_poll": true,
-    "action_supports_iteration": true,
-    "action_verbs": ["list"],
-    "action_nouns": ["buckets","gcp"]
+    "action_supports_iteration": true
 }

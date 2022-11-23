@@ -5,8 +5,5 @@
     "action_entry_function": "gcp_delete_filestore_instance",
     "action_needs_credential": true,
     "action_supports_poll": false,
-    "action_supports_iteration": true,
-    "action_verbs": ["delete"],
-    "action_nouns": ["filestore","gcp"]
-}
+    "action_supports_iteration": true
 }
