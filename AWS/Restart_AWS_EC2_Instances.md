@@ -1,0 +1,10 @@
+{
+  "name": "Restart AWS EC2 Instances",
+  "description": "This runbook can be used to Restart AWS EC2 Instances",
+  "uuid": "e6e51e94e093ff3730b95c689232afaa3fc4f337d6fdac0ebb644fb2d6380afd",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SRE", "CATEGORY_TYPE_TROUBLESHOOTNG" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
+
