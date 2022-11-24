@@ -1,9 +1,0 @@
-{
-    "action_title": "Delete GCP Filestore Instance",
-    "action_description": "Delete a GCP Filestore Instance in the given location",
-    "action_type": "LEGO_TYPE_GCP",
-    "action_entry_function": "gcp_delete_filestore_instance",
-    "action_needs_credential": true,
-    "action_supports_poll": false,
-    "action_supports_iteration": true
-}
