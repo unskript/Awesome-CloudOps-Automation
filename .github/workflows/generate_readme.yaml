@@ -26,12 +26,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Pushes test file
+    - name: Pushes action and runbook lists to docs
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: '${{ secrets.GENERATE_README }}'
       with:
-        source_file: '/lists'
+        source_file: 'tree/master/lists'
         destination_repo: 'unskript/docs'
         destination_folder: 'lists'
         user_email: 'doug.sillars@gmail.com'
