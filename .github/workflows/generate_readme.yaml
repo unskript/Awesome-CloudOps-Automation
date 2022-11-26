@@ -37,7 +37,7 @@ jobs:
         user_email: 'doug.sillars@gmail.com'
         user_name: 'dougsillars'
         commit_message: 'a new list of actions!'
-  copy-file:
+  copy-file2:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
