@@ -1,0 +1,11 @@
+elyra:
+  branch: master
+jupyterlab-code-snippets:
+  branch: master
+jlab-enhanced-cell-toolbar:
+  branch: master
+unskript:
+  branch: master
+tag:
+  release: 710
+  latest: false
