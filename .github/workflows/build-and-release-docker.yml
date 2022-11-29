@@ -83,17 +83,6 @@ jobs:
           /usr/bin/env python ./setup.py bdist_wheel 
           mv dist/code*tar /tmp
           mv dist/unskript*.whl /tmp
-  
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: 0.1.0-unskript-${{ steps.date.outputs.date }}
-          release_name: Release unSkript 0.1.0-${{ steps.date.outputs.date }}
-          draft: false
-          prerelease: true
       
       - uses: actions/upload-artifact@v3
         with:
@@ -301,6 +290,26 @@ jobs:
       fail-fast: false
     
     steps:
+      - uses: actions/checkout@v3
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+
+      - name: Setting Release information
+        run: |
+          er=`cat docker_release.yml | shyaml get-value elyra.branch`
+          cr=`cat docker_release.yml | shyaml get-value jupyterlab-code-snippets.branch`
+          tr=`cat docker_release.yml | shyaml get-value jlab-enhanced-cell-toolbar.branch`
+          ur=`cat docker_release.yml | shyaml get-value unskript.branch`
+          rt=`cat docker_release.yml | shyaml get-value tag.release`
+          latest=`cat docker_release.yml | shyaml get-value tag.latest`
+          echo "ELYRA_RELEASE=$er" >> $GITHUB_ENV
+          echo "CODE_SNIPPETS_RELEASE=$cr" >> $GITHUB_ENV
+          echo "CELL_TOOLBAR_RELEASE=$tr" >> $GITHUB_ENV
+          echo "UNSKRIPT_RELASE=$ur" >> $GITHUB_ENV
+          echo "RELEASE_TAG=$rt" >> $GITHUB_ENV 
+          echo "LATEST_TAG=$latest" >> $GITHUB_ENV
+
       - uses: geekyeggo/delete-artifact@v2
         with:
           name: |
