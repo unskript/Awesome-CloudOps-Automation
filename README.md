@@ -42,7 +42,7 @@ ___
 
 # Quick start Guide
 
-## Get started with Docker
+## Get started with Docker:
 
 ```
 docker run -it -p 8888:8888 \
@@ -127,24 +127,6 @@ Contributions are what make the open source community such an amazing place to l
 1. Use the [Docker environment](#get-started-with-docker), or our free [cloud sandbox](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) for testing your contribution.
 2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) so you can present yourself and get support.
 
-
-### Creating a new Runbook
-Ensure that the docker is running using the instruction given 
-[here](#get-started-with-docker)
-
-```
-git clone https://github.com/unskript/Awesome-CloudOps-Automation
-```
-```
-cd Awesome-CloudOps-Automation
-```
-```
-CONTAINER=`docker ps -l | grep awesome-runbooks | awk '{print $1}'`
-docker cp templates/runbooks/GCP.ipynb $CONTAINER:/home/jovyan/runbooks/<YOUR_RUNBOOK_NAME.ipynb>
-```
-Point your browser to http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb> to begin editing.
-
-
 ### Step by step process for HacktoberFest
 #### Issues
 1. Find or propose an issue you want to work on. 
@@ -155,8 +137,11 @@ Point your browser to http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb> t
 3. To create a new xRunBook:
   
   - **Using Docker**:
-    Follow this [link](#creating-a-new-runbook)
-    
+    1. `git clone https://github.com/unskript/Awesome-CloudOps-Automation`
+    2. `cd Awesome-CloudOps-Automation`
+    3. ```CONTAINER=`docker ps -l | grep awesome-runbooks | awk '{print $1}'` ```
+    4. `docker cp templates/runbooks/GCP.ipynb $CONTAINER:/home/jovyan/runbooks/`<YOUR_RUNBOOK_NAME.ipynb>
+    5. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin editing.
   - **unSkript sandbox**:
     1. The onboarding flow will drop you into Runbook creation with sandbox credentials
     2.  Start building your lego from the proposed handle (GCP, k8s et al)
