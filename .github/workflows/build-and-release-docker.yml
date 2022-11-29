@@ -271,6 +271,14 @@ jobs:
           fi
           echo "BUILD_TAGS=$bt" >> $GITHUB_ENV
       
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+          name: |
+            elyra-${{ github.run_id }}-${{ env.ELYRA_RELEASE }}
+            toolbar-${{ github.run_id }}-${{ env.CELL_TOOLBAR_RELEASE }}
+            code-snippets-${{ github.run_id }}-${{ env.CODE_SNIPPETS_RELEASE }}
+            unskript-${{ github.run_id }}-${{ env.UNSKRIPT_RELEASE }}
+            schema-${{ github.run_id }}-${{ env.UNSKRIPT_RELEASE }}
 
       - name: Build & Push 
         run: |
@@ -317,3 +325,4 @@ jobs:
             toolbar-${{ github.run_id }}-${{ env.CELL_TOOLBAR_RELEASE }}
             code-snippets-${{ github.run_id }}-${{ env.CODE_SNIPPETS_RELEASE }}
             unskript-${{ github.run_id }}-${{ env.UNSKRIPT_RELEASE }}
+            schema-${{ github.run_id }}-${{ env.UNSKRIPT_RELEASE }}
