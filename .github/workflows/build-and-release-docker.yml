@@ -122,6 +122,7 @@ jobs:
           make awesome-submodule
           cd awesome
           git checkout ${{ inputs.awesome_branch }}
+          cd ..
           make legoschema
           cp ./setup-full.py ./setup.py
           /usr/bin/env python ./setup.py bdist_wheel 
