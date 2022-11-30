@@ -71,10 +71,6 @@ jobs:
         run: |
           pip install shyaml
       
-      # - name: Setting Release information
-      #   run: |
-      #     er=`cat docker_release.yml | shyaml get-value elyra.branch`
-      #     echo "ELYRA_RELEASE=$er" >> $GITHUB_ENV
           
       - name: Checkout & Build Code
         run: |
@@ -105,10 +101,6 @@ jobs:
         run: |
           pip install shyaml
       
-      # - name: Setting Release information
-      #   run: |
-      #     ur=`cat docker_release.yml | shyaml get-value unskript.branch`
-      #     echo "UNSKRIPT_RELASE=$ur" >> $GITHUB_ENV
 
       - name: Checkout Code
         run: |
@@ -157,10 +149,6 @@ jobs:
           sudo apt install nodejs npm
           pip install jupyterlab
       
-      # - name: Setting Release information
-      #   run: |
-      #     tr=`cat docker_release.yml | shyaml get-value jlab-enhanced-cell-toolbar.branch`
-      #     echo "CELL_TOOLBAR_RELEASE=$tr" >> $GITHUB_ENV
 
       - name: Checkout Code
         run: |
@@ -198,11 +186,6 @@ jobs:
           sudo apt install nodejs npm
           pip install jupyterlab
       
-      # - name: Setting Release information
-      #   run: |
-      #     cr=`cat docker_release.yml | shyaml get-value jupyterlab-code-snippets.branch`
-      #     echo "CODE_SNIPPETS_RELEASE=$cr" >> $GITHUB_ENV
-
       - name: Checkout Code
         run: |
           cd $HOME
@@ -252,20 +235,6 @@ jobs:
         run: |
           echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
 
-      - name: Setting Release information
-        run: |
-          er=`cat docker_release.yml | shyaml get-value elyra.branch`
-          cr=`cat docker_release.yml | shyaml get-value jupyterlab-code-snippets.branch`
-          tr=`cat docker_release.yml | shyaml get-value jlab-enhanced-cell-toolbar.branch`
-          ur=`cat docker_release.yml | shyaml get-value unskript.branch`
-          rt=`cat docker_release.yml | shyaml get-value tag.release`
-          latest=`cat docker_release.yml | shyaml get-value tag.latest`
-          echo "ELYRA_RELEASE=$er" >> $GITHUB_ENV
-          echo "CODE_SNIPPETS_RELEASE=$cr" >> $GITHUB_ENV
-          echo "CELL_TOOLBAR_RELEASE=$tr" >> $GITHUB_ENV
-          echo "UNSKRIPT_RELASE=$ur" >> $GITHUB_ENV
-          echo "RELEASE_TAG=$rt" >> $GITHUB_ENV 
-          echo "LATEST_TAG=$latest" >> $GITHUB_ENV
           
       - name: Checkout Code
         run: |
@@ -351,20 +320,6 @@ jobs:
         run: |
           pip install shyaml
 
-      - name: Setting Release information
-        run: |
-          er=`cat docker_release.yml | shyaml get-value elyra.branch`
-          cr=`cat docker_release.yml | shyaml get-value jupyterlab-code-snippets.branch`
-          tr=`cat docker_release.yml | shyaml get-value jlab-enhanced-cell-toolbar.branch`
-          ur=`cat docker_release.yml | shyaml get-value unskript.branch`
-          rt=`cat docker_release.yml | shyaml get-value tag.release`
-          latest=`cat docker_release.yml | shyaml get-value tag.latest`
-          echo "ELYRA_RELEASE=$er" >> $GITHUB_ENV
-          echo "CODE_SNIPPETS_RELEASE=$cr" >> $GITHUB_ENV
-          echo "CELL_TOOLBAR_RELEASE=$tr" >> $GITHUB_ENV
-          echo "UNSKRIPT_RELASE=$ur" >> $GITHUB_ENV
-          echo "RELEASE_TAG=$rt" >> $GITHUB_ENV 
-          echo "LATEST_TAG=$latest" >> $GITHUB_ENV
 
       - uses: geekyeggo/delete-artifact@v2
         with:
