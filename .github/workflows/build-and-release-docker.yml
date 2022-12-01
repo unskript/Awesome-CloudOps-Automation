@@ -1,0 +1,332 @@
+name: Build and Release Docker
+
+on:
+  workflow_dispatch: 
+    inputs:
+      enabled:
+        description: 'Workflow Enable Flag'
+        required: true
+        default: false
+        type: boolean
+      elyra_branch:
+        description: 'Elyra Branch name'
+        required: true
+        default: master
+        type: string
+      unskript_branch:
+        description: 'unSkript Branch name'
+        required: true
+        default: master
+        type: string 
+      celltoolbar_branch:
+        description: 'Celltoolbar Branch name'
+        required: true
+        default: master
+        type: string 
+      snippet_branch:
+        description: 'Code Snippets Branch name'
+        required: true
+        default: master
+        type: string 
+      awesome_branch:
+        description: 'unSkript submodule awesome Branch name'
+        required: true
+        default: master
+        type: string 
+      build_number:
+        description: 'Docker build number'
+        required: true
+        type: string 
+      latest:
+        description: 'Docker Latest tag Branch name'
+        required: true
+        default: false
+        type: boolean
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+      
+env:
+  DOCKER_REGISTRY: docker.io
+  DOCKER_IMAGE: unskript/awesome-runbooks
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  USERNAME: "jayasimha-raghavan-unskript"
+  DOCKER_TARGET: linux/amd64, linux/arm64
+   
+jobs:
+  build-elyra: 
+    runs-on: ubuntu-latest 
+    if: ${{ inputs.enabled }}
+    strategy:
+      fail-fast: false 
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+      
+          
+      - name: Checkout & Build Code
+        run: |
+          cd $HOME
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/elyra.git elyra
+          cd elyra
+          git checkout ${{ inputs.elyra_branch }}
+          python3 ./setup.py sdist
+          mv dist/elyra*.tar.gz /tmp
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: elyra-${{ github.run_id }}
+          path: /tmp/elyra-3.0.0.dev0.tar.gz
+    
+  build-unskript:
+    runs-on: ubuntu-latest 
+    if: ${{ inputs.enabled }}
+    strategy:
+      fail-fast: false 
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+      
+
+      - name: Checkout Code
+        run: |
+          cd $HOME
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
+          cd unskript
+          git checkout ${{ inputs.unskript_branch }}
+          /usr/bin/env python -m pip install -r ./requirements.txt
+          /usr/bin/env python -m pip install --upgrade protobuf
+          /usr/bin/env python -m pip install elyra
+          make awesome-submodule
+          cd awesome
+          git checkout ${{ inputs.awesome_branch }}
+          cd ..
+          make legoschema
+          cp ./setup-full.py ./setup.py
+          /usr/bin/env python ./setup.py bdist_wheel 
+          mv dist/code*tar /tmp
+          mv dist/unskript*.whl /tmp
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: schema-${{ github.run_id }}
+          path: /tmp/code_snippet_schemas.tar
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: unskript-${{ github.run_id }}
+          path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
+      
+
+  build-jlab-celltoolbar:
+    runs-on: ubuntu-latest 
+    if: ${{ inputs.enabled }}
+    strategy:
+      fail-fast: false 
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+          sudo apt install nodejs npm
+          pip install jupyterlab
+      
+
+      - name: Checkout Code
+        run: |
+          cd $HOME
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jlab-enhanced-cell-toolbar.git jlab-enhanced-cell-toolbar
+          cd jlab-enhanced-cell-toolbar
+          git checkout ${{ inputs.celltoolbar_branch }}
+          /usr/bin/env python -m pip install jupyter-packaging
+          /usr/bin/env python -m pip install --upgrade markupsafe
+          /usr/bin/env python -m pip install --upgrade jinja2 
+          jlpm install
+          /usr/bin/env python ./setup.py bdist_wheel 
+          mv dist/*.whl /tmp
+  
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: toolbar-${{ github.run_id }}
+          path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
+
+  build-code-snippets:
+    runs-on: ubuntu-latest 
+    if: ${{ inputs.enabled }}
+    strategy:
+      fail-fast: false 
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+          sudo apt install nodejs npm
+          pip install jupyterlab
+      
+      - name: Checkout Code
+        run: |
+          cd $HOME
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jupyterlab-code-snippets.git jupyterlab-code-snippets
+          cd jupyterlab-code-snippets
+          git checkout ${{ inputs.snippet_branch }}
+          /usr/bin/env python -m pip install jupyter-packaging
+          /usr/bin/env python -m pip install --upgrade markupsafe
+          /usr/bin/env python -m pip install --upgrade jinja2 
+          jlpm install 
+          /usr/bin/env python ./setup.py bdist_wheel 
+          mv dist/*.whl /tmp
+  
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: code-snippets-${{ github.run_id }}
+          path: /tmp/jupyterlab_code_snippets-2.1.1-py3-none-any.whl
+
+  build-docker:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.enabled }}
+    needs: [build-unskript, build-elyra, build-jlab-celltoolbar, build-code-snippets]
+    strategy:
+      fail-fast: false 
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install system dependencies
+        run: |
+          sudo apt update --fix-missing
+          pip install shyaml
+
+      - name: Setup Docker Buildx 
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+          config: .github/buildkitd.toml 
+
+      - name: Prepare Docker Buildx
+        id: prepare
+        run: |
+          echo ::set-output name=docker_platform::${DOCKER_TARGET}
+          echo ::set-output name=docker_image::${DOCKER_REGISTRY}/${DOCKER_IMAGE}
+          echo ::set-output name=version::${GITHUB_RUN_NUMBER}
+
+      - name: Docker Login
+        run: |
+          echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
+
+          
+      - name: Checkout Code
+        run: |
+          cd $HOME
+          pwd
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/devops.git devops
+      
+      - uses: actions/download-artifact@v3
+        with:
+          name: code-snippets-${{ github.run_id }}
+          path: /tmp/code_snippet
+    
+      - uses: actions/download-artifact@v3
+        with:
+          name: toolbar-${{ github.run_id }}
+          path: /tmp/jlab_enhanced_cell_toolbar
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: schema-${{ github.run_id }}
+          path: /tmp/unskript
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: unskript-${{ github.run_id }}
+          path: /tmp/unskript
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: elyra-${{ github.run_id }}
+          path: /tmp/elyra
+      
+      - name: Prepare to Build
+        run: |
+          cd $HOME/devops/dockers/jupyterlab/oss_docker
+          ls -l /tmp/unskript/
+          ls -l /tmp/elyra/
+          ls -l /tmp/jlab_enhanced_cell_toolbar/ 
+          ls -l /tmp/code_snippet/ 
+          tar xf /tmp/unskript/code_snippet_schemas.tar
+          cd downloads
+          mv /tmp/unskript/*.whl .
+          mv /tmp/code_snippet/*.whl .
+          mv /tmp/jlab_enhanced_cell_toolbar/*.whl .
+          mv /tmp/elyra/elyra*tar.gz .
+          if [[ ${{ inputs.latest }} ]]; then 
+              bt="${{ env.DOCKER_IMAGE }}:${{ inputs.build_number }} -t ${{ env.DOCKER_IMAGE }}:latest"
+          else 
+              bt="${{ env.DOCKER_IMAGE }}:${{ inputs.build_number }}"
+          fi
+          echo "BUILD_TAGS=$bt" >> $GITHUB_ENV
+      
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+          name: |
+            elyra-${{ github.run_id }}
+            toolbar-${{ github.run_id }}
+            code-snippets-${{ github.run_id }}
+            unskript-${{ github.run_id }}
+            schema-${{ github.run_id }}
+
+      - name: Build & Push 
+        run: |
+          docker buildx create --name mybuilder
+          docker buildx use mybuilder
+          docker buildx inspect --bootstrap
+          docker buildx ls
+          cd $HOME/devops/dockers/jupyterlab/oss_docker
+          export BUILD_NUMBER=${{ inputs.build_number }}
+          make copy
+          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+
+  cleanup:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.enabled }}
+    needs: [build-docker]
+    strategy:
+      fail-fast: false
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+
+
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+          name: |
+            elyra-${{ github.run_id }}
+            toolbar-${{ github.run_id }}
+            code-snippets-${{ github.run_id }}
+            unskript-${{ github.run_id }}
+            schema-${{ github.run_id }}
