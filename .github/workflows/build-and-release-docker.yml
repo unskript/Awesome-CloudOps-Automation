@@ -83,7 +83,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: elyra-${{ github.run_id }}-${{ inputs.elyra_branch }}
+          name: elyra-${{ github.run_id }}
           path: /tmp/elyra-3.0.0.dev0.tar.gz
     
   build-unskript:
@@ -123,12 +123,12 @@ jobs:
       
       - uses: actions/upload-artifact@v3
         with:
-          name: schema-${{ github.run_id }}-${{ inputs.unskript_branch }}
+          name: schema-${{ github.run_id }}
           path: /tmp/code_snippet_schemas.tar
 
       - uses: actions/upload-artifact@v3
         with:
-          name: unskript-${{ github.run_id }}-${{ inputs.unskript_branch }}
+          name: unskript-${{ github.run_id }}
           path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
       
 
@@ -166,7 +166,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: toolbar-${{ github.run_id }}-${{ inputs.celltoolbar_branch }}
+          name: toolbar-${{ github.run_id }}
           path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
 
   build-code-snippets:
@@ -202,7 +202,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: code-snippets-${{ github.run_id }}-${{ inputs.snippet_branch }}
+          name: code-snippets-${{ github.run_id }}
           path: /tmp/jupyterlab_code_snippets-2.1.1-py3-none-any.whl
 
   build-docker:
@@ -244,27 +244,27 @@ jobs:
       
       - uses: actions/download-artifact@v3
         with:
-          name: code-snippets-${{ github.run_id }}-${{ inputs.snippet_branch }}
+          name: code-snippets-${{ github.run_id }}
           path: /tmp/code_snippet
     
       - uses: actions/download-artifact@v3
         with:
-          name: toolbar-${{ github.run_id }}-${{ inputs.celltoolbar_branch }}
+          name: toolbar-${{ github.run_id }}
           path: /tmp/jlab_enhanced_cell_toolbar
 
       - uses: actions/download-artifact@v3
         with:
-          name: schema-${{ github.run_id }}-${{ inputs.unskript_branch }}
+          name: schema-${{ github.run_id }}
           path: /tmp/unskript
 
       - uses: actions/download-artifact@v3
         with:
-          name: unskript-${{ github.run_id }}-${{ inputs.unskript_branch }}
+          name: unskript-${{ github.run_id }}
           path: /tmp/unskript
 
       - uses: actions/download-artifact@v3
         with:
-          name: elyra-${{ github.run_id }}-${{ inputs.elyra_branch }}
+          name: elyra-${{ github.run_id }}
           path: /tmp/elyra
       
       - name: Prepare to Build
@@ -290,11 +290,11 @@ jobs:
       - uses: geekyeggo/delete-artifact@v2
         with:
           name: |
-            elyra-${{ github.run_id }}-${{ inputs.elyra_branch }}
-            toolbar-${{ github.run_id }}-${{ inputs.celltoolbar_branch }}
-            code-snippets-${{ github.run_id }}-${{ inputs.snippet_branch }}
-            unskript-${{ github.run_id }}-${{ inputs.unskript_branch }}
-            schema-${{ github.run_id }}-${{ inputs.unskript_branch }}
+            elyra-${{ github.run_id }}
+            toolbar-${{ github.run_id }}
+            code-snippets-${{ github.run_id }}
+            unskript-${{ github.run_id }}
+            schema-${{ github.run_id }}
 
       - name: Build & Push 
         run: |
@@ -324,8 +324,8 @@ jobs:
       - uses: geekyeggo/delete-artifact@v2
         with:
           name: |
-            elyra-${{ github.run_id }}-${{ inputs.elyra_branch }}
-            toolbar-${{ github.run_id }}-${{ inputs.celltoolbar_branch }}
-            code-snippets-${{ github.run_id }}-${{ inputs.snippet_branch }}
-            unskript-${{ github.run_id }}-${{ inputs.unskript_branch }}
-            schema-${{ github.run_id }}-${{ inputs.unskript_branch }}
+            elyra-${{ github.run_id }}
+            toolbar-${{ github.run_id }}
+            code-snippets-${{ github.run_id }}
+            unskript-${{ github.run_id }}
+            schema-${{ github.run_id }}
