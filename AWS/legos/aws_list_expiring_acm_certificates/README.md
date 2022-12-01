@@ -7,7 +7,7 @@ This Lego lists all the expiring ACM issued SSL certificates
 
 ## Lego Details
 
-    aws_list_expired_acm_certificates(handle, threshold_days: int, region: str)
+    aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str)
 
         handle: Object of type unSkript AWS Connector.
         threshold_days: Integer, Threshold number of days to check for expiry. Eg: 30 -lists all certificates which are expiring within 30 days.

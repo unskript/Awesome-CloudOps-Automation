@@ -8,5 +8,6 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_verbs": ["list"],
-    "action_nouns": ["regions","aws"]
+    "action_nouns": ["regions","aws"],
+    "action_is_check": false
 }
