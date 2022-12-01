@@ -47,6 +47,9 @@ def ssh_execute_remote_command(sshClient, hosts: List[str], command: str, sudo: 
         :type sudo: bool
         :param sudo: Run the command with sudo.
 
+        :type proxy_host: str
+        :param proxy_host: Optional proxy host to use.
+
         :rtype: dict of command output
     """
 
