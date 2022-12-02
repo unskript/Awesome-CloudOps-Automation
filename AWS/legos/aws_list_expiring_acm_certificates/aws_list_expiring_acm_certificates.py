@@ -62,6 +62,4 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=
         result_list.append(expiring_certificates_dict)
     except Exception as e:
         pass
-    for x in result_list:
-            if len(x)!=0:
-                return x
+    return expiring_certificates_dict
