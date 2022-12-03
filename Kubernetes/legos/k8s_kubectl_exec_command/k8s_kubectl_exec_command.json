@@ -1,5 +1,5 @@
 {
-    "action_title": "Kubectl execute command",
+    "action_title": "Kubectl exec command",
     "action_description": "Kubectl execute command in a given pod",
     "action_type": "LEGO_TYPE_K8S",
     "action_entry_function": "k8s_kubectl_exec_command",
