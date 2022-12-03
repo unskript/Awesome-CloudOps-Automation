@@ -113,6 +113,7 @@
 * [Aws get instance details.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_details) 
 * [Aws get instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instances) 
 * [Aws get internet gateway by vpc.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc) 
+* [Aws get nat gateway by vpc.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc) 
 * [Aws get publicly accessible db instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances) 
 * [Aws get publicly accessible db snapshots.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_snapshots) 
 * [Aws get s3 bucket list.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_s3_bucket_list) 

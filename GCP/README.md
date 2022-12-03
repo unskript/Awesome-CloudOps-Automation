@@ -23,6 +23,7 @@
 * [Gcp list gke cluster.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_gke_cluster) 
 * [Gcp list nodes in gke cluster.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_nodes_in_gke_cluster) 
 * [Gcp list public buckets.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets) 
+* [Gcp list secrets.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_secrets) 
 * [Gcp list service accounts.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts) 
 * [Gcp remove member from iam role.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role) 
 * [Gcp remove role from service account.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_role_from_service_account) 
