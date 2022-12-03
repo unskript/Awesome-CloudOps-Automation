@@ -1,0 +1,20 @@
+{
+  "action_title": "SSH: Locate large files on host",
+
+  "action_description": "This action scans the file system on a given host and returns a dict of large files. The command used to perform the scan is \"find inspect_folder -type f -exec du -sk '{}' + | sort -rh | head -n count\"",
+
+  "action_type": "LEGO_TYPE_SSH",
+  "action_entry_function": "ssh_find_large_files",
+  "action_needs_credential": true,
+  "action_supports_poll": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_supports_iteration": true,
+  "action_verbs": [
+    "find",
+    "locate"
+  ],
+  "action_nouns": [
+    "ssh",
+    "files"
+  ]
+}
