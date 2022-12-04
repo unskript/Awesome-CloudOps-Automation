@@ -52,13 +52,7 @@ def ssh_execute_remote_command(sshClient, hosts: List[str], command: str, sudo: 
         :rtype: dict of command output
     """
 
-    client = sshClient(hosts)
-    if proxy_host is not None:
-        #Need to do the following:
-        # 1. Close the existing handles.
-        # 2. Create new handles using the new proxy_host.
-        client.join()
-        client =  client.duplicate(hosts, proxy_host)
+    client = sshClient(hosts, proxy_host)
 
     runCommandOutput = client.run_command(command=command, sudo=sudo)
     client.join()
