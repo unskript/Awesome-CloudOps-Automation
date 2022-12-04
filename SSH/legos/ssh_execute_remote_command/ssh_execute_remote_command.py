@@ -5,7 +5,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 import pprint
-from unskript.enums.ssh_enums import SSHAuthType
 
 
 class InputSchema(BaseModel):
