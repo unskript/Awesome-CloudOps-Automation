@@ -10,8 +10,8 @@ This Lego updates the status of an old Access Key to Inactive.
     aws_update_access_key(handle,aws_username: str)
 
         handle: Object of type unSkript AWS Connector.
-        aws_access_key_id: Old Access Key ID of the User.
-        status: Status to set for the Access Key(Active/Inactive)
+        aws_access_key_id: String, Old Access Key ID of the User.
+        status: AccessKeyStatus, Status to set for the Access Key Eg:Active or Inactive
 
 
 ## Lego Input
