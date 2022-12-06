@@ -53,6 +53,15 @@ docker run -it -p 8888:8888 \
 
 > Note: New files are created inside Docker and will persist unless --rm option is used. If you'd like to also save the credentials and xRunBooks on your local machine, use Docker's -v parameter when you start the container.
 
+### Kubernetes
+The Docker image can be installed in K8s:
+
+* Deploy using the following command ([the Yaml file](installation/unskript-oss-k8s-deployment.yaml))
+```kubectl apply -f unskript-oss-k8s-deployment.yaml```
+* To access the jupyter server, you will have to enable port-forwarding using
+```kubectl port-forward <pod corresponding to this deployment> -n <k8s namespace> 8888:8888&```
+* You should be able to go to ```http://127.0.0.1:8888/lab/tree/Welcome.ipynb``` and access runbooks.
+
 ## Open and Use a xRunBook
 Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.  A table will display the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook.
 
