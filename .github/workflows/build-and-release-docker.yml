@@ -71,6 +71,10 @@ jobs:
         run: |
           pip install shyaml
       
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.6'
           
       - name: Checkout & Build Code
         run: |
@@ -101,6 +105,10 @@ jobs:
         run: |
           pip install shyaml
       
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.6'
 
       - name: Checkout Code
         run: |
@@ -143,12 +151,17 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+     
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.6'
+
       - name: Install system dependencies
         run: |
           pip install shyaml
           sudo apt install nodejs npm
           pip install jupyterlab
-      
 
       - name: Checkout Code
         run: |
@@ -180,6 +193,12 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+      
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.6'
+
       - name: Install system dependencies
         run: |
           pip install shyaml
@@ -214,6 +233,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.6'
+
       - name: Install system dependencies
         run: |
           sudo apt update --fix-missing
