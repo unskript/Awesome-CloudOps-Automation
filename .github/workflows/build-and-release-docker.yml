@@ -33,6 +33,11 @@ on:
         required: true
         default: master
         type: string 
+      devops_branch:
+        description: 'Devops Branch name'
+        required: false
+        default: master
+        type: string 
       build_number:
         description: 'Docker build number'
         required: true
@@ -296,6 +301,7 @@ jobs:
       - name: Prepare to Build
         run: |
           cd $HOME/devops/dockers/jupyterlab/oss_docker
+
           ls -l /tmp/unskript/
           ls -l /tmp/elyra/
           ls -l /tmp/jlab_enhanced_cell_toolbar/ 
@@ -329,6 +335,7 @@ jobs:
           docker buildx inspect --bootstrap
           docker buildx ls
           cd $HOME/devops/dockers/jupyterlab/oss_docker
+          git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
           make copy
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
