@@ -1,0 +1,13 @@
+{
+    "action_title": "List Expiring ACM Certificates",
+    "action_description": "List All Expiring ACM Certificates",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_list_expiring_acm_certificates",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_verbs": ["list"],
+    "action_nouns": ["expiring","certificates","aws"],
+    "action_is_check": true
+}

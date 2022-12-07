@@ -4,6 +4,7 @@
 ##
 from pydantic import BaseModel, Field, SecretStr
 from typing import Dict,List
+from unskript.enums.aws_access_key_enums import AccessKeyStatus
 import pprint
 
 
@@ -16,7 +17,7 @@ class InputSchema(BaseModel):
         title="Access Key ID",
         description="Old Access Key ID of the User"
     )
-    status: str = Field(
+    status: AccessKeyStatus = Field(
         title="Status",
         description="Status to set for the Access Key"
     )
@@ -33,7 +34,7 @@ def aws_update_access_key(
     handle,
     aws_username: str,
     aws_access_key_id: str,
-    status: str
+    status: AccessKeyStatus
 ) -> Dict:
     """aws_update_access_key updates the status of an access key to Inactive/Active
         :type handle: object
@@ -44,6 +45,9 @@ def aws_update_access_key(
 
         :type aws_access_key_id: str
         :param aws_access_key_id: Old Access Key ID of the user of which the status needs to be updated
+
+        :type status: AccessKeyStatus
+        :param status: Status to set for the Access Key
 
         :rtype: Result Dictionary of result
     """

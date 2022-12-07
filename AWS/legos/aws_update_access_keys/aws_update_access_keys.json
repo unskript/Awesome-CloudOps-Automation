@@ -6,5 +6,6 @@
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
     "action_supports_poll": true,
-    "action_supports_iteration": true
+    "action_supports_iteration": true,
+    "action_is_check": false
   }

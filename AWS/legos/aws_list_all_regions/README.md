@@ -1,21 +1,19 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>AWS Delete Access Key</h1>
+<h1>AWS List All Regions</h1>
 
 ## Description
-This Lego updates the status of an old Access Key to Inactive.
+This Lego Lists all the AWS Regions.
 
 
 ## Lego Details
 
-    aws_update_access_key(handle,aws_username: str)
+    aws_list_all_regions(handle)
 
         handle: Object of type unSkript AWS Connector.
-        aws_access_key_id: String, Old Access Key ID of the User.
-        status: AccessKeyStatus, Status to set for the Access Key Eg:Active or Inactive
 
 
 ## Lego Input
-This Lego take three inputs handle, aws_access_key_id, and status.
+None
 
 ## Lego Output
 <img src="./1.png">
