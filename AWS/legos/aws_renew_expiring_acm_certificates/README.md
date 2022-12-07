@@ -2,12 +2,12 @@
 <h1>Renew Expiring ACM Certificate</h1>
 
 ## Description
-This Lego renewa all eligible expiring ACM issued SSL certificates
+This Lego renews all eligible expiring ACM issued SSL certificates
 
 
 ## Lego Details
 
-    aws_list_expired_acm_certificates(handle, aws_certificate_arn: List, region: str)
+    aws_renew_expiring_acm_certificates(handle, aws_certificate_arn: List, region: str)
 
         handle: Object of type unSkript AWS Connector.
         aws_certificate_arn: List, ARN of the Certificate. Eg: arn:aws:acm:us-west-2:100498623390:certificate/f18891a2-892c-4d3b-aad0-28da2b5069a5

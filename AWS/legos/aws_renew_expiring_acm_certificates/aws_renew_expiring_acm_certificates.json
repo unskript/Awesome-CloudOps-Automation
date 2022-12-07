@@ -1,8 +1,8 @@
 {
-    "action_title": "Check SSL Certificate Expiry",
-    "action_description": "Check ACM SSL Certificate expiry date",
+    "action_title": "Renew Expiring ACM Certificates",
+    "action_description": "Renew Expiring ACM Certificates",
     "action_type": "LEGO_TYPE_AWS",
-    "action_entry_function": "aws_check_ssl_certificate_expiry",
+    "action_entry_function": "aws_renew_expiring_acm_certificates",
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
     "action_supports_poll": true,

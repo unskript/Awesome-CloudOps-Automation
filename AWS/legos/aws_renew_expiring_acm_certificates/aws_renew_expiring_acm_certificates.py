@@ -17,13 +17,13 @@ class InputSchema(BaseModel):
         description='Name of the AWS Region'
     )
 
-def aws_list_expiring_acm_certificates_printer(output):
+def aws_renew_expiring_acm_certificates_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-def aws_list_expiring_acm_certificates(handle, aws_certificate_arn: List, region: str='') -> Dict:
-    """aws_list_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days
+def aws_renew_expiring_acm_certificates(handle, aws_certificate_arn: List, region: str='') -> Dict:
+    """aws_renew_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
         :param handle: Object returned from Task Validate
