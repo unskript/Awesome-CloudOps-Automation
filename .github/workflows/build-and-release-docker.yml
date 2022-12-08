@@ -79,7 +79,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.6'
+          python-version: '3.7'
           
       - name: Checkout & Build Code
         run: |
@@ -113,7 +113,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.6'
+          python-version: '3.7'
 
       - name: Checkout Code
         run: |
@@ -160,7 +160,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.6'
+          python-version: '3.7'
 
       - name: Install system dependencies
         run: |
@@ -202,7 +202,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.6'
+          python-version: '3.7'
 
       - name: Install system dependencies
         run: |
@@ -242,7 +242,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.6'
+          python-version: '3.7'
 
       - name: Install system dependencies
         run: |
