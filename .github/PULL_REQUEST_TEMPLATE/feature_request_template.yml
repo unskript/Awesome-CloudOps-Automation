@@ -1,0 +1,28 @@
+name: Feature request
+description: Use this template for requesting a feature/enhancement.
+labels:
+  - 'feature-request'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide the feature/enhancement request in as much details as possible
+  - type: input
+    id: feature name
+    attributes:
+      label: Feature Name
+      description: |
+        Mention what the feature/enhancement you would like to have developed
+        You can share any screenshots, diagrams, etc..
+      placeholder: |
+        My Awesome Feature
+    validations:
+      required: true
+  - type: textarea
+    id: feature
+    attributes:
+      label: Feature description
+      description: Describe feature that you would like to see
+      placeholder: ...
+    validations:
+      required: true
