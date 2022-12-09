@@ -21,6 +21,10 @@ class InputSchema(BaseModel):
         title='Run with sudo',
         description='Run the command with sudo.'
     )
+    proxy_host: Optional[str] = Field(
+        title='Proxy host',
+        description='Override the proxy host provided in the credentials. It still uses the proxy_user and port from the credentials.'
+    )
 
 
 def ssh_execute_remote_command_printer(output):
@@ -30,7 +34,7 @@ def ssh_execute_remote_command_printer(output):
     pprint.pprint(output)
 
 
-def ssh_execute_remote_command(sshClient, hosts: List[str], command: str, sudo: bool = False) -> Dict:
+def ssh_execute_remote_command(sshClient, hosts: List[str], command: str, sudo: bool = False, proxy_host: str = None) -> Dict:
     """ssh_execute_remote_command executes the given command on the remote
 
         :type hosts: List[str]
@@ -42,10 +46,14 @@ def ssh_execute_remote_command(sshClient, hosts: List[str], command: str, sudo: 
         :type sudo: bool
         :param sudo: Run the command with sudo.
 
+        :type proxy_host: str
+        :param proxy_host: Optional proxy host to use.
+
         :rtype: dict of command output
     """
 
-    client = sshClient(hosts)
+    client = sshClient(hosts, proxy_host)
+
     runCommandOutput = client.run_command(command=command, sudo=sudo)
     client.join()
     res = {}

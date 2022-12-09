@@ -1,0 +1,46 @@
+name: Action Pull Request
+description: Use this template to raise PR for your Action
+labels:
+  - 'awesome-action'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please include a summary of the change, motivation and context
+  - type: textarea
+    id: description
+    attributes:
+      label: Description 
+      description: |
+        1. Describe the feature and how this change fits in it, e.g. this PR makes kafka message.max.bytes configurable to better support batching
+        2. Describe why this is better than previous situation e.g. this PR changes logic for retry on healthchecks to avoid false positives
+        3. Dink relevant information about the bug (github issue or slack thread) and how this change solves it e.g. this change fixes #99999 by adding a lock on read/write to avoid data races.
+      placeholder: |
+        ...
+    validations:
+      required: true
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing
+      description: Please describe the tests that you ran to verify your changes. Please summarize what did you test and what needs to be tested e.g. deployed and tested helm chart locally.
+      placeholder: ...
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ### Checklist
+        - [ ] My changes generate no new warnings.
+        - [ ] I have added tests that prove my fix is effective or that my feature works.
+        - [ ] Any dependent changes have been merged and published.
+  - type: textarea
+    id: documentation
+    attributes: 
+      label: Documentation
+      description: Make sure that you have documented corresponding changes in this repository.
+      placeholder: |
+        Include __important__ links regarding the implementation of this PR.
+        This usually includes and RFC or an aggregation of issues and/or individual 
+        conversations that helped put this solution together. This helps ensure there is a good 
+        aggregation of resources regarding the implementation.
