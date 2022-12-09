@@ -1,5 +1,5 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Get AWS public S3 Buckets</h1>
+<h1>Get AWS public S3 Buckets by ACL</h1>
 
 ## Description
 This Lego Get AWS public S3 Buckets.
