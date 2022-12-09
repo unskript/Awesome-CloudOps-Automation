@@ -10,9 +10,9 @@ import datetime
 
 
 class InputSchema(BaseModel):
-    aws_certificate_arn: str = Field(
-        title="Certificate ARN",
-        description="ARN of the Certificate"
+    threshold_days: int = Field(
+        title="Threshold Days",
+        description="Threshold number of days to check for expiry. Eg: 30 -lists all certificates which are expiring within 30 days"
     )
     region: str = Field(
         title='Region',
@@ -23,24 +23,21 @@ class InputSchema(BaseModel):
 def aws_check_ssl_certificate_expiry_printer(output):
     if output is None:
         return
-    if output > 0:
-        pprint.pprint("Your SSL certificate is expiring in " + str(output) + " " + "days")
-    else:
-        pprint.pprint("Your SSL certificate has expired " + str(-output) + " " + "days ago")
+    pprint.pprint(output)
 
 
 def aws_check_ssl_certificate_expiry(
     handle,
-    aws_certificate_arn: str,
+    threshold_days: int,
     region: str,
-) -> int:
-    """aws_check_ssl_certificate_expiry checks the expiry date of an ACM SSL certificate .
+) -> Dict:
+    """aws_check_ssl_certificate_expiry returns all the ACM issued certificates which are about to expire.
 
             :type handle: object
             :param handle: Object returned from Task Validate
 
-            :type aws_certificate_arn: str
-            :param aws_certificate_arn: ARN of the certificate
+            :type threshold_days: int
+            :param threshold_days: Threshold number of days to check for expiry. Eg: 30 -lists all certificates which are expiring within 30 days
 
             :type region: str
             :param region: Region name of the AWS account
@@ -48,17 +45,33 @@ def aws_check_ssl_certificate_expiry(
             :rtype: Result Dictionary of result
     """
     iamClient = handle.client('acm', region_name=region)
-    result = iamClient.describe_certificate(CertificateArn=aws_certificate_arn)
-    for key,value in result['Certificate'].items():
-        if key == "NotAfter":
-            expiry_date = value
-            right_now = datetime.datetime.now(dateutil.tz.tzlocal())
-            diff = expiry_date-right_now
-            days_remaining = diff.days
-            if days_remaining < 30 and days_remaining > 0:
-                days = days_remaining
-            elif days_remaining < 0:
-                days = days_remaining
-            elif days_remaining > 30:
-                days = days_remaining
-            return days
+    arn_list=[]
+    domain_list = []
+    days_list= []
+    expiring_domain_list={}
+    result={}
+    certificates_list = iamClient.list_certificates(CertificateStatuses=['ISSUED'])
+    for each_arn in certificates_list['CertificateSummaryList']:
+        arn_list.append(each_arn['CertificateArn'])
+        domain_list.append(each_arn['DomainName'])
+    for certificate in arn_list:
+        details = iamClient.describe_certificate(CertificateArn=certificate)
+        for key,value in details['Certificate'].items():
+            if key == "NotAfter":
+                expiry_date = value
+                right_now = datetime.datetime.now(dateutil.tz.tzlocal())
+                diff = expiry_date-right_now
+                days_remaining = diff.days
+                if days_remaining < threshold_days and days_remaining > 0:
+                    days = days_remaining
+                elif days_remaining < 0:
+                    days = days_remaining
+                elif days_remaining > threshold_days:
+                    days = days_remaining
+                days_list.append(days)
+    for i in range(0,len(domain_list)):
+        result[domain_list[i]] = days_list[i]
+    for k,v in result.items():
+        if v < threshold_days:
+            expiring_domain_list[k]=v
+    print(expiring_domain_list)
