@@ -20,7 +20,7 @@ def aws_list_all_iam_users(handle) -> List:
         :type handle: object
         :param handle: Object returned from Task Validate
         
-        :rtype: Result List of result
+        :rtype: Result List of all IAM users
     """
     client = handle.client('iam') 
     users_list=[]
