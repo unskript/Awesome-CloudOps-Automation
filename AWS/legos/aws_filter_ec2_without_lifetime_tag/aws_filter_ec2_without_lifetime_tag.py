@@ -24,7 +24,7 @@ def aws_filter_ec2_without_lifetime_tag_printer(output):
     pprint.pprint({"Instances": output})
 
 
-def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str='') -> List:
+def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str) -> List:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 
         :type handle: object
