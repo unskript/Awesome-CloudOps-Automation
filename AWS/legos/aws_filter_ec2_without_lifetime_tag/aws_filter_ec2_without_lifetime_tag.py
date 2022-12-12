@@ -24,7 +24,7 @@ def aws_filter_ec2_without_lifetime_tag_printer(output):
     pprint.pprint({"Instances": output})
 
 
-def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str) -> List:
+def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str='') -> List:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 
         :type handle: object
@@ -39,20 +39,22 @@ def aws_filter_ec2_without_lifetime_tag(handle, lifetime_tag: str, region: str) 
         :rtype: Array of instances which not having lifetime tag.
     """
 
+    untagged_instances_dict={}
     ec2Client = handle.client('ec2', region_name=region)
-    res = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
-
-    result = []
-    for reservation in res:
-        for instance in reservation['Instances']:
-            try:
-                tagged_instance = instance['Tags']
-                tag_keys = [tags['Key'] for tags in tagged_instance]
-                if lifetime_tag not in tag_keys:
-                    result.append(instance['InstanceId'])
-
-            except Exception as e:
-                result.append(instance['InstanceId'])
-
-    return result
+    result_list = []
+    instance_list = []
+    try:
+        res = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
+        for reservation in res:
+            for instance in reservation['Instances']:
+                    tagged_instance = instance['Tags']
+                    tag_keys = [tags['Key'] for tags in tagged_instance]
+                    if lifetime_tag in tag_keys:
+                        instance_list.append(instance['InstanceId'])
+                    untagged_instances_dict["region"] = region
+                    untagged_instances_dict["instances"] = instance_list
+        result_list.append(untagged_instances_dict)
+    except Exception as e:
+        pass
+    return result_list
 
