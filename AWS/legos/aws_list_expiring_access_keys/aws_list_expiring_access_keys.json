@@ -9,5 +9,8 @@
     "action_supports_iteration": true,
     "action_verbs": ["list"],
     "action_nouns": ["expiring","access","aws"],
-    "action_is_check": true
+    "action_is_check": true,
+    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
+    "action_remediation": "<UUID of lego>",
+    "action_remediation_input": {}
 }
