@@ -4,13 +4,13 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_list_expiring_acm_certificates",
     "action_needs_credential": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_verbs": ["list"],
     "action_nouns": ["expiring","certificates","aws"],
     "action_is_check": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
-    "action_remediation": "<UUID of lego>",
-    "action_remediation_input": {}
+    "action_next_hop": "<UUID of lego for remediation if check fails>",
+    "action_next_hop_parameter_mapping": {}
 }
