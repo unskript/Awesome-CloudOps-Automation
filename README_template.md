@@ -62,6 +62,10 @@ Click on the URL of the xRunBook you would like to explore. It will open in a ne
 2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and which inputs are used for each action.
 3. Once each Action has been assigned Credentials and inputs, run each Action (in order) to run your xRunBook.
 
+## Add your own Runbook
+
+All xRunBooks are stored in the ~/.unskript/runbooks Folder. When Docker starts, any new file that in that folder gets loaded and you can navigate it to by http://127.0.0.1:8888:8888/lab/tree/<FILENAME>.ipyn
+
 ## Included xRunBooks 
 
 These xRunBooks are included in every install.  Use them as is, or make a copy to modify for your use!

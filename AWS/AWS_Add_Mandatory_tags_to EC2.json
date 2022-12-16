@@ -1,5 +1,5 @@
 {
-  "name": "AWS Access Key Rotation for IAM users",
+  "name": "AWS Add Mandatory tags to EC2",
   "description": "This xRunBook is a set of example actions that could be used to establish mandatory tagging to EC2 instances.  First testing inatnces for compliance, and creating reports of instances that are missing the required tags. There is also and action to add tags to an instance - to help bring them into tag compliance.",  
   "uuid": "70e8223d93ea22200942a614b7565faf63bfe6d14de352e60804f8b5dc6fbbcd",
   "icon": "CONNECTOR_TYPE_AWS",
