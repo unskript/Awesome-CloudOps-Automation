@@ -44,7 +44,6 @@ on:
         type: string 
       latest:
         description: 'Docker Latest tag Branch name'
-        required: true
         default: false
         type: boolean
 
@@ -312,7 +311,7 @@ jobs:
           mv /tmp/code_snippet/*.whl .
           mv /tmp/jlab_enhanced_cell_toolbar/*.whl .
           mv /tmp/elyra/elyra*tar.gz .
-          if [[ ${{ inputs.latest }} ]]; then 
+          if [[ ${{ inputs.latest }} == "true" ]]; then 
               bt="${{ env.DOCKER_IMAGE }}:${{ inputs.build_number }} -t ${{ env.DOCKER_IMAGE }}:latest"
           else 
               bt="${{ env.DOCKER_IMAGE }}:${{ inputs.build_number }}"
