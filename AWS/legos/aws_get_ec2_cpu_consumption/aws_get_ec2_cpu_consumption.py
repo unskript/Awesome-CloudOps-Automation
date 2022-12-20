@@ -7,6 +7,7 @@ from typing import List, Dict
 from pydantic import BaseModel, Field
 import pprint
 from datetime import datetime, timezone, timedelta
+from unskript.connectors.aws import aws_get_paginator
 
 from beartype import beartype
 @beartype
