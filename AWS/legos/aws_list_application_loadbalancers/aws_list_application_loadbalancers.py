@@ -33,9 +33,12 @@ def aws_list_apllication_loadbalancers(handle, region: str) -> List:
     """
 
     ec2Client = handle.client('elbv2', region_name=region)
-    resp = ec2Client.describe_load_balancers()
     result = []
-    for elb in resp['LoadBalancers']:
-        if elb['Type'] == "application":
-            result.append(elb['LoadBalancerArn'])
+    try:
+        resp = ec2Client.describe_load_balancers()
+        for elb in resp['LoadBalancers']:
+            if elb['Type'] == "application":
+                result.append(elb['LoadBalancerArn'])
+    except Exception as e:
+        result.append({"error" : e})
     return result
