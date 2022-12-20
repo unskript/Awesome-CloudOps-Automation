@@ -3,7 +3,7 @@
 <h1>get average CPU utilization over last 24 hours for EC2 instances </h1>
 
 ## Description
-Given a region, this will query all instances,a nd give you an average CPU utilization over 24 hours.
+Given a region, this will query all instances, and give you an average CPU utilization over 24 hours.
 
 
 ## Lego Details
