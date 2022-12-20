@@ -1,6 +1,6 @@
 {
-    "action_title": "get EC2 CPU Consumption for all instances",
-    "action_description": "get EC2 CPU Consumption for all instances",
+    "action_title": "Get EC2 CPU Consumption For All Instances",
+    "action_description": "Get EC2 CPU Consumption For All Instances",
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_get_ec2_CPU_averagev2",
     "action_needs_credential": true,
