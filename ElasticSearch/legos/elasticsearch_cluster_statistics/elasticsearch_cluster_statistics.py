@@ -64,16 +64,4 @@ def elasticsearch_cluster_statistics(handle) -> str:
                                 "GET",                      # Method
                                 None)                       # Data
 
-    # es_path = host + ":" + str(port) + "/_cluster/stats?human&pretty&pretty"
-    # es_header = "Authorization: ApiKey" + " " + api_key
-    # cmd = ["curl", "-k", "-XGET", "-H", "Content-Type: application/json", "-H",
-    #        es_header,
-    #        es_path]
-    # try:
-    #     raw_result = subprocess.run(cmd, shell=False, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-    #     res = json.loads(raw_result.stdout)
-    #     return res
-    # except subprocess.CalledProcessError as e:
-    #     return e.output
-
-    return output.arg
+    return output.args
