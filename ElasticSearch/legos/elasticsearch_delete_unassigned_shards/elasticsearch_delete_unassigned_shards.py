@@ -33,12 +33,13 @@ def elasticsearch_delete_unassigned_shards(handle) -> str:
     for line in str(output).split('\n'):
         if "UNASSIGNED" in line:
             list_of_shards.append(line.split(" ")[0])
-
+    output2 = ''
+    
     if len(list_of_shards) != 0:
         output2 = handle.web_request("/" + list_of_shards, # Path
                                      "DELETE",  # Method
                                      None)      # Data
-
+   
     o = output2
     if o == '':
         result = "No Unassigned shards found"
