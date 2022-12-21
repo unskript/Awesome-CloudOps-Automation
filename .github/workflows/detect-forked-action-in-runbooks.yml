@@ -24,7 +24,6 @@ jobs:
     - name: Install dependency
       run: |
         sudo apt update
-        sudo apt update --fix-broken 
         sudo apt install -y jq
 
     - name: Configure AWS Credentials
