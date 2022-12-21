@@ -52,7 +52,7 @@ def elasticsearch_cluster_statistics_printer(output):
     plotData(output, ['_nodes'], docs, shards)
 
 
-def elasticsearch_cluster_statistics(handle) -> str:
+def elasticsearch_cluster_statistics(handle) -> Dict:
     """elasticsearch_cluster_statistics fetches basic index metrics and information about the current nodes that form the cluster.
             :type handle: object
             :param handle: Object returned from Task Validate

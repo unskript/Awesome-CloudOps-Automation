@@ -31,10 +31,5 @@ def elasticsearch_check_health_status(handle) -> Dict:
     output = handle.web_request("/_cluster/health?pretty",  # Path
                                 "GET",                      # Method
                                 None)                       # Data
-    o = {}
-    try:
-        o = json.loads(output)
-    except:
-        pass 
     
-    return o
+    return output 
