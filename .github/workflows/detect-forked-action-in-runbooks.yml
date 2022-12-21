@@ -38,6 +38,10 @@ jobs:
       with:
         python-version: '3.7'
 
+    - name: Install smart open python package
+      run: |
+         /usr/bin/env python -m pip install smart-open
+
     - name: Run the Python Script
       run: |
         # Get TOP Directory to navigate 
