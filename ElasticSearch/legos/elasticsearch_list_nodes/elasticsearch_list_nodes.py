@@ -30,4 +30,4 @@ def elasticsearch_list_nodes(handle) -> str:
                                 "GET",                        # Method
                                 None)                         # Data
 
-    return output.args
+    return output

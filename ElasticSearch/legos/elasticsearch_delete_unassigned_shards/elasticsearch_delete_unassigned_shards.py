@@ -17,10 +17,7 @@ def elasticsearch_delete_unassigned_shards_printer(output):
     print(output)
 
 
-def elasticsearch_delete_unassigned_shards(handle,
-                                     host: str,
-                                     port: int,
-                                     api_key: str) -> str:
+def elasticsearch_delete_unassigned_shards(handle) -> str:
     """elasticsearch_delete_lost_shards deleted any corrupted/lost shards .
 
             :type handle: object

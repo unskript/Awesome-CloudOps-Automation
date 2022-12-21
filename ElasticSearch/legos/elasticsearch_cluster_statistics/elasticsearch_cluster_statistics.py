@@ -64,4 +64,4 @@ def elasticsearch_cluster_statistics(handle) -> str:
                                 "GET",                      # Method
                                 None)                       # Data
 
-    return output.args
+    return output

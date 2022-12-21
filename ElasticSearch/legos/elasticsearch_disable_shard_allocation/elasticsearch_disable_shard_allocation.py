@@ -34,5 +34,10 @@ def elasticsearch_disable_shard_allocation(handle) -> Dict:
     output = handle.web_request("/_cluster/settings?pretty",  # Path
                                 "PUT",                        # Method
                                 es_dict)                      # Data
+    o = {}
+    try:
+        o = json.loads(output)
+    except:
+        pass
 
-    return output.args
+    return o
