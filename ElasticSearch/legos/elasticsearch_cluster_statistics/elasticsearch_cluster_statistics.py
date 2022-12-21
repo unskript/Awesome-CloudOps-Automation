@@ -13,19 +13,7 @@ import pandas as pd
 
 
 class InputSchema(BaseModel):
-    host: str = Field(
-        title='Host',
-        description='URL of Elasticsearch server'
-    )
-    port: int = Field(
-        9200,
-        title='Port',
-        description='Port used by Elasticsearch.'
-    )
-    api_key: str = Field(
-        title='API Key',
-        description='API Key for Authentication'
-    )
+    pass
 
 
 def plotData(output, keywords, docs, shards):
@@ -64,33 +52,16 @@ def elasticsearch_cluster_statistics_printer(output):
     plotData(output, ['_nodes'], docs, shards)
 
 
-def elasticsearch_cluster_statistics(handle,
-                                     host: str,
-                                     api_key: str,
-                                     port: int) -> str:
+def elasticsearch_cluster_statistics(handle) -> Dict:
     """elasticsearch_cluster_statistics fetches basic index metrics and information about the current nodes that form the cluster.
             :type handle: object
             :param handle: Object returned from Task Validate
 
-            :type host: str
-            :param host: URL of your Elasticsearch server
-
-            :type port: int
-            :param host: Port used by your Elasticsearch server
-
-            :type api_key: str
-            :param api_key: API Key for authentication of the request
-
             :rtype: Result Dict of result
     """
-    es_path = host + ":" + str(port) + "/_cluster/stats?human&pretty&pretty"
-    es_header = "Authorization: ApiKey" + " " + api_key
-    cmd = ["curl", "-k", "-XGET", "-H", "Content-Type: application/json", "-H",
-           es_header,
-           es_path]
-    try:
-        raw_result = subprocess.run(cmd, shell=False, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-        res = json.loads(raw_result.stdout)
-        return res
-    except subprocess.CalledProcessError as e:
-        return e.output
+  
+    output = handle.web_request("/_cluster/stats?human&pretty&pretty",  # Path
+                                "GET",                      # Method
+                                None)                       # Data
+
+    return output
