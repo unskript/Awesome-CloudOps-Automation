@@ -39,7 +39,7 @@ def elasticsearch_delete_unassigned_shards(handle) -> str:
                                      "DELETE",  # Method
                                      None)      # Data
 
-    o = output2.args
+    o = output2
     if o == '':
         result = "No Unassigned shards found"
         return result
