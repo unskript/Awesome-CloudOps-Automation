@@ -3,8 +3,10 @@
 # All rights reserved.
 ##
 import json
+
 import pprint
 from typing import Optional, List
+from yaml import load
 
 from pydantic import BaseModel, Field
 
@@ -64,4 +66,22 @@ def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
             res['id'] = alarm['rules'][0]['grafana_alert']['id']
             res['name'] = alarm['name']
             result.append(res)
+    # Get Loki alerts as well.
+    if handle.lokiURL != None:
+        url = handle.lokiHost + "loki/api/v1/rules"
+        response = handle.lokiSession.get(url)
+        lokiAlerts = []
+        responseDict = load(response.content)
+        folder_names = responseDict.keys()
+        for folder_name in list(folder_names):
+            for alarm in responseDict[folder_name]:
+                res = {}
+                for rule in alarm['rules']:
+                   # Loki have 'alert' in the key, where as recorded loki has 'record' as the key.
+                   if 'alert' in rule:
+                    res['name'] = rule['alert']
+                   else:
+                    res['name'] = rule['record']
+                result.append(res)
+
     return result
