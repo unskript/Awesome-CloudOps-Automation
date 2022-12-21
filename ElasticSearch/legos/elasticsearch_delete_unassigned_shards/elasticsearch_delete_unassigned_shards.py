@@ -30,7 +30,7 @@ def elasticsearch_delete_unassigned_shards(handle) -> str:
                             "GET",                      # Method
                             None)                       # Data
     list_of_shards = []
-    for line in str(output.args).split('\n'):
+    for line in str(output).split('\n'):
         if "UNASSIGNED" in line:
             list_of_shards.append(line.split(" ")[0])
 
