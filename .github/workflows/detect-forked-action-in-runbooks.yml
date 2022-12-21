@@ -1,0 +1,53 @@
+name: Check Forked Action
+
+on:
+  pull_request:
+      types: [opened, reopened, edited, ready_for_review]
+
+permissions:
+      id-token: write
+      contents: read  
+
+env:
+    USE_S3_SNIPPETS: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v2
+
+    - name: Install dependency
+      run: |
+        sudo apt update
+        sudo apt update --fix-broken 
+        sudo apt install -y jq
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-region: ${{ secrets.GHACTION_AWS_REGION }}
+          role-to-assume: ${{ secrets.GHACTION_AWS_ROLE }}
+          role-session-name: ${{ secrets.GHACTION_AWS_SESSION_NAME }}
+      
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+
+    - name: Run the Python Script
+      run: |
+        # Get TOP Directory to navigate 
+        TOP_DIR=`git rev-parse --show-toplevel`
+        # Get Latest CS File 
+        CS_NAME=`aws s3api list-objects-v2 --bucket ${{ secrets.GHACTION_AWS_S3_BUCKET }} --prefix code_snippets --query 'reverse(sort_by(Contents,&LastModified))[0]' | jq .Key`
+        # Construct CS FILE Path
+        CS_FILE="s3://${{ secrets.GHACTION_AWS_S3_BUCKET }}/`echo $CS_NAME`"
+        # Find if ipynb in the latest changed files
+        NB_FILES=`git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master) | grep '.ipynb'`
+        # Call the python script to detect forked actions
+        /usr/bin/env python $TOP_DIR/.github/scripts/detect_forked_action_in_runbook.py $CS_FILE $NB_FILES
