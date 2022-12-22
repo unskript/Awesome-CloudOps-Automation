@@ -1,6 +1,6 @@
 {
 "action_title": "Execute Kubectl command",
-"action_description": "Execute the given Kubectl command.",
+"action_description": "Execute the given Kubectl command",
 "action_type": "LEGO_TYPE_K8S",
 "action_entry_function": "k8s_kubectl_command",
 "action_needs_credential": true,
@@ -11,6 +11,7 @@
 "execute"
 ],
 "action_nouns": [
-"command"
+"command",
+"kubernetes"
 ]
 }
