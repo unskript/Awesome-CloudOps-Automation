@@ -4,6 +4,7 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_listeners_without_http_redirect",
     "action_needs_credential": true,
+    "action_is_check": true,
     "action_supports_poll": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_iteration": true
