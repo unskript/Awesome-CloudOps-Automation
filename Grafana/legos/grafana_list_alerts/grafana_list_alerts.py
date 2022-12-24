@@ -66,10 +66,10 @@ def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
     folder_names = json.loads(response.content).keys()
     for folder_name in list(folder_names):
         for alarm in json.loads(response.content)[folder_name]:
-            res = {}
             rules = alarm.get('rules')
             if rules is not None:
                 for rule in rules:
+                    res = {}
                     grafana_alert = rule.get('grafana_alert')
                     if grafana_alert is not None:
                         res['id'] = grafana_alert.get('id')
