@@ -54,20 +54,31 @@ def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
         if panel_id:
             param["PanelID"] = panel_id
         params = param
+    try:
+        response = handle.session.get(url,
+                                     params=params)
+    except Exception as e:
+        print(f'Failed to get grafana rules, {str(e)}')
+        raise e
 
-    response = handle.session.get(url,
-                                 params=params)
-
+    # Grafana ruler rules api response https://editor.swagger.io/?url=https://raw.githubusercontent.com/grafana/grafana/main/pkg/services/ngalert/api/tooling/post.json
     result = []
     folder_names = json.loads(response.content).keys()
     for folder_name in list(folder_names):
         for alarm in json.loads(response.content)[folder_name]:
             res = {}
-            res['id'] = alarm['rules'][0]['grafana_alert']['id']
-            res['name'] = alarm['name']
-            result.append(res)
-    # Get Loki alerts as well.
-    # First get the datasources which has type Loki.
+            rules = alarm.get('rules')
+            if rules is not None:
+                for rule in rules:
+                    grafana_alert = rule.get('grafana_alert')
+                    if grafana_alert is not None:
+                        res['id'] = grafana_alert.get('id')
+                        res['name'] = alarm.get('name')
+                        result.append(res)
+
+    # Get Loki/Prometheus alerts as well.
+    # First get the datasources which has type Loki or Prometheus.
+    #
     url = handle.host + "/api/datasources"
     try:
         response = handle.session.get(url)
@@ -83,36 +94,45 @@ def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
         print(f'Unable to parse datasources response, error {str(e)}')
         return result
 
-    lokiDatasourcesList = []
+    interestedDatasourcesList = []
     for datasource in datasourcesList:
-        if datasource["type"] == "loki":
-            lokiDatasourcesList.append(datasource["uid"])
+        if datasource["type"] == "loki" or datasource['type'] == "prometheus":
+            if datasource.get('uid') is not None:
+                interestedDatasourcesList.append(datasource.get("uid"))
 
-    for lokiDatasourceUID in lokiDatasourcesList:
-        url = handle.host + "/api/ruler/" + lokiDatasourceUID + "/api/v1/rules"
+    for interestedDatasourceUID in interestedDatasourcesList:
+        url = handle.host + "/api/ruler/" + interestedDatasourceUID + "/api/v1/rules"
         try:
             response = handle.session.get(url, params=params)
             response.raise_for_status()
         except Exception as e:
-            print(f'Failed to get rules for datasource uid {lokiDatasourceUID}, error {str(e)}')
+            print(f'Skipping {interestedDatasourceUID}, error {str(e)}')
             continue
 
         try:
             responseDict = json.loads(response.content)
         except Exception as e:
-            print(f'Unable to parse rules response, uid {lokiDatasourceUID}, error {str(e)}')
+            print(f'Skipping uid {interestedDatasourceUID}, error {str(e)}')
             continue
 
         folder_names = responseDict.keys()
         for folder_name in list(folder_names):
             for alarm in responseDict[folder_name]:
-                for rule in alarm['rules']:
-                    res = {}
-                    # Loki have 'alert' in the key, where as recorded loki has 'record' as the key.
-                    if 'alert' in rule:
-                        res['name'] = rule['alert']
-                    else:
-                        res['name'] = rule['record']
-                    result.append(res)
+                rules = alarm.get('rules')
+                if rules is not None:
+                    for rule in rules:
+                        res = {}
+                        grafana_alert = rule.get('grafana_alert')
+                        if grafana_alert is not None:
+                            res['id'] = grafana_alert.get('id')
+                            res['name'] = alarm.get('name')
+                            result.append(res)
+                        # Loki have 'alert' in the key, where as recorded loki has 'record' as the key.
+                        else:
+                            if 'alert' in rule:
+                                res['name'] = rule.get('alert')
+                            else:
+                                res['name'] = rule.get('record')
+                            result.append(res)
 
     return result
