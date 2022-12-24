@@ -9,15 +9,12 @@ This Lego List Elasticsearch Nodes in a Cluster.
 
 ## Lego Details
 
-    elasticsearch_list_nodes(handle: object, host: str, port: int, api_key: str)
+    elasticsearch_list_nodes(handle: object)
 
         handle: Object of type unSkript ElasticSearch Connector
-        host: URL of your Elasticsearch server
-        port: Port number at which Elasticsearch is listening
-        api_key: API Key for authentication of the request
 
 ## Lego Input
-This Lego take four inputs handle, host, port and api_key.
+This Lego takes only the handle object that is returned from `task.validate(...)`
 
 ## Lego Output
 Here is a sample output.

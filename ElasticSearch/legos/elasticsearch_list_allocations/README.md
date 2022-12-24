@@ -7,15 +7,13 @@ This Lego lists allocations in an Elasticsearch cluster.
 
 ## Lego Details
 
-    elasticsearch_list_allocations(handle: object, host: str, port:int, api_key: str)
+    elasticsearch_list_allocations(handle: object)
 
         handle: Object of type unSkript Elasticsearch Connector
-        host: URL of your Elasticsearch server
-        port: Port used by your Elasticsearch server
-        region: API Key for authentication of the request
+        
 
 ## Lego Input
-This Lego take four inputs handle, host, port and api_key. 
+This Lego takes only the handle object that is returned from `task.validate(...)`
 
 ## Lego Output
 Here is a sample output.
