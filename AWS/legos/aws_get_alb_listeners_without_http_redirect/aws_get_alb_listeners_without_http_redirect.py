@@ -52,7 +52,6 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
         try:
             ec2Client = handle.client('elbv2', region_name=alb["region"])
             for load in alb["alb_arn"]:
-                listener_dict = {}
                 response = aws_get_paginator(ec2Client, "describe_listeners", "Listeners",
                                              LoadBalancerArn=load)
                 for listner in response:
@@ -61,6 +60,7 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
                                              ListenerArn=listner['ListenerArn'])
                         for rule in resp:
                             for action in rule['Actions']:
+                                listener_dict = {}
                                 if action['Type'] != 'redirect':
                                     listener_dict["region"] = alb["region"]
                                     listener_dict["listener_arn"] = listner['ListenerArn']

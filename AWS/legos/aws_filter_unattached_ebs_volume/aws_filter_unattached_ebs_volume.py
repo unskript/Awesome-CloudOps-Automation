@@ -42,10 +42,14 @@ def aws_filter_ebs_unattached_volumes(handle, region: str = "") -> Tuple:
 
             # collecting the volumes which has zero attachments
             for volume in volumes:
+                volume_dict = {}
                 if len(volume.attachments) == 0:
-                    result.append(volume.id)
+                    volume_dict["region"] = reg
+                    volume_dict["volume_id"] = volume.id
+                    result.append(volume_dict)
         except Exception as e:
             pass
+
     execution_flag = False
     if len(result) > 0:
         execution_flag = True
