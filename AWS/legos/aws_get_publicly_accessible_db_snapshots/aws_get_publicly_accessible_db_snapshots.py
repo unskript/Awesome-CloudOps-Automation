@@ -21,7 +21,7 @@ def aws_get_publicly_accessible_db_snapshots_printer(output):
     pprint.pprint(output)
 
 
-def aws_get_publicly_accessible_db_snapshots(handle, db_snapshot_identifier: list, region: str=None) -> List:
+def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> List:
     """aws_get_publicly_accessible_db_snapshots lists of publicly accessible db_snapshot_identifier.
 
         :type handle: object
