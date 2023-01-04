@@ -3,16 +3,19 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Tuple, Optional
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 from datetime import datetime, date
 
 class InputSchema(BaseModel):
-    region: str = Field(
+    region: Optional[str] = Field(
+        default="",
         title='Region',
-        description='AWS Region')
+        title='Region',
+        description='Name of the AWS Region'
+    )
 
 
 def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
@@ -47,12 +50,14 @@ def fetch_instances_from_valid_region(res,r) -> List:
                                     if launch_date < right_now:
                                         result.append(instance['InstanceId'])
                 except Exception as e:
-                    result.append(instance['InstanceId'])
-    instances_dict['region']= r
-    instances_dict['instances']= result
+                        if len(instance['InstanceId'])!=0:
+                            result.append(instance['InstanceId'])
+    if len(result)!=0:
+        instances_dict['region']= r
+        instances_dict['instances']= result
     return instances_dict
 
-def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None):
+def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None) -> Tuple:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 
         :type handle: object
@@ -75,4 +80,9 @@ def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: st
             final_list.append(instances_without_tags)
         except Exception as e:
             pass
-    return final_list
+    execution_flag = False
+    if len(final_list) > 0:
+        execution_flag = True
+    output = (execution_flag, final_list)
+    return output
+

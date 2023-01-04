@@ -9,7 +9,7 @@ This Lego Filter Instances without Termination and Lifetime Tag and check of the
     aws_filter_instances_without_termination_and_lifetime_tag(handle: object,region: str)
 
         handle: Object of type unSkript AWS Connector.
-        region: AWS region. Eg: "us-west-2"
+        region: Optional, AWS region. Eg: "us-west-2"
 
 ## Lego Input
 This Lego take two inputs handle, region.
