@@ -10,7 +10,7 @@ This Lego Filter AWS Unused Keypairs.
     aws_filter_unused_keypairs(handle: object, region: str)
 
         handle: Object of type unSkript AWS Connector
-        region: Region to filter instances.
+        region: Optional, Region to filter instances. Eg:'us-west-2'
 
 ## Lego Input
 This Lego take two inputs handle and region. 
