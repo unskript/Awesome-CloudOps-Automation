@@ -5,7 +5,11 @@
     "action_entry_function": "aws_filter_unencrypted_s3_buckets",
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_is_check":true,
     "action_supports_poll": true,
-    "action_supports_iteration": true
-  }
+    "action_supports_iteration": true,
+    "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_SECOPS" ],
+    "action_next_hop":["5d2919231cb21c9383cb09f396293d04b2b26e47ddc0c9c97dd5f59bd93cef2c"],
+    "action_next_hop_parameter_mapping":{}
+}
   
