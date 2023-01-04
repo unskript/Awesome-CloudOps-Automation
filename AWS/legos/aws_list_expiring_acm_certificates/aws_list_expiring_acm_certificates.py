@@ -3,7 +3,7 @@
 ##
 import dateutil
 from pydantic import BaseModel, Field
-from typing import Dict,List, Optional
+from typing import Dict,List, Optional,Tuple
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 import datetime
@@ -24,7 +24,7 @@ def aws_list_expiring_acm_certificates_printer(output):
         return
     pprint.pprint(output)
 
-def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> List:
+def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> Tuple:
     """aws_list_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -66,7 +66,12 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=
                             expiring_certificates_list.append(cert_arn)
             expiring_certificates_dict["region"]= r
             expiring_certificates_dict["certificate"]= expiring_certificates_list
-            result_list.append(expiring_certificates_dict)
+            if len(expiring_certificates_list)!=0:
+                result_list.append(expiring_certificates_dict)
         except Exception as e:
             pass
-    return result_list
+    execution_flag = False
+    if len(result_list) > 0:
+        execution_flag = True
+    output = (execution_flag, result_list)
+    return output

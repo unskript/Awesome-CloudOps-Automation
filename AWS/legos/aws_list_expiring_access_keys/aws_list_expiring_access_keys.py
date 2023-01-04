@@ -4,7 +4,7 @@
 import dateutil
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_iam_users.aws_list_all_iam_users import aws_list_all_iam_users
-from typing import Dict,List
+from typing import Dict,List,Tuple
 import pprint
 import datetime
 
@@ -19,7 +19,7 @@ def aws_list_expiring_access_keys_printer(output):
         return
     pprint.pprint(output)
 
-def aws_list_expiring_access_keys(handle, threshold_days: int)-> List:
+def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
     """aws_list_expiring_access_keys returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -54,4 +54,8 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> List:
                 final_result.append(result)
         except Exception as e:
             pass
-    return final_result
+    execution_flag = False
+    if len(final_result) > 0:
+        execution_flag = True
+    output = (execution_flag, final_result)
+    return output
