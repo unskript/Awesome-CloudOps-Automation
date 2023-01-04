@@ -27,7 +27,7 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> Tuple:
         :type region: object
         :param region: Object containing global params for the notebook.
 
-        :rtype: List of unused key pairs.
+        :rtype: Tuple of unused key pairs.
     """
     all_keys_dict = {}
     used_keys_dict = {}
@@ -35,7 +35,7 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> Tuple:
     used_key_pairs = []
     result = []
     all_regions = [region]
-    if region is None or not region:
+    if region is None or len(region)==0:
         all_regions = aws_list_all_regions(handle=handle)
     for r in all_regions:
         try:
