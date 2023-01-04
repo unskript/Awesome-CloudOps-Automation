@@ -9,6 +9,6 @@
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
-    "action_next_hop": ["281432114503d97b98fb007ba2407a47323150576b4ec7276a592964419552f9"],
+    "action_next_hop": [],
     "action_next_hop_parameter_mapping": {}
 }
