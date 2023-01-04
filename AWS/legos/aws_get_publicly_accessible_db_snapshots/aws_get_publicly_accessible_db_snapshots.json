@@ -11,6 +11,6 @@
     "action_verbs": ["get"],
     "action_nouns": ["aws","database","snapshots","public","accessible"],
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_SECOPS" ],
-    "action_next_hop":"1a325ba527fbf504000b5d5961f4ef6366daed4a50951e657bfff87eedad52df",
-    "action_next_hop_parameter_mapping":["db_snapshot_identifier","region"]
+    "action_next_hop":["1a325ba527fbf504000b5d5961f4ef6366daed4a50951e657bfff87eedad52df"],
+    "action_next_hop_parameter_mapping":{}
 }

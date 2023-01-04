@@ -11,6 +11,6 @@
     "action_verbs": ["filter"],
     "action_nouns": ["aws","database","snapshots","manual"],
     "action_categories":"",
-    "action_next_hop":"",
-    "action_next_hop_parameter_mapping":""
+    "action_next_hop":[],
+    "action_next_hop_parameter_mapping":{}
 }

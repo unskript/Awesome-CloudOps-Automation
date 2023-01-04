@@ -1,7 +1,7 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_filter_all_manual_database_snapshots.aws_filter_all_manual_database_snapshots import aws_get_manual_database_snapshots
@@ -21,7 +21,7 @@ def aws_get_publicly_accessible_db_snapshots_printer(output):
     pprint.pprint(output)
 
 
-def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> List:
+def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
     """aws_get_publicly_accessible_db_snapshots lists of publicly accessible db_snapshot_identifier.
 
         :type handle: object
@@ -62,5 +62,9 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> List:
                         result = [*result, p_dict]
         except Exception as e:
             pass
-    return result
+    execution_flag = False
+    if len(result) > 0:
+        execution_flag = True
+    output = (execution_flag, result)
+    return output
 
