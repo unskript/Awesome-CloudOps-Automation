@@ -3,15 +3,16 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Tuple,Optional
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
 import pprint
 
 class InputSchema(BaseModel):
-    region: str = Field(
+    region: Optional[str] = Field(
+        default="",
         title='Region',
-        description='AWS Region.')
+        description='Name of the AWS Region')
 
 
 def aws_filter_unused_keypairs_printer(output):
@@ -20,7 +21,7 @@ def aws_filter_unused_keypairs_printer(output):
     pprint.pprint({"Instances": output})
 
 
-def aws_filter_unused_keypairs(handle, region: str = None) -> List:
+def aws_filter_unused_keypairs(handle, region: str = None) -> Tuple:
     """aws_filter_unused_keypairs Returns an array of KeyPair.
 
         :type region: object
@@ -57,9 +58,15 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> List:
                         for each in v:
                             if each not in used_keys_dict["key_name"]:
                                 final_list.append(each)
-                final_dict["region"]=r
-                final_dict["unused_keys"]=final_list
-            result.append(final_dict)
+                if len(final_list)!=0:
+                    final_dict["region"]=r
+                    final_dict["unused_keys"]=final_list
+            if len(final_dict)!=0:
+                result.append(final_dict)
         except Exception as e:
             pass
-    return result
+    execution_flag = False
+    if len(result) > 0:
+        execution_flag = True
+    output = (execution_flag, result)
+    return output
