@@ -36,7 +36,7 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
     manual_snapshots_list=[]
     result=[]
     all_regions = [region]
-    if region is None or not region:
+    if region is None or len(region)==0:
         all_regions = aws_list_all_regions(handle=handle)
     try:
         for r in all_regions:
