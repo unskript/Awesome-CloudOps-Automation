@@ -60,17 +60,20 @@ def fetch_instances_from_valid_region(res,r) -> List:
 def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None) -> Tuple:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 
+        Assumed tag key format - terminationDateTag, lifetimeTag
+        Assumed Date format for both keys is - dd-mm-yy
+
         :type handle: object
         :param handle: Object returned from task.validate(...).
 
         :type region: string
         :param region: Used to filter the instance for specific region.
 
-        :rtype: Array of instances which not having termination and lifetime tag.
+        :rtype: Tuple of result and instances which dont having terminationDateTag and lifetimeTag
     """
     final_list=[]
     all_regions = [region]
-    if region is None or not region:
+    if region is None or len(region) == 0:
         all_regions = aws_list_all_regions(handle=handle)
     for r in all_regions:
         try:
