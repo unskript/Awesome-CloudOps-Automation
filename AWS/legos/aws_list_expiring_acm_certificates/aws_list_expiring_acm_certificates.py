@@ -44,7 +44,7 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=
     expiring_certificates_dict={}
     result_list=[]
     all_regions = [region]
-    if region is None or not region:
+    if region is None or len(region)==0:
         all_regions = aws_list_all_regions(handle=handle)
     for r in all_regions:
         iamClient = handle.client('acm', region_name=r)
