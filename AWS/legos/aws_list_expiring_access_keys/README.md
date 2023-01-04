@@ -7,14 +7,13 @@ This Lego lists all the expiring IAM Access Keys for an AWS User.
 
 ## Lego Details
 
-    aws_list_expiring_access_keys(handle, threshold_days: int, aws_username: str)
+    aws_list_expiring_access_keys(handle, threshold_days: int)
 
         handle: Object of type unSkript AWS Connector.
         threshold_days: Integer, Threshold number of days to check for expiry. Eg: 30 -lists all expiring access keys within 30 days.
-        aws_username: IAM username of AWS user. Eg: peralta
 
 ## Lego Input
-This Lego take three inputs handle, threshold_days and aws_username.
+This Lego take two inputs handle, threshold_days and aws_username.
 
 ## Lego Output
 <img src="./1.png">
