@@ -31,7 +31,7 @@ def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
         :type region: string
         :param region: Region of the RDS.
 
-        :rtype: List with publicly accessible RDS instances.
+        :rtype: Tuple with execution result and publicly accessible RDS instances.
     """
     result = []
     all_regions = [region]

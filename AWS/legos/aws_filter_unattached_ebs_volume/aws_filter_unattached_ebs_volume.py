@@ -27,7 +27,7 @@ def aws_filter_ebs_unattached_volumes(handle, region: str = "") -> Tuple:
         :type region: string
         :param region: Used to filter the volume for specific region.
 
-        :rtype: Result of the API in the List form.
+        :rtype: Tuple with execution result and list of EBS Unattached Volume.
     """
     result=[]
     all_regions = [region]
