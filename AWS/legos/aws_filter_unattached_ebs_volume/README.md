@@ -10,7 +10,7 @@ This Lego filter AWS EBS volumes.
     aws_filter_ebs_unattached_volumes(handle: object, region: str)
 
         handle: Object of type unSkript AWS Connector.
-        region: Used to filter the volume for specific region.
+        region: Optional, AWS region. Eg: “us-west-2”
 
 ## Lego Input
 This Lego take two inputs handle and region.
