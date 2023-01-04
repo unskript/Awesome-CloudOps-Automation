@@ -81,6 +81,7 @@
 * [Aws filter ec2 by tags.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_by_tags) 
 * [Aws filter ec2 by vpc.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_by_vpc) 
 * [Aws filter ec2 without lifetime tag.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_without_lifetime_tag) 
+* [Aws filter instances without termination and lifetime tag.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag) 
 * [Aws filter public s3 buckets by acl.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_public_s3_buckets_by_acl) 
 * [Aws filter target groups by tags.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_target_groups_by_tags) 
 * [Aws filter unattached ebs volume.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unattached_ebs_volume) 
