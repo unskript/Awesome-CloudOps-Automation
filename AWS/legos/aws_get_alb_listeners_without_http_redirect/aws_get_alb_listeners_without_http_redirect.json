@@ -6,7 +6,7 @@
     "action_needs_credential": true,
     "action_is_check": true,
     "action_supports_poll": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_TUPLE",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
     "action_next_hop": ["e84fa689b445924888abced31fe69f0edfcad2ea9135f175ce1897d86f04e6cd"],
