@@ -7,14 +7,13 @@ This Lego filter publicly accessible DB snapshots in RDS.
 
 ## Lego Details
 
-    aws_get_publicly_accessible_db_snapshots(handle, db_snapshot_identifier: list, region: str)
+    aws_get_publicly_accessible_db_snapshots(handle, region: str)
 
         handle: Object of type unSkript AWS Connector
-        db_snapshot_identifier: DB Snapshot Idntifier of RDS.
         region: Region of the RDS.
 
 ## Lego Input
-This Lego take three inputs handle, db_snapshot_identifier and region. 
+This Lego takes two inputs handle,region. 
 
 ## Lego Output
 Here is a sample output.

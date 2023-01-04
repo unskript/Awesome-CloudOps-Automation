@@ -9,5 +9,6 @@
     "action_supports_iteration": true,
     "action_verbs": ["renew"],
     "action_nouns": ["certificates","acm","aws"],
-    "action_is_check": false
+    "action_is_check": false,
+    "action_is_remediation": true
   }
