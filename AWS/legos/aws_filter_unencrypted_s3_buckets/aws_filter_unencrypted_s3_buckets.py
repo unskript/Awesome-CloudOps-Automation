@@ -31,7 +31,7 @@ def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> Tuple:
         :type region: string
         :param region: Filter S3 buckets.
 
-        :rtype: List with unencrypted bucket name.
+        :rtype: Tuple with execution result and unencrypted bucket name.
     """
     result = []
     all_regions = [region]
