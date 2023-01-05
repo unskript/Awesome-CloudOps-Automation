@@ -247,6 +247,7 @@
 * [K8s describe pod.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_describe_pod) 
 * [K8s exec command on pod.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_exec_command_on_pod) 
 * [K8s exec command on pods and filter.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_exec_command_on_pods_and_filter) 
+* [K8s get all evicted pods from namespace.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_evicted_pods_from_namespace) 
 * [K8s get all pods.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_pods) 
 * [K8s get candidate nodes for pods.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_candidate_nodes_for_pods) 
 * [K8s get config map kube system.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_config_map_kube_system) 
