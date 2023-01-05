@@ -1,0 +1,15 @@
+{
+    "action_title": "Get All Evicted PODS From Namespace",
+    "action_description": "This action get all evicted PODS from given namespace. If namespace not given it will get all the pods from all namespaces.",
+    "action_type": "LEGO_TYPE_K8S",
+    "action_entry_function": "k8s_get_all_evicted_pods_from_namespace",
+    "action_is_check": true,
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {}
+}
+    
