@@ -13,5 +13,6 @@
 "action_nouns": [
 "aws",
 "instances"
-]
+],
+"action_is_remediation":true
 }
