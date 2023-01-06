@@ -13,7 +13,7 @@ class InputSchema(BaseModel):
         title = "member",
         description = "user's id to be removed"
     )
-def modify_policy_remove_member(output):
+def modify_policy_remove_member_printer(output):
     if output is None:
         return
 
