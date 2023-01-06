@@ -27,6 +27,8 @@
 * [Gcp list service accounts.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts) 
 * [Gcp remove member from iam role.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role) 
 * [Gcp remove role from service account.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_role_from_service_account) 
+* [Gcp remove user role.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role) 
+* [Init.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/init) 
 * [Gcp resize gke cluster.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_resize_gke_cluster) 
 * [Gcp restart compute instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_restart_compute_instances) 
 * [Gcp stop compute instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_stop_compute_instances) 
