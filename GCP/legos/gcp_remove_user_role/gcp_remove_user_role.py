@@ -6,16 +6,16 @@ from google.oauth2 import service_account
 
 class InputSchema(BaseModel):
     role: str = Field(
-        title = "role",
+        title = "Role",
         description = "GCP user role to be removed"
     )
     member: str = Field(
-        title = "member",
+        title = "Member",
         description = "user's id to be removed"
     )
     resource: str = Field(
-        title = "resource",
-        description = "projects/my-project/serviceAccounts/my-service-account"
+        title = "Resource",
+        description = "GCP Resource in the form of project/<PROJECT_ID>/serviceAccounts/<SERVICE_ACCOUNT_NAME>"
         
     )
 def modify_policy_remove_member_printer(output):
@@ -25,7 +25,7 @@ def modify_policy_remove_member_printer(output):
     pprint.pprint(output)
 
 @beartype
-def modify_policy_remove_member(policy, role: str, member: str):
+def modify_policy_remove_member(policy, role: str, member: str, resource: str):
     """Removes a  member from a role binding.
 
         :type role: string
