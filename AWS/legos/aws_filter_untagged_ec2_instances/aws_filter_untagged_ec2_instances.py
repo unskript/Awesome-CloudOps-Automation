@@ -24,19 +24,20 @@ def aws_filter_untagged_ec2_instances_printer(output):
 
 def check_untagged_instance(res, r):
     instance_list = []
-    instances_dict = {}
     for reservation in res:
             for instance in reservation['Instances']:
+                instances_dict = {}
                 try:
                     tagged_instance = instance['Tags']
-                    if len(tagged_instance) != 0:
-                        instance_list.append(instance['InstanceId'])
+                    if len(tagged_instance) == 0:
+                        instances_dict['region']= r
+                        instances_dict['instances']= instance['InstanceId']
+                        instance_list.append(instances_dict)
                 except Exception as e:
-                    instance_list.append(instance['InstanceId'])
-    if len(instance_list)!=0:
-        instances_dict['region']= r
-        instances_dict['instances']= instance_list
-    return instances_dict
+                    instances_dict['region']= r
+                    instances_dict['instances']= instance['InstanceId']
+                    instance_list.append(instances_dict)
+    return instance_list
 
 
 def aws_filter_untagged_ec2_instances(handle, region: str) -> Tuple:
@@ -50,7 +51,7 @@ def aws_filter_untagged_ec2_instances(handle, region: str) -> Tuple:
 
         :rtype: Tupple of the untagged EC2 Instances
     """
-    result = []
+    all_instances = []
     all_regions = [region]
     if region is None or len(region)==0:
         all_regions = aws_list_all_regions(handle=handle)
@@ -60,9 +61,13 @@ def aws_filter_untagged_ec2_instances(handle, region: str) -> Tuple:
             res = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
             untagged_instances = check_untagged_instance(res, r)
             if len(untagged_instances)!=0:
-                result.append(untagged_instances)
+                all_instances.append(untagged_instances)
         except Exception as e:
             pass
+    try:
+        result = all_instances[0]
+    except Exception as e:
+        pass
     execution_flag = False
     if len(result) > 0:
         execution_flag = True
