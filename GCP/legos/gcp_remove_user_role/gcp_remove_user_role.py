@@ -13,11 +13,16 @@ class InputSchema(BaseModel):
         title = "member",
         description = "user's id to be removed"
     )
+    resource: str = Field(
+        title = "resource",
+        description = "projects/my-project/serviceAccounts/my-service-account"
+        
+    )
 def modify_policy_remove_member_printer(output):
     if output is None:
         return
-
-    print(output)
+    pprint.pprint("User role removed successfully.")
+    pprint.pprint(output)
 
 @beartype
 def modify_policy_remove_member(policy, role: str, member: str):
@@ -28,20 +33,19 @@ def modify_policy_remove_member(policy, role: str, member: str):
 
         :type member: string
         :param member: user's id to be removed.
+        
+        :type resource: string
+        :param resource: resource for which the policy is being requested.
 
         :rtype: confirmation of removal of role."""
 
     service = discovery.build('iam', 'v1', credentials=credentials)
-    # The resource for which the policy is being requested.
-    resource = 'projects/my-project/serviceAccounts/my-service-account'
     # TODO: Update placeholder value.
     request = service.projects().serviceAccounts().getIamPolicy(resource=resource)
     response = request.execute()
     binding = next(b for b in policy["bindings"] if b["role"] == role)
     if "members" in binding and member in binding["members"]:
         binding["members"].remove(member)
-    print(binding)
-    print(role)
     return policy
 
 # Initiate a Task object
