@@ -8,17 +8,14 @@
 from typing import List, Dict
 from pydantic import BaseModel, Field
 import pprint
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from unskript.connectors.aws import aws_get_paginator
-
-
 from beartype import beartype
 @beartype
 def aws_get_ec2_instance_age_printer(output):
     if output is None:
         return
     pprint.pprint(output)
-
 
 class InputSchema(BaseModel):
     region: str = Field(
@@ -29,75 +26,52 @@ class InputSchema(BaseModel):
 
 @beartype
 def aws_get_ec2_instance_age(handle, region: str) -> Dict:
+    """aws_restart_instances Restarts instances.
 
+        :type nbParamsObj: object
+        :param nbParamsObj: Object containing global params for the notebook.
+
+        :type credentialsDict: dict
+        :param credentialsDict: Dictionary of credentials info.
+
+        :type inputParamsJson: string
+        :param inputParamsJson: Json string of the input params.
+
+        :rtype: Dict with the stopped instances state info.
+    """
 
     ec2Client = handle.client('ec2', region_name=region)
-    cloudwatch= handle.client('cloudwatch', region_name=region)
     res = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
 
-   # Set the desired time range for the data traffic metrics
-    time_range = {
-        'StartTime': datetime.utcnow() - timedelta(hours=1),
-        'EndTime': datetime.utcnow()
-    }
+    # Get the current time
+    now = datetime.now(timezone.utc)
     result={}
-        # Iterate through the list of instances
+    # Iterate through the list of instances
     for reservation in res:
         for instance in reservation['Instances']:
-                # Get the instance ID and launch time
-                instance_id = instance['InstanceId']
-                # Set the desired dimensions for the data traffic metrics
-                dimensions = [
-                    {
-                        'Name': 'InstanceId',
-                        'Value': instance_id
-                    }
-                ]
+            # Get the instance ID and launch time
+            instance_id = instance['InstanceId']
+            launch_time = instance['LaunchTime']
 
-                # Get the data traffic in and out metrics for all EC2 instances
-                metrics = cloudwatch.get_metric_data(
-                    MetricDataQueries=[
-                        {
-                            'Id': 'm1',
-                            'MetricStat': {
-                                'Metric': {
-                                    'Namespace': 'AWS/EC2',
-                                    'MetricName': 'NetworkIn',
-                                    'Dimensions': dimensions
-                                },
-                                'Period': 3600,
-                                'Stat': 'Sum',
-                                'Unit': 'Bytes'
-                            }
-                        },
-                        {
-                            'Id': 'm2',
-                            'MetricStat': {
-                                'Metric': {
-                                    'Namespace': 'AWS/EC2',
-                                    'MetricName': 'NetworkOut',
-                                    'Dimensions': dimensions
-                                },
-                                'Period': 3600,
-                                'Stat': 'Sum',
-                                'Unit': 'Bytes'
-                            }
-                        }
-                    ],
-                    StartTime=time_range['StartTime'],
-                    EndTime=time_range['EndTime']
-                )
-                #bytes dont mean anything.  Lets use MB
+            # Calculate the age of the instance
+            age = now - launch_time
 
-                if len(metrics['MetricDataResults'][0]['Values'])>0:
-                    NetworkInMB = round(float(metrics['MetricDataResults'][0]['Values'][0])/1024/1024,2)
-                else:
-                    NetworkInMB = "error"
-                if len(metrics['MetricDataResults'][1]['Values'])>0:    
-                    NetworkOutMB = round(float(metrics['MetricDataResults'][1]['Values'][0])/1024/1024,2)
-                else:
-                    NetworkOutMB = "error"
-                metricsIwant = {metrics['MetricDataResults'][0]['Label'] : NetworkInMB, metrics['MetricDataResults'][1]['Label'] : NetworkOutMB}
-                result[instance_id] = metricsIwant
-
+            # Print the instance ID and age
+            ageText = f"Instance {instance_id} is {age.days} days old"
+            ageDict = {instance_id: age.days}
+            print(ageText)
+            result[instance_id] = age.days
     return(result)
+
+task = Task(Workflow())
+task.configure(credentialsJson='''{
+    "credential_name": "DevRole",
+    "credential_type": "CONNECTOR_TYPE_AWS",
+    "credential_id": "0b438eba-0627-4f6d-b998-a4c604f20e3c"
+}''')
+task.configure(inputParamsJson='''{
+    "region": "\\"us-west-2\\""
+    }''')
+(err, hdl, args) = task.validate(vars=vars())
+if err is None:
+    task.execute(aws_get_ec2_instance_age, lego_printer=aws_get_ec2_instance_age_printer, hdl=hdl, args=args)
