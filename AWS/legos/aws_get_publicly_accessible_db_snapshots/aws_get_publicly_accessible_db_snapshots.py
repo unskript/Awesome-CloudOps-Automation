@@ -23,20 +23,16 @@ def aws_get_publicly_accessible_db_snapshots_printer(output):
 
 def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
     """aws_get_publicly_accessible_db_snapshots lists of publicly accessible db_snapshot_identifier.
-
         :type handle: object
         :param handle: Object returned from task.validate(...).
-
         :type region: string
         :param region: Region of the RDS.
-
         :rtype: List with publicly accessible Snapshots Identifier in RDS.
     """
-    public_snapshots = []
     manual_snapshots_list=[]
     result=[]
     all_regions = [region]
-    if region is None or len(region)==0:
+    if region is None or not region:
         all_regions = aws_list_all_regions(handle=handle)
     try:
         for r in all_regions:
@@ -51,14 +47,13 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
         try:
             ec2Client = handle.client('rds', region_name=all_snapshots['region'])
             for each_snapshot in all_snapshots['snapshot']:
-                p_dict={}
                 response = ec2Client.describe_db_snapshot_attributes(DBSnapshotIdentifier=each_snapshot)
                 db_attribute = response["DBSnapshotAttributesResult"]
                 for value in db_attribute['DBSnapshotAttributes']:
+                    p_dict={}
                     if "all" in value["AttributeValues"]:
-                        public_snapshots.append(db_attribute['DBSnapshotIdentifier'])
                         p_dict["region"] = all_snapshots['region']
-                        p_dict["open_snapshot"] = public_snapshots
+                        p_dict["open_snapshot"] = db_attribute['DBSnapshotIdentifier']
                         result = [*result, p_dict]
         except Exception as e:
             pass
@@ -67,4 +62,3 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
         execution_flag = True
     output = (execution_flag, result)
     return output
-

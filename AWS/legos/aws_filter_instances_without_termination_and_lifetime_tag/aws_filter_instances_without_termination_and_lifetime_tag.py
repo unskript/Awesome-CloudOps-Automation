@@ -13,7 +13,6 @@ class InputSchema(BaseModel):
     region: Optional[str] = Field(
         default="",
         title='Region',
-        title='Region',
         description='Name of the AWS Region'
     )
 
