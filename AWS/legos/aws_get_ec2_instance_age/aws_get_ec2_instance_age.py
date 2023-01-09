@@ -50,16 +50,3 @@ def aws_get_ec2_instance_age(handle, region: str) -> Dict:
             print(ageText)
             result[instance_id] = age.days
     return(result)
-
-task = Task(Workflow())
-task.configure(credentialsJson='''{
-    "credential_name": "DevRole",
-    "credential_type": "CONNECTOR_TYPE_AWS",
-    "credential_id": "0b438eba-0627-4f6d-b998-a4c604f20e3c"
-}''')
-task.configure(inputParamsJson='''{
-    "region": "\\"us-west-2\\""
-    }''')
-(err, hdl, args) = task.validate(vars=vars())
-if err is None:
-    task.execute(aws_get_ec2_instance_age, lego_printer=aws_get_ec2_instance_age_printer, hdl=hdl, args=args)
