@@ -26,19 +26,7 @@ class InputSchema(BaseModel):
 
 @beartype
 def aws_get_ec2_instance_age(handle, region: str) -> Dict:
-    """aws_restart_instances Restarts instances.
 
-        :type nbParamsObj: object
-        :param nbParamsObj: Object containing global params for the notebook.
-
-        :type credentialsDict: dict
-        :param credentialsDict: Dictionary of credentials info.
-
-        :type inputParamsJson: string
-        :param inputParamsJson: Json string of the input params.
-
-        :rtype: Dict with the stopped instances state info.
-    """
 
     ec2Client = handle.client('ec2', region_name=region)
     res = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
