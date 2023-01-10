@@ -10,7 +10,7 @@ This Lego filter the AWS Untagged EC2 Instances.
     aws_filter_untagged_ec2_instances(handle: object, region: str)
 
         handle: Object of type unSkript AWS Connector
-        region: Region to filter instances.
+        region: region: Optional, AWS region. Eg: “us-west-2”
 
 ## Lego Input
 
