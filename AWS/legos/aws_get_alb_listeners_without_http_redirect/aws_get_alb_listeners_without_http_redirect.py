@@ -5,7 +5,7 @@ from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.aws.aws_list_application_loadbalancers.aws_list_application_loadbalancers import aws_list_apllication_loadbalancers
+from unskript.legos.aws.aws_list_application_loadbalancers.aws_list_application_loadbalancers import aws_list_application_loadbalancers
 import pprint
 
 
