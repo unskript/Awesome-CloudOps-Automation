@@ -7,11 +7,10 @@ This Lego Get Schedule To Retire AWS EC2 Instance and gives a list of Instances.
 
 ## Lego Details
 
-    aws_get_schedule_to_retire_instances(handle: object, instance_ids: list, region: str)
+    aws_get_schedule_to_retire_instances(handle: object, region: str)
 
         handle: Object of type unSkript AWS Connector
-        instance_ids: List of Instances.
-        region: Used to filter the volume for specific region.
+        region: Optional, AWS region. Eg: “us-west-2”
 
 ## Lego Input
 This Lego take two inputs instance_ids and region. 
