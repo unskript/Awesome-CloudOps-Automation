@@ -41,7 +41,7 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
             all_regions = aws_list_all_regions(handle)
         for reg in all_regions:
             alb_dict = {}
-            loadbalancer_arn = aws_list_apllication_loadbalancers(handle, region)
+            loadbalancer_arn = aws_list_application_loadbalancers(handle, region)
             alb_dict["region"] = reg
             alb_dict["alb_arn"] = loadbalancer_arn
             alb_list.append(alb_dict)
