@@ -47,13 +47,3 @@ def modify_policy_remove_member(policy, role: str, member: str, resource: str):
     if "members" in binding and member in binding["members"]:
         binding["members"].remove(member)
     return policy
-
-# Initiate a Task object
-task = Task(Workflow())
-
-(err,hdl, args) = task.validate(vars=vars()) 
-if err is None:
-    task.execute(modify_policy_remove_member,
-                 lego_printer=modify_policy_remove_member,
-                 hdl=hdl,
-                 args=args)
