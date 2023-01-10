@@ -23,7 +23,7 @@ def aws_publicly_accessible_db_instances_printer(output):
 
 
 def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
-    """aws_list_apllication_loadbalancers lists application loadbalancers ARNs.
+    """aws_publicly_accessible_db_instances Gets all publicly accessible DB instances
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
