@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Tuple
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_get_s3_bucket_list.aws_get_s3_bucket_list import aws_get_s3_buckets
+from unskript.enums.aws_access_key_enums import BucketACLPermissions
 import pprint
 
 
@@ -15,19 +16,24 @@ class InputSchema(BaseModel):
     title='Region',
     description='Name of the AWS Region'
     )
+    permission: BucketACLPermissions = Field(
+        default= None,
+        title="S3 Bucket's ACL Permission",
+        description="Set of permissions that AWS S3 supports in an ACL for buckets and objects"
+    )
     
 def aws_get_public_s3_buckets_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-def check_publicly_accessible_buckets(s3Client,b,permission):
+def check_publicly_accessible_buckets(s3Client,b,all_permissions):
     public_check = ["http://acs.amazonaws.com/groups/global/AuthenticatedUsers",
                    "http://acs.amazonaws.com/groups/global/AllUsers"]
     public_buckets = False
     try:
         res = s3Client.get_bucket_acl(Bucket=b)
-        for perm in permission:
+        for perm in all_permissions:
             for grant in res["Grants"]:
                 if 'Permission' in grant.keys() and perm == grant["Permission"]:
                     if 'URI' in grant["Grantee"] and grant["Grantee"]["URI"] in public_check:
@@ -36,19 +42,24 @@ def check_publicly_accessible_buckets(s3Client,b,permission):
         pass
     return public_buckets
 
-def aws_get_public_s3_buckets(handle, region: str=None) -> Tuple:
+def aws_get_public_s3_buckets(handle, permission:BucketACLPermissions=None, region: str=None) -> Tuple:
     """aws_get_public_s3_buckets get list of public buckets.
         
-        Note- Only READ and WRITE ACL Permission S3 buckets are chekced for public access. Other ACL Permissions are - "READ_ACP"|"WRITE_ACP"|"FULL_CONTROL"
+        Note- By default(if no permissions are given) READ and WRITE ACL Permissioned S3 buckets are chekced for public access. Other ACL Permissions are - "READ_ACP"|"WRITE_ACP"|"FULL_CONTROL"
         :type handle: object
-        :param handle: Object returned from task.validate(...).
+        :param handle: Object returned from task.validate(...)
+
+        :type permission: Enum
+        :param permission: Set of permissions that AWS S3 supports in an ACL for buckets and objects.
 
         :type region: string
         :param region: location of the bucket.
         
         :rtype: Tuple with the execution result and list of public S3 buckets with READ/WRITE ACL Permissions
     """
-    permission = ["READ","WRITE"]
+    all_permissions = [permission]
+    if permission is None or len(permission)==0:
+        all_permissions = ["READ","WRITE"]
     result = []
     all_buckets = []
     all_regions = [region]
@@ -69,7 +80,7 @@ def aws_get_public_s3_buckets(handle, region: str=None) -> Tuple:
     for bucket in all_buckets:
         try:
             s3Client = handle.client('s3',region_name= bucket['region'])
-            flag = check_publicly_accessible_buckets(s3Client,bucket['bucket'], permission)
+            flag = check_publicly_accessible_buckets(s3Client,bucket['bucket'], all_permissions)
             if flag:
                 result.append(bucket)
         except Exception as e:
