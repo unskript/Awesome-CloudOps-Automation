@@ -11,7 +11,7 @@ This Lego lists all the expiring ACM issued SSL certificates
 
         handle: Object of type unSkript AWS Connector.
         threshold_days: Integer, Threshold number of days to check for expiry. Eg: 30 -lists all certificates which are expiring within 30 days.
-        region: Region where the Certificate is present.
+        region: Optional, Region where the Certificate is present.Eg:'us-west-2'
 
 ## Lego Input
 This Lego take three inputs handle, threshold_days and region.

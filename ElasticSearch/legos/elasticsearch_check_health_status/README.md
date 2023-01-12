@@ -9,15 +9,13 @@ This Lego used to Check Elasticsearch Health Status.
 
 ## Lego Details
 
-    elasticsearch_check_health_status(handle: object, host: str, port: int, api_key: str)
+    elasticsearch_check_health_status(handle: object)
 
         handle: Object of type unSkript ElasticSearch Connector
-        host: URL of your Elasticsearch server
-        port: Port used by your Elasticsearch server
-        api_key: API Key for authentication of the request
+        
 
-## Lego Input
-This Lego take four inputs handle, host, port and api_key.
+## Lego Input 
+This Lego takes only the handle object that is returned from `task.validate(...)`
 
 ## Lego Output
 Here is a sample output.

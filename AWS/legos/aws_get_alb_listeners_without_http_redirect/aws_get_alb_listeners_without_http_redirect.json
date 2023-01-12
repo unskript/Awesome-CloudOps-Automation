@@ -4,7 +4,11 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_listeners_without_http_redirect",
     "action_needs_credential": true,
+    "action_is_check": true,
     "action_supports_poll": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
-    "action_supports_iteration": true
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
+    "action_next_hop": ["f0e5d5038aad3efc10cd1cc79b27571c08d672b6b8c5cdd57e8bd5b78c23b001"],
+    "action_next_hop_parameter_mapping": {}
 }
