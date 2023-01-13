@@ -1,7 +1,7 @@
 name: Generate Readme
 on:
   push:
-    branches:
+    branches-ignore:
       - master
 jobs:
   generate-readme:
