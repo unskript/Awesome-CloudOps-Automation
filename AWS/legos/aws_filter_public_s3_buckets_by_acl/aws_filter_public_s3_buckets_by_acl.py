@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Tuple
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_get_s3_bucket_list.aws_get_s3_bucket_list import aws_get_s3_buckets
-from unskript.enums.aws_access_key_enums import BucketACLPermissions
+from unskript.enums.aws_acl_permissions_enums import BucketACLPermissions
 import pprint
 
 
