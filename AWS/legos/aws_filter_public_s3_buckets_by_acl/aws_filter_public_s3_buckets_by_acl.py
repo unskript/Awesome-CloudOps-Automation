@@ -16,8 +16,7 @@ class InputSchema(BaseModel):
     title='Region',
     description='Name of the AWS Region'
     )
-    permission: BucketACLPermissions = Field(
-        default= None,
+    permission: Optional[BucketACLPermissions] = Field(
         title="S3 Bucket's ACL Permission",
         description="Set of permissions that AWS S3 supports in an ACL for buckets and objects"
     )
