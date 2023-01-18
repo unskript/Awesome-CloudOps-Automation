@@ -12,7 +12,7 @@ class InputSchema(BaseModel):
     elb_name: Optional[str] = Field(
         default="",
         title='ELB Name',
-        description='Name of elastic loadbalancer.')
+        description='Name of the elastic load balancer.')
 
     region: Optional[str] = Field(
         default="",
@@ -30,12 +30,12 @@ def aws_get_unhealthy_ec2_instances_for_elb(handle, elb_name: str = "", region: 
     """aws_get_unHealthy_ec2_instances_for_elb gives unhealthy instances from ELB
 
         :type elb_name: string
-        :param elb_name: Name of elastic loadbalancer.
+        :param elb_name: Name of the elastic load balancer.
 
         :type region: string
         :param region: AWS region.
 
-        :rtype: Tuple with execution result and list of unhealthy instances from ELB.
+        :rtype: A tuple with execution results and a list of unhealthy instances from ELB
     """
     result = []
     all_regions = [region]

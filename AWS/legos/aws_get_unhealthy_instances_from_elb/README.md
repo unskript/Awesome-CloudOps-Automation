@@ -2,7 +2,7 @@
 <h1>Get Unhealthy instances from ELB </h1>
 
 ## Description
-This action Filter AWS unhealthy instances from Elastic Load Balancer.
+This action filters unhealthy AWS instances from the Elastic Load Balancer.
 
 
 ## Lego Details
@@ -10,11 +10,11 @@ This action Filter AWS unhealthy instances from Elastic Load Balancer.
     aws_get_unhealthy_ec2_instances_for_elb(handle, elb_name: str = "", region: str = "")
 
         handle: Object of type unSkript AWS Connector
-        elb_name: Optional, Name of elastic loadbalancer.
-        region: Optional, AWS region. Eg: “us-west-2”
+        elb_name: Optional, Name of the elastic load balancer.
+        region: Optional, AWS region. Eg: "us-west-2"
 
 ## Lego Input
-This Lego take three inputs handle, elb_name and region. 
+This Lego takes three inputs: handle, elb_name, and region.
 
 ## Lego Output
 Here is a sample output.
