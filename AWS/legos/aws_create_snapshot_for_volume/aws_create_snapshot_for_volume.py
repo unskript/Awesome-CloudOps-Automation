@@ -41,6 +41,6 @@ def aws_create_volumes_snapshot(handle, volume_id: str, region: str) -> List:
         response = ec2Client.create_snapshot(VolumeId=volume_id)
         result.append(response)
     except Exception as e:
-        pass
+        raise e
 
     return result
