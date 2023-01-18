@@ -3,7 +3,7 @@
 # All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from unskript.enums.aws_access_key_enums import CannedACLPermissions
+from unskript.enums.aws_canned_acl_enums import CannedACLPermissions
 from typing import Optional, Dict
 import pprint
 
@@ -14,8 +14,7 @@ class InputSchema(BaseModel):
     bucket_name: str = Field(
         title='Bucket Name',
         description='AWS S3 Bucket Name.')
-    acl: CannedACLPermissions = Field(
-        default=None,
+    acl: Optional[CannedACLPermissions] = Field(
         title='Canned ACL Permission',
         description="Canned ACL Permission type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.")
 
