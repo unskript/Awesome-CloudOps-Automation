@@ -1,0 +1,14 @@
+{
+    "action_title": "Get Unhealthy instances from ELB",
+    "action_description": "Get Unhealthy instances from Elastic Load Balancer",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_get_unhealthy_ec2_instances_for_elb",
+    "action_needs_credential": true,
+    "action_is_check": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_next_hop": ["75c9298c37cd3bfd726dd5da4641e46cba98cfcb8017298e8fcbc87b7f54e632"],
+    "action_next_hop_parameter_mapping": {}
+}
