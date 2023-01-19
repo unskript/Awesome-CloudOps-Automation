@@ -11,6 +11,6 @@
     "action_nouns": ["expiring","certificates","aws"],
     "action_is_check": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
-    "action_next_hop": ["89773c9cb2201505fbf5dbac0cc34a4056ba1a45a315addffec9af7a4b9b7390"],
+    "action_next_hop": ["76681732b20a69913f0d9248272271bf2f4ab6459498ec6d0ab055870e0db0bb"],
     "action_next_hop_parameter_mapping": {}
 }

@@ -11,7 +11,7 @@
     "action_verbs": ["get"],
     "action_nouns": ["aws","schedule","retire","instances"],
     "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE"],
-    "action_next_hop":[],
+    "action_next_hop":["6684091dbbcd51c416f37c3070df6efd9fcb029c06047fcab62f32ee4c2f0596"],
     "action_next_hop_parameter_mapping":{}
   }
   
