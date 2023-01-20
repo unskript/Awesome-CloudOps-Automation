@@ -23,7 +23,7 @@ def pingdom_get_checkids_printer(output):
     pprint.pprint(output)
 
 
-def pingdom_get_checkids(handle, host_name: str = "") -> List[str]:
+def pingdom_get_checkids(handle, host_name: str = "") -> List[int]:
     """pingdom_get_checkids.
 
         :type handle: object
