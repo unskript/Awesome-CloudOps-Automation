@@ -5,6 +5,8 @@ import dateutil
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_iam_users.aws_list_all_iam_users import aws_list_all_iam_users
 from typing import Dict,List,Tuple
+from unskript.utils import CheckOutput, CheckOutputStatus
+
 import pprint
 import datetime
 
@@ -17,9 +19,14 @@ class InputSchema(BaseModel):
 def aws_list_expiring_access_keys_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.status)
+        pprint.pprint(output.objects)
+        pprint.pprint(output.error)
+    else:
+        pprint.pprint(output)
 
-def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
+def aws_list_expiring_access_keys(handle, threshold_days: int)-> CheckOutput:
     """aws_list_expiring_access_keys returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -35,7 +42,15 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
     try:
         all_users = aws_list_all_iam_users(handle=handle)
     except Exception as error:
-        pass
+        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
+                           objects=[],
+                           error=error.__str__())
+    
+    if len(all_users) <= 0:
+        return CheckOutput(status=CheckOutputStatus.FAILURE,
+                           objects=[],
+                           error=str("Error getting List of Users"))
+
     for each_user in all_users:
         try:
             iamClient = handle.client('iam')
@@ -53,9 +68,11 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
             if len(result)!=0:
                 final_result.append(result)
         except Exception as e:
-            pass
-    execution_flag = False
-    if len(final_result) > 0:
-        execution_flag = True
-    output = (execution_flag, final_result)
-    return output
+            return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
+                               objects=[],
+                               error=e.__str__())
+
+ 
+    return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                       objects=[final_result],
+                       error=str(""))
