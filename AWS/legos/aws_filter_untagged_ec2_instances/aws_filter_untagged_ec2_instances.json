@@ -11,6 +11,6 @@
   "action_nouns": ["aws","instances","untagged"],
   "action_is_check": true,
   "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT" ],
-  "action_next_hop": ["ef6e03e0bb46f1d9eb58405e5eed4b962c4ae9eeaaf64877c1c4e820c2854c6e"],
+  "action_next_hop": ["a16703da15d9e9e2d8a56b146e730b5e4c1496721ff1dc8606a5021d521ed9e3"],
   "action_next_hop_parameter_mapping": {}
 }

@@ -22,7 +22,7 @@ def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
         return
     pprint.pprint(output)
 
-def fetch_instances_from_valid_region(res,r) -> List:
+def fetch_instances_from_valid_region(res,r):
     result=[]
     instances_dict={}
     for reservation in res:
@@ -79,7 +79,8 @@ def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: st
             ec2Client = handle.client('ec2', region_name=r)
             all_reservations = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
             instances_without_tags = fetch_instances_from_valid_region(all_reservations,r)
-            final_list.append(instances_without_tags)
+            if len(instances_without_tags)!=0:
+                final_list.append(instances_without_tags)
         except Exception as e:
             pass
     execution_flag = False
