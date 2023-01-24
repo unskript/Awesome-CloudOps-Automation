@@ -5,7 +5,7 @@ import dateutil
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_iam_users.aws_list_all_iam_users import aws_list_all_iam_users
 from typing import Dict,List,Tuple
-from unskript.utils import CheckOutput, CheckOutputStatus
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 
 import pprint
 import datetime
