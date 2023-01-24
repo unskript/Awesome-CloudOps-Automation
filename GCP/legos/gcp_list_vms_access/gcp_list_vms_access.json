@@ -1,0 +1,11 @@
+{
+    "action_title": "List all GCP VMs and if Publicly Accessible",
+    "action_description": "List all GCP buckets",
+    "action_type": "LEGO_TYPE_GCP",
+    "action_entry_function": "gcp_list_VMs",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_verbs": ["list"],
+    "action_nouns": ["VMs","gcp"]
+}
