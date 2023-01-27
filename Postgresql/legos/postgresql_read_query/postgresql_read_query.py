@@ -15,13 +15,13 @@ class InputSchema(BaseModel):
         title='Read Query',
         description='''
             Read query in Postgresql PREPARE statement format. For eg.
-            SELECT foo FROM table WHERE bar=$1 AND customer=$2.
-            The values for $1 and $2 should be passed in the params field as a tuple.
+            SELECT foo FROM table WHERE bar=%s AND customer=%s.
+            The values for %s and %s should be passed in the params field as a tuple.
         ''')
     params: tuple = Field(
         None,
         title='Parameters',
-        description='Parameters to the query in list format. For eg: [1, 2, "abc"]')
+        description='Parameters to the query in tuple format. For eg: ("abc")')
 
 
 def postgresql_read_query_printer(output):
@@ -56,15 +56,10 @@ def postgresql_read_query(handle, query: str, params: tuple = ()) -> List:
 
     query = "PREPARE psycop_{random_id} AS {query};".format(
         random_id=random_id, query=query)
-    if not params:
-        prepared_query = "EXECUTE psycop_{random_id};".format(
-            random_id=random_id)
-    else:
-        prepared_query = "EXECUTE psycop_{random_id} {params};".format(
-            random_id=random_id, params=tuple(params))
-
-    cur.execute(query)
-    cur.execute(prepared_query)
+    prepared_query = "EXECUTE psycop_{random_id};".format(
+        random_id=random_id)
+    cur.execute(query, params)
+    cur.execute(prepared_query, params)
     res = cur.fetchall()
     handle.commit()
     cur.close()
