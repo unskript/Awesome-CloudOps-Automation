@@ -4,11 +4,6 @@
 #
 
 from pydantic import BaseModel, Field
-import pprint
-
-
-pp = pprint.PrettyPrinter(indent=4)
-
 
 class InputSchema(BaseModel):
     kafka_command: str = Field(
@@ -21,7 +16,7 @@ class InputSchema(BaseModel):
 def kafka_run_command_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    print(output)
 
 
 def kafka_run_command(handle, kafka_command: str) -> str:
@@ -33,7 +28,7 @@ def kafka_run_command(handle, kafka_command: str) -> str:
         :rtype: string
     """
 
-    assert(kafka_command.startswith("kafka"))
+    assert(kafka_command.startswith("kafka") or kafka_command.startswith("./kafka"))
 
     result = handle.run_native_cmd(kafka_command)
-    return result
+    return result.stdout
