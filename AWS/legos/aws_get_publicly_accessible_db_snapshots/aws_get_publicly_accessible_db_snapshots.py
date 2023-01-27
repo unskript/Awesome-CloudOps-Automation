@@ -3,9 +3,11 @@
 ##
 from typing import List, Dict, Optional, Tuple
 from pydantic import BaseModel, Field
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_filter_all_manual_database_snapshots.aws_filter_all_manual_database_snapshots import aws_get_manual_database_snapshots
 import pprint
+
 
 class InputSchema(BaseModel):
     region: Optional[str] = Field(
@@ -18,16 +20,19 @@ class InputSchema(BaseModel):
 def aws_get_publicly_accessible_db_snapshots_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    pprint.pprint(output.json())
 
 
-def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
+def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckOutput:
     """aws_get_publicly_accessible_db_snapshots lists of publicly accessible db_snapshot_identifier.
+
         :type handle: object
         :param handle: Object returned from task.validate(...).
+
         :type region: string
         :param region: Region of the RDS.
-        :rtype: List with publicly accessible Snapshots Identifier in RDS.
+
+        :rtype: Object with status, result having publicly accessible Snapshots Identifier in RDS, error
     """
     manual_snapshots_list=[]
     result=[]
@@ -42,7 +47,13 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
             snapshots_dict["snapshot"]=output
             manual_snapshots_list.append(snapshots_dict)
     except Exception as error:
-        pass
+        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
+                           objects=[],
+                           error=error.__str__())
+    if len(manual_snapshots_list) <= 0:
+        return CheckOutput(status=CheckOutputStatus.FAILURE,
+                           objects=[],
+                           error=str("Error getting Manual Db Snapshots"))
     for all_snapshots in manual_snapshots_list:
         try:
             ec2Client = handle.client('rds', region_name=all_snapshots['region'])
@@ -56,9 +67,9 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
                         p_dict["open_snapshot"] = db_attribute['DBSnapshotIdentifier']
                         result = [*result, p_dict]
         except Exception as e:
-            pass
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+            return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
+                               objects=[],
+                               error=e.__str__())
+    return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                       objects=result,
+                       error=str(""))

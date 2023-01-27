@@ -4,6 +4,7 @@
 ##
 from pydantic import BaseModel, Field
 from typing import List, Tuple,Optional
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
 import pprint
@@ -18,16 +19,16 @@ class InputSchema(BaseModel):
 def aws_filter_unused_keypairs_printer(output):
     if output is None:
         return
-    pprint.pprint({"Instances": output})
+    pprint.pprint(output.json())
 
 
-def aws_filter_unused_keypairs(handle, region: str = None) -> Tuple:
+def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
     """aws_filter_unused_keypairs Returns an array of KeyPair.
 
         :type region: object
         :param region: Object containing global params for the notebook.
 
-        :rtype: Tuple of unused key pairs.
+        :rtype: Object with status, result of unused key pairs, and error.
     """
     all_keys_dict = {}
     used_keys_dict = {}
@@ -65,8 +66,6 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> Tuple:
                 result.append(final_dict)
         except Exception as e:
             pass
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+    return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                       objects=result,
+                       error=str(""))
