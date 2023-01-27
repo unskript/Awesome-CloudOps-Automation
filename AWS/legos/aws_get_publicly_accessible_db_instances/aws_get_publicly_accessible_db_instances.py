@@ -3,7 +3,8 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Optional, List, Tuple
+from typing import Optional
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
 import pprint
@@ -19,10 +20,10 @@ class InputSchema(BaseModel):
 def aws_publicly_accessible_db_instances_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    pprint.pprint(output.json())
 
 
-def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
+def aws_publicly_accessible_db_instances(handle, region: str = "") -> CheckOutput:
     """aws_publicly_accessible_db_instances Gets all publicly accessible DB instances
 
         :type handle: object
@@ -31,7 +32,7 @@ def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
         :type region: string
         :param region: Region of the RDS.
 
-        :rtype: Tuple with execution result and publicly accessible RDS instances.
+        :rtype: CheckOutput with status result and list of publicly accessible RDS instances.
     """
     result = []
     all_regions = [region]
@@ -49,8 +50,7 @@ def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
                     result.append(db_instance_dict)
         except Exception as error:
             pass
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+        
+    return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                       objects=result,
+                       error=str(""))

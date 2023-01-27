@@ -32,7 +32,7 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput
         :type region: string
         :param region: Region to filter ALB listeners.
 
-        :rtype: CheckOutput of status and result of ALB listeners without HTTP redirection.
+        :rtype: CheckOutput of status result and list of ALB listeners without HTTP redirection.
     """
     result = []
     all_regions = [region]
