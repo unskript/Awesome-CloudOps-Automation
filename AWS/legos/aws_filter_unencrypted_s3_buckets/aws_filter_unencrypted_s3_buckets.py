@@ -23,7 +23,6 @@ def aws_filter_unencrypted_s3_buckets_printer(output):
     pprint.pprint(output.json())
 
 
-@beartype
 def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> CheckOutput:
     """aws_filter_unencrypted_s3_buckets List of unencrypted S3 bucket name .
 
