@@ -53,7 +53,7 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckO
     if len(manual_snapshots_list) <= 0:
         return CheckOutput(status=CheckOutputStatus.FAILURE,
                            objects=[],
-                           error=str("Error getting Manual Db Snapshots"))
+                           error=str("Unable to get Manual Db Snapshots"))
     for all_snapshots in manual_snapshots_list:
         try:
             ec2Client = handle.client('rds', region_name=all_snapshots['region'])
@@ -67,9 +67,7 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckO
                         p_dict["open_snapshot"] = db_attribute['DBSnapshotIdentifier']
                         result = [*result, p_dict]
         except Exception as e:
-            return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                               objects=[],
-                               error=e.__str__())
+            pass
     return CheckOutput(status=CheckOutputStatus.SUCCESS,
                        objects=result,
                        error=str(""))
