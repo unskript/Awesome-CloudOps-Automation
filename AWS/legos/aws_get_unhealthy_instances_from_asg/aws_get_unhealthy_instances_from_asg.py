@@ -28,7 +28,7 @@ def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> CheckOu
         :type region: string
         :param region: AWS region.
 
-        :rtype: Tuple with execution result and list of unhealthy instances from ASG.
+        :rtype: CheckOutput with status and result of a list of unhealthy instances from ASG.
     """
     result = []
     all_regions = [region]

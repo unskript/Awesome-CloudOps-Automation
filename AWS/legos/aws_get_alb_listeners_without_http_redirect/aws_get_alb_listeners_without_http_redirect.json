@@ -6,9 +6,9 @@
     "action_needs_credential": true,
     "action_is_check": true,
     "action_supports_poll": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
-    "action_next_hop": ["f0e5d5038aad3efc10cd1cc79b27571c08d672b6b8c5cdd57e8bd5b78c23b001"],
+    "action_next_hop": ["9e392c0bf9be0821958c1d03f36ca550d1061d589d5d22f51cb93e775e71206"],
     "action_next_hop_parameter_mapping": {}
 }
