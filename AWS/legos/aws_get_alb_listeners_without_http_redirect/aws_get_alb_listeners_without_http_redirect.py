@@ -39,17 +39,17 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput
     alb_list = []
     if not region:
         all_regions = aws_list_all_regions(handle)
-    try:
-        for reg in all_regions:
+
+    for reg in all_regions:
+        try:
             alb_dict = {}
             loadbalancer_arn = aws_list_application_loadbalancers(handle, reg)
             alb_dict["region"] = reg
             alb_dict["alb_arn"] = loadbalancer_arn
             alb_list.append(alb_dict)
-    except Exception as error:
-        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                               objects=[],
-                               error=error.__str__())
+        except Exception as error:
+            pass
+        
     for alb in alb_list:
         try:
             ec2Client = handle.client('elbv2', region_name=alb["region"])
