@@ -9,7 +9,7 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
-    "action_next_hop": ["e8cccc03e1af323982c0ab9f06c01127c0481ca81943eb7e82e46245140b1059"],
+    "action_next_hop": ["da23633be34037f023e1c1f56220ec75eb2729d7d8eb2bca9badec15ed0fd2ca"],
     "action_next_hop_parameter_mapping": {}
 }
   
