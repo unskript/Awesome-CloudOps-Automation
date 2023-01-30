@@ -79,10 +79,6 @@ def aws_get_public_s3_buckets(handle, permission:BucketACLPermissions=None, regi
         return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
                            objects=[],
                            error=e.__str__())
-    if len(all_buckets) <= 0:
-        return CheckOutput(status=CheckOutputStatus.FAILURE,
-                           objects=[],
-                           error=str("Unable to get Public S3 buckets"))
     for bucket in all_buckets:
         s3Client = handle.client('s3',region_name= bucket['region'])
         flag = check_publicly_accessible_buckets(s3Client,bucket['bucket'], all_permissions)
