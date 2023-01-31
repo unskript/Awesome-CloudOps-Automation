@@ -32,11 +32,13 @@ def aws_list_application_loadbalancers(handle, region: str) -> List:
 
         :rtype: List with all the application loadbalancer ARNs
     """
-
-    ec2Client = handle.client('elbv2', region_name=region)
-    resp = aws_get_paginator(ec2Client, "describe_load_balancers", "LoadBalancers")
     result = []
-    for elb in resp:
-        if elb['Type'] == "application":
-            result.append(elb['LoadBalancerArn'])
+    try:
+        ec2Client = handle.client('elbv2', region_name=region)
+        resp = aws_get_paginator(ec2Client, "describe_load_balancers", "LoadBalancers")
+        for elb in resp:
+            if elb['Type'] == "application":
+                result.append(elb['LoadBalancerArn'])
+    except Exception as e:
+        pass
     return result

@@ -5,12 +5,12 @@
     "action_entry_function": "aws_get_publicly_accessible_db_snapshots",
     "action_needs_credential": true,
     "action_supports_poll": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
     "action_supports_iteration": true,
     "action_is_check":true,
     "action_verbs": ["get"],
     "action_nouns": ["aws","database","snapshots","public","accessible"],
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_SECOPS" ],
-    "action_next_hop":["1a325ba527fbf504000b5d5961f4ef6366daed4a50951e657bfff87eedad52df"],
+    "action_next_hop":["7c0d143556a33b81d3fb1ff08dfdd59cebe5d58b00b55e8ae660df2e42f71bfe"],
     "action_next_hop_parameter_mapping":{}
 }
