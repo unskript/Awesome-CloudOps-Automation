@@ -25,7 +25,8 @@ class InputSchema(BaseModel):
 def aws_get_public_s3_buckets_printer(output):
     if output is None:
         return
-    pprint.pprint(output.json())
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
 
 def check_publicly_accessible_buckets(s3Client,b,all_permissions):
     public_check = ["http://acs.amazonaws.com/groups/global/AuthenticatedUsers",
@@ -45,7 +46,7 @@ def check_publicly_accessible_buckets(s3Client,b,all_permissions):
 def aws_get_public_s3_buckets(handle, permission:BucketACLPermissions=None, region: str=None) -> CheckOutput:
     """aws_get_public_s3_buckets get list of public buckets.
         
-        Note- By default(if no permissions are given) READ and WRITE ACL Permissioned S3 buckets are chekced for public access. Other ACL Permissions are - "READ_ACP"|"WRITE_ACP"|"FULL_CONTROL"
+        Note- By default(if no permissions are given) READ and WRITE ACL Permissioned S3 buckets are checked for public access. Other ACL Permissions are - "READ_ACP"|"WRITE_ACP"|"FULL_CONTROL"
         :type handle: object
         :param handle: Object returned from task.validate(...)
 
@@ -84,6 +85,11 @@ def aws_get_public_s3_buckets(handle, permission:BucketACLPermissions=None, regi
         flag = check_publicly_accessible_buckets(s3Client,bucket['bucket'], all_permissions)
         if flag:
             result.append(bucket)
-    return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                       objects=result,
-                       error=str(""))
+    if len(result)!=0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))

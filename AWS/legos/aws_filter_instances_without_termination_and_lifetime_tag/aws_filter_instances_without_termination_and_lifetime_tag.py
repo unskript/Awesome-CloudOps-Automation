@@ -17,11 +17,11 @@ class InputSchema(BaseModel):
         description='Name of the AWS Region'
     )
 
-
 def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
     if output is None:
         return
-    pprint.pprint(output.json())
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
 
 def fetch_instances_from_valid_region(res,r):
     result=[]
@@ -84,7 +84,11 @@ def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: st
                 final_list.append(instances_without_tags)
         except Exception as e:
             pass
-    return CheckOutput(status=CheckOutputStatus.SUCCESS,
+    if len(final_list)!=0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
                    objects=final_list,
                    error=str(""))
-
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=final_list,
+                   error=str(""))

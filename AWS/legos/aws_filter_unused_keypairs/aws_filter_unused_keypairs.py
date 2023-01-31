@@ -19,7 +19,8 @@ class InputSchema(BaseModel):
 def aws_filter_unused_keypairs_printer(output):
     if output is None:
         return
-    pprint.pprint(output.json())
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
 
 
 def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
@@ -66,6 +67,11 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
                 result.append(final_dict)
         except Exception as e:
             pass
-    return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                       objects=result,
-                       error=str(""))
+    if len(result)!=0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))

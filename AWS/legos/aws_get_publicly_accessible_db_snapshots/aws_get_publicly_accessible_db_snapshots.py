@@ -20,7 +20,8 @@ class InputSchema(BaseModel):
 def aws_get_publicly_accessible_db_snapshots_printer(output):
     if output is None:
         return
-    pprint.pprint(output.json())
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
 
 
 def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckOutput:
@@ -64,6 +65,11 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckO
                         result = [*result, p_dict]
         except Exception as e:
             pass
-    return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                       objects=result,
-                       error=str(""))
+    if len(result)!=0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))
