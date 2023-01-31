@@ -27,6 +27,8 @@ def aws_get_public_s3_buckets_printer(output):
         return
     if isinstance(output, CheckOutput):
         pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 def check_publicly_accessible_buckets(s3Client,b,all_permissions):
     public_check = ["http://acs.amazonaws.com/groups/global/AuthenticatedUsers",

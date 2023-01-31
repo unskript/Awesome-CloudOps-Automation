@@ -25,6 +25,8 @@ def aws_list_expiring_acm_certificates_printer(output):
         return
     if isinstance(output, CheckOutput):
         pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> CheckOutput:
     """aws_list_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days

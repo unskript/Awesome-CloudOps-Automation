@@ -22,6 +22,8 @@ def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
         return
     if isinstance(output, CheckOutput):
         pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 def fetch_instances_from_valid_region(res,r):
     result=[]

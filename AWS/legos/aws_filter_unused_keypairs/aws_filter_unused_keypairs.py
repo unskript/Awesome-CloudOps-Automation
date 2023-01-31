@@ -21,6 +21,8 @@ def aws_filter_unused_keypairs_printer(output):
         return
     if isinstance(output, CheckOutput):
         pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 
 def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
