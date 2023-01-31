@@ -20,7 +20,11 @@ class InputSchema(BaseModel):
 def aws_filter_unencrypted_s3_buckets_printer(output):
     if output is None:
         return
-    pprint.pprint(output.json())
+
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 
 def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> CheckOutput:
@@ -54,8 +58,13 @@ def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> CheckOutput:
                     result.append(bucket_dict)
         except Exception as error:
             pass
-
-    return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                       objects=result,
-                       error=str(""))
+    
+    if len(result) != 0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))
 

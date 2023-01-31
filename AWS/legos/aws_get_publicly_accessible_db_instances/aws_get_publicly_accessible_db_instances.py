@@ -20,7 +20,11 @@ class InputSchema(BaseModel):
 def aws_publicly_accessible_db_instances_printer(output):
     if output is None:
         return
-    pprint.pprint(output.json())
+        
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 
 def aws_publicly_accessible_db_instances(handle, region: str = "") -> CheckOutput:
@@ -51,6 +55,11 @@ def aws_publicly_accessible_db_instances(handle, region: str = "") -> CheckOutpu
         except Exception as error:
             pass
         
-    return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                       objects=result,
-                       error=str(""))
+    if len(result) != 0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str("")) 

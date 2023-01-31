@@ -20,7 +20,11 @@ class InputSchema(BaseModel):
 def aws_listeners_without_http_redirect_printer(output):
     if output is None:
         return
-    pprint.pprint(output.json())
+        
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 
 def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput:
@@ -70,9 +74,14 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput
         except Exception as error:
             pass
 
-    return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                       objects=result,
-                       error=str(""))
+    if len(result) != 0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))
 
 
 
