@@ -4,6 +4,7 @@
 import dateutil
 from pydantic import BaseModel, Field
 from typing import Dict,List, Optional,Tuple
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 import datetime
@@ -22,9 +23,12 @@ class InputSchema(BaseModel):
 def aws_list_expiring_acm_certificates_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
-def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> Tuple:
+def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> CheckOutput:
     """aws_list_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -36,7 +40,7 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=
         :type region: str
         :param region: Region name of the AWS account
 
-        :rtype: Result Dictionary of result
+        :rtype: Object containing status, expiring certificates, and error
     """
     arn_list=[]
     domain_list = []
@@ -70,8 +74,11 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=
                 result_list.append(expiring_certificates_dict)
         except Exception as e:
             pass
-    execution_flag = False
-    if len(result_list) > 0:
-        execution_flag = True
-    output = (execution_flag, result_list)
-    return output
+    if len(result_list)!=0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result_list,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result_list,
+                   error=str(""))

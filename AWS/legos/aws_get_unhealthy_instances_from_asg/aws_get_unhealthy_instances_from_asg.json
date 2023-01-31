@@ -6,9 +6,9 @@
     "action_needs_credential": true,
     "action_is_check": true,
     "action_supports_poll": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
-    "action_next_hop": ["6cc78c390971a226f9c9aa861d3ca1d3666fcba0c5bec9d15f0c54a665996aef"],
+    "action_next_hop": ["680ad9d119afab5f647e1afe7826b88d89bf35304954c3328e65a2fcf470f930"],
     "action_next_hop_parameter_mapping": {}
 }

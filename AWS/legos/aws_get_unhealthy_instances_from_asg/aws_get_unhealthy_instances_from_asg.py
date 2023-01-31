@@ -3,6 +3,7 @@
 ##
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
@@ -18,16 +19,20 @@ class InputSchema(BaseModel):
 def aws_filter_unhealthy_instances_from_asg_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+        
+    if isinstance(output, CheckOutput):
+        pprint.pprint(output.json())
+    else:
+        pprint.pprint(output)
 
 
-def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> Tuple:
+def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> CheckOutput:
     """aws_filter_unhealthy_instances_from_asg gives unhealthy instances from ASG
 
         :type region: string
         :param region: AWS region.
 
-        :rtype: Tuple with execution result and list of unhealthy instances from ASG.
+        :rtype: CheckOutput with status result and list of unhealthy instances from ASG.
     """
     result = []
     all_regions = [region]
@@ -38,7 +43,7 @@ def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> Tuple:
         try:
             asg_client = handle.client('autoscaling', region_name=reg)
             response = aws_get_paginator(asg_client, "describe_auto_scaling_instances", "AutoScalingInstances")
-            
+
             # filter instances to only include those that are in an "unhealthy" state
             for instance in response:
                 data_dict = {}
@@ -50,12 +55,15 @@ def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> Tuple:
 
         except Exception as e:
             pass
-
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+    
+    if len(result) != 0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))
 
 
 
