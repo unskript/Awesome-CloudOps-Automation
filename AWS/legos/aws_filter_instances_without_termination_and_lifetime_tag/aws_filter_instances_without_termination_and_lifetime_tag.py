@@ -21,7 +21,7 @@ def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

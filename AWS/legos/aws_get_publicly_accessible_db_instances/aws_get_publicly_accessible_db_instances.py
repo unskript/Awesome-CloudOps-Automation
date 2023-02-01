@@ -22,7 +22,7 @@ def aws_publicly_accessible_db_instances_printer(output):
         return
         
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

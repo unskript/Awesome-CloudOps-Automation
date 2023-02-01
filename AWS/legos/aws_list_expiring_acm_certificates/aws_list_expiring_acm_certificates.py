@@ -24,7 +24,7 @@ def aws_list_expiring_acm_certificates_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

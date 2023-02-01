@@ -21,7 +21,7 @@ def k8s_get_all_evicted_pods_from_namespace_printer(output):
         return
 
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

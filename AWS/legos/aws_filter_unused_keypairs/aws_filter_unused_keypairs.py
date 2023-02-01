@@ -20,7 +20,7 @@ def aws_filter_unused_keypairs_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

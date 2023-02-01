@@ -21,7 +21,7 @@ def aws_filter_unhealthy_instances_from_asg_printer(output):
         return
         
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

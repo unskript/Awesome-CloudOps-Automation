@@ -23,7 +23,7 @@ def aws_get_schedule_to_retire_instances_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 
