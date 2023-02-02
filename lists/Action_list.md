@@ -96,6 +96,7 @@
 * [Aws get tags of all resources.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources) 
 * [Aws get unhealthy instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances) 
 * [Aws get unhealthy instances from asg.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_asg) 
+* [Aws get unhealthy instances from elb.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb) 
 * [Aws launch instance from ami.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_launch_instance_from_ami) 
 * [Aws list access keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_access_keys) 
 * [Aws list all iam users.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_all_iam_users) 
