@@ -21,7 +21,7 @@ def aws_filter_ebs_unattached_volumes_printer(output):
         return
 
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

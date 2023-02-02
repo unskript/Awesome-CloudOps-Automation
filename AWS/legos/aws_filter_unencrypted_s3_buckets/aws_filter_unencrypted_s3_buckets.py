@@ -22,7 +22,7 @@ def aws_filter_unencrypted_s3_buckets_printer(output):
         return
 
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

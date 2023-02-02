@@ -21,7 +21,7 @@ def aws_get_publicly_accessible_db_snapshots_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 

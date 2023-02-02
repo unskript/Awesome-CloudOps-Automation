@@ -22,7 +22,7 @@ def aws_listeners_without_http_redirect_printer(output):
         return
         
     if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
+        print(output.json())
     else:
         pprint.pprint(output)
 
