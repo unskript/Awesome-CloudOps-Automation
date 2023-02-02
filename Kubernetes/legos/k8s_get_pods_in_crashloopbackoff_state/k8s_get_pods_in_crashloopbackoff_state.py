@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
         title='Namespace',
         description='k8s Namespace')
 
-def k8s_get_pods_in_imagepullbackoff_state_printer(output):
+def k8s_get_pods_in_crashloopbackoff_state_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
@@ -26,8 +26,8 @@ def k8s_get_pods_in_imagepullbackoff_state_printer(output):
         pprint.pprint(output)
 
 
-def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> CheckOutput:
-    """k8s_get_list_of_pods_with_imagepullbackoff_state executes the given kubectl command to find pods in ImagePullBackOff State
+def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> CheckOutput:
+    """k8s_get_pods_in_crashloopbackoff_state executes the given kubectl command to find pods in CrashLoopBackOff State
 
         :type handle: object
         :param handle: Object returned from the Task validate method
@@ -40,9 +40,9 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Check
     if handle.client_side_validation != True:
         print(f"K8S Connector is invalid: {handle}")
         return str()
-    kubectl_command ="kubectl get pods --all-namespaces | grep ImagePullBackOff | tr -s ' ' | cut -d ' ' -f 1,2"
+    kubectl_command ="kubectl get pods --all-namespaces | grep CrashLoopBackOff | tr -s ' ' | cut -d ' ' -f 1,2"
     if namespace:
-        kubectl_command = "kubectl get pods -n " + namespace + " | grep ImagePullBackOff | cut -d' ' -f 1 | tr -d ' '"
+        kubectl_command = "kubectl get pods -n " + namespace + " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
     response = handle.run_native_cmd(kubectl_command)
     if response is None or hasattr(response, "stderr") is False or response.stderr is None:
         print(
