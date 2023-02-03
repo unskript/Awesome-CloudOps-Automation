@@ -139,6 +139,7 @@
 * [Aws list attached user policies.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies) 
 * [Aws list expiring access keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys) 
 * [Aws list expiring acm certificates.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates) 
+* [Aws list unhealthy instances in target group.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unhealthy_instances_in_target_group) 
 * [Aws loadbalancer list instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_loadbalancer_list_instances) 
 * [Aws make bucket public.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_make_bucket_public) 
 * [Aws modify listener http redirection.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_modify_listener_http_redirection) 
