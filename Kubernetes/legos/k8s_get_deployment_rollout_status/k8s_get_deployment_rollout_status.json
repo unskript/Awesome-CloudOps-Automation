@@ -2,7 +2,7 @@
     "action_title": "Get Deployment Rollout Status",
     "action_description": "This action search for failed deployment rollout status and returns list.",
     "action_type": "LEGO_TYPE_K8S",
-    "action_entry_function": "k8s_get_deployment_status",
+    "action_entry_function": "k8s_get_deployment_rollout_status",
     "action_is_check": true,
     "action_needs_credential": true,
     "action_supports_poll": true,

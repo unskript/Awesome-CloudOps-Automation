@@ -22,7 +22,7 @@ class InputSchema(BaseModel):
         description="Set of permissions that AWS S3 supports in an ACL for buckets and objects"
     )
     
-def aws_get_public_s3_buckets_printer(output):
+def aws_filter_public_s3_buckets_by_acl_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
@@ -45,8 +45,8 @@ def check_publicly_accessible_buckets(s3Client,b,all_permissions):
         pass
     return public_buckets
 
-def aws_get_public_s3_buckets(handle, permission:BucketACLPermissions=None, region: str=None) -> CheckOutput:
-    """aws_get_public_s3_buckets get list of public buckets.
+def aws_filter_public_s3_buckets_by_acl(handle, permission:BucketACLPermissions=None, region: str=None) -> CheckOutput:
+    """aws_filter_public_s3_buckets_by_acl get list of public buckets.
         
         Note- By default(if no permissions are given) READ and WRITE ACL Permissioned S3 buckets are checked for public access. Other ACL Permissions are - "READ_ACP"|"WRITE_ACP"|"FULL_CONTROL"
         :type handle: object

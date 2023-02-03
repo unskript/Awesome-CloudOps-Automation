@@ -20,7 +20,7 @@ class InputSchema(BaseModel):
         description='k8s Deployment')
 
 
-def k8s_get_deployment_status_printer(output):
+def k8s_get_deployment_rollout_status_printer(output):
     if output is None:
         return
     if isinstance(output, CheckOutput):
@@ -29,8 +29,8 @@ def k8s_get_deployment_status_printer(output):
         pprint.pprint(output)
 
 
-def k8s_get_deployment_status(handle, deployment: str = "", namespace: str = "") -> CheckOutput:
-    """k8s_get_deployment_status executes the command and give failed deployment list
+def k8s_get_deployment_rollout_status(handle, deployment: str = "", namespace: str = "") -> CheckOutput:
+    """k8s_get_deployment_rollout_status executes the command and give failed deployment list
 
         :type handle: object
         :param handle: Object returned from the Task validate method
