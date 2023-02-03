@@ -48,7 +48,7 @@ def fetch_instances_from_valid_region(res,r):
                                 launch_time = instance['LaunchTime']
                                 convert_to_datetime = launch_time.strftime("%d-%m-%Y")
                                 launch_date = datetime.strptime(convert_to_datetime,'%d-%m-%Y').date()
-                                if x['Value'] is not 'INDEFINITE':
+                                if x['Value'] != 'INDEFINITE':
                                     if launch_date < right_now:
                                         result.append(instance['InstanceId'])
                 except Exception as e:
