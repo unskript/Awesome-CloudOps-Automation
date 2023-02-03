@@ -5,6 +5,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Tuple, Optional
 from unskript.connectors.aws import aws_get_paginator
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 
@@ -20,7 +21,10 @@ class InputSchema(BaseModel):
 def aws_filter_untagged_ec2_instances_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    if isinstance(output, CheckOutput):
+        print(output.json())
+    else:
+        pprint.pprint(output)
 
 def check_untagged_instance(res, r):
     instance_list = []
@@ -40,7 +44,7 @@ def check_untagged_instance(res, r):
     return instance_list
 
 
-def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
+def aws_filter_untagged_ec2_instances(handle, region: str= None) -> CheckOutput:
     """aws_filter_untagged_ec2_instances Returns an array of instances which has no tags.
 
         :type handle: object
@@ -49,7 +53,7 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
         :type region: str
         :param region: Region to filter instances.
 
-        :rtype: Tupple of the untagged EC2 Instances
+        :rtype: Status, List of Untagged Ec2 instances and error if any 
     """
     result = []
     all_instances = []
@@ -69,8 +73,11 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
         result = all_instances[0]
     except Exception as e:
         pass
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+    if len(result) != 0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))

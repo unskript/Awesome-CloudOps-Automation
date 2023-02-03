@@ -1,0 +1,14 @@
+{
+    "action_title": "Get all K8s Pods in ImagePullBackOff State",
+    "action_description": "Get all K8s pods in ImagePullBackOff State",
+    "action_type": "LEGO_TYPE_K8S",
+    "action_entry_function": "k8s_get_pods_in_imagepullbackoff_state",
+    "action_is_check": true,
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_next_hop": ["a53b5860500e142aa387ce55d5e85f139596c521dfb5c920cc2bc47c38fc0b11"],
+    "action_next_hop_parameter_mapping": {}
+}
