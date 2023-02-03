@@ -23,14 +23,14 @@ class InputSchema(BaseModel):
     )
 
 
-def gcp_stop_instance_printer(output):
+def gcp_stop_compute_instances_printer(output):
     if len(output) == 0:
         return
     pprint.pprint(output)
 
 
-def gcp_stop_instance(handle, project_name: str, zone:str, instance_name: str) -> Dict:
-    """gcp_stop_instance Returns the dict of instance data
+def gcp_stop_compute_instances(handle, project_name: str, zone:str, instance_name: str) -> Dict:
+    """gcp_stop_compute_instance Returns the dict of instance data
 
         :type project: string
         :param project: Google Cloud Platform Project
