@@ -19,14 +19,14 @@ class InputSchema(BaseModel):
     )
 
 
-def gcp_get_instances_without_labels_printer(output):
+def gcp_get_instances_without_label_printer(output):
     if len(output) == 0:
         return
     pprint.pprint(output)
 
 
-def gcp_get_instances_without_labels(handle, project: str, zone:str) -> List:
-    """gcp_get_instances_without_labels Returns the List of compute instances
+def gcp_get_instances_without_label(handle, project: str, zone:str) -> List:
+    """gcp_get_instances_without_label Returns the List of compute instances
 
         :type project: string
         :param project: Google Cloud Platform Project
