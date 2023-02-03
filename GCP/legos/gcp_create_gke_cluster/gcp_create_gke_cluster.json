@@ -2,7 +2,7 @@
     "action_title": "Create GKE Cluster",
     "action_description": "Create GKE Cluster",
     "action_type": "LEGO_TYPE_GCP",
-    "action_entry_function": "create_gke_cluster",
+    "action_entry_function": "gcp_create_gke_cluster",
     "action_needs_credential": true,
     "action_supports_poll": false,
     "action_supports_iteration": false
