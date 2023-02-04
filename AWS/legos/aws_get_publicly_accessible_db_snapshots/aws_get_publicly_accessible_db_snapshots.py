@@ -5,7 +5,7 @@ from typing import List, Dict, Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.aws.aws_filter_all_manual_database_snapshots.aws_filter_all_manual_database_snapshots import aws_get_manual_database_snapshots
+from unskript.legos.aws.aws_filter_all_manual_database_snapshots.aws_filter_all_manual_database_snapshots import aws_filter_all_manual_database_snapshots
 import pprint
 
 
@@ -45,7 +45,7 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckO
     try:
         for r in all_regions:
             snapshots_dict = {}
-            output = aws_get_manual_database_snapshots(handle=handle, region=r)
+            output = aws_filter_all_manual_database_snapshots(handle=handle, region=r)
             snapshots_dict["region"]=r
             snapshots_dict["snapshot"]=output
             manual_snapshots_list.append(snapshots_dict)

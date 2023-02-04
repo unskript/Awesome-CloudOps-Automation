@@ -19,13 +19,13 @@ class InputSchema(BaseModel):
         description="Canned ACL Permission type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.")
 
 
-def aws_put_bucket_acl_printer(output):
+def aws_change_acl_permissions_of_buckets_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_put_bucket_acl(handle, bucket_name: str, acl: CannedACLPermissions=None, region: str = None) -> Dict:
+def aws_change_acl_permissions_of_buckets(handle, bucket_name: str, acl: CannedACLPermissions=None, region: str = None) -> Dict:
     """ aws_put_bucket_acl get Dict of buckets ACL change info.
 
             :type handle: Session
