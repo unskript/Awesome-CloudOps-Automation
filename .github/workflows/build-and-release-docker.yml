@@ -119,11 +119,11 @@ jobs:
           cd $HOME
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
-          /usr/bin/env python -m pip install jsonschema==3.2.0
+          /usr/bin/env python -m pip install jsonschema==3.2.0 --use-pep517
           git checkout ${{ inputs.unskript_branch }}
-          /usr/bin/env python -m pip install -r ./requirements.txt
-          /usr/bin/env python -m pip install --upgrade protobuf
-          /usr/bin/env python -m pip install elyra
+          /usr/bin/env python -m pip install -r ./requirements.txt --use-pep517
+          /usr/bin/env python -m pip install --upgrade protobuf --use-pep517
+          /usr/bin/env python -m pip install elyra --use-pep517
           make awesome-submodule
           cd awesome
           git checkout ${{ inputs.awesome_branch }}
