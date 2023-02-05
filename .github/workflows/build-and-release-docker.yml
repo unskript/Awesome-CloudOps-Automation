@@ -95,7 +95,7 @@ jobs:
           path: /tmp/elyra-3.0.0.dev0.tar.gz
     
   build-unskript:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-20.04 
     if: ${{ inputs.enabled }}
     strategy:
       fail-fast: false 
@@ -112,7 +112,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
+          python-version: '3.7'
 
       - name: Checkout Code
         run: |
