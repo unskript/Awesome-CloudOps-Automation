@@ -119,6 +119,7 @@ jobs:
           cd $HOME
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
+          /usr/bin/env python -m pip install jsonschema==3.2.0
           git checkout ${{ inputs.unskript_branch }}
           /usr/bin/env python -m pip install -r ./requirements.txt
           /usr/bin/env python -m pip install --upgrade protobuf
