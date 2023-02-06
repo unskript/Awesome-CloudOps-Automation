@@ -21,21 +21,18 @@ def aws_get_s3_buckets_printer(output):
 
 def aws_get_s3_buckets(handle, region: str) -> List:
     """aws_get_s3_buckets List all the S3 buckets.
-
         :type handle: object
         :param handle: Object returned from task.validate(...).
-
         :type region: string
         :param region: location of the bucket
-
-        :rtype: List all the S3 buckets
+        :rtype: List of all the S3 buckets
     """
-    # connect to the S3 using resource
     s3Session = handle.resource("s3", region_name=region)
-
-    # Get all the S3 Buckets
-    response = s3Session.buckets.all()
-    result = []
-    for bucket in response:
-        result.append(bucket.name)
+    try:
+        response = s3Session.buckets.all()
+        result = []
+        for bucket in response:
+            result.append(bucket.name)
+    except Exception as e:
+        pass
     return result

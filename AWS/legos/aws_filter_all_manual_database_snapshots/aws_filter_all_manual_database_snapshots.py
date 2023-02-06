@@ -12,13 +12,13 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region of database.')
 
-def aws_get_manual_database_snapshots_printer(output):
+def aws_filter_all_manual_database_snapshots_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_get_manual_database_snapshots(handle, region: str) -> List:
+def aws_filter_all_manual_database_snapshots(handle, region: str) -> List:
     """aws_get_manual_snapshots List all the manual database snapshots.
 
         :type handle: object

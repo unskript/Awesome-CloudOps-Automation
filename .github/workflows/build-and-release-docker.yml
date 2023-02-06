@@ -112,7 +112,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
+          python-version: '3.10'
 
       - name: Checkout Code
         run: |
@@ -129,9 +129,9 @@ jobs:
           cd ..
           make legoschema
           cp ./setup-full.py ./setup.py
-          /usr/bin/env python ./setup.py sdist 
+          /usr/bin/env python ./setup.py bdist-wheel 
           mv dist/code*tar /tmp
-          mv dist/unskript*.tar.gz /tmp
+          mv dist/unskript-0.1.0-py2.py3-none-any.whl /tmp
       
       - uses: actions/upload-artifact@v3
         with:
@@ -141,7 +141,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: unskript-${{ github.run_id }}
-          path: /tmp/unskript-0.1.0.tar.gz
+          path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
       
 
   build-jlab-celltoolbar:
@@ -307,7 +307,7 @@ jobs:
           ls -l /tmp/code_snippet/ 
           tar xf /tmp/unskript/code_snippet_schemas.tar
           cd downloads
-          mv /tmp/unskript/*.gz .
+          mv /tmp/unskript/*.whl .
           mv /tmp/code_snippet/*.whl .
           mv /tmp/jlab_enhanced_cell_toolbar/*.whl .
           mv /tmp/elyra/elyra*tar.gz .
@@ -337,6 +337,10 @@ jobs:
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
           make copy
+          cd $HOME/devops/dockers/jupyterlab/oss_docker/
+          git submodule init
+          git submodule sync
+          git submodule update --checkout
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
   cleanup:

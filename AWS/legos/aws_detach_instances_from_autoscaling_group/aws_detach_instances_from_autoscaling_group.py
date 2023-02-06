@@ -16,13 +16,13 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region of autoscaling group.')
 
-def aws_detach_autoscaling_instances_printer(output):
+def aws_detach_instances_from_autoscaling_group_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_detach_autoscaling_instances(
+def aws_detach_instances_from_autoscaling_group(
     handle,
     instance_ids: str,
     group_name: str,

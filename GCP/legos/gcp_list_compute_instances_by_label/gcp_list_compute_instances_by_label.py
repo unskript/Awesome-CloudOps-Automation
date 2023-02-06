@@ -27,15 +27,15 @@ class InputSchema(BaseModel):
     )
 
 
-def gcp_get_instances_by_labels_printer(output):
+def gcp_list_compute_instances_by_label_printer(output):
     if len(output) == 0:
         return
         
     pprint.pprint(output)
 
         
-def gcp_get_instances_by_labels(handle, project: str, zone:str, key: str, value: str) -> List:
-    """gcp_get_instances_by_labels Returns the List of compute instances
+def gcp_list_compute_instances_by_label(handle, project: str, zone:str, key: str, value: str) -> List:
+    """gcp_list_compute_instances_by_label Returns the List of compute instances
 
         :type project: string
         :param project: Google Cloud Platform Project

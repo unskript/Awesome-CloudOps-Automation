@@ -3,6 +3,7 @@
 # All rights reserved.
 ##
 from pydantic import BaseModel, Field
+from unskript.enums.aws_canned_acl_enums import CannedACLPermissions
 from typing import Optional, Dict
 import pprint
 
@@ -13,18 +14,18 @@ class InputSchema(BaseModel):
     bucket_name: str = Field(
         title='Bucket Name',
         description='AWS S3 Bucket Name.')
-    acl: str = Field(
-        title='ACL',
-        description="canned ACL type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.")
+    acl: Optional[CannedACLPermissions] = Field(
+        title='Canned ACL Permission',
+        description="Canned ACL Permission type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.")
 
 
-def aws_put_bucket_acl_printer(output):
+def aws_change_acl_permissions_of_buckets_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_put_bucket_acl(handle, bucket_name: str, acl: str, region: str = None) -> Dict:
+def aws_change_acl_permissions_of_buckets(handle, bucket_name: str, acl: CannedACLPermissions=None, region: str = None) -> Dict:
     """ aws_put_bucket_acl get Dict of buckets ACL change info.
 
             :type handle: Session
@@ -33,8 +34,8 @@ def aws_put_bucket_acl(handle, bucket_name: str, acl: str, region: str = None) -
             :type bucket_name: string
             :param bucket_name: S3 bucket name where to set ACL on.
 
-            :type acl: str
-            :param acl: canned ACL type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.
+            :type acl: CannedACLPermissions
+            :param acl: Canned ACL Permission type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.
 
             :type region: string
             :param region: location of the bucket.
@@ -42,12 +43,15 @@ def aws_put_bucket_acl(handle, bucket_name: str, acl: str, region: str = None) -
             :rtype: Dict of buckets ACL change info
     """
     # connect to the S3 using client
+    all_permissions = acl
+    if acl is None or len(acl)==0:
+        all_permissions = "private"
     s3Client = handle.client('s3',
                              region_name=region)
 
     # Put bucket ACL for the permissions grant
     response = s3Client.put_bucket_acl(
                     Bucket=bucket_name,
-                    ACL=acl )
+                    ACL=all_permissions )
 
     return response

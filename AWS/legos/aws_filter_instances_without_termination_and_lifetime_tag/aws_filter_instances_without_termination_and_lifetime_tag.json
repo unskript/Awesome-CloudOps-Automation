@@ -4,12 +4,13 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_filter_instances_without_termination_and_lifetime_tag",
     "action_needs_credential": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_verbs": ["filter"],
     "action_nouns": ["aws","instances","without","termination","lifetime","tag"],
+    "action_is_check":true,
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_COST_OPT"],
-    "action_next_hop":["8744e8836d7a0aff41120620fa4d703dacff25b0dbb5c9c7b87b83783c6c9d18"],
+    "action_next_hop":["29ce1935204c64d816fd1f01f4fe41e8d8bd47725b899535c6acee703a7bcf0d"],
     "action_next_hop_parameter_mapping":{}
   }

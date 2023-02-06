@@ -28,14 +28,14 @@ class InputSchema(BaseModel):
     )
 
 
-def resize_gke_cluster_printer(output):
+def gcp_resize_gke_cluster_printer(output):
     if len(output) == 0:
         return
     pprint.pprint(output)
 
 
-def resize_gke_cluster(handle, project_id: str, zone: str, cluster_name: str, node_id: str, node_count:int) -> Dict:
-    """resize_gke_cluster Returns the dict of cluster details
+def gcp_resize_gke_cluster(handle, project_id: str, zone: str, cluster_name: str, node_id: str, node_count:int) -> Dict:
+    """gcp_resize_gke_cluster Returns the dict of cluster details
 
         :type project_id: string
         :param project_id: Google Cloud Platform Project
