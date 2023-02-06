@@ -129,7 +129,7 @@ jobs:
           cd ..
           make legoschema
           cp ./setup-full.py ./setup.py
-          /usr/bin/env python ./setup.py bdist-wheel 
+          /usr/bin/env python ./setup.py bdist_wheel 
           mv dist/code*tar /tmp
           mv dist/unskript-0.1.0-py2.py3-none-any.whl /tmp
       
