@@ -22,36 +22,39 @@ def aws_get_natgateway_by_vpc_printer(output):
     pprint.pprint(output)
 
 
-def aws_get_natgateway_by_vpc(handle, vpc_id: str, region: str) -> Dict:
-    """aws_get_natgateway_by_vpc Returns an Dict of NAT Gateway info.
+def aws_get_natgateway_by_vpc(handle, vpc_id: str, region: str) -> List:
+    """aws_get_natgateway_by_vpc Returns an array of NAT gateways.
 
-        :type handle: object
-        :param handle: Object returned from task.validate(...).
+        :type region: string
+        :param region: Region to filter instances.
 
-        :type vpc_id: str
-        :param vpc_id: VPC ID to find NAT Gateway.
+        :type vpc_id: string
+        :param vpc_id: ID of the Virtual Private Cloud (VPC)
 
-        :type region: str
-        :param region: Region to filter instance.
-
-        :rtype: Dict of NAT Gateway info.
+        :rtype: Array of NAT gateways.
     """
-
-    ec2Client = handle.client('ec2', region_name=region)
-    result = {}
+    result = []
     try:
-        response = aws_get_paginator(ec2Client, "describe_nat_gateways", "NatGateways",
-                                Filters=[{'Name': 'vpc-id','Values': [vpc_id]}])
-        for nat_info in response:
-            if "NatGatewayId" in nat_info:
-                result["NatGatewayId"] = nat_info["NatGatewayId"]
-            if "State" in nat_info:
-                result["State"] = nat_info["State"]
-            if "SubnetId" in nat_info:
-                result["SubnetId"] = nat_info["SubnetId"]
-    except Exception as error:
-        result["error"] = error
-
+        ec2Client = handle.client('ec2', region_name=region)
+        response = ec2Client.describe_nat_gateways(
+            Filter=[{'Name': 'vpc-id','Values': [vpc_id]}])
+        if response['NatGateways']:
+            for i in response['NatGateways']:
+                nat_dict = {}
+                if "NatGatewayId" in i:
+                    nat_dict["nat_id"] = i["NatGatewayId"]
+                if "SubnetId" in i:
+                    nat_dict["subnet_id"] = i["SubnetId"]
+                if "VpcId" in i:
+                    nat_dict["vpc_id"] = i["VpcId"]
+                for address in i["NatGatewayAddresses"]:
+                    if "PrivateIp" in address:
+                        nat_dict["private_ip"] = address["PrivateIp"]
+                    if "PublicIp" in address:
+                        nat_dict["public_ip"] = address["PublicIp"]
+                result.append(nat_dict)
+    except Exception as e:
+        pass
     return result
 
     
