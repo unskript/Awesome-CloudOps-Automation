@@ -128,6 +128,7 @@ jobs:
           /usr/bin/env python -m pip install /tmp/elyra/*.tar.gz
           /usr/bin/env python -m pip install -r ./requirements.txt 
           /usr/bin/env python -m pip install --upgrade protobuf
+          /usr/bin/env python -m pip install google-api-python-client==2.77.0
           make awesome-submodule
           cd awesome
           git checkout ${{ inputs.awesome_branch }}
