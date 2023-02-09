@@ -343,14 +343,13 @@ jobs:
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
           make copy
-          cd $HOME/devops/dockers/jupyterlab/oss_docker/ 
-          git submodule init
-          git submodule sync
-          git submodule update --checkout
+          cd $HOME/devops/dockers/jupyterlab/oss_docker/
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+
 
   cleanup:
     runs-on: ubuntu-latest
