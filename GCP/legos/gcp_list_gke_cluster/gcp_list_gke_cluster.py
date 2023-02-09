@@ -14,13 +14,13 @@ class InputSchema(BaseModel):
     )
 
 
-def list_gke_cluster_printer(output):
+def gcp_list_gke_cluster_printer(output):
     if len(output) == 0:
         return
     pprint.pprint(output)
 
-def list_gke_cluster(handle, project_id: str, zone: str) -> List:
-    """list_gke_cluster Returns the list of cluster
+def gcp_list_gke_cluster(handle, project_id: str, zone: str) -> List:
+    """gcp_list_gke_cluster Returns the list of cluster
 
         :type project_id: string
         :param project_id: Google Cloud Platform Project

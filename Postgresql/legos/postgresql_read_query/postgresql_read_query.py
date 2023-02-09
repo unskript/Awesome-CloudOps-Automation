@@ -18,7 +18,7 @@ class InputSchema(BaseModel):
             SELECT foo FROM table WHERE bar=$1 AND customer=$2.
             The values for $1 and $2 should be passed in the params field as a tuple.
         ''')
-    params: tuple = Field(
+    params: List = Field(
         None,
         title='Parameters',
         description='Parameters to the query in list format. For eg: [1, 2, "abc"]')
@@ -33,7 +33,7 @@ def postgresql_read_query_printer(output):
     return output
 
 
-def postgresql_read_query(handle, query: str, params: tuple = ()) -> List:
+def postgresql_read_query(handle, query: str, params: list = ()) -> List:
     """postgresql_read_query Runs postgresql query with the provided parameters.
 
           :type handle: object
@@ -60,8 +60,13 @@ def postgresql_read_query(handle, query: str, params: tuple = ()) -> List:
         prepared_query = "EXECUTE psycop_{random_id};".format(
             random_id=random_id)
     else:
+        parameters_tuple = tuple(params)
+        ## If there is only one tuple element, remove the trailing comma before format
+        if len(parameters_tuple) == 1:
+            tuple_string = str(parameters_tuple)
+            parameters_tuple = tuple_string[:-2] + tuple_string[-1]
         prepared_query = "EXECUTE psycop_{random_id} {params};".format(
-            random_id=random_id, params=tuple(params))
+            random_id=random_id, params=parameters_tuple)
 
     cur.execute(query)
     cur.execute(prepared_query)

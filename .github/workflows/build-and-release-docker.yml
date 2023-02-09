@@ -95,13 +95,18 @@ jobs:
           path: /tmp/elyra-3.0.0.dev0.tar.gz
     
   build-unskript:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-20.04 
     if: ${{ inputs.enabled }}
+    needs: [build-elyra]
     strategy:
       fail-fast: false 
 
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: elyra-${{ github.run_id }}
+          path: /tmp/elyra
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
@@ -120,18 +125,19 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
-          /usr/bin/env python -m pip install -r ./requirements.txt
+          /usr/bin/env python -m pip install /tmp/elyra/*.tar.gz
+          /usr/bin/env python -m pip install -r ./requirements.txt 
           /usr/bin/env python -m pip install --upgrade protobuf
-          /usr/bin/env python -m pip install elyra
+          /usr/bin/env python -m pip install google-api-python-client==2.77.0
           make awesome-submodule
           cd awesome
           git checkout ${{ inputs.awesome_branch }}
           cd ..
           make legoschema
           cp ./setup-full.py ./setup.py
-          /usr/bin/env python ./setup.py sdist 
+          /usr/bin/env python ./setup.py bdist_wheel 
           mv dist/code*tar /tmp
-          mv dist/unskript*.tar.gz /tmp
+          mv dist/unskript-0.1.0-py2.py3-none-any.whl /tmp
       
       - uses: actions/upload-artifact@v3
         with:
@@ -141,7 +147,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: unskript-${{ github.run_id }}
-          path: /tmp/unskript-0.1.0.tar.gz
+          path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
       
 
   build-jlab-celltoolbar:
@@ -307,7 +313,7 @@ jobs:
           ls -l /tmp/code_snippet/ 
           tar xf /tmp/unskript/code_snippet_schemas.tar
           cd downloads
-          mv /tmp/unskript/*.gz .
+          mv /tmp/unskript/*.whl .
           mv /tmp/code_snippet/*.whl .
           mv /tmp/jlab_enhanced_cell_toolbar/*.whl .
           mv /tmp/elyra/elyra*tar.gz .
@@ -337,7 +343,13 @@ jobs:
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
           make copy
+          cd $HOME/devops/dockers/jupyterlab/oss_docker/
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
+          cd unskript
+          git checkout ${{ inputs.unskript_branch }}
+          cd $HOME/devops/dockers/jupyterlab/oss_docker/
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+
 
   cleanup:
     runs-on: ubuntu-latest

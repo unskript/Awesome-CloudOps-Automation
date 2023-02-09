@@ -13,14 +13,14 @@ class InputSchema(BaseModel):
     )
 
 
-def get_gcp_instance_list_printer(output):
+def gcp_list_compute_instances_printer(output):
     if len(output) == 0:
         return
     for instance in output:
         print(instance)
 
-def get_gcp_instance_list(handle, project: str, zone:str) -> List:
-    """get_gcp_instance_lsit Returns the List of compute instances
+def gcp_list_compute_instances(handle, project: str, zone:str) -> List:
+    """gcp_list_compute_instances Returns the List of compute instances
     from given project and zone
 
     :type project: string

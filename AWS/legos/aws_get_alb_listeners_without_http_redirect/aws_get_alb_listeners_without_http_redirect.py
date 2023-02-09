@@ -3,6 +3,7 @@
 ##
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_list_application_loadbalancers.aws_list_application_loadbalancers import aws_list_application_loadbalancers
@@ -19,11 +20,15 @@ class InputSchema(BaseModel):
 def aws_listeners_without_http_redirect_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+        
+    if isinstance(output, CheckOutput):
+        print(output.json())
+    else:
+        pprint.pprint(output)
 
 
-def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
-    """aws_get_auto_scaling_instances List of Dict with instanceId and attached groups.
+def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput:
+    """aws_listeners_without_http_redirect List of ALB listeners without HTTP redirection.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -31,23 +36,24 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
         :type region: string
         :param region: Region to filter ALB listeners.
 
-        :rtype: Tuple of execution result and ALB listeners without HTTP redirection.
+        :rtype: CheckOutput of status result and list of ALB listeners without HTTP redirection.
     """
     result = []
     all_regions = [region]
     alb_list = []
-    try:
-        if not region:
-            all_regions = aws_list_all_regions(handle)
-        for reg in all_regions:
+    if not region:
+        all_regions = aws_list_all_regions(handle)
+
+    for reg in all_regions:
+        try:
             alb_dict = {}
-            loadbalancer_arn = aws_list_application_loadbalancers(handle, region)
+            loadbalancer_arn = aws_list_application_loadbalancers(handle, reg)
             alb_dict["region"] = reg
             alb_dict["alb_arn"] = loadbalancer_arn
             alb_list.append(alb_dict)
-    except Exception as error:
-        pass
-
+        except Exception as error:
+            pass
+        
     for alb in alb_list:
         try:
             ec2Client = handle.client('elbv2', region_name=alb["region"])
@@ -68,12 +74,14 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
         except Exception as error:
             pass
 
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    
-    return output
+    if len(result) != 0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str(""))
 
 
 

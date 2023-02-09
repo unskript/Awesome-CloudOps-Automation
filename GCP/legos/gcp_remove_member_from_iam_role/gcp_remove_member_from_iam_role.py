@@ -26,13 +26,13 @@ class InputSchema(BaseModel):
         description = "Requested Policy Version"
     )
 
-def gcp_remove_member_to_iam_role_printer(output):
+def gcp_remove_member_from_iam_role_printer(output):
     if output is None:
         return
     pprint(output)
 
-def gcp_remove_member_to_iam_role(handle, project_id: str, role: str, member_email:str, version:int = 1) -> Dict:
-    """gcp_remove_member_to_iam_role Returns a Dict of new policy details
+def gcp_remove_member_from_iam_role(handle, project_id: str, role: str, member_email:str, version:int = 1) -> Dict:
+    """gcp_remove_member_from_iam_role Returns a Dict of new policy details
 
         :type project_id: string
         :param project_id: Name of the project

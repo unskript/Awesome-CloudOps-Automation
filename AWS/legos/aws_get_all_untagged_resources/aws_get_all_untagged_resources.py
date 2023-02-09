@@ -11,14 +11,14 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region.')
 
-def aws_get_untagged_resources_printer(output):
+def aws_get_all_untagged_resources_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_get_untagged_resources(handle, region: str) -> List:
-    """aws_get_untagged_resources Returns an List of Untagged Resources.
+def aws_get_all_untagged_resources(handle, region: str) -> List:
+    """aws_get_all_untagged_resources Returns an List of Untagged Resources.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).

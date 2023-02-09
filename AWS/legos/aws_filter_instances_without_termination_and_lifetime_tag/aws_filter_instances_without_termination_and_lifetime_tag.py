@@ -5,6 +5,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Tuple, Optional
 from unskript.connectors.aws import aws_get_paginator
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 from datetime import datetime, date
@@ -16,11 +17,13 @@ class InputSchema(BaseModel):
         description='Name of the AWS Region'
     )
 
-
 def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    if isinstance(output, CheckOutput):
+        print(output.json())
+    else:
+        pprint.pprint(output)
 
 def fetch_instances_from_valid_region(res,r):
     result=[]
@@ -45,7 +48,7 @@ def fetch_instances_from_valid_region(res,r):
                                 launch_time = instance['LaunchTime']
                                 convert_to_datetime = launch_time.strftime("%d-%m-%Y")
                                 launch_date = datetime.strptime(convert_to_datetime,'%d-%m-%Y').date()
-                                if x['Value'] is not 'INDEFINITE':
+                                if x['Value'] != 'INDEFINITE':
                                     if launch_date < right_now:
                                         result.append(instance['InstanceId'])
                 except Exception as e:
@@ -56,11 +59,11 @@ def fetch_instances_from_valid_region(res,r):
         instances_dict['instances']= result
     return instances_dict
 
-def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None) -> Tuple:
+def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None) -> CheckOutput:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 
         Assumed tag key format - terminationDateTag, lifetimeTag
-        Assumed Date format for both keys is - dd-mm-yy
+        Assumed Date format for both keys is -> dd-mm-yy
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -68,7 +71,7 @@ def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: st
         :type region: string
         :param region: Used to filter the instance for specific region.
 
-        :rtype: Tuple of result and instances which dont having terminationDateTag and lifetimeTag
+        :rtype: Object of status, instances which dont having terminationDateTag and lifetimeTag, and error
     """
     final_list=[]
     all_regions = [region]
@@ -83,9 +86,11 @@ def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: st
                 final_list.append(instances_without_tags)
         except Exception as e:
             pass
-    execution_flag = False
-    if len(final_list) > 0:
-        execution_flag = True
-    output = (execution_flag, final_list)
-    return output
-
+    if len(final_list)!=0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=final_list,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=final_list,
+                   error=str(""))

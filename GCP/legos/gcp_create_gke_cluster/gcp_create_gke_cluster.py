@@ -24,13 +24,13 @@ class InputSchema(BaseModel):
     )
 
 
-def create_gke_cluster_printer(output):
+def gcp_create_gke_cluster_printer(output):
     if len(output) == 0:
         return
     pprint.pprint(output)
 
-def create_gke_cluster(handle, project_id: str, zone: str, cluster_name: str, node_count: int) -> Dict:
-    """create_gke_cluster Returns the dict of cluster info
+def gcp_create_gke_cluster(handle, project_id: str, zone: str, cluster_name: str, node_count: int) -> Dict:
+    """gcp_create_gke_cluster Returns the dict of cluster info
 
         :type project_id: string
         :param project_id: Google Cloud Platform Project

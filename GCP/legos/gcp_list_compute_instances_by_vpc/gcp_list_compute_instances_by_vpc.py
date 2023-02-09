@@ -22,14 +22,14 @@ class InputSchema(BaseModel):
     )
 
 
-def gcp_list_instances_by_vpc_printer(output):
+def gcp_list_compute_instances_by_vpc_printer(output):
     if len(output) == 0:
         return
 
     pprint(output)
 
         
-def gcp_list_instances_by_vpc(handle, project: str, zone: str, vpc_id: str) -> List:
+def gcp_list_compute_instances_by_vpc(handle, project: str, zone: str, vpc_id: str) -> List:
     """gcp_list_instances_by_vpc Returns the List of compute instances
     
         :type project: string

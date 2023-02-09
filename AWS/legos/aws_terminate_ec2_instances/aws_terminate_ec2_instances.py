@@ -16,14 +16,14 @@ class InputSchema(BaseModel):
         description='AWS Region of the instance.')
 
 
-def aws_terminate_instance_printer(output):
+def aws_terminate_ec2_instances_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_terminate_instance(handle, instance_ids: List, region: str) -> Dict:
-    """aws_terminate_instance Returns an Dict of info terminated instance.
+def aws_terminate_ec2_instances(handle, instance_ids: List, region: str) -> Dict:
+    """aws_terminate_ec2_instances Returns an Dict of info terminated instance.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
