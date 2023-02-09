@@ -1,8 +1,8 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>AWS Get Private Addrtess from NAT Gateways </h1>
+<h1>AWS Get Private Address from NAT Gateways </h1>
 
 ## Description
-This Lego used to get private addrtess from NAT gateways.
+This Lego used to get private address from NAT gateways.
 
 
 ## Lego Details

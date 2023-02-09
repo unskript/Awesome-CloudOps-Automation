@@ -1,6 +1,6 @@
 {
-"action_title": "AWS Get Private Addrtess from NAT Gateways",
-"action_description": "This action is used to get private addrtess from NAT gateways.",
+"action_title": "AWS Get Private Address from NAT Gateways",
+"action_description": "This action is used to get private address from NAT gateways.",
 "action_type": "LEGO_TYPE_AWS",
 "action_entry_function": "aws_get_private_address_from_nat_gateways",
 "action_needs_credential": true,
