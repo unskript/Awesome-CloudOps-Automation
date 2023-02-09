@@ -3,7 +3,6 @@
 ##
 from typing import List, Dict, Optional, Tuple
 from pydantic import BaseModel, Field
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_filter_all_manual_database_snapshots.aws_filter_all_manual_database_snapshots import aws_filter_all_manual_database_snapshots
 import pprint
@@ -26,7 +25,7 @@ def aws_get_publicly_accessible_db_snapshots_printer(output):
         pprint.pprint(output)
 
 
-def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckOutput:
+def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
     """aws_get_publicly_accessible_db_snapshots lists of publicly accessible db_snapshot_identifier.
 
         :type handle: object
@@ -49,10 +48,9 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckO
             snapshots_dict["region"]=r
             snapshots_dict["snapshot"]=output
             manual_snapshots_list.append(snapshots_dict)
-    except Exception as error:
-        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                           objects=[],
-                           error=error.__str__())
+    except Exception as e:
+        raise e
+
     for all_snapshots in manual_snapshots_list:
         try:
             ec2Client = handle.client('rds', region_name=all_snapshots['region'])
@@ -64,14 +62,10 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> CheckO
                     if "all" in value["AttributeValues"]:
                         p_dict["region"] = all_snapshots['region']
                         p_dict["open_snapshot"] = db_attribute['DBSnapshotIdentifier']
-                        result = [*result, p_dict]
+                        result.append(p_dict)
         except Exception as e:
             pass
     if len(result)!=0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, None)
