@@ -21,7 +21,7 @@ class InputSchema(BaseModel):
         description='AWS Region of the ELB.')
 
 
-def aws_get_unhealthy_ec2_instances_for_elb_printer(output):
+def aws_get_unhealthy_instances_from_elb_printer(output):
     if output is None:
         return
 
@@ -31,8 +31,8 @@ def aws_get_unhealthy_ec2_instances_for_elb_printer(output):
         pprint.pprint(output)
 
 
-def aws_get_unhealthy_ec2_instances_for_elb(handle, elb_name: str = "", region: str = "") -> CheckOutput:
-    """aws_get_unHealthy_ec2_instances_for_elb gives unhealthy instances from ELB
+def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str = "") -> CheckOutput:
+    """aws_get_unhealthy_instances_from_elb gives unhealthy instances from ELB
 
         :type elb_name: string
         :param elb_name: Name of the elastic load balancer.
