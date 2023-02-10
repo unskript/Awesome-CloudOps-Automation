@@ -16,13 +16,13 @@ class InputSchema(BaseModel):
         description='AWS Region.')
 
 
-def aws_get_natgateway_by_vpc_printer(output):
+def aws_get_nat_gateway_by_vpc_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_get_natgateway_by_vpc(handle, vpc_id: str, region: str) -> List:
+def aws_get_nat_gateway_by_vpc(handle, vpc_id: str, region: str) -> List:
     """aws_get_natgateway_by_vpc Returns an array of NAT gateways.
 
         :type region: string
