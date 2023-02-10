@@ -4,7 +4,7 @@
 #
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Tuple
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from collections import defaultdict
 import json
@@ -26,7 +26,7 @@ def k8s_get_pods_in_imagepullbackoff_state_printer(output):
         pprint.pprint(output)
 
 
-def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> CheckOutput:
+def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Tuple:
     """k8s_get_list_of_pods_with_imagepullbackoff_state executes the given kubectl command to find pods in ImagePullBackOff State
 
         :type handle: object
@@ -35,7 +35,7 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Check
         :type namespace: Optional[str]
         :param namespace: Namespace to get the pods from. Eg:"logging", if not given all namespaces are considered
 
-        :rtype: Status, List of pods in CrashLoopBackOff State and error if any 
+        :rtype: Status, List of pods in CrashLoopBackOff State
     """
     if handle.client_side_validation != True:
         print(f"K8S Connector is invalid: {handle}")
@@ -70,12 +70,9 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Check
         res = defaultdict(list)
         for key, val in unhealthy_pods:
             res[key].append(val)
-    result = dict(res)
+    if len(res)!=0:
+        result.append(dict(res)) 
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=[result],
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=[result],
-                   error=str(""))
+        return (True, None)
