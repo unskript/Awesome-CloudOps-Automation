@@ -21,7 +21,7 @@ class InputSchema(BaseModel):
 def aws_filter_untagged_ec2_instances_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
+    elif isinstance(output, CheckOutput):
         print(output.json())
     else:
         pprint.pprint(output)
@@ -38,13 +38,14 @@ def check_untagged_instance(res, r):
                         instances_dict['instances']= instance['InstanceId']
                         instance_list.append(instances_dict)
                 except Exception as e:
-                    instances_dict['region']= r
-                    instances_dict['instances']= instance['InstanceId']
-                    instance_list.append(instances_dict)
+                    if len(tagged_instance) == 0:
+                        instances_dict['region']= r
+                        instances_dict['instances']= instance['InstanceId']
+                        instance_list.append(instances_dict)
     return instance_list
 
 
-def aws_filter_untagged_ec2_instances(handle, region: str= None) -> CheckOutput:
+def aws_filter_untagged_ec2_instances(handle, region: str) -> Tuple:
     """aws_filter_untagged_ec2_instances Returns an array of instances which has no tags.
 
         :type handle: object
@@ -53,9 +54,8 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> CheckOutput:
         :type region: str
         :param region: Region to filter instances.
 
-        :rtype: Status, List of Untagged Ec2 instances and error if any 
+        :rtype: Tuple of status, and list of untagged EC2 Instances
     """
-    result = []
     all_instances = []
     all_regions = [region]
     if region is None or len(region)==0:
@@ -74,10 +74,6 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> CheckOutput:
     except Exception as e:
         pass
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, None)
