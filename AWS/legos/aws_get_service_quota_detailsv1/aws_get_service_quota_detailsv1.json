@@ -1,0 +1,11 @@
+{
+  "action_title": "AWS_Get_Service_Quota_for_a_Specific_ServiceNamev1",
+  "action_description": "Given an AWS Region, Service Code and Quota Code, this Action will output the quota information for the specified service.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_get_service_quota_detailsv1",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true"
+}
