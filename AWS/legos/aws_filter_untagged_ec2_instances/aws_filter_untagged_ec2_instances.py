@@ -45,7 +45,7 @@ def check_untagged_instance(res, r):
     return instance_list
 
 
-def aws_filter_untagged_ec2_instances(handle, region: str) -> Tuple:
+def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
     """aws_filter_untagged_ec2_instances Returns an array of instances which has no tags.
 
         :type handle: object
@@ -56,6 +56,7 @@ def aws_filter_untagged_ec2_instances(handle, region: str) -> Tuple:
 
         :rtype: Tuple of status, and list of untagged EC2 Instances
     """
+    result = []
     all_instances = []
     all_regions = [region]
     if region is None or len(region)==0:
