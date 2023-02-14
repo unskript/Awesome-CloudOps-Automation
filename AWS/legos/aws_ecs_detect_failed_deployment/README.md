@@ -7,15 +7,13 @@ This Lego shows the list of stopped tasks, associated with a deployment, along w
 
 ## Lego Details
 
-    aws_ecs_detect_failed_deployment(handle, cluster_name: str, service_name: str, region: str)
+    aws_ecs_detect_failed_deployment(handle, region: str)
 
         handle: Object of type unSkript AWS Connector
-        cluster_name: Cluster name that your service runs on.
-        service_name: ECS Service name in the specified cluster.
-        region: AWS Region of the ECS service..
+        region: Optional, AWS Region of the ECS service. Eg: us-west-2
 
 ## Lego Input
-This Lego takes four inputs handle, region, cluster_name  and service_name. 
+This Lego takes two inputs handle, region. 
 
 ## Lego Output
 Here is a sample output.
