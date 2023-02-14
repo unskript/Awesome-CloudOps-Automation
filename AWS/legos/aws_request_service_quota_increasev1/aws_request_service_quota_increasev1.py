@@ -7,14 +7,14 @@ from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
-    new_quota: Optional[float] = Field(
+    new_quota: float = Field(
         '', description='The new quota value', title='new_quota'
     )
-    quota_code: Optional[str] = Field(
+    quota_code: str = Field(
         '', description='Quota Code that increase is requested for', title='quota_code'
     )
     region: str = Field(..., description='AWS Region.', title='Region')
-    service_code: Optional[str] = Field(
+    service_code: str = Field(
         '"ec2"',
         description='Service Code whose quota you are requesting a change on.',
         title='service_code',

@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS Region.', title='Region')
-    warning_percentage: Optional[float] = Field(
+    warning_percentage: float = Field(
         50,
         description='Percentage threshold for a warning.  For a complete list of quotas, use 0.',
         title='warning_percentage',

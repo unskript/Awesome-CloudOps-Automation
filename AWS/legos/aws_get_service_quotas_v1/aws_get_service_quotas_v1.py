@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS region', title='region')
-    service_code: Optional[str] = Field(
+    service_code: str = Field(
         'ec2',
         description='The service code is used to get all quotas for the service',
         title='service_code',

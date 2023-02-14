@@ -13,7 +13,7 @@ class InputSchema(BaseModel):
         title='quota_code',
     )
     region: str = Field(..., description='AWS Region.', title='Region')
-    service_code: Optional[str] = Field(
+    service_code: str = Field(
         '"ec2"', description='The service code to be queried', title='service_code'
     )
 
