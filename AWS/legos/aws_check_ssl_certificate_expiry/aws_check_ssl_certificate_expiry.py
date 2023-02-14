@@ -4,7 +4,7 @@
 ##
 import dateutil
 from pydantic import BaseModel, Field
-from typing import Dict,List, Int
+from typing import Dict,List
 import pprint
 import datetime
 
