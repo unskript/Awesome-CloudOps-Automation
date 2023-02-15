@@ -34,6 +34,7 @@ def get_all_target_groups(handle, r):
 
 def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Tuple:
     result = []
+    unhealthy_instances_list = []
     all_target_groups = []
     all_regions = [region]
     if region is None or len(region)==0:
@@ -52,15 +53,14 @@ def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Tu
             try:
                 targetHealthResponse = elbv2Client.describe_target_health(TargetGroupArn=o)
             except Exception as e:
-                return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                           objects=[],
-                           error=e.__str__())
+                raise e
             for ins in targetHealthResponse["TargetHealthDescriptions"]:
                 unhealhthy_instances_dict ={}
                 if ins['TargetHealth']['State'] in ['unhealthy']:
-                    unhealhthy_instances_dict['instance'] = ins['Target']['Id']
-                    unhealhthy_instances_dict['region'] = parsedArn['region']
-                    result.append(unhealhthy_instances_dict)
+                    unhealthy_instances_list.append(ins['Target']['Id'])
+    unhealhthy_instances_dict['instance'] = unhealthy_instances_list
+    unhealhthy_instances_dict['region'] = parsedArn['region']
+    result.append(unhealhthy_instances_dict)
     if len(result)!=0:
         return (False,result)
     else:
