@@ -1,9 +1,8 @@
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.utils import parseARN
-from typing import List, Optional
+from typing import List, Optional, Tuple 
 import pprint
 
 class InputSchema(BaseModel):
@@ -16,10 +15,7 @@ class InputSchema(BaseModel):
 def aws_list_unhealthy_instances_in_target_group_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 def get_all_target_groups(handle, r):
     target_arns_list = []
@@ -33,7 +29,7 @@ def get_all_target_groups(handle, r):
         pass
     return target_arns_list
 
-def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> CheckOutput:
+def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Tuple:
     result = []
     all_target_groups = []
     all_regions = [region]
@@ -53,9 +49,8 @@ def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Ch
             try:
                 targetHealthResponse = elbv2Client.describe_target_health(TargetGroupArn=o)
             except Exception as e:
-                return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                           objects=[],
-                           error=e.__str__())
+                raise e 
+
             for ins in targetHealthResponse["TargetHealthDescriptions"]:
                 unhealhthy_instances_dict ={}
                 if ins['TargetHealth']['State'] in ['unhealthy']:
@@ -63,10 +58,6 @@ def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Ch
                     unhealhthy_instances_dict['region'] = parsedArn['region']
                     result.append(unhealhthy_instances_dict)
     if len(result)!=0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])

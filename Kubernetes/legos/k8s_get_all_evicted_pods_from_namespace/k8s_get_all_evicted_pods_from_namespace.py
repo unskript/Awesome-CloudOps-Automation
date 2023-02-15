@@ -4,8 +4,7 @@
 #
 
 from pydantic import BaseModel, Field
-from typing import Optional
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
+from typing import Optional, Tuple
 import pprint
 import json
 
@@ -20,13 +19,10 @@ def k8s_get_all_evicted_pods_from_namespace_printer(output):
     if output is None:
         return
 
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> CheckOutput:
+def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tuple:
     """k8s_get_all_evicted_pods_from_namespace returns all evicted pods
 
         :type handle: object
@@ -35,7 +31,7 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Chec
         :type namespace: str
         :param namespace: k8s namespace.
 
-        :rtype: CheckOutput of status result and list of evicted pods
+        :rtype: Tuple of status result and list of evicted pods
     """
     if handle.client_side_validation != True:
         print(f"K8S Connector is invalid: {handle}")
@@ -65,11 +61,7 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Chec
         pass
     
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])
     

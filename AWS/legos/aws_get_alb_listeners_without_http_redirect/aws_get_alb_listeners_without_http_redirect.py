@@ -3,7 +3,6 @@
 ##
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_list_application_loadbalancers.aws_list_application_loadbalancers import aws_list_application_loadbalancers
@@ -21,13 +20,10 @@ def aws_listeners_without_http_redirect_printer(output):
     if output is None:
         return
         
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput:
+def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
     """aws_listeners_without_http_redirect List of ALB listeners without HTTP redirection.
 
         :type handle: object
@@ -36,7 +32,7 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput
         :type region: string
         :param region: Region to filter ALB listeners.
 
-        :rtype: CheckOutput of status result and list of ALB listeners without HTTP redirection.
+        :rtype: Tuple of status result and list of ALB listeners without HTTP redirection.
     """
     result = []
     all_regions = [region]
@@ -75,14 +71,7 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> CheckOutput
             pass
 
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
-
-
-
+        return (True, [])
     

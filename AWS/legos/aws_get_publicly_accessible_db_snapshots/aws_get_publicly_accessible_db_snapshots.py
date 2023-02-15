@@ -68,4 +68,4 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
     if len(result)!=0:
         return (False, result)
     else:
-        return (True, None)
+        return (True, [])

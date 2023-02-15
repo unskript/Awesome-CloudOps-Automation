@@ -4,8 +4,7 @@
 #
 
 from pydantic import BaseModel, Field
-from typing import Optional
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
+from typing import Optional, Tuple
 from collections import defaultdict
 import json
 import pprint
@@ -20,13 +19,10 @@ class InputSchema(BaseModel):
 def k8s_get_pods_in_crashloopbackoff_state_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> CheckOutput:
+def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple:
     """k8s_get_pods_in_crashloopbackoff_state executes the given kubectl command to find pods in CrashLoopBackOff State
 
         :type handle: object
@@ -72,10 +68,6 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Check
             res[key].append(val)
     result = dict(res)
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=[result],
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=[result],
-                   error=str(""))
+        return (True, [])
