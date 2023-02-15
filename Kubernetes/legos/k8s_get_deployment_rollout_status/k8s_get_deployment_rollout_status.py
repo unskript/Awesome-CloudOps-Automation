@@ -4,8 +4,7 @@
 #
 
 from pydantic import BaseModel, Field
-from typing import Optional
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
+from typing import Optional, Tuple
 import pprint
 import json
 
@@ -23,13 +22,10 @@ class InputSchema(BaseModel):
 def k8s_get_deployment_rollout_status_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def k8s_get_deployment_rollout_status(handle, deployment: str = "", namespace: str = "") -> CheckOutput:
+def k8s_get_deployment_rollout_status(handle, deployment: str = "", namespace: str = "") -> Tuple:
     """k8s_get_deployment_rollout_status executes the command and give failed deployment list
 
         :type handle: object
@@ -41,7 +37,7 @@ def k8s_get_deployment_rollout_status(handle, deployment: str = "", namespace: s
         :type namespace: str
         :param namespace: Kubernetes Namespace.
 
-        :rtype: CheckOutput with status result and list of failed deployments.
+        :rtype: Tuple with status result and list of failed deployments.
     """
     result = []
     if handle.client_side_validation != True:
@@ -107,11 +103,7 @@ def k8s_get_deployment_rollout_status(handle, deployment: str = "", namespace: s
                     result.append(deployment_dict)
 
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])
     

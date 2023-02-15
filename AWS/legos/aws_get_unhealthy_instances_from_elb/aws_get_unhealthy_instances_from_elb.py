@@ -3,7 +3,6 @@
 ##
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
@@ -25,13 +24,10 @@ def aws_get_unhealthy_instances_from_elb_printer(output):
     if output is None:
         return
 
-    if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str = "") -> CheckOutput:
+def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str = "") -> Tuple:
     """aws_get_unhealthy_instances_from_elb gives unhealthy instances from ELB
 
         :type elb_name: string
@@ -105,13 +101,9 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
             pass
 
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])
 
 
 

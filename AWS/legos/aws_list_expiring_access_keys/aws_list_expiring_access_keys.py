@@ -4,7 +4,6 @@
 import dateutil
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_iam_users.aws_list_all_iam_users import aws_list_all_iam_users
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from typing import Dict,List,Tuple
 import pprint
 import datetime
@@ -18,12 +17,9 @@ class InputSchema(BaseModel):
 def aws_list_expiring_access_keys_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
-def aws_list_expiring_access_keys(handle, threshold_days: int)-> CheckOutput:
+def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
     """aws_list_expiring_access_keys returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -39,9 +35,8 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> CheckOutput:
     try:
         all_users = aws_list_all_iam_users(handle=handle)
     except Exception as error:
-        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                               objects=[],
-                               error=error.__str__())
+        raise error 
+
     for each_user in all_users:
         try:
             iamClient = handle.client('iam')
@@ -59,14 +54,9 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> CheckOutput:
             if len(final_result)!=0:
                 result.append(final_result)
         except Exception as e:
-            return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                               objects=[],
-                               error=e.__str__())
+            raise e
+            
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])

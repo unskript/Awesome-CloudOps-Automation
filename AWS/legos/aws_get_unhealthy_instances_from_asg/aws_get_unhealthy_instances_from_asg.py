@@ -3,7 +3,6 @@
 ##
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
@@ -19,14 +18,10 @@ class InputSchema(BaseModel):
 def aws_filter_unhealthy_instances_from_asg_printer(output):
     if output is None:
         return
-        
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> CheckOutput:
+def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> Tuple:
     """aws_filter_unhealthy_instances_from_asg gives unhealthy instances from ASG
 
         :type region: string
@@ -57,14 +52,9 @@ def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> CheckOu
             pass
     
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
-
+        return (True, [])
 
 
     

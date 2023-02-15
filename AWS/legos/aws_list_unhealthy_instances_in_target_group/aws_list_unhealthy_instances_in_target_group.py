@@ -1,9 +1,8 @@
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.utils import parseARN
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple 
 import pprint
 
 class InputSchema(BaseModel):
@@ -16,10 +15,7 @@ class InputSchema(BaseModel):
 def aws_list_unhealthy_instances_in_target_group_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 def get_all_target_groups(handle, r):
     target_arns_list = []
@@ -55,7 +51,7 @@ def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Tu
             try:
                 targetHealthResponse = elbv2Client.describe_target_health(TargetGroupArn=o)
             except Exception as e:
-                raise e
+                raise e 
             for ins in targetHealthResponse["TargetHealthDescriptions"]:
                 if ins['TargetHealth']['State'] in ['unhealthy']:
                     unhealthy_instances_list.append(ins['Target']['Id'])

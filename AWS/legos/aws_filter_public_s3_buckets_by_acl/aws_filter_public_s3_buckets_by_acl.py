@@ -4,7 +4,6 @@
 ##
 from pydantic import BaseModel, Field
 from typing import List, Optional, Tuple
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_get_s3_bucket_list.aws_get_s3_bucket_list import aws_get_s3_buckets
 from unskript.enums.aws_acl_permissions_enums import BucketACLPermissions
@@ -25,10 +24,7 @@ class InputSchema(BaseModel):
 def aws_filter_public_s3_buckets_by_acl_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 def check_publicly_accessible_buckets(s3Client,b,all_permissions):
     public_check = ["http://acs.amazonaws.com/groups/global/AuthenticatedUsers",
@@ -45,7 +41,7 @@ def check_publicly_accessible_buckets(s3Client,b,all_permissions):
         pass
     return public_buckets
 
-def aws_filter_public_s3_buckets_by_acl(handle, permission:BucketACLPermissions=None, region: str=None) -> CheckOutput:
+def aws_filter_public_s3_buckets_by_acl(handle, permission:BucketACLPermissions=None, region: str=None) -> Tuple:
     """aws_filter_public_s3_buckets_by_acl get list of public buckets.
         
         Note- By default(if no permissions are given) READ and WRITE ACL Permissioned S3 buckets are checked for public access. Other ACL Permissions are - "READ_ACP"|"WRITE_ACP"|"FULL_CONTROL"
@@ -79,19 +75,14 @@ def aws_filter_public_s3_buckets_by_acl(handle, permission:BucketACLPermissions=
                     all_buckets_dict["bucket"]=o
                     all_buckets.append(all_buckets_dict)
     except Exception as e:
-        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                           objects=[],
-                           error=e.__str__())
+        raise e
+        
     for bucket in all_buckets:
         s3Client = handle.client('s3',region_name= bucket['region'])
         flag = check_publicly_accessible_buckets(s3Client,bucket['bucket'], all_permissions)
         if flag:
             result.append(bucket)
     if len(result)!=0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, result)
