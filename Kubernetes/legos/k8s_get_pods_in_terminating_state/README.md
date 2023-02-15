@@ -1,26 +1,26 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h2>Get k8s kube system config map</h2>
-
-<br>
+<h1>Get all K8s pods in ImagePullBackOff State </h1>
 
 ## Description
-This Lego get k8s kube system config map.
+This Lego get all evicted pods in Terminating State from given namespace. If namespace not given it will get all the pods from all namespaces.
 
 
 ## Lego Details
 
-    k8s_get_config_map_kube_system(handle: object,config_map_name: str, namespace: str)
+    k8s_get_pods_in_terminating_state(handle, namespace: str = None)
 
         handle: Object of type unSkript K8S Connector
-        config_map_name: Kubernetes Config Map Name.(Optional)
-        namespace: Kubernetes namespace.(Optional)
+        namespace: k8s namespace (Optional)
 
 ## Lego Input
-This Lego take three input handle, config_map_name and namespace.
+
+This Lego take two inputs handle, and namespace (Optional).
+
 
 ## Lego Output
 Here is a sample output.
 <img src="./1.png">
+
 
 ## See it in Action
 

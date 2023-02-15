@@ -34,9 +34,10 @@ def check_untagged_instance(res, r):
                         instances_dict['instances']= instance['InstanceId']
                         instance_list.append(instances_dict)
                 except Exception as e:
-                    instances_dict['region']= r
-                    instances_dict['instances']= instance['InstanceId']
-                    instance_list.append(instances_dict)
+                    if len(tagged_instance) == 0:
+                        instances_dict['region']= r
+                        instances_dict['instances']= instance['InstanceId']
+                        instance_list.append(instances_dict)
     return instance_list
 
 
@@ -49,7 +50,7 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
         :type region: str
         :param region: Region to filter instances.
 
-        :rtype: Status, List of Untagged Ec2 instances and error if any 
+        :rtype: Tuple of status, and list of untagged EC2 Instances
     """
     result = []
     all_instances = []
@@ -72,4 +73,4 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)

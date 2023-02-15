@@ -10,7 +10,7 @@ This Lego get all evicted pods in CrashLoopBackOff State from given namespace. I
     k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = None)
 
         handle: Object of type unSkript K8S Connector
-        namespace: k8s namespace.
+        namespace: k8s namespace.(Optional)
 
 ## Lego Input
 

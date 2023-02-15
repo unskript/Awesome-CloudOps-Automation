@@ -31,7 +31,7 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
         :type namespace: Optional[str]
         :param namespace: Namespace to get the pods from. Eg:"logging", if not given all namespaces are considered
 
-        :rtype: Status, List of pods in CrashLoopBackOff State and error if any 
+        :rtype: Status, List of pods in CrashLoopBackOff State 
     """
     if handle.client_side_validation != True:
         print(f"K8S Connector is invalid: {handle}")
@@ -66,8 +66,9 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
         res = defaultdict(list)
         for key, val in unhealthy_pods:
             res[key].append(val)
-    result = dict(res)
+    if len(res)!=0:
+        result.append(dict(res)) 
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)

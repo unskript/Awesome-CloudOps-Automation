@@ -5,6 +5,7 @@
 
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from collections import defaultdict
 import json
 import pprint
@@ -16,14 +17,17 @@ class InputSchema(BaseModel):
         title='Namespace',
         description='k8s Namespace')
 
-def k8s_get_pods_in_imagepullbackoff_state_printer(output):
+def k8s_get_pods_in_terminating_state_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    if isinstance(output, CheckOutput):
+        print(output.json())
+    else:
+        pprint.pprint(output)
 
 
-def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Tuple:
-    """k8s_get_list_of_pods_with_imagepullbackoff_state executes the given kubectl command to find pods in ImagePullBackOff State
+def k8s_get_pods_in_terminating_state(handle, namespace: str=None) -> Tuple:
+    """k8s_get_pods_in_terminating_state executes the given kubectl command to find pods in Terminating State
 
         :type handle: object
         :param handle: Object returned from the Task validate method
@@ -31,14 +35,14 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Tuple
         :type namespace: Optional[str]
         :param namespace: Namespace to get the pods from. Eg:"logging", if not given all namespaces are considered
 
-        :rtype: Status, List of pods in CrashLoopBackOff State
+        :rtype: Status, List of pods in Terminating State
     """
     if handle.client_side_validation != True:
         print(f"K8S Connector is invalid: {handle}")
         return str()
-    kubectl_command ="kubectl get pods --all-namespaces | grep ImagePullBackOff | tr -s ' ' | cut -d ' ' -f 1,2"
+    kubectl_command ="kubectl get pods --all-namespaces | grep Terminating | tr -s ' ' | cut -d ' ' -f 1,2"
     if namespace:
-        kubectl_command = "kubectl get pods -n " + namespace + " | grep ImagePullBackOff | cut -d' ' -f 1 | tr -d ' '"
+        kubectl_command = "kubectl get pods -n " + namespace + " | grep Terminating | cut -d' ' -f 1 | tr -d ' '"
     response = handle.run_native_cmd(kubectl_command)
     if response is None or hasattr(response, "stderr") is False or response.stderr is None:
         print(
