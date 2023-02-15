@@ -5,7 +5,6 @@
 
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from collections import defaultdict
 import json
 import pprint
@@ -20,10 +19,7 @@ class InputSchema(BaseModel):
 def k8s_get_pods_in_imagepullbackoff_state_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
 def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Tuple:

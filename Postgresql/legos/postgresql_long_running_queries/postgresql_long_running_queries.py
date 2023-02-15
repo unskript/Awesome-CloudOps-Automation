@@ -2,8 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from typing import List, Any, Optional
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
+import pprint 
+
+from typing import List, Any, Optional, Tuple
 from tabulate import tabulate
 from pydantic import BaseModel, Field
 
@@ -18,13 +19,11 @@ class InputSchema(BaseModel):
 def postgresql_long_running_queries_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+
+    pprint.pprint(output)
 
 
-def postgresql_long_running_queries(handle, interval: int = 5) -> CheckOutput:
+def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
     """postgresql_long_running_queries Runs postgres query with the provided parameters.
 
           :type handle: object
@@ -68,10 +67,6 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> CheckOutput:
     cur.close()
     handle.close()
     if len(output) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=output,
-                   error=str(""))
+        return (False, output)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=output,
-                   error=str(""))
+        return (True, output)

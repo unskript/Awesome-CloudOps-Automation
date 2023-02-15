@@ -6,7 +6,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Tuple, Optional
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_filter_all_ec2_instances.aws_filter_all_ec2_instances import aws_filter_ec2_instances
 import pprint
 
@@ -22,12 +21,10 @@ class InputSchema(BaseModel):
 def aws_get_schedule_to_retire_instances_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
 
-def aws_get_schedule_to_retire_instances( handle, region: str=None) ->CheckOutput:
+    pprint.pprint(output)
+
+def aws_get_schedule_to_retire_instances( handle, region: str=None) -> Tuple:
     """aws_get_schedule_to_retire_instances Returns a tuple of instances scheduled to retire.
 
         :type region: string
@@ -64,10 +61,6 @@ def aws_get_schedule_to_retire_instances( handle, region: str=None) ->CheckOutpu
         except Exception as error: 
             pass 
     if len(result)!=0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])

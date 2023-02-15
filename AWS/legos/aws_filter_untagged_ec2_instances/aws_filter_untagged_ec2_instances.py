@@ -5,7 +5,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Tuple, Optional
 from unskript.connectors.aws import aws_get_paginator
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 
@@ -21,10 +20,7 @@ class InputSchema(BaseModel):
 def aws_filter_untagged_ec2_instances_printer(output):
     if output is None:
         return
-    elif isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 def check_untagged_instance(res, r):
     instance_list = []
