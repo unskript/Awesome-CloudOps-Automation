@@ -37,6 +37,7 @@
 * [K8s get pods attached to pvc.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_attached_to_pvc) 
 * [K8s get pods in crashloopbackoff state.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_crashloopbackoff_state) 
 * [K8s get pods in imagepullbackoff state.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_imagepullbackoff_state) 
+* [K8s get pods in terminating state.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_terminating_state) 
 * [K8s get services.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_services) 
 * [K8s kubectl command.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_kubectl_command) 
 * [K8s kubectl config set context.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_kubectl_config_set_context) 
