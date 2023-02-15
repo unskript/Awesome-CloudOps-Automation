@@ -18,12 +18,9 @@ class InputSchema(BaseModel):
 def aws_list_expiring_access_keys_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
-def aws_list_expiring_access_keys(handle, threshold_days: int)-> CheckOutput:
+def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
     """aws_list_expiring_access_keys returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -63,10 +60,6 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> CheckOutput:
                                objects=[],
                                error=e.__str__())
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])

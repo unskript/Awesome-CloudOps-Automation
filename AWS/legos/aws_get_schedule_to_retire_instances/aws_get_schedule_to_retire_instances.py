@@ -22,12 +22,10 @@ class InputSchema(BaseModel):
 def aws_get_schedule_to_retire_instances_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
 
-def aws_get_schedule_to_retire_instances( handle, region: str=None) ->CheckOutput:
+    pprint.pprint(output)
+
+def aws_get_schedule_to_retire_instances( handle, region: str=None) -> Tuple:
     """aws_get_schedule_to_retire_instances Returns a tuple of instances scheduled to retire.
 
         :type region: string
@@ -64,10 +62,6 @@ def aws_get_schedule_to_retire_instances( handle, region: str=None) ->CheckOutpu
         except Exception as error: 
             pass 
     if len(result)!=0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, result)

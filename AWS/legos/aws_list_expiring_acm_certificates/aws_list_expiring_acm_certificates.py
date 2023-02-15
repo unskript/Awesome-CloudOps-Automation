@@ -23,12 +23,9 @@ class InputSchema(BaseModel):
 def aws_list_expiring_acm_certificates_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
-def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> CheckOutput:
+def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> Tuple:
     """aws_list_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -40,7 +37,7 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=
         :type region: str
         :param region: Region name of the AWS account
 
-        :rtype: Object containing status, expiring certificates, and error
+        :rtype: Tuple containing status, expiring certificates, and error
     """
     arn_list=[]
     domain_list = []
@@ -75,10 +72,6 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=
         except Exception as e:
             pass
     if len(result_list)!=0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result_list,
-                   error=str(""))
+        return (False, result_list)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result_list,
-                   error=str(""))
+        return (True, [])

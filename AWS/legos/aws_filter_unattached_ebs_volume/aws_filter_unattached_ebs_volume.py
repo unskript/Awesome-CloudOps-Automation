@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Tuple
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
@@ -20,19 +20,16 @@ def aws_filter_ebs_unattached_volumes_printer(output):
     if output is None:
         return
 
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_filter_ebs_unattached_volumes(handle, region: str = "") -> CheckOutput:
+def aws_filter_ebs_unattached_volumes(handle, region: str = "") -> Tuple:
     """aws_filter_ebs_unattached_volumes Returns an array of ebs volumes.
 
         :type region: string
         :param region: Used to filter the volume for specific region.
 
-        :rtype: CheckOutput with status result and list of EBS Unattached Volume.
+        :rtype: Tuple with status result and list of EBS Unattached Volume.
     """
     result=[]
     all_regions = [region]
@@ -56,10 +53,6 @@ def aws_filter_ebs_unattached_volumes(handle, region: str = "") -> CheckOutput:
             pass
 
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])

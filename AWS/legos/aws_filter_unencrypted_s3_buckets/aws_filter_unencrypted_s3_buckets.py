@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Tuple
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from botocore.exceptions import ClientError
@@ -21,13 +21,10 @@ def aws_filter_unencrypted_s3_buckets_printer(output):
     if output is None:
         return
 
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> CheckOutput:
+def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> Tuple:
     """aws_filter_unencrypted_s3_buckets List of unencrypted S3 bucket name .
 
         :type handle: object
@@ -36,7 +33,7 @@ def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> CheckOutput:
         :type region: string
         :param region: Filter S3 buckets.
 
-        :rtype: CheckOutput with status result and list of unencrypted S3 bucket name.
+        :rtype: Tuple with status result and list of unencrypted S3 bucket name.
     """
     result = []
     all_regions = [region]
@@ -60,11 +57,7 @@ def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> CheckOutput:
             pass
     
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])
 

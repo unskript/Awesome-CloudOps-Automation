@@ -21,10 +21,7 @@ class InputSchema(BaseModel):
 def aws_filter_untagged_ec2_instances_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 def check_untagged_instance(res, r):
     instance_list = []
@@ -44,7 +41,7 @@ def check_untagged_instance(res, r):
     return instance_list
 
 
-def aws_filter_untagged_ec2_instances(handle, region: str= None) -> CheckOutput:
+def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
     """aws_filter_untagged_ec2_instances Returns an array of instances which has no tags.
 
         :type handle: object
@@ -74,10 +71,6 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> CheckOutput:
     except Exception as e:
         pass
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])

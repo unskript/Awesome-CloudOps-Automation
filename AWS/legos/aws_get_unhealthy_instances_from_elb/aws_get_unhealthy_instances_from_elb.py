@@ -25,13 +25,10 @@ def aws_get_unhealthy_instances_from_elb_printer(output):
     if output is None:
         return
 
-    if isinstance(output, CheckOutput):
-        pprint.pprint(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str = "") -> CheckOutput:
+def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str = "") -> Tuple:
     """aws_get_unhealthy_instances_from_elb gives unhealthy instances from ELB
 
         :type elb_name: string
@@ -105,13 +102,9 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
             pass
 
     if len(result) != 0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, [])
 
 
 
