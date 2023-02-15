@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.utils import parseARN
 from typing import List, Optional, Tuple 
 import pprint
@@ -50,9 +49,8 @@ def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Tu
             try:
                 targetHealthResponse = elbv2Client.describe_target_health(TargetGroupArn=o)
             except Exception as e:
-                return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                           objects=[],
-                           error=e.__str__())
+                raise e 
+
             for ins in targetHealthResponse["TargetHealthDescriptions"]:
                 unhealhthy_instances_dict ={}
                 if ins['TargetHealth']['State'] in ['unhealthy']:

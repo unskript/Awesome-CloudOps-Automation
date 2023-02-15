@@ -5,7 +5,6 @@
 
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 import pprint
 import json
 

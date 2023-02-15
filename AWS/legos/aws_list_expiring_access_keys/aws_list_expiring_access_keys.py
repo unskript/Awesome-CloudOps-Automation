@@ -4,7 +4,6 @@
 import dateutil
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_iam_users.aws_list_all_iam_users import aws_list_all_iam_users
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from typing import Dict,List,Tuple
 import pprint
 import datetime
@@ -36,9 +35,8 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
     try:
         all_users = aws_list_all_iam_users(handle=handle)
     except Exception as error:
-        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                               objects=[],
-                               error=error.__str__())
+        raise error 
+
     for each_user in all_users:
         try:
             iamClient = handle.client('iam')
@@ -56,9 +54,8 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
             if len(final_result)!=0:
                 result.append(final_result)
         except Exception as e:
-            return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                               objects=[],
-                               error=e.__str__())
+            raise e
+            
     if len(result) != 0:
         return (False, result)
     else:

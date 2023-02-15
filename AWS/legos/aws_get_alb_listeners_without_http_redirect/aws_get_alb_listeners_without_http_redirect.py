@@ -3,7 +3,6 @@
 ##
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_list_application_loadbalancers.aws_list_application_loadbalancers import aws_list_application_loadbalancers
@@ -75,7 +74,4 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
         return (False, result)
     else:
         return (True, [])
-
-
-
     

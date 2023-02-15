@@ -5,7 +5,6 @@
 import pprint 
 
 from typing import List, Any, Optional, Tuple
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from tabulate import tabulate
 from pydantic import BaseModel, Field
 

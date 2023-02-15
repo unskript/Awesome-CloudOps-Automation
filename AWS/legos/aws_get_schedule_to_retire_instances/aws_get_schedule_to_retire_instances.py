@@ -6,7 +6,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Tuple, Optional
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_filter_all_ec2_instances.aws_filter_all_ec2_instances import aws_filter_ec2_instances
 import pprint
 
@@ -64,4 +63,4 @@ def aws_get_schedule_to_retire_instances( handle, region: str=None) -> Tuple:
     if len(result)!=0:
         return (False, result)
     else:
-        return (True, result)
+        return (True, [])

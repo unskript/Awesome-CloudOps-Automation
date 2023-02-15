@@ -4,7 +4,6 @@
 ##
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 
