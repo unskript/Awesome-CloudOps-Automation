@@ -1,5 +1,5 @@
 {
-    "action_title": "Finding Rudendant Trails in AWS",
+    "action_title": "Finding Redundant Trails in AWS",
     "action_description": "This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.",
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_finding_redundant_trails",

@@ -1,5 +1,5 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Finding Rudendant Trails in AWS </h1>
+<h1>Finding Redundant Trails in AWS </h1>
 
 ## Description
 This Lego finds the redundant cloud trails from AWS if the attribute IncludeGlobalServiceEvents is true because it records global events.
