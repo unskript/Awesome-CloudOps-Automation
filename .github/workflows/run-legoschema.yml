@@ -1,6 +1,7 @@
 name: Run Legoschema
 on:
   pull_request:
+    types: [opened, reopened, edited, ready_for_review]
   push:
     branches:
       - master
@@ -11,6 +12,7 @@ concurrency:
 
 env:
   USERNAME: "jayasimha-raghavan-unskript"
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   build-elyra: 
@@ -82,8 +84,8 @@ jobs:
           /usr/bin/env python -m pip install google-api-python-client==2.77.0
           make awesome-submodule
           cd awesome
-          git checkout ${{ github.ref }}
-          git pull origin ${{ github.ref }}
+          git checkout ${{ env.BRANCH_NAME }}
+          git pull origin ${{ env.BRANCH_NAME }}
           cd ..
           make legoschema
 
