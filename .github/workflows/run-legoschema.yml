@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  USERNAME: "jayasimha-raghavan-unskript"
+  USERNAME: ${{ secrets.BUILD_USER }}
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
