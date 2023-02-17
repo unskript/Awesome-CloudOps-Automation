@@ -90,6 +90,7 @@
 * [Aws filter unencrypted s3 buckets.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unencrypted_s3_buckets) 
 * [Aws filter untagged ec2 instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_untagged_ec2_instances) 
 * [Aws filter unused keypairs.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_keypairs) 
+* [Aws finding redundant trails.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails) 
 * [Aws get alarms list.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alarms_list) 
 * [Aws get alb listeners without http redirect.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect) 
 * [Aws get all ec2 instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_ec2_instances) 
