@@ -3,7 +3,6 @@
 # All rights reserved.
 #
 from pydantic import BaseModel, Field
-from beartype import beartype
 from typing_extensions import Annotated
 
 import requests
