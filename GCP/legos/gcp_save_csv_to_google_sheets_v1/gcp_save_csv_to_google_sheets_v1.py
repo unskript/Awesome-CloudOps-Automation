@@ -1,27 +1,4 @@
 
-from __future__ import annotations
-
-from typing import List, Optional
-
-from pydantic import BaseModel, Field
-
-
-class InputSchema(BaseModel):
-    GoogleSheetID: str = Field(
-        '',
-        description='SheetId (from the URL) of your Google Sheet',
-        title='GoogleSheetID',
-    )
-    StartingCell: str = Field(
-        '"A1"',
-        description='Starting Cell for the data insertion into the sheet.',
-        title='StartingCell',
-    )
-    csvList: List = Field(
-        '',
-        description='List of rows to be inserted into the Google Sheet',
-        title='csvList',
-    )
 
 ##
 ##  Copyright (c) 2023 unSkript, Inc
@@ -40,9 +17,28 @@ class InputSchema(BaseModel):
 
 from pydantic import BaseModel, Field
 import pprint
-from typing import List
+from typing import List, Optional
 from googleapiclient.discovery import build
+from __future__ import annotations
 
+
+
+class InputSchema(BaseModel):
+    GoogleSheetID: str = Field(
+        '',
+        description='SheetId (from the URL) of your Google Sheet',
+        title='GoogleSheetID',
+    )
+    StartingCell: str = Field(
+        '"A1"',
+        description='Starting Cell for the data insertion into the sheet.',
+        title='StartingCell',
+    )
+    csvList: List = Field(
+        '',
+        description='List of rows to be inserted into the Google Sheet',
+        title='csvList',
+    )
 
 from beartype import beartype
 @beartype
