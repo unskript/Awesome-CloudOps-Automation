@@ -344,6 +344,7 @@ jobs:
           export BUILD_NUMBER=${{ inputs.build_number }}
           make copy
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/unskript* $HOME/devops/dockers/jupyterlab/oss_docker/
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
