@@ -73,7 +73,7 @@ jobs:
       - name: Checkout Code
         run: |
           sudo apt install -y build-essential
-          sudo apt-get install unixodbc-dev=2.3.7 unixodbc=2.3.7
+          sudo apt-get install unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7
           cd $HOME
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
