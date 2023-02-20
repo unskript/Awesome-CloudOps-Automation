@@ -177,6 +177,7 @@ jobs:
       - name: Checkout Code
         run: |
           cd $HOME
+          export NODE_OPTIONS=--openssl-legacy-provider
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jlab-enhanced-cell-toolbar.git jlab-enhanced-cell-toolbar
           cd jlab-enhanced-cell-toolbar
           git checkout ${{ inputs.celltoolbar_branch }}
