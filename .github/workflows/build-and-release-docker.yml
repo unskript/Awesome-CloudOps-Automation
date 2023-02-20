@@ -341,12 +341,14 @@ jobs:
           docker buildx use mybuilder
           docker buildx inspect --bootstrap
           docker buildx ls
+          cd $HOME/Awesome-CloudOps-Automation
+          git checkout ${{ inputs.awesome_branch }}
+          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/unskript* $HOME/devops/dockers/jupyterlab/oss_docker/
           cd $HOME/devops/dockers/jupyterlab/oss_docker
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
           make copy
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
-          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/unskript* $HOME/devops/dockers/jupyterlab/oss_docker/
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
