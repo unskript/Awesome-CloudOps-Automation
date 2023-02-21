@@ -113,6 +113,7 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
+          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7 
       
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
@@ -151,7 +152,7 @@ jobs:
       
 
   build-jlab-celltoolbar:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-20.04 
     if: ${{ inputs.enabled }}
     strategy:
       fail-fast: false 
@@ -176,6 +177,7 @@ jobs:
       - name: Checkout Code
         run: |
           cd $HOME
+          export NODE_OPTIONS=--openssl-legacy-provider
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jlab-enhanced-cell-toolbar.git jlab-enhanced-cell-toolbar
           cd jlab-enhanced-cell-toolbar
           git checkout ${{ inputs.celltoolbar_branch }}
@@ -193,7 +195,7 @@ jobs:
           path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
 
   build-code-snippets:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-20.04 
     if: ${{ inputs.enabled }}
     strategy:
       fail-fast: false 
@@ -339,6 +341,11 @@ jobs:
           docker buildx use mybuilder
           docker buildx inspect --bootstrap
           docker buildx ls
+          cd $HOME
+          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/Awesome-CloudOps-Automation.git Awesome-CloudOps-Automation
+          cd $HOME/Awesome-CloudOps-Automation
+          git checkout ${{ inputs.awesome_branch }}
+          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/unskript* $HOME/devops/dockers/jupyterlab/oss_docker/
           cd $HOME/devops/dockers/jupyterlab/oss_docker
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
