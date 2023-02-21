@@ -42,13 +42,13 @@ class InputSchema(BaseModel):
 
 from beartype import beartype
 @beartype
-def gcp_write_to_google_sheet_printer(output):
+def gcp_save_csv_to_google_sheets_v1_printer(output):
     if output is None:
         return
     pprint(output)
 
 @beartype
-def gcp_write_to_google_sheet(handle, csvList: List, GoogleSheetID: str, StartingCell: str) -> Dict:
+def gcp_save_csv_to_google_sheets_v1(handle, csvList: List, GoogleSheetID: str, StartingCell: str) -> Dict:
 
     service = build('sheets', 'v4', credentials=handle)
     sheet  = service.spreadsheets()
