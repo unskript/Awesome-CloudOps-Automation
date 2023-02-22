@@ -136,7 +136,7 @@ def run_all(filter: str):
         run_ipynb(r, status_list_of_dict)
 
     all_result_table = [["\033[36m Checks Name \033[0m", "\033[32m Passed Checks \033[0m", "\033[35m Failed Checks \033[0m", "\033[31m Errored Checks \033[0m"]]
-    summary_table = [["\033[36m Runbook Name \033[0m", "\033[32m Count (Pass/Fail/Error) \033[0m"]]
+    summary_table = [["\033[36m Runbook Name \033[0m", "\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[0m"]]
     for sd in status_list_of_dict:
         if sd == {}:
             continue
@@ -148,17 +148,17 @@ def run_all(filter: str):
             check_name = st[0]
             if status == 'PASS':
                 p += 1
-                all_result_table.append([check_name, 'PASS', 'N/A', 'N/A'])
+                all_result_table.append([check_name, '\033[1m PASS \033[0m', 'N/A', 'N/A'])
             elif status == 'FAIL':
                 f += 1
-                all_result_table.append([check_name, 'N/A', 'FAIL', 'N/A'])
+                all_result_table.append([check_name, 'N/A', '\033[1m FAIL \033[0m', 'N/A'])
             elif status == 'ERROR':
                 e += 1
-                all_result_table.append([check_name, 'N/A', 'N/A', 'ERROR'])
+                all_result_table.append([check_name, 'N/A', 'N/A', '\033[1m ERROR \033[0m'])
 
             else:
                 p = f = e = -1
-        summary_table.append([sd.get('runbook'), str(str(p) + ' / ' + str(f) + ' / ' + str(e))])
+        summary_table.append([sd.get('runbook'), str(str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e) + ' ) ')])
 
     s = '\x1B[1;20;46m' + "~~ Summary ~~" + '\x1B[0m'
     print(s)
@@ -216,16 +216,16 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
         
         try:
             if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS', 0, 'N/A'])
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), '\033[1m PASS \033[0m', 0, 'N/A'])
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED: 
                 failed_objects = payload.get('objects')
                 failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects 
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL', len(failed_objects), 'N/A'])
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), '\033[1m FAIL \033[0m', len(failed_objects), 'N/A'])
                 failed_result_available = True
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR', 0, payload.get('error')])
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), '\033[1m ERROR \033[0m', 0, payload.get('error')])
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
         except Exception as e:
             pass
