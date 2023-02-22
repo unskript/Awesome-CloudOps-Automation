@@ -29,20 +29,16 @@ def aws_finding_redundant_trails(handle) -> Tuple:
             ec2Client = handle.client('cloudtrail', region_name=reg)
             response = ec2Client.describe_trails()
             for glob_service in response["trailList"]:
-                trail_dict = {}
                 if glob_service["IncludeGlobalServiceEvents"] is True:
-                    if len(result) > 0:
-                        for i in result:
-                            if i["trail_name"] == glob_service["Name"]:
-                                i["regions"].append(reg)
-                            else:
-                                trail_dict["trail_name"] = glob_service["Name"]
-                                trail_dict["regions"] = [reg]
-                                result.append(trail_dict)
+                    for i in result:
+                        if i["trail_name"] == glob_service["Name"]:
+                            i["regions"].append(reg)
                     else:
-                        trail_dict["trail_name"] = glob_service["Name"]
-                        trail_dict["regions"] = [reg]
-                        result.append(trail_dict)
+                        if not any(i["trail_name"] == glob_service["Name"] for i in result):
+                            trail_dict = {}
+                            trail_dict["trail_name"] = glob_service["Name"]
+                            trail_dict["regions"] = [reg]
+                            result.append(trail_dict)
         except Exception as e:
             pass
 
