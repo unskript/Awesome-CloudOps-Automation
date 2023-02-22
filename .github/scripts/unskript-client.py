@@ -92,7 +92,8 @@ except Exception as e:
         return nb
     
     if cells[0].get('cell_type') == 'code':
-        tags = cells[0].get('metadata').get('tags')[0]
+        if len(cells[0].get('metadata').get('tags')) != 0:
+            tags = cells[0].get('metadata').get('tags')[0]
 
         # If we have the first cell present, remove it before inserting the new one
         if "unSkript:nbParam" == tags:
@@ -105,7 +106,71 @@ except Exception as e:
     
     return nb
 
-def run_ipynb(filename: str):
+def run_all(filter: str):
+    """run_all This function takes the filter as an argument
+       if the filter is all, then all Runbooks in the $HOME/runbooks directory
+       is selected to run. If a filter is given like aws, kubernetes, postgresql
+       then all runbooks from that connector type will be run
+
+       :type filter: str
+       :param filter: Filter Name (Connector Name) Runbooks are stored in connectors
+
+       :rtype: None
+    """
+    runbooks = []
+    if filter == 'all':
+        #runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/*/*.ipynb')
+        # FOR TESTING. REMOVE NEXT LINE AND UNCOMMENT PREVIOUS ONE
+        runbooks = glob.glob('./*/*.ipynb')
+        runbooks.sort()
+
+
+    else:
+        #runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/' + filter.lower().strip() + '/*.ipynb')
+        # FOR TESTING. REMOVE NEXT LINE AND UNCOMMENT PREVIOUS ONE
+        runbooks = glob.glob('./' + filter.lower().strip() + '/*.ipynb')
+
+    status_list_of_dict = []
+
+    for r in runbooks:
+        run_ipynb(r, status_list_of_dict)
+
+    all_result_table = [["\033[36m Checks Name \033[0m", "\033[32m Passed Checks \033[0m", "\033[35m Failed Checks \033[0m", "\033[31m Errored Checks \033[0m"]]
+    summary_table = [["\033[36m Runbook Name \033[0m", "\033[32m Count (Pass/Fail/Error) \033[0m"]]
+    for sd in status_list_of_dict:
+        if sd == {}:
+            continue
+        p = 0
+        f = 0
+        e = 0
+        for st in sd.get('result'):
+            status = st[-1]
+            check_name = st[0]
+            if status == 'PASS':
+                p += 1
+                all_result_table.append([check_name, 'PASS', 'N/A', 'N/A'])
+            elif status == 'FAIL':
+                f += 1
+                all_result_table.append([check_name, 'N/A', 'FAIL', 'N/A'])
+            elif status == 'ERROR':
+                e += 1
+                all_result_table.append([check_name, 'N/A', 'N/A', 'ERROR'])
+
+            else:
+                p = f = e = -1
+        summary_table.append([sd.get('runbook'), str(str(p) + ' / ' + str(f) + ' / ' + str(e))])
+
+    s = '\x1B[1;20;46m' + "~~ Summary ~~" + '\x1B[0m'
+    print(s)
+
+    print(tabulate(all_result_table, headers='firstrow', tablefmt='fancy_grid'))
+    print("")
+    print(tabulate(summary_table, headers='firstrow', tablefmt='fancy_grid'))
+
+    pass
+
+
+def run_ipynb(filename: str, status_list_of_dict: list = []):
     """run_ipynb This function takes the Runbook name and executes it
            using nbclient.execute()
 
@@ -116,11 +181,19 @@ def run_ipynb(filename: str):
     """
     nb = read_ipynb(filename)
    
+    # We store the Status of runbook execution in status_dict
+    status_dict = {}
+    status_dict['runbook'] = filename
+    status_dict['result'] = []
+    r_name = '\x1B[1;20;42m' + "Executing Runbook -> " + filename.strip() + '\x1B[0m'
+    print(r_name)
+
     if nb == None: 
         raise Exception("Unable to Run the Ipynb file, internal service error")
     
     nb = insert_first_and_last_cell(nb)
     client = NotebookClient(nb=nb, kernel_name="python3")
+
     try:
         client.execute()
     except CellExecutionError as e:
@@ -130,10 +203,6 @@ def run_ipynb(filename: str):
     
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
-    # success_table = [["Check Name", "Result"]]
-    # failed_table=[["Check Name", "Result"]]
-    # exception_table=[["Check Name", "Result", "Error"]]
-
     results = outputs[0]
     idx = 0
     r = results.get('text')
@@ -148,14 +217,16 @@ def run_ipynb(filename: str):
         try:
             if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS', 0, 'N/A'])
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED: 
                 failed_objects = payload.get('objects')
                 failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects 
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL', len(failed_objects), 'N/A'])
                 failed_result_available = True
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR', 0, payload.get('error')])
-
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
         except Exception as e:
             pass
         idx += 1
@@ -175,6 +246,7 @@ def run_ipynb(filename: str):
             print('\x1B[1;4m', '\x1B[0m')
     
     print("")
+    status_list_of_dict.append(status_dict)
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
     """read_ipynb This function takes the Runbook name and reads the content
@@ -217,7 +289,12 @@ def get_code_cell_action_uuids(content: dict) -> list:
     for cell in content.get('cells'):
         if cell.get('cell_type') == 'code':
             if cell.get('metadata').get('tags') != None:
-                tags = cell.get('metadata').get('tags')[0]
+                tags = None
+                if (isinstance(cell.get('metadata').get('tags'), list)) == True:
+                    if len(cell.get('metadata').get('tags')) != 0:
+                        tags = cell.get('metadata').get('tags')[0]
+                else:
+                    tags = None
 
                 if "unSkript:nbParam" != tags:
                     if cell.get('metadata').get('action_uuid') != None:
@@ -288,8 +365,9 @@ def usage() -> str:
     retval = retval + str("\t     unskript-client.py <COMMAND> <ARGS> \n")
     retval = retval + str("\n")
     retval = retval + str("\t     Examples -  \n")
-    retval = retval + str("\t         unskript-client.py --list \n")
-    retval = retval + str("\t         unskript-client.py --run ~/runbooks/<RUNBOOK_NAME> \n")
+    retval = retval + str("\t         unskript-client.py -lr / --list-runbooks \n")
+    retval = retval + str("\t         unskript-client.py -rr / --run-runbook ~/runbooks/<RUNBOOK_NAME> \n")
+    retval = retval + str("\t         unskript-client.py -ra / --run [all | connector] \n")
     retval = retval + str("")
 
     return retval
@@ -320,13 +398,21 @@ def list_runbooks():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='unskript-client', usage=usage())
-    parser.add_argument('-l', '--list', help='List Available Runbooks', action='store_true')
-    parser.add_argument('-r', '--runbook', type=str, help='Run the given runbook')
+    parser.add_argument('-lr', '--list-runbooks', help='List Available Runbooks', action='store_true')
+    parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
+    parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
     args = parser.parse_args()
 
-    if args.list == True: 
+    if len(sys.argv) == 1:
+        print(usage())
+        sys.exit(0)
+
+    if args.list_runbooks == True: 
         list_runbooks()
-    elif args.runbook not in  ('', None):
-        run_ipynb(args.runbook)
+    elif args.run_runbook not in  ('', None):
+        run_ipynb(args.run_runbook)
+    elif args.run not in ('', None):
+        run_all(args.run)
     else:
-        usage()
+        print(usage())
+    
