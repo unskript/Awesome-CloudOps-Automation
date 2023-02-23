@@ -19,6 +19,7 @@ import pprint
 import yaml
 
 from tabulate import tabulate
+from datetime import datetime 
 from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
@@ -49,6 +50,8 @@ TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[
 TBL_CELL_CONTENT_PASS="\033[1m PASS \033[0m"
 TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
+TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
+TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
 
 
 
@@ -219,22 +222,23 @@ def run_last_failed(execution_id: str = None):
     put in place is working.
 
     :type execution_id: string
-    :param string: Execution ID in the form of a python string. display-failed would return the
+    :param execution_id: Execution ID in the form of a python string. display-failed would return the
                    execution ID for each failed runs. Use that ID to re-run the test.
 
-    :rpath: None
+    :rtype: None
     """
     if execution_id is None:
         execution_id = 'all'
 
-    execution_file = os.environ.get('EXECUTION_DIR') + '/execution_summary.yaml'
+    execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
     if os.path.exists(execution_file):   
         with open(execution_file, 'r') as f:
             content = yaml.safe_load(f)
         last_failed = content.get('last_failed')
         if last_failed != None:
-            if last_failed.get('execution_id') == execution_id:
-                run_ipynb(last_failed.get('failed_runbook'))
+            for l in last_failed: 
+                if l.get('execution_id') == execution_id:
+                    run_ipynb(l.get('failed_runbook'))
     else:
         print("ERROR: Execution summary file missing.")
     pass 
@@ -250,20 +254,37 @@ def update_failed_execution(id: str, content: dict):
        :type content: dict
        :param content: The NotebookNode dictionary that has all the cell contents
 
-       :rpath: None
+       :rtype: None
     """
+    if content == {}:
+        print("ERROR: Cannot Update Failed execution with No Content")
+        return
+
     execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
     failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + f"{id}.ipynb"
-    exec_summary  = {}
-    exec_summary['last_failed'] = {}
-    exec_summary['last_failed']['execution_id'] = id 
-    exec_summary['last_failed']['failed_runbook'] = failed_runbook
+
 
     
     # If failed directory does not exists, lets create it
     if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/failed') == False:
         os.mkdir(os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/failed'))
     
+    exec_summary  = {}
+    if os.path.exists(execution_file) == True:
+        with open(execution_file, 'r') as f:
+            c = yaml.safe_load(f)
+        exec_summary['last_failed'] = c.get('last_failed')
+    else:
+        exec_summary['last_failed'] = []
+
+    es = {}
+    es['execution_id'] = id 
+    es['failed_runbook'] = failed_runbook
+    es['timestamp'] = str(datetime.now())
+    es['check_name'] = str(get_action_name_from_id(id, content))
+    exec_summary['last_failed'].append(es)
+    
+
     with open(execution_file, 'w') as f:
         yaml.safe_dump(exec_summary, f)
 
@@ -281,6 +302,31 @@ def update_failed_execution(id: str, content: dict):
     if os.path.exists(failed_runbook) == True:
         print(f"Successfully created Failed runbook at {failed_runbook}")
  
+def display_failed_checks():
+    """display_failed_checks This function reads the execution_summary.yaml and displays
+       the last failed checks with its UUID and Action.
+
+       :rtype: None
+    """
+    execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
+    yaml_content = {}
+    with open(execution_file, 'r') as f:
+        yaml_content = yaml.safe_load(f)
+    
+    if yaml_content == {}:
+        raise Exception("Execution Summary file missing")
+    
+    failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_DSPL_CHKS_UUID]]
+    failed_exec_list = yaml_content.get('last_failed')
+    for failed in failed_exec_list:
+        failed_checks_table.append([failed.get('check_name') + '\n' + '( Last Failed On: ' + failed.get('timestamp') +' )', 
+                                    failed.get('execution_id')])
+    
+    print("")
+    print(tabulate(failed_checks_table, headers='firstrow', tablefmt='fancy_grid'))
+    print("")
+
+    pass
 
 def run_ipynb(filename: str, status_list_of_dict: list = []):
     """run_ipynb This function takes the Runbook name and executes it
@@ -304,6 +350,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
         raise Exception("Unable to Run the Ipynb file, internal service error")
     
     nb = insert_first_and_last_cell(nb)
+    nbformat.write(nb, "./output.ipynb")
+
     client = NotebookClient(nb=nb, kernel_name="python3")
 
     try:
@@ -315,6 +363,9 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
     
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
+    if len(outputs) == 0:
+        raise Exception("Unable to execute Runbook. Last cell content is empty")
+
     results = outputs[0]
     idx = 0
     r = results.get('text')
@@ -482,6 +533,7 @@ def usage() -> str:
     retval = retval + str("\t         unskript-client.py -rr / --run-runbook ~/runbooks/<RUNBOOK_NAME> \n")
     retval = retval + str("\t         unskript-client.py -ra / --run [all | connector] \n")
     retval = retval + str("\t         unskript-client.py -rf / --run-failed [all | <exection_id>] \n")
+    retval = retval + str("\t         unskript-client.py -df / --display-failed \n")
 
     retval = retval + str("")
 
@@ -522,6 +574,7 @@ if __name__ == "__main__":
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
     parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
     parser.add_argument('-rf', '--run-failed', type=str, help='Run failed checks')
+    parser.add_argument('-df', '--display-failed', help='Display Failed Checks', action='store_true')
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
@@ -536,6 +589,8 @@ if __name__ == "__main__":
         run_all(args.run)
     elif args.run_failed not in ('', None):
         run_last_failed(args.run_failed)
+    elif args.display_failed == True:
+        display_failed_checks()
     else:
         print(usage())
     
