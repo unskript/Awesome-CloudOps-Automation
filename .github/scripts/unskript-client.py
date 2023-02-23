@@ -211,6 +211,76 @@ def run_all(filter: str):
 
     pass
 
+def run_last_failed(execution_id: str = None):
+    """run_last_failed This function reads the execution summary to find out 
+    the last failed checks and runs the failed runbook again. This is the senario
+    where in User has run the check and found it fails, has fixed something in their
+    infrastructure and want to re-verify if the failed tests are passing and fix they
+    put in place is working.
+
+    :type execution_id: string
+    :param string: Execution ID in the form of a python string. display-failed would return the
+                   execution ID for each failed runs. Use that ID to re-run the test.
+
+    :rpath: None
+    """
+    if execution_id is None:
+        execution_id = 'all'
+
+    execution_file = os.environ.get('EXECUTION_DIR') + '/execution_summary.yaml'
+    if os.path.exists(execution_file):   
+        with open(execution_file, 'r') as f:
+            content = yaml.safe_load(f)
+        last_failed = content.get('last_failed')
+        if last_failed != None:
+            if last_failed.get('execution_id') == execution_id:
+                run_ipynb(last_failed.get('failed_runbook'))
+    else:
+        print("ERROR: Execution summary file missing.")
+    pass 
+
+def update_failed_execution(id: str, content: dict):
+    """update_failed_execution This function gets execution id that has failed and will
+       create a dynamic failed runbook. And update the execution_summary.yaml file
+       to record the last failed run status
+
+       :type id: string 
+       :param id: The Execution ID (Action UUID that failed)
+
+       :type content: dict
+       :param content: The NotebookNode dictionary that has all the cell contents
+
+       :rpath: None
+    """
+    execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
+    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + f"{id}.ipynb"
+    exec_summary  = {}
+    exec_summary['last_failed'] = {}
+    exec_summary['last_failed']['execution_id'] = id 
+    exec_summary['last_failed']['failed_runbook'] = failed_runbook
+
+    
+    # If failed directory does not exists, lets create it
+    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/failed') == False:
+        os.mkdir(os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/failed'))
+    
+    with open(execution_file, 'w') as f:
+        yaml.safe_dump(exec_summary, f)
+
+    # Lets create the failed ipynb
+    try:
+        nb = nbformat.v4.new_notebook()
+        for c in content.get('cells'):
+            if c.get('metadata').get('action_uuid') == id:
+                nb['cells'].append(c)
+    except Exception as e:
+        pass
+    finally:
+        nbformat.write(nb, failed_runbook)
+    
+    if os.path.exists(failed_runbook) == True:
+        print(f"Successfully created Failed runbook at {failed_runbook}")
+ 
 
 def run_ipynb(filename: str, status_list_of_dict: list = []):
     """run_ipynb This function takes the Runbook name and executes it
@@ -266,6 +336,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_FAIL, len(failed_objects), 'N/A'])
                 failed_result_available = True
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
+                update_failed_execution(ids[idx], nb.dict())
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
@@ -410,6 +481,8 @@ def usage() -> str:
     retval = retval + str("\t         unskript-client.py -lr / --list-runbooks \n")
     retval = retval + str("\t         unskript-client.py -rr / --run-runbook ~/runbooks/<RUNBOOK_NAME> \n")
     retval = retval + str("\t         unskript-client.py -ra / --run [all | connector] \n")
+    retval = retval + str("\t         unskript-client.py -rf / --run-failed [all | <exection_id>] \n")
+
     retval = retval + str("")
 
     return retval
@@ -448,6 +521,7 @@ if __name__ == "__main__":
     parser.add_argument('-lr', '--list-runbooks', help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
     parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
+    parser.add_argument('-rf', '--run-failed', type=str, help='Run failed checks')
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
@@ -460,6 +534,8 @@ if __name__ == "__main__":
         run_ipynb(args.run_runbook)
     elif args.run not in ('', None):
         run_all(args.run)
+    elif args.run_failed not in ('', None):
+        run_last_failed(args.run_failed)
     else:
         print(usage())
     
