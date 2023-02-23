@@ -165,17 +165,14 @@ def run_all(filter: str):
     if runbook_dir == None:
         print("SYSTEM ERROR")
         return 
-
+    
     if filter == 'all':
         f = runbook_dir.strip() + '/' + '*/*.ipynb'
-        runbooks = glob.glob(f)
-        runbooks.sort()
-
     else:
-        print(runbook_dir.strip())
         f = runbook_dir.strip() + '/' + filter.lower().strip() + '/*.ipynb'
-        runbooks = glob.glob(f)
-        runbooks.sort()
+
+    runbooks = glob.glob(f)
+    runbooks.sort()
     
     status_list_of_dict = []
 
@@ -187,9 +184,7 @@ def run_all(filter: str):
     for sd in status_list_of_dict:
         if sd == {}:
             continue
-        p = 0
-        f = 0
-        e = 0
+        p = f = e = 0
         for st in sd.get('result'):
             status = st[-1]
             check_name = st[0]
@@ -444,7 +439,11 @@ def list_runbooks():
 
 
 if __name__ == "__main__":
-    load_or_create_global_configuration()
+    try:
+        load_or_create_global_configuration()
+    except Exception as e:
+        raise e 
+    
     parser = argparse.ArgumentParser(prog='unskript-client', usage=usage())
     parser.add_argument('-lr', '--list-runbooks', help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
