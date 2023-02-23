@@ -16,6 +16,7 @@ import glob
 import json
 import nbformat
 import pprint
+import yaml
 
 from tabulate import tabulate
 from nbclient import NotebookClient
@@ -35,6 +36,47 @@ This program assumes the following
   installed before using this script.
 """
 
+"""
+LIST OF CONSTANTS USED IN THIS FILE
+"""
+GLOBAL_CONFIG_PATH="/data/unskript_config.yaml"
+TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
+TBL_HDR_CHKS_PASS="\033[32m Passed Checks \033[0m"
+TBL_HDR_CHKS_FAIL="\033[35m Failed Checks \033[0m"
+TBL_HDR_CHKS_ERROR="\033[31m Errored Checks \033[0m"
+TBL_HDR_RBOOK_NAME="\033[36m Runbook Name \033[0m"
+TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[0m"
+TBL_CELL_CONTENT_PASS="\033[1m PASS \033[0m"
+TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
+TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
+
+
+
+def load_or_create_global_configuration():
+    """load_global_configuration This function reads the unskript_config.yaml file from /data
+       and sets os.env variables which we shall use it in the subsequent functions.
+       :rpath: None
+    """
+    global_content = {}
+    if os.path.exists(GLOBAL_CONFIG_PATH) == True:
+        # READ EXISTING FILE AND SET ENV VARIABLES
+        with open(GLOBAL_CONFIG_PATH, 'r') as f:
+            global_content = yaml.safe_load(f)
+    else:
+        # CREATE FILE WITH SOME PLACEHOLDER KEYS
+        temp_content = {}
+        temp_content['runbook_dir'] = os.environ.get('HOME') + "/runbooks"
+        temp_content['execution_dir'] = '/data/execution'
+        temp_content['display_execution_output'] = True
+        temp_content['envs'] = {"SOME_KEY": "SOME_VALUE"}
+        with open(GLOBAL_CONFIG_PATH, 'w') as f:
+            yaml.safe_dump(temp_content, f)
+        
+        global_content = temp_content
+    
+    for k,v in global_content.items():
+        k = k.upper()
+        os.environ[k] = json.dumps(v)
 
 
 def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNode:
@@ -118,25 +160,30 @@ def run_all(filter: str):
        :rtype: None
     """
     runbooks = []
+    runbook_dir = os.environ.get('RUNBOOK_DIR')
+    runbook_dir = runbook_dir.strip('"')
+    if runbook_dir == None:
+        print("SYSTEM ERROR")
+        return 
+
     if filter == 'all':
-        #runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/*/*.ipynb')
-        # FOR TESTING. REMOVE NEXT LINE AND UNCOMMENT PREVIOUS ONE
-        runbooks = glob.glob('./*/*.ipynb')
+        f = runbook_dir.strip() + '/' + '*/*.ipynb'
+        runbooks = glob.glob(f)
         runbooks.sort()
 
-
     else:
-        #runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/' + filter.lower().strip() + '/*.ipynb')
-        # FOR TESTING. REMOVE NEXT LINE AND UNCOMMENT PREVIOUS ONE
-        runbooks = glob.glob('./' + filter.lower().strip() + '/*.ipynb')
-
+        print(runbook_dir.strip())
+        f = runbook_dir.strip() + '/' + filter.lower().strip() + '/*.ipynb'
+        runbooks = glob.glob(f)
+        runbooks.sort()
+    
     status_list_of_dict = []
 
     for r in runbooks:
         run_ipynb(r, status_list_of_dict)
 
-    all_result_table = [["\033[36m Checks Name \033[0m", "\033[32m Passed Checks \033[0m", "\033[35m Failed Checks \033[0m", "\033[31m Errored Checks \033[0m"]]
-    summary_table = [["\033[36m Runbook Name \033[0m", "\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[0m"]]
+    all_result_table = [[TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_PASS, TBL_HDR_CHKS_FAIL, TBL_HDR_CHKS_ERROR]]
+    summary_table = [[TBL_HDR_RBOOK_NAME, TBL_HDR_CHKS_COUNT]]
     for sd in status_list_of_dict:
         if sd == {}:
             continue
@@ -148,13 +195,13 @@ def run_all(filter: str):
             check_name = st[0]
             if status == 'PASS':
                 p += 1
-                all_result_table.append([check_name, '\033[1m PASS \033[0m', 'N/A', 'N/A'])
+                all_result_table.append([check_name, TBL_CELL_CONTENT_PASS, 'N/A', 'N/A'])
             elif status == 'FAIL':
                 f += 1
-                all_result_table.append([check_name, 'N/A', '\033[1m FAIL \033[0m', 'N/A'])
+                all_result_table.append([check_name, 'N/A', TBL_CELL_CONTENT_FAIL, 'N/A'])
             elif status == 'ERROR':
                 e += 1
-                all_result_table.append([check_name, 'N/A', 'N/A', '\033[1m ERROR \033[0m'])
+                all_result_table.append([check_name, 'N/A', 'N/A', TBL_CELL_CONTENT_ERROR])
 
             else:
                 p = f = e = -1
@@ -216,16 +263,16 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
         
         try:
             if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), '\033[1m PASS \033[0m', 0, 'N/A'])
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_PASS, 0, 'N/A'])
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED: 
                 failed_objects = payload.get('objects')
                 failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects 
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), '\033[1m FAIL \033[0m', len(failed_objects), 'N/A'])
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_FAIL, len(failed_objects), 'N/A'])
                 failed_result_available = True
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), '\033[1m ERROR \033[0m', 0, payload.get('error')])
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
         except Exception as e:
             pass
@@ -397,6 +444,7 @@ def list_runbooks():
 
 
 if __name__ == "__main__":
+    load_or_create_global_configuration()
     parser = argparse.ArgumentParser(prog='unskript-client', usage=usage())
     parser.add_argument('-lr', '--list-runbooks', help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
