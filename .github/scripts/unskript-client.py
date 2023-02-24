@@ -327,7 +327,7 @@ def update_failed_logs(id: str, failed_result: dict):
     for k,v in failed_result.items():
         content = content + 'CHECK NAME: ' + str(k) + '\n'
         content = content + 'FAILED OBJECTS: \n' +  json.dumps(v) + '\n'
-        
+
     with open(failed_log_file, 'w') as f:
         f.write(content)
         
@@ -412,6 +412,21 @@ def display_failed_logs(execution_id: str = None):
     :type execution_id: string
     :param execution_id: Execution id used to serach logs
     """
+    if execution_id == None:
+        execution_id = 'all'
+    
+    failed_logs_dir = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/'
+    if execution_id == 'all':
+        failed_log_files = glob.glob(failed_logs_dir + '*.log')
+        for logfile in failed_log_files:
+            with open(logfile, 'r') as f:
+                pprint.pprint(f.read())
+                print("")
+    else:
+        failed_log_file = failed_logs_dir + execution_id.strip() + '.log'
+        if os.path.exists(failed_log_file) == True:
+            with open(failed_log_file, 'r') as f:
+                pprint.pprint(f.read())
     
     pass
 
@@ -621,8 +636,9 @@ def usage() -> str:
     retval = retval + str("\t         unskript-client.py -rr / --run-runbook ~/runbooks/<RUNBOOK_NAME> \n")
     retval = retval + str("\t         unskript-client.py -ra / --run [all | connector] \n")
     retval = retval + str("\t         unskript-client.py -rf / --run-failed [all | <exection_id>] \n")
-    retval = retval + str("\t         unskript-client.py -df / --display-failed \n")
+    retval = retval + str("\t         unskript-client.py -df / --display-failed-checks \n")
     retval = retval + str("\t         unskript-client.py -lc / --list-checks [all | connector] \n")
+    retval = retval + str("\t         unskript-client.py -dl / --display-failed-logs [all | <execution_id>] \n")
 
 
     retval = retval + str("")
@@ -664,8 +680,9 @@ if __name__ == "__main__":
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
     parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
     parser.add_argument('-rf', '--run-failed', type=str, help='Run failed checks')
-    parser.add_argument('-df', '--display-failed', help='Display Failed Checks', action='store_true')
+    parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks', action='store_true')
     parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, per connector or all')
+    parser.add_argument('-dl', '--display-failed-logs', type=str, help='Display failed logs')
 
     args = parser.parse_args()
 
@@ -681,10 +698,12 @@ if __name__ == "__main__":
         run_all(args.run)
     elif args.run_failed not in ('', None):
         run_last_failed(args.run_failed)
-    elif args.display_failed == True:
+    elif args.display_failed_checks == True:
         display_failed_checks()
     elif args.list_checks not in ('', None):
         list_checks_by_connector(args.list_checks)
+    elif args.display_failed_logs not in ('', None):
+        display_failed_logs(args.display_failed_logs)
     else:
         print(usage())
     
