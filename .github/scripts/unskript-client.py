@@ -17,12 +17,16 @@ import json
 import nbformat
 import pprint
 import yaml
+import re
 
 from tabulate import tabulate
 from datetime import datetime 
 from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
+
+import ZODB, ZODB.FileStorage
+from ZODB import DB
 
 """
 This python client can be used to
@@ -41,6 +45,7 @@ This program assumes the following
 LIST OF CONSTANTS USED IN THIS FILE
 """
 GLOBAL_CONFIG_PATH="/data/unskript_config.yaml"
+ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
 TBL_HDR_CHKS_PASS="\033[32m Passed Checks \033[0m"
 TBL_HDR_CHKS_FAIL="\033[35m Failed Checks \033[0m"
@@ -52,6 +57,7 @@ TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
 TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
+TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
 
 
@@ -299,9 +305,37 @@ def update_failed_execution(id: str, content: dict):
     finally:
         nbformat.write(nb, failed_runbook)
     
-    if os.path.exists(failed_runbook) == True:
-        print(f"Successfully created Failed runbook at {failed_runbook}")
- 
+    if os.path.exists(failed_runbook) != True:
+        print(f"ERROR Unable to create failed runbook at {failed_runbook}")
+
+def update_failed_logs(id: str, failed_result: dict):
+    """update_failed_logs This function dumps the failed result into a log file
+       in os.environ.get('EXECUTION_DIR')/failed/<ID>.log 
+
+       :type id: string
+       :param id: Action UUID which has failed the test
+
+       :type failed_result: dict
+       :param failed_result: The failed object of the given UUID
+
+       :rtype: None
+    """
+    failed_log_file = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + f'{id.strip()}.log'
+    content = ""
+    content = content + 'TIME STAMP: ' +  str(datetime.now()) + '\n'
+    content = content + 'EXECUTION ID: ' +  id + '\n'
+    for k,v in failed_result.items():
+        content = content + 'CHECK NAME: ' + str(k) + '\n'
+        content = content + 'FAILED OBJECTS: \n' +  json.dumps(v) + '\n'
+        
+    with open(failed_log_file, 'w') as f:
+        f.write(content)
+        
+    
+    if os.path.exists(failed_log_file) == False:
+        print(f"ERROR: Not able to create log file for Failed id {id}")
+    
+
 def display_failed_checks():
     """display_failed_checks This function reads the execution_summary.yaml and displays
        the last failed checks with its UUID and Action.
@@ -326,6 +360,59 @@ def display_failed_checks():
     print(tabulate(failed_checks_table, headers='firstrow', tablefmt='fancy_grid'))
     print("")
 
+
+def list_checks_by_connector(connector_name: str):
+    """list_checks_by_connector This function reads the ZoDB and displays the
+       checks by a given connector. connector_name can be `all` in that case
+       all the checks across connectors performed and displayed.
+
+       :type connector_name: string
+       :param connector_name: Connector name like aws, gcp, etc... or all for everything
+
+       :rtype: None
+    """
+    try:
+        db = DB(ZODB_DB_PATH)
+    except Exception as e:
+        raise e 
+    connection = db.open()
+    root = connection.root()
+    cs = root.get('unskript_cs')
+
+    if cs == None:
+        print("ERROR: Cannot Fetch Packaged Check Actions.")
+        return 
+    
+    list_connector_table = [[TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME]]
+    for s in cs:
+        d = s.snippet
+        s_connector = d.get('metadata').get('action_type')
+        s_connector = s_connector.split('_')[-1].lower()
+        if connector_name.lower() == 'all':
+            if d.get('metadata').get('action_is_check') == True:
+                list_connector_table.append([s_connector.capitalize(), d.get('name')])
+        elif re.match(connector_name.lower(), s_connector):
+            if d.get('metadata').get('action_is_check') == True:
+                list_connector_table.append([s_connector.capitalize(), d.get('name')])
+        else:
+            pass
+   
+    print("")
+    print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
+    print("")
+
+    del root 
+    connection.close()
+    db.close()
+    
+def display_failed_logs(execution_id: str = None):
+    """display_failed_logs This function reads the failed logs for a given execution ID
+       When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']/failed/<UUID>.log
+
+    :type execution_id: string
+    :param execution_id: Execution id used to serach logs
+    """
+    
     pass
 
 def run_ipynb(filename: str, status_list_of_dict: list = []):
@@ -388,6 +475,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
                 failed_result_available = True
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
                 update_failed_execution(ids[idx], nb.dict())
+                update_failed_logs(ids[idx], failed_result)
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
@@ -534,6 +622,8 @@ def usage() -> str:
     retval = retval + str("\t         unskript-client.py -ra / --run [all | connector] \n")
     retval = retval + str("\t         unskript-client.py -rf / --run-failed [all | <exection_id>] \n")
     retval = retval + str("\t         unskript-client.py -df / --display-failed \n")
+    retval = retval + str("\t         unskript-client.py -lc / --list-checks [all | connector] \n")
+
 
     retval = retval + str("")
 
@@ -575,6 +665,8 @@ if __name__ == "__main__":
     parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
     parser.add_argument('-rf', '--run-failed', type=str, help='Run failed checks')
     parser.add_argument('-df', '--display-failed', help='Display Failed Checks', action='store_true')
+    parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, per connector or all')
+
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
@@ -591,6 +683,8 @@ if __name__ == "__main__":
         run_last_failed(args.run_failed)
     elif args.display_failed == True:
         display_failed_checks()
+    elif args.list_checks not in ('', None):
+        list_checks_by_connector(args.list_checks)
     else:
         print(usage())
     
