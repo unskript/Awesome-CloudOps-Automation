@@ -452,7 +452,6 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
         raise Exception("Unable to Run the Ipynb file, internal service error")
     
     nb = insert_first_and_last_cell(nb)
-    nbformat.write(nb, "./output.ipynb")
 
     client = NotebookClient(nb=nb, kernel_name="python3")
 
