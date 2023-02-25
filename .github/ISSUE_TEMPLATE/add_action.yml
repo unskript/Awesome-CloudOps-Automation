@@ -37,7 +37,7 @@ body:
     attributes:
       label: Action Outputs
       description: What do you want to see in the Action output (and type)
-      placeholder: [list of all IP addresses]
+      placeholder: list of all IP addresses
     validations:
       required: true
   - type: textarea
