@@ -29,7 +29,7 @@ body:
     attributes:
       label: Action Inputs
       description: What variables (and variable types) do you expect for this action
-      placeholder: region- String, instance_id- string
+      placeholder: region instance_id
     validations:
       required: true
   - type: textarea
