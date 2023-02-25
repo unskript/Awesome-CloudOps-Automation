@@ -45,7 +45,6 @@ body:
     attributes:
       label: Comments
       description: Do you have any additional information for this Action?
-      placeholder: 
     validations:
       required: false
   - type: checkboxes
