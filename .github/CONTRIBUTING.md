@@ -119,7 +119,7 @@ is hosted at Bitbucket, self-hosted, or etc.)
 ## Support Channels
 ---
 Whether you are a user or contributor, official support channels include:
-- GitHub issues: hhttps://github.com/unskript/Awesome-CloudOps-Automation/issues/new
+- GitHub issues: https://github.com/unskript/Awesome-CloudOps-Automation/issues/new
 - Slack: 
  
 ## Sources
