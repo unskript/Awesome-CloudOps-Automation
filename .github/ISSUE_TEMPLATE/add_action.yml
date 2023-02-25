@@ -1,0 +1,58 @@
+name: Create New Action
+description: File an Action Request
+title: "[Action]: "
+labels: ["action", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: Actionname
+    attributes:
+      label: Action Name
+      description: What is the Name for your Action?
+      placeholder: List all Open GitHub Pull Requests
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: textarea
+    id: Actioninputs
+    attributes:
+      label: Action Inputs
+      description: What variables (and variable types) do you expect for this action
+      placeholder: region: String, instance_id: string
+    validations:
+      required: true
+  - type: textarea
+    id: Actionoutputs
+    attributes:
+      label: Action Outputs
+      description: What do you want to see in the Action output (and type)
+      placeholder: [list of all IP addresses]
+    validations:
+      required: true
+  - type: textarea
+    id: comments
+    attributes:
+      label: Comments
+      description: Do you have any additional information for this Action?
+      placeholder: 
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
