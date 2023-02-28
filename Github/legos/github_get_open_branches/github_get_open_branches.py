@@ -27,7 +27,7 @@ def github_get_open_branches_printer(output):
 
 
 def github_get_open_branches(handle, owner: str, repository: str)-> List:
-    """github_get_all_branches returns 100 open github branches for a user.
+    """github_get_open_branches returns 100 open github branches for a user.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -44,10 +44,11 @@ def github_get_open_branches(handle, owner: str, repository: str)-> List:
     try:
         user = handle.get_user(login=owner)
         repos = user.get_repos()
+        repo_name = owner+"/"+repository
         if len(list(repos)) == 0:
             return [f"{owner} does not have any repositories"]
         for repo in repos:
-            if repo.full_name == repository:
+            if repo.full_name == repo_name:
                 branches = repo.get_branches()
                 [result.append(branch.name) for branch in branches[:100]]
     except GithubException as e:
