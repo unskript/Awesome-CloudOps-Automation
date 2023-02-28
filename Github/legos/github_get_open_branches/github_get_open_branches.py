@@ -1,6 +1,6 @@
 
 ##
-##  Copyright (c) 2021 unSkript, Inc
+##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
