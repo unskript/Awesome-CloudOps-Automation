@@ -18,7 +18,7 @@ class InputSchema(BaseModel):
         title='Owner'
     )
     repository: str = Field(
-        description='Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"',
+        description='Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"',
         title='Repository',
     )
 
@@ -39,7 +39,7 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> L
         :param owner: Username of the GitHub user. Eg: "johnwick"
 
         :type repository: string
-        :param repository: Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"
+        :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
         :type branch_name: string
         :param branch_name: Branch Name Eg: "dummy-branch"
@@ -47,28 +47,25 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> L
         :rtype: List of branch with commits for a user for a repository
     """
     result = []
+    branch_info = {}
     try:
-        user = handle.get_user(login=owner)
-        repos = user.get_repos()
-        for repo in repos:
-            if repo.full_name ==repository:
-                branches = repo.get_branches()
-                flag_to_check_branch = 0
-                for branch in branches:
-                    if branch.name==branch_name:
-                        flag_to_check_branch = 1
-                        branch_info={}
-                        branch_info["branch"] = branch.name
-                        branch_info["commit"] = branch.commit.sha
-                        result.append(branch_info)
-        if flag_to_check_branch==0:
-            return [f"Branch not found"]
+        user = handle.get_user(login="shlokabhalgat")
+        repo_name = user.login+"/"+repository
+        repo = handle.get_repo(repo_name)
+        if repo.full_name == repo_name:
+            branch = repo.get_branch(branch_name)
+            if branch.name == branch_name:
+                branch_info["branch"] = branch.name
+                branch_info["commit"] = branch.commit.sha
+                result.append(branch_info)
+            else:
+                return [f"{branch_name} not found"]
     except GithubException as e:
-        if e.status== 403:
+        if e.status == 403:
             return [f"You need push access"]
-        if e.status==404:
+        if e.status == 404:
             return [f"No such username or repository"]
         else:
-            return [f"e.data"]
+            return [e.data]
     return result
 
