@@ -51,7 +51,7 @@ def github_list_team_repos(handle, organization_name:str, team_name:str) -> List
         if e.status == 404:
             return [f"No such organization or repository"]
         else:
-            return [f"e.data"]
+            return [e.data]
     return result
 
 
