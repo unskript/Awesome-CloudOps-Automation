@@ -1,5 +1,5 @@
 ##
-##  Copyright (c) 2021 unSkript, Inc
+##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
 from github import GithubException
@@ -49,7 +49,7 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> L
     result = []
     branch_info = {}
     try:
-        user = handle.get_user(login="shlokabhalgat")
+        user = handle.get_user(login=owner)
         repo_name = user.login+"/"+repository
         repo = handle.get_repo(repo_name)
         if repo.full_name == repo_name:
