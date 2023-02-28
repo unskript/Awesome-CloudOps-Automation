@@ -1,3 +1,7 @@
+##
+##  Copyright (c) 2023 unSkript, Inc
+##  All rights reserved.
+##
 
 from typing import Optional, List
 from github import GithubException
@@ -5,11 +9,11 @@ from pydantic import BaseModel, Field
 import pprint
 
 class InputSchema(BaseModel):
-    organization_name: Optional[str] = Field(
+    organization_name: str = Field(
         description='Github Organization Name', 
         title='Organization Name'
     )
-    team_name: Optional[str] = Field(
+    team_name: str = Field(
         description='Team name in a GitHub Organization', 
         title='Team name'
     )
@@ -21,7 +25,7 @@ def github_get_team_printer(output):
     pprint.pprint(output)
 
 def github_get_team(handle, organization_name:str, team_name:str) -> List:
-    """github_get_all_branches returns 100 open github branches for a user.
+    """github_get_team returns details of the team
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
