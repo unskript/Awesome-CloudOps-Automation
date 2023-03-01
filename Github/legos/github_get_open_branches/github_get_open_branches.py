@@ -12,11 +12,11 @@ from github import GithubException
 class InputSchema(BaseModel):
     owner: str = Field(
         description='Username of the GitHub user. Eg: "johnwick"', 
-        title='owner'
+        title='Owner'
     )
     repository: str = Field(
-        description='Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"',
-        title='repository',
+        description='Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"',
+        title='Repository',
     )
 
 
@@ -36,7 +36,7 @@ def github_get_open_branches(handle, owner: str, repository: str)-> List:
         :param owner: Username of the GitHub user. Eg: "johnwick"
 
         :type repository: string
-        :param repository: Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"
+        :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
         :rtype: List of branches for a user for a repository
     """
