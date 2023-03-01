@@ -12,7 +12,7 @@ This Lego deleted a given branch
 
         handle: Object of type unSkript Github Connector
         owner: String, Username of the GitHub user. Eg: "johnwick"
-        repository: String, Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"
+        repository: String, Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
         branch_name: String, Branch Name
 
 ## Lego Input

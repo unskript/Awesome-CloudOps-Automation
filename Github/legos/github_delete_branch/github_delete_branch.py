@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
     title='Owner'
     )
     repository: str = Field(
-        description='Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"',
+        description='Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"',
         title='Repository',
     )
 
