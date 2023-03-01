@@ -14,7 +14,7 @@ This Lego gets list of teams in an organization
         organization_name: String, Name of the GitHub Organization. Eg: "wheelorg"
 
 ## Lego Input
-This Lego take 2 inputs handle, owner, repository, organization_name
+This Lego take 2 inputs handle, organization_name
 
 ## Lego Output
 Here is a sample output.
