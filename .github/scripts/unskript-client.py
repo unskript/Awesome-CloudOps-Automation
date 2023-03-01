@@ -24,6 +24,7 @@ from datetime import datetime
 from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
+from db_utils import *
 
 import ZODB, ZODB.FileStorage
 from ZODB import DB
@@ -45,6 +46,7 @@ This program assumes the following
 LIST OF CONSTANTS USED IN THIS FILE
 """
 GLOBAL_CONFIG_PATH="/data/unskript_config.yaml"
+CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
 TBL_HDR_CHKS_PASS="\033[32m Passed Checks \033[0m"
@@ -57,6 +59,7 @@ TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
 TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
+TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
 
@@ -143,8 +146,10 @@ except Exception as e:
         return nb
     
     if cells[0].get('cell_type') == 'code':
-        if len(cells[0].get('metadata').get('tags')) != 0:
-            tags = cells[0].get('metadata').get('tags')[0]
+        tags = None 
+        if cells[0].get('metadata').get('tags') != None:
+            if len(cells[0].get('metadata').get('tags')) != 0:
+                tags = cells[0].get('metadata').get('tags')[0]
 
         # If we have the first cell present, remove it before inserting the new one
         if "unSkript:nbParam" == tags:
@@ -156,6 +161,31 @@ except Exception as e:
     nb['cells'].extend([nbformat.v4.new_code_cell(last_cell_content, id='lastcell')])
     
     return nb
+
+
+def run_checks(filter: str):
+    """run_checks This function takes the filter as an argument
+    and based on the filter, this function queries the DB and 
+    creates a temporary runnable runbooks and run them, updates
+    the audit results.
+
+    :type filter: string
+    :param filter: Filter string, possible values are all,<connector>,failed
+    
+    :rtype: None
+    """
+    if filter in ("", None):
+        raise Exception("Run Checks needs filter to be specified.")
+    
+    runbooks = []
+    check_list = get_check_snippets(filter)
+    for check in check_list:
+        runbooks.append(create_jit_runbook(check, check.get('uuid')))
+    
+    status_of_runs = []
+    for rb in runbooks:
+        run_ipynb(rb, status_of_runs)
+
 
 def run_all(filter: str):
     """run_all This function takes the filter as an argument
@@ -269,7 +299,6 @@ def update_failed_execution(id: str, content: dict):
     execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
     failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + f"{id}.ipynb"
 
-
     
     # If failed directory does not exists, lets create it
     if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/failed') == False:
@@ -289,6 +318,7 @@ def update_failed_execution(id: str, content: dict):
     es['timestamp'] = str(datetime.now())
     es['check_name'] = str(get_action_name_from_id(id, content))
     exec_summary['last_failed'].append(es)
+    upsert_pss_record('last_failed', es)
     
 
     with open(execution_file, 'w') as f:
@@ -307,6 +337,56 @@ def update_failed_execution(id: str, content: dict):
     
     if os.path.exists(failed_runbook) != True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
+
+def create_jit_runbook(content: dict, id: str):
+    """create_jit_runbook This function creates Just In Time runbook
+       with just one code cell. The content will be upended with the
+       task lines... and used it create the jit runbook
+
+       :type content: dict
+       :param content: Cell content in python dictionary
+
+       :type id: str 
+       :param id: Action UUID 
+
+       :rtype: None
+    """
+    s_connector = content.get('metadata').get('action_type')
+    s_connector = s_connector.replace('LEGO', 'CONNECTOR')
+    cred_name,cred_id = get_creds_by_connector(s_connector)
+    task_lines = '''
+task.configure(printOutput=True)
+task.configure(credentialsJson=\'\'\'{
+    \"credential_name\":''' +  f" \"{cred_name}\"" + ''',
+    \"credential_type\":''' + f" \"{s_connector}\"" + ''',
+    \"credential_id\":''' +  f" \"{cred_id}\"" + '''}\'\'\')
+    '''
+    
+    try:
+        nb = nbformat.v4.new_notebook()
+        c = content.get('code')
+        idx = c.index("task = Task(Workflow())")
+        c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
+        content['code'] = []
+        for line in c[:]:
+            content['code'].append(str(line + "\n"))
+        
+        content['metadata']['action_uuid'] = content['uuid']
+        content['metadata']['name'] = content['name']
+        failed_notebook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + id + '.ipynb'
+        cc = nbformat.v4.new_code_cell(content.get('code'))
+        for k,v in content.items():
+            if k != 'code':
+                cc[k] = content[k]
+
+        nb['cells'] = [cc]
+        
+        nbformat.write(nb, failed_notebook)
+    except Exception as e:
+        raise e
+    
+    return failed_notebook
+    
 
 def update_failed_logs(id: str, failed_result: dict):
     """update_failed_logs This function dumps the failed result into a log file
@@ -350,6 +430,9 @@ def display_failed_checks():
     if yaml_content == {}:
         raise Exception("Execution Summary file missing")
     
+    pss_content = get_pss_record('last_failed', True)
+    print(pss_content)
+    
     failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_DSPL_CHKS_UUID]]
     failed_exec_list = yaml_content.get('last_failed')
     for failed in failed_exec_list:
@@ -371,39 +454,14 @@ def list_checks_by_connector(connector_name: str):
 
        :rtype: None
     """
-    try:
-        db = DB(ZODB_DB_PATH)
-    except Exception as e:
-        raise e 
-    connection = db.open()
-    root = connection.root()
-    cs = root.get('unskript_cs')
-
-    if cs == None:
-        print("ERROR: Cannot Fetch Packaged Check Actions.")
-        return 
-    
-    list_connector_table = [[TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME]]
-    for s in cs:
-        d = s.snippet
-        s_connector = d.get('metadata').get('action_type')
-        s_connector = s_connector.split('_')[-1].lower()
-        if connector_name.lower() == 'all':
-            if d.get('metadata').get('action_is_check') == True:
-                list_connector_table.append([s_connector.capitalize(), d.get('name')])
-        elif re.match(connector_name.lower(), s_connector):
-            if d.get('metadata').get('action_is_check') == True:
-                list_connector_table.append([s_connector.capitalize(), d.get('name')])
-        else:
-            pass
+    list_connector_table = [[TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_UUID]]
+    for l in get_checks_by_connector(connector_name):
+        list_connector_table.append(l)
    
     print("")
     print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
     print("")
 
-    del root 
-    connection.close()
-    db.close()
     
 def display_failed_logs(execution_id: str = None):
     """display_failed_logs This function reads the failed logs for a given execution ID
@@ -459,8 +517,12 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
         client.execute()
     except CellExecutionError as e:
         raise e
-    finally:    
-        outputs = get_last_code_cell_output(nb.dict())
+    finally:
+        nbformat.write(nb, "/tmp/output.ipynb")
+        new_nb = None
+        with open("/tmp/output.ipynb", "r") as f:
+            new_nb = nbformat.read(f, as_version=4)
+        outputs = get_last_code_cell_output(new_nb.dict())
     
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
@@ -565,7 +627,9 @@ def get_code_cell_action_uuids(content: dict) -> list:
                 if "unSkript:nbParam" != tags:
                     if cell.get('metadata').get('action_uuid') != None:
                         retval.append(cell.get('metadata').get('action_uuid'))
-
+            else:
+                if cell.get('metadata').get('action_uuid') != None:
+                    retval.append(cell.get('metadata').get('action_uuid'))
     
     return retval 
 
@@ -582,14 +646,14 @@ def get_last_code_cell_output(content: dict) -> dict:
     if content in ('', None):
         print("Content sent is empty")
         return retval
-    
+
     for cell in content.get('cells'):
         if cell.get('cell_type') == 'code':
             if cell.get('id') == 'lastcell':
                 outputs = {}
                 outputs = cell.get('outputs')
                 retval = outputs
-    
+    print("")
     return retval
 
 def get_action_name_from_id(action_uuid: str, content: dict) -> str:
@@ -616,33 +680,6 @@ def get_action_name_from_id(action_uuid: str, content: dict) -> str:
 
     return retval 
 
-def usage() -> str:
-    """usage  This is a help function that lists the options availble
-            to use this function. This gets triggered if insufficient parameters
-            or insufficient parameters are sent.
-    """
-    retval = ''
-    version_number = '0.0.1'
-    retval = retval + str("\n")
-    retval = retval + str("\t  Welcome to unSkript CLI Interface \n")
-    retval = retval + str(f"\t\t   VERSION: {version_number} \n")
-    retval = retval + str("\n")
-    retval = retval + str("\t  Usage: \n")
-    retval = retval + str("\t     unskript-client.py <COMMAND> <ARGS> \n")
-    retval = retval + str("\n")
-    retval = retval + str("\t     Examples -  \n")
-    retval = retval + str("\t         unskript-client.py -lr / --list-runbooks \n")
-    retval = retval + str("\t         unskript-client.py -rr / --run-runbook ~/runbooks/<RUNBOOK_NAME> \n")
-    retval = retval + str("\t         unskript-client.py -ra / --run [all | connector] \n")
-    retval = retval + str("\t         unskript-client.py -rf / --run-failed [all | <exection_id>] \n")
-    retval = retval + str("\t         unskript-client.py -df / --display-failed-checks \n")
-    retval = retval + str("\t         unskript-client.py -lc / --list-checks [all | connector] \n")
-    retval = retval + str("\t         unskript-client.py -dl / --display-failed-logs [all | <execution_id>] \n")
-
-
-    retval = retval + str("")
-
-    return retval
 
 def list_runbooks():
     """list_runbooks  This is simple routine that uses python glob to fetch
@@ -668,16 +705,44 @@ def list_runbooks():
     print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
 
 
+def create_creds_mapping():
+    """create_creds_mapping This function creates a credential ZoDB collection with the name
+       default_credential_id. The mapping will be based on the Credential TYPE, he mapping would
+       be a list of dictionaries with {"name", "id"}
+
+       This function reads the credentials directory for all the available credentials and updates
+       the ZoDB with the mapping. 
+
+       :rtype: None
+    """
+    creds_files = os.environ.get('HOME').strip('"') + CREDENTIAL_DIR + '/*.json'
+    list_of_creds = glob.glob(creds_files)
+    d = {}
+    for creds in list_of_creds:
+        with open(creds, 'r') as f:
+            c_data = json.load(f)
+            d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), "id": c_data.get('metadata').get('id')}
+    upsert_pss_record('default_credential_id', d, True)
+
 if __name__ == "__main__":
+    create_creds_mapping()
+    
     try:
         load_or_create_global_configuration()
     except Exception as e:
         raise e 
     
-    parser = argparse.ArgumentParser(prog='unskript-client', usage=usage())
+    parser = argparse.ArgumentParser(prog='unskript-client')
+    version_number = "0.1.0"
+    description=""
+    description = description + str("\n")
+    description = description + str("\t  Welcome to unSkript CLI Interface \n")
+    description = description + str(f"\t\t   VERSION: {version_number} \n")
+    parser.description = description
     parser.add_argument('-lr', '--list-runbooks', help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
     parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
+    parser.add_argument('-rc', '--run-checks', type=str, help='Run all available checks [all | connector | failed]')
     parser.add_argument('-rf', '--run-failed', type=str, help='Run failed checks')
     parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks', action='store_true')
     parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, per connector or all')
@@ -686,7 +751,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
-        print(usage())
+        parser.print_help()
         sys.exit(0)
 
     if args.list_runbooks == True: 
@@ -695,6 +760,8 @@ if __name__ == "__main__":
         run_ipynb(args.run_runbook)
     elif args.run not in ('', None):
         run_all(args.run)
+    elif args.run_checks not in ('', None):
+        run_checks(args.run_checks)
     elif args.run_failed not in ('', None):
         run_last_failed(args.run_failed)
     elif args.display_failed_checks == True:
@@ -704,5 +771,5 @@ if __name__ == "__main__":
     elif args.display_failed_logs not in ('', None):
         display_failed_logs(args.display_failed_logs)
     else:
-        print(usage())
+        parser.print_help() 
     
