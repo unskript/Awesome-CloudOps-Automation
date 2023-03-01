@@ -75,7 +75,8 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
         raise Exception(f"Data is expected to be of type Dictionary type, found {type(d)}")
     
     db = init_pss_db()
-    connection = db.open()
+    tm = transaction.TransactionManager()
+    connection = db.open(tm)
     root = connection.root()
     if overwrite:
         root[name] = [data]
@@ -86,7 +87,7 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
             l = [root[name]]
         l.append(data)
         root[name] = l 
-    transaction.commit()
+    tm.commit()
     del root 
     connection.close()
     db.close() 
@@ -111,7 +112,8 @@ def get_pss_record(name: str, latest: bool = False):
         return [] 
     
     db = init_pss_db()
-    connection = db.open()
+    tm = transaction.TransactionManager()
+    connection = db.open(tm)
     root = connection.root()
     
     data = root.get(name)
@@ -122,7 +124,7 @@ def get_pss_record(name: str, latest: bool = False):
     if latest: 
         return data[-1]
     
-    transaction.commit()
+    tm.commit()
     del root 
     connection.close()
     return data
@@ -146,7 +148,8 @@ def delete_pss_record(record_name: str, document_name: str) -> bool:
         return False 
     
     db = init_pss_db()
-    connection = db.open()
+    tm = transaction.TransactionManager()
+    connection = db.open(tm)
     root = connection.root()
   
     data = root.get(record_name)
@@ -165,7 +168,7 @@ def delete_pss_record(record_name: str, document_name: str) -> bool:
     
     root[record_name] = after_delete_data
     
-    transaction.commit()
+    tm.commit()
     del root 
     connection.close()
     return True 
@@ -184,7 +187,8 @@ def get_checks_by_connector(connector_name: str):
         db = DB(CS_DB_PATH)
     except Exception as e:
         raise e 
-    connection = db.open()
+    tm = transaction.TransactionManager()
+    connection = db.open(tm)
     root = connection.root()
     cs = root.get('unskript_cs')
     list_checks = []
@@ -203,7 +207,7 @@ def get_checks_by_connector(connector_name: str):
         else:
             pass
 
-    transaction.commit()
+    tm.commit()
     del root 
     connection.close()
     db.close()
@@ -223,7 +227,8 @@ def get_check_snippets(connector_name: str):
         db = DB(CS_DB_PATH)
     except Exception as e:
         raise e 
-    connection = db.open()
+    tm = transaction.TransactionManager()
+    connection = db.open(tm)
     root = connection.root()
     cs = root.get('unskript_cs')
     list_checks = []
@@ -242,7 +247,7 @@ def get_check_snippets(connector_name: str):
         else:
             pass
 
-    transaction.commit()
+    tm.commit()
     del root 
     connection.close()
     db.close()
@@ -262,18 +267,13 @@ def get_creds_by_connector(connector_type: str):
     if connector_type is ('', None):
         return retval
     
-    try:
-        db = DB(CS_DB_PATH)
-    except Exception as e:
-        raise e 
+    db = init_pss_db() 
     tm = transaction.TransactionManager()
     connection = db.open(tm)
     root = connection.root()
     creds_list = root.get('default_credential_id')
-    #creds_list = get_pss_record('default_credential_id')
     creds_dict = creds_list[0]
     for cred in creds_dict.keys():
-        
         if cred == connector_type: 
             retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
             break
