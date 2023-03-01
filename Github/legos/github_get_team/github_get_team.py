@@ -36,7 +36,7 @@ def github_get_team(handle, organization_name:str, team_name:str) -> List:
         :type team_name: string
         :param team_name: Team name. Eg: "backend"
 
-        :rtype: List of objects of a team and its id in an organization
+        :rtype: List of a teams and its details
     """
     result = []
     try:
@@ -45,6 +45,10 @@ def github_get_team(handle, organization_name:str, team_name:str) -> List:
         team_details = {}
         team_details["team_name"] = team.name
         team_details["team_id"] = team.id
+        team_details["members_count"]= team.members_count
+        team_details["repos_count"]= team.repos_count
+        team_details["privacy"]= team.privacy
+        team_details["permission"]= team.permission
         result.append(team_details)
     except GithubException as e:
         if e.status == 403:

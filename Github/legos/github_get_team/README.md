@@ -4,7 +4,7 @@
 <br>
 
 ## Description
-This Lego Gets id and name of a team in a Github Organization
+This Lego gets the details of a team in a Github Organization
 
 ## Lego Details
 
