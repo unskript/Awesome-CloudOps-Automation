@@ -11,10 +11,12 @@ This Lego used to measure the amount of input/output operations that an EBS volu
 
         handle: Object of type unSkript AWS Connector.
         region: Optional, AWS region. Eg: “us-west-2”
-        iops_threshold: Optional, IOPS's Threshold. Eg: 100
+        iops_threshold: Optional, IOPS's Threshold e.g 100
 
 ## Lego Input
 This Lego take three inputs handle, iops_threshold and region.
+iops_threshold: If not provided the value is set to 100.
+region: If not provided it will get all regions from AWS.
 
 ## Lego Output
 Here is a sample output.
