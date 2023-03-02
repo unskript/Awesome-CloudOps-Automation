@@ -59,11 +59,12 @@ def github_get_pull_request_reviewers(handle, owner:str, repository:str, pull_re
                 result.append(r.login)
     except GithubException as e:
         if e.status == 403:
-            return [f"You need admin access"]
+            raise Exception("You need admin access")
         if e.status == 404:
-            return [f"No such pull number or repository or user found"]
-        else:
-            return [e.data]
+            raise Exception("No such pull number or repository or user found")
+        raise e.data
+    except Exception as e:
+        raise e
     if len(result) == 0:
         return [f"No reviewers added for Pull Number {pr.number}"]
     return result
