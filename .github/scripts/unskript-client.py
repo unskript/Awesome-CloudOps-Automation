@@ -18,6 +18,7 @@ import nbformat
 import pprint
 import yaml
 import re
+import uuid 
 
 from tabulate import tabulate
 from datetime import datetime 
@@ -309,12 +310,14 @@ def run_checks(filter: str):
     else:
         check_list = get_checks_by_connector(filter, True)
     
-    for check in check_list:
-        runbooks.append(create_jit_runbook(check, check.get('uuid')))
+    if len(check_list) > 0:
+        runbooks.append(create_jit_runbook(check_list))
     
     status_of_runs = []
     for rb in runbooks:
         run_ipynb(rb, status_of_runs)
+
+    print_run_summary(status_of_runs)
 
 
 def print_run_summary(status_list_of_dict):
@@ -429,53 +432,53 @@ def update_current_execution(status, id: str, content: dict):
     if os.path.exists(failed_runbook) != True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
 
-def create_jit_runbook(content: dict, id: str):
+def create_jit_runbook(check_list: list):
     """create_jit_runbook This function creates Just In Time runbook
        with just one code cell. The content will be upended with the
        task lines... and used it create the jit runbook
 
-       :type content: dict
-       :param content: Cell content in python dictionary
+       :type check_list: list
+       :param check_list: List of checks in the form of dictionary 
 
        :type id: str 
        :param id: Action UUID 
 
        :rtype: None
     """
-    s_connector = content.get('metadata').get('action_type')
-    s_connector = s_connector.replace('LEGO', 'CONNECTOR')
-    cred_name,cred_id = get_creds_by_connector(s_connector)
-    task_lines = '''
+    nb = nbformat.v4.new_notebook()
+    failed_notebook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + str(uuid.uuid4()) + '.ipynb'
+    for check in check_list:
+        s_connector = check.get('metadata').get('action_type')
+        s_connector = s_connector.replace('LEGO', 'CONNECTOR')
+        cred_name,cred_id = get_creds_by_connector(s_connector)
+        task_lines = '''
 task.configure(printOutput=True)
 task.configure(credentialsJson=\'\'\'{
-    \"credential_name\":''' +  f" \"{cred_name}\"" + ''',
-    \"credential_type\":''' + f" \"{s_connector}\"" + ''',
-    \"credential_id\":''' +  f" \"{cred_id}\"" + '''}\'\'\')
-    '''
+        \"credential_name\":''' +  f" \"{cred_name}\"" + ''',
+        \"credential_type\":''' + f" \"{s_connector}\"" + ''',
+        \"credential_id\":''' +  f" \"{cred_id}\"" + '''}\'\'\')
+        '''
     
-    try:
-        nb = nbformat.v4.new_notebook()
-        c = content.get('code')
-        idx = c.index("task = Task(Workflow())")
-        c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
-        content['code'] = []
-        for line in c[:]:
-            content['code'].append(str(line + "\n"))
-        
-        content['metadata']['action_uuid'] = content['uuid']
-        content['metadata']['name'] = content['name']
-        failed_notebook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + id + '.ipynb'
-        cc = nbformat.v4.new_code_cell(content.get('code'))
-        for k,v in content.items():
-            if k != 'code':
-                cc[k] = content[k]
+        try:
+            c = check.get('code')
+            idx = c.index("task = Task(Workflow())")
+            c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
+            check['code'] = []
+            for line in c[:]:
+                check['code'].append(str(line + "\n"))
+            
+            check['metadata']['action_uuid'] = check['uuid']
+            check['metadata']['name'] = check['name']
+            cc = nbformat.v4.new_code_cell(check.get('code'))
+            for k,v in check.items():
+                if k != 'code':
+                    cc[k] = check[k]
+            nb['cells'].append(cc)
 
-        nb['cells'] = [cc]
-        
-        nbformat.write(nb, failed_notebook)
-    except Exception as e:
-        raise e
-    
+        except Exception as e:
+            raise e
+            
+    nbformat.write(nb, failed_notebook)
     return failed_notebook
     
 
