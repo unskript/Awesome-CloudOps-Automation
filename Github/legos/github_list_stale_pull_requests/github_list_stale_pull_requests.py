@@ -3,7 +3,7 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
+from typing import Optional, List,Tuple
 from pydantic import BaseModel, Field
 from github import GithubException
 import datetime
@@ -32,7 +32,7 @@ def github_list_stale_pull_requests_printer(output):
     pprint.pprint(output)
 
 
-def github_list_stale_pull_requests(handle, owner:str, repository:str, threshold_days:int) -> List:
+def github_list_stale_pull_requests(handle, owner:str, repository:str, threshold_days:int) -> Tuple:
     """github_list_stale_pull_requests returns stale pull requests
 
         :type handle: object
@@ -47,7 +47,7 @@ def github_list_stale_pull_requests(handle, owner:str, repository:str, threshold
         :type threshold_days: int
         :param threshold_days: Threshold number of days to find stale PR's
 
-        :rtype: List of stale pull requests
+        :rtype: Status, List of stale pull requests
     """
     result = []
     age = int(threshold_days)
