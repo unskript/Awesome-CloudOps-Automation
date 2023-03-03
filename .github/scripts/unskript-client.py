@@ -163,6 +163,125 @@ except Exception as e:
     return nb
 
 
+# These are all trigger functions that are
+# called based on argument passed
+def list_runbooks():
+    """list_runbooks  This is simple routine that uses python glob to fetch
+            the list of runbooks stored in the a predefined path ~/runbooks
+            and prints the available runbook and prints in a tabular form.
+    
+    """
+    runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/*.ipynb')
+    runbooks.sort()
+    table = [["Runbook Name",  "File Name"]]
+    for runbook in runbooks:
+        contents = {}
+        with open(runbook, 'r') as f:
+            contents = f.read()
+        try:
+            contents = json.loads(contents)
+            name = contents.get('metadata').get('execution_data').get('runbook_name')
+            filename = os.path.basename(runbook)
+            table.append([name,  filename])
+        except Exception as e:
+            pass
+
+    print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
+
+def run_ipynb(filename: str, status_list_of_dict: list = []):
+    """run_ipynb This function takes the Runbook name and executes it
+           using nbclient.execute()
+
+       :type filename: str 
+       :param filename: Runbook name
+
+       :rtype: None, Runbook execution will be displayed
+    """
+    nb = read_ipynb(filename)
+   
+    # We store the Status of runbook execution in status_dict
+    status_dict = {}
+    status_dict['runbook'] = filename
+    status_dict['result'] = []
+    r_name = '\x1B[1;20;42m' + "Executing Runbook -> " + filename.strip() + '\x1B[0m'
+    print(r_name)
+
+    if nb == None: 
+        raise Exception("Unable to Run the Ipynb file, internal service error")
+    
+    nb = insert_first_and_last_cell(nb)
+
+    client = NotebookClient(nb=nb, kernel_name="python3")
+
+    try:
+        client.execute()
+    except CellExecutionError as e:
+        raise e
+    finally:
+        nbformat.write(nb, "/tmp/output.ipynb")
+        new_nb = None
+        with open("/tmp/output.ipynb", "r") as f:
+            new_nb = nbformat.read(f, as_version=4)
+        outputs = get_last_code_cell_output(new_nb.dict())
+    
+    ids = get_code_cell_action_uuids(nb.dict())
+    result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
+    if len(outputs) == 0:
+        raise Exception("Unable to execute Runbook. Last cell content is empty")
+
+    results = outputs[0]
+    idx = 0
+    r = results.get('text')
+    failed_result_available = False
+    failed_result = {}
+
+    for result in r.split('\n'):
+        if result == '':
+            continue
+        payload = json.loads(result)
+        
+        try:
+            if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_PASS, 0, 'N/A'])
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS'])
+            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED: 
+                failed_objects = payload.get('objects')
+                failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects 
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_FAIL, len(failed_objects), 'N/A'])
+                failed_result_available = True
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
+                update_failed_logs(ids[idx], failed_result)
+            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
+                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
+        except Exception as e:
+            pass
+        update_current_execution(payload.get('status'), ids[idx], nb.dict())
+        update_audit_trail(ids[idx], 
+                           get_action_name_from_id(ids[idx], nb.dict()),
+                           get_connector_name_from_id(ids[idx], nb.dict()),
+                           CheckOutputStatus(payload.get('status')), 
+                           failed_result)
+        idx += 1
+
+    # New Line to make the output clear to see
+    print("")
+    print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
+    
+    if failed_result_available == True:
+        print("")
+        print("FAILED RESULTS")
+        for k,v in failed_result.items():
+            check_name = '\x1B[1;4m' + k + '\x1B[0m'
+            print(check_name) 
+            print("Failed Objects:")
+            pprint.pprint(v)
+            print('\x1B[1;4m', '\x1B[0m')
+    
+    print("")
+    status_list_of_dict.append(status_dict)
+
+
 def run_checks(filter: str):
     """run_checks This function takes the filter as an argument
     and based on the filter, this function queries the DB and 
@@ -178,7 +297,19 @@ def run_checks(filter: str):
         raise Exception("Run Checks needs filter to be specified.")
     
     runbooks = []
-    check_list = get_check_snippets(filter)
+    check_list = []
+    if filter == 'failed':
+        run_status = get_pss_record('current_execution_status')
+        exec_status = run_status.get('exec_status')
+        for k,v in exec_status.items():
+            if CheckOutputStatus(v.get('current_status')) == CheckOutputStatus.FAILED:
+                temp_check_list = get_checks_by_connector('all', True)
+                for tc in temp_check_list:
+                    if tc.get('uuid') == k:
+                        check_list.append(tc)
+    else:
+        check_list = get_checks_by_connector(filter, True)
+    
     for check in check_list:
         runbooks.append(create_jit_runbook(check, check.get('uuid')))
     
@@ -217,7 +348,17 @@ def run_all(filter: str):
 
     for r in runbooks:
         run_ipynb(r, status_list_of_dict)
+    
+    print_run_summary(status_list_of_dict)
 
+
+def print_run_summary(status_list_of_dict):
+    """print_run_summary This function is used to just print the Run Summary.
+       :type status_list_of_dict: list 
+       :param status_list_of_dict: List of dictionaries that contains result of the run
+
+       :rtype: None
+    """
     all_result_table = [[TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_PASS, TBL_HDR_CHKS_FAIL, TBL_HDR_CHKS_ERROR]]
     summary_table = [[TBL_HDR_RBOOK_NAME, TBL_HDR_CHKS_COUNT]]
     for sd in status_list_of_dict:
@@ -248,41 +389,14 @@ def run_all(filter: str):
     print("")
     print(tabulate(summary_table, headers='firstrow', tablefmt='fancy_grid'))
 
-    pass
 
-def run_last_failed(execution_id: str = None):
-    """run_last_failed This function reads the execution summary to find out 
-    the last failed checks and runs the failed runbook again. This is the senario
-    where in User has run the check and found it fails, has fixed something in their
-    infrastructure and want to re-verify if the failed tests are passing and fix they
-    put in place is working.
-
-    :type execution_id: string
-    :param execution_id: Execution ID in the form of a python string. display-failed would return the
-                   execution ID for each failed runs. Use that ID to re-run the test.
-
-    :rtype: None
-    """
-    if execution_id is None:
-        execution_id = 'all'
-
-    execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
-    if os.path.exists(execution_file):   
-        with open(execution_file, 'r') as f:
-            content = yaml.safe_load(f)
-        last_failed = content.get('last_failed')
-        if last_failed != None:
-            for l in last_failed: 
-                if l.get('execution_id') == execution_id:
-                    run_ipynb(l.get('failed_runbook'))
-    else:
-        print("ERROR: Execution summary file missing.")
-    pass 
-
-def update_failed_execution(id: str, content: dict):
+def update_current_execution(status, id: str, content: dict):
     """update_failed_execution This function gets execution id that has failed and will
        create a dynamic failed runbook. And update the execution_summary.yaml file
        to record the last failed run status
+
+       :type status: CheckOutputStatus 
+       :param status: Enum of type CheckOutputStatus that has the current status
 
        :type id: string 
        :param id: The Execution ID (Action UUID that failed)
@@ -304,25 +418,37 @@ def update_failed_execution(id: str, content: dict):
     if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/failed') == False:
         os.mkdir(os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/failed'))
     
-    exec_summary  = {}
-    if os.path.exists(execution_file) == True:
-        with open(execution_file, 'r') as f:
-            c = yaml.safe_load(f)
-        exec_summary['last_failed'] = c.get('last_failed')
-    else:
-        exec_summary['last_failed'] = []
-
+    prev_status = None
     es = {}
-    es['execution_id'] = id 
-    es['failed_runbook'] = failed_runbook
-    es['timestamp'] = str(datetime.now())
-    es['check_name'] = str(get_action_name_from_id(id, content))
-    exec_summary['last_failed'].append(es)
-    upsert_pss_record('last_failed', es)
+    try:
+        es = get_pss_record('current_execution_status')
+    except:
+        pass 
+    finally:
+        if es != {}:
+            if id in es.get('exec_status').keys():
+                prev_status = es['exec_status'].get(id).get('current_status')
+            else:
+                es['exec_status'][id] = {}
+        else:
+            es['exec_status'] = {}
+            es['exec_status'][id] = {}
     
+    es['exec_status'][id]['failed_runbook'] = failed_runbook
+    es['exec_status'][id]['check_name'] = str(get_action_name_from_id(id, content))
+    es['exec_status'][id]['current_status'] = status
+    es['exec_status'][id]['connector_type'] = str(get_connector_name_from_id(id, content))
+    
+    if status == prev_status:
+        pass 
+    
+    if CheckOutputStatus(status) == CheckOutputStatus.SUCCESS:
+        es['exec_status'][id]['passed_timestamp'] = str(datetime.now())
+    else:
+        es['exec_status'][id]['failed_timestamp'] = str(datetime.now())
+    
+    upsert_pss_record('current_execution_status', es)
 
-    with open(execution_file, 'w') as f:
-        yaml.safe_dump(exec_summary, f)
 
     # Lets create the failed ipynb
     try:
@@ -403,45 +529,63 @@ def update_failed_logs(id: str, failed_result: dict):
     failed_log_file = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + f'{id.strip()}.log'
     content = ""
     content = content + 'TIME STAMP: ' +  str(datetime.now()) + '\n'
-    content = content + 'EXECUTION ID: ' +  id + '\n'
+    content = content + 'ACTION UUID: ' +  id + '\n'
     for k,v in failed_result.items():
         content = content + 'CHECK NAME: ' + str(k) + '\n'
         content = content + 'FAILED OBJECTS: \n' +  json.dumps(v) + '\n'
 
     with open(failed_log_file, 'w') as f:
         f.write(content)
-        
     
     if os.path.exists(failed_log_file) == False:
         print(f"ERROR: Not able to create log file for Failed id {id}")
-    
 
-def display_failed_checks():
-    """display_failed_checks This function reads the execution_summary.yaml and displays
-       the last failed checks with its UUID and Action.
+def update_audit_trail(id: str, action_name: str, connector_type: str, result: CheckOutputStatus, data : dict = {}):
+    """update_audit_trail This function updates PSS for audit_logs entry
+       
+       :type id: str
+       :param id: Action UUID to update entry in the audit log
+
+       :type action_name: str
+       :param action_name: Action Name
+
+       :type connector_type: str
+       :param connector_type: Connector Type like AWS, GCP, etc...
+
+       :type result: CheckOutputStatus
+       :param result: Output Status as an Enum of type CheckOutputStatus
+
+       :type data: dict (Optional Variable)
+       :param data: Data in the form of a python Dictionary.
 
        :rtype: None
     """
-    execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
-    yaml_content = {}
-    with open(execution_file, 'r') as f:
-        yaml_content = yaml.safe_load(f)
-    
-    if yaml_content == {}:
-        raise Exception("Execution Summary file missing")
-    
-    pss_content = get_pss_record('last_failed', True)
-    print(pss_content)
-    
-    failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_DSPL_CHKS_UUID]]
-    failed_exec_list = yaml_content.get('last_failed')
-    for failed in failed_exec_list:
-        failed_checks_table.append([failed.get('check_name') + '\n' + '( Last Failed On: ' + failed.get('timestamp') +' )', 
-                                    failed.get('execution_id')])
-    
-    print("")
-    print(tabulate(failed_checks_table, headers='firstrow', tablefmt='fancy_grid'))
-    print("")
+    content = {}
+    try:
+        content = get_pss_record('audit_trail')
+    except:
+        pass
+    finally:
+        k = str(datetime.now())
+        temp_trail = {}
+        temp_trail[k] = {} 
+        temp_trail[k]['time_stamp'] = k
+        temp_trail[k]['action_uuid'] = id 
+        temp_trail[k]['check_name'] = action_name
+        temp_trail[k]['connector_type'] = connector_type.upper()
+        s = ''
+        if result == CheckOutputStatus.SUCCESS:
+            s = "PASS"
+        elif result == CheckOutputStatus.FAILED:
+            s = "FAILED"
+        elif result == CheckOutputStatus.RUN_EXCEPTION:
+            s = "ERRORED"
+        temp_trail[k]['status'] = s 
+        if data != {}:
+            temp_trail[k]['failed_objects'] = data 
+        content.update(temp_trail)
+
+    upsert_pss_record('audit_trail', content)
 
 
 def list_checks_by_connector(connector_name: str):
@@ -462,119 +606,84 @@ def list_checks_by_connector(connector_name: str):
     print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
     print("")
 
+
+def display_failed_checks(connector: str = ''):
+    """display_failed_checks This function reads the execution_summary.yaml and displays
+       the last failed checks with its UUID and Action.
+
+       :rtype: None
+    """
+    pss_content = get_pss_record('current_execution_status')
+    exec_status = pss_content.get('exec_status')
+    failed_exec_list = []
+    if exec_status != None:
+        for k,v in exec_status.items():
+            if CheckOutputStatus(v.get('current_status')) == CheckOutputStatus.FAILED:
+                d = {}
+                d['check_name'] = v.get('check_name')
+                d['timestamp'] = v.get('failed_timestamp')
+                d['execution_id'] = k 
+                if connector == 'all':
+                    failed_exec_list.append(d)
+                elif connector not in ('', None) and v.get('connector_type') == connector.lower():
+                    # Append only when connector type matches
+                    failed_exec_list.append(d)
+                else:
+                    print(f"NO RESULTS FOUND TYPE: {connector}")
+                    return
+
+    failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_DSPL_CHKS_UUID]]
+    for failed in failed_exec_list:
+        failed_checks_table.append([failed.get('check_name') + '\n' + '( Last Failed On: ' + failed.get('timestamp') +' )', 
+                                    failed.get('execution_id')])
     
-def display_failed_logs(execution_id: str = None):
+    print("")
+    print(tabulate(failed_checks_table, headers='firstrow', tablefmt='fancy_grid'))
+    print("")
+
+
+
+def show_audit_trail(filter: str = None):
     """display_failed_logs This function reads the failed logs for a given execution ID
        When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']/failed/<UUID>.log
 
-    :type execution_id: string
-    :param execution_id: Execution id used to serach logs
+    :type filter: string
+    :param filter: filter used to query audit_trail to get logs used to serach logs
     """
-    if execution_id == None:
-        execution_id = 'all'
+    if filter == None:
+        filter = 'all'
     
-    failed_logs_dir = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/'
-    if execution_id == 'all':
-        failed_log_files = glob.glob(failed_logs_dir + '*.log')
-        for logfile in failed_log_files:
-            with open(logfile, 'r') as f:
-                pprint.pprint(f.read())
-                print("")
-    else:
-        failed_log_file = failed_logs_dir + execution_id.strip() + '.log'
-        if os.path.exists(failed_log_file) == True:
-            with open(failed_log_file, 'r') as f:
-                pprint.pprint(f.read())
+    pss_content = get_pss_record('audit_trail')
+
+    if filter.lower() == 'all':
+        pprint.pprint(pss_content)
+        return 
+         
+    for item in pss_content.items():
+        k,v = item
+        if v.get('connector_type').lower() == filter.lower():
+            pprint.pprint(f"{k,v}")
+        elif filter.lower() == v.get('action_uuid').lower():
+            pprint.pprint(f"{k,v}")
+
+    # failed_logs_dir = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/'
+    # if execution_id == 'all':
+    #     failed_log_files = glob.glob(failed_logs_dir + '*.log')
+    #     for logfile in failed_log_files:
+    #         with open(logfile, 'r') as f:
+    #             pprint.pprint(f.read())
+    #             print("")
+    # else:
+    #     failed_log_file = failed_logs_dir + execution_id.strip() + '.log'
+    #     if os.path.exists(failed_log_file) == True:
+    #         with open(failed_log_file, 'r') as f:
+    #             pprint.pprint(f.read())
     
+
+
     pass
 
-def run_ipynb(filename: str, status_list_of_dict: list = []):
-    """run_ipynb This function takes the Runbook name and executes it
-           using nbclient.execute()
 
-       :type filename: str 
-       :param filename: Runbook name
-
-       :rtype: None, Runbook execution will be displayed
-    """
-    nb = read_ipynb(filename)
-   
-    # We store the Status of runbook execution in status_dict
-    status_dict = {}
-    status_dict['runbook'] = filename
-    status_dict['result'] = []
-    r_name = '\x1B[1;20;42m' + "Executing Runbook -> " + filename.strip() + '\x1B[0m'
-    print(r_name)
-
-    if nb == None: 
-        raise Exception("Unable to Run the Ipynb file, internal service error")
-    
-    nb = insert_first_and_last_cell(nb)
-
-    client = NotebookClient(nb=nb, kernel_name="python3")
-
-    try:
-        client.execute()
-    except CellExecutionError as e:
-        raise e
-    finally:
-        nbformat.write(nb, "/tmp/output.ipynb")
-        new_nb = None
-        with open("/tmp/output.ipynb", "r") as f:
-            new_nb = nbformat.read(f, as_version=4)
-        outputs = get_last_code_cell_output(new_nb.dict())
-    
-    ids = get_code_cell_action_uuids(nb.dict())
-    result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
-    if len(outputs) == 0:
-        raise Exception("Unable to execute Runbook. Last cell content is empty")
-
-    results = outputs[0]
-    idx = 0
-    r = results.get('text')
-    failed_result_available = False
-    failed_result = {}
-
-    for result in r.split('\n'):
-        if result == '':
-            continue
-        payload = json.loads(result)
-        
-        try:
-            if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_PASS, 0, 'N/A'])
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS'])
-            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED: 
-                failed_objects = payload.get('objects')
-                failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects 
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_FAIL, len(failed_objects), 'N/A'])
-                failed_result_available = True
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
-                update_failed_execution(ids[idx], nb.dict())
-                update_failed_logs(ids[idx], failed_result)
-            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
-        except Exception as e:
-            pass
-        idx += 1
-
-    # New Line to make the output clear to see
-    print("")
-    print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
-    
-    if failed_result_available == True:
-        print("")
-        print("FAILED RESULTS")
-        for k,v in failed_result.items():
-            check_name = '\x1B[1;4m' + k + '\x1B[0m'
-            print(check_name) 
-            print("Failed Objects:")
-            pprint.pprint(v)
-            print('\x1B[1;4m', '\x1B[0m')
-    
-    print("")
-    status_list_of_dict.append(status_dict)
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
     """read_ipynb This function takes the Runbook name and reads the content
@@ -680,30 +789,27 @@ def get_action_name_from_id(action_uuid: str, content: dict) -> str:
 
     return retval 
 
+def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
+    """get_connector_name_from_id This function takes in the action_uuid as string
+       and notebook node as dictionary. Iterates over the dictionary for code cells
+       that match the action_uuid and returns the action_type (connector_type).
 
-def list_runbooks():
-    """list_runbooks  This is simple routine that uses python glob to fetch
-            the list of runbooks stored in the a predefined path ~/runbooks
-            and prints the available runbook and prints in a tabular form.
-    
+       :type action_uuid: string
+       :param action_uuid: Action UUID 
+
+       :type content: dict
+       :param content: Notebooknode as Dictionary
+
+       :rtype: string: Name of the connector that matches the given UUID. 
     """
-    runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/*.ipynb')
-    runbooks.sort()
-    table = [["Runbook Name",  "File Name"]]
-    for runbook in runbooks:
-        contents = {}
-        with open(runbook, 'r') as f:
-            contents = f.read()
-        try:
-            contents = json.loads(contents)
-            name = contents.get('metadata').get('execution_data').get('runbook_name')
-            filename = os.path.basename(runbook)
-            table.append([name,  filename])
-        except Exception as e:
-            pass
-
-    print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
-
+    retval = ''
+    if content in ('', None):
+        return retval
+    for cell in content.get('cells'):
+        if cell.get('metadata').get('action_uuid') == action_uuid:
+            retval = cell.get('metadata').get('action_type').replace('LEGO_TYPE_', '').lower()
+    
+    return retval
 
 def create_creds_mapping():
     """create_creds_mapping This function creates a credential ZoDB collection with the name
@@ -743,10 +849,9 @@ if __name__ == "__main__":
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
     parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
     parser.add_argument('-rc', '--run-checks', type=str, help='Run all available checks [all | connector | failed]')
-    parser.add_argument('-rf', '--run-failed', type=str, help='Run failed checks')
-    parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks', action='store_true')
+    parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks [all | connector]')
     parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, per connector or all')
-    parser.add_argument('-dl', '--display-failed-logs', type=str, help='Display failed logs')
+    parser.add_argument('-sa', '--show-audit-trail', type=str, help='Show audit trail [all | connector | execution_id]')
 
     args = parser.parse_args()
 
@@ -762,14 +867,12 @@ if __name__ == "__main__":
         run_all(args.run)
     elif args.run_checks not in ('', None):
         run_checks(args.run_checks)
-    elif args.run_failed not in ('', None):
-        run_last_failed(args.run_failed)
-    elif args.display_failed_checks == True:
-        display_failed_checks()
+    elif args.display_failed_checks not in ('', None):
+        display_failed_checks(args.display_failed_checks)
     elif args.list_checks not in ('', None):
         list_checks_by_connector(args.list_checks)
-    elif args.display_failed_logs not in ('', None):
-        display_failed_logs(args.display_failed_logs)
+    elif args.show_audit_trail not in ('', None):
+        show_audit_trail(args.show_audit_trail)
     else:
         parser.print_help() 
     

@@ -33,7 +33,6 @@ CS_DB_PATH="/var/unskript/snippets.db"
 SNIPPETS_FILE="/var/unskript/code_snippets.json"
 CUSTOM_SNIPPETS="/data/custom/custom_snippets.json"
 
-
 def init_pss_db() -> DB:
     """init_pss_db This function initializes PSS db. 
        :rtype: DB object. 
@@ -72,61 +71,54 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
         raise Exception("Name cannot be Empty")
     
     if isinstance(data, dict) != True:
-        raise Exception(f"Data is expected to be of type Dictionary type, found {type(d)}")
+        raise Exception(f"Data is expected to be of type Dictionary type, found {type(data)}")
     
     db = init_pss_db()
-    tm = transaction.TransactionManager()
-    connection = db.open(tm)
-    root = connection.root()
-    if overwrite:
-        root[name] = [data]
-    else:
-        l = []
-        if root.get(name) != None:
-            # Update case
-            l = [root[name]]
-        l.append(data)
-        root[name] = l 
-    tm.commit()
-    del root 
-    connection.close()
-    db.close() 
+    with db.transaction() as connection: 
+        root = connection.root()
+        if overwrite == True:
+            root.name = data
+        else:
+            l = {}
+            if root.get(name) != None:
+                l = root.get(name)
+            l.update(data)
+            root.name = l 
+        del root 
+
+    db.close()
 
 
-def get_pss_record(name: str, latest: bool = False):
+def get_pss_record(name: str):
     """get_pss_record This function queries the ZoDB for the given
        record stored by name and either returns the complete record
        or the last item in the list.
 
        :type name: string
        :param name: Name of the record (Key name in the DB)
-
-       :type latest: bool
-       :param latest: This indicates if we have to fetch the latest (last updated)
-            record or the full record. Default is False
     
        :rtype: record saved with the  name or None
     """
     if name in ("", None):
         print(f"ERROR: Name cannot be empty")
-        return [] 
+        return {} 
     
     db = init_pss_db()
-    tm = transaction.TransactionManager()
-    connection = db.open(tm)
-    root = connection.root()
+    data = None
+    with db.transaction() as connection:
+        root = connection.root()
+        data = root.get(name)
+        if data == None:
+            # If data does not exist, lets create it
+            root[name] = {}
+        del root 
     
-    data = root.get(name)
+    db.close()
+
     if data == None:
         print(f"ERROR: No records found by the name {name}")
-        return []
-    
-    if latest: 
-        return data[-1]
-    
-    tm.commit()
-    del root 
-    connection.close()
+        return {}
+
     return data
 
 def delete_pss_record(record_name: str, document_name: str) -> bool:
@@ -174,7 +166,7 @@ def delete_pss_record(record_name: str, document_name: str) -> bool:
     return True 
 
 
-def get_checks_by_connector(connector_name: str):
+def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
     """get_checks_by_connector This function queries the snippets DB for
        checks of type connect and returns the checks.
 
@@ -198,54 +190,19 @@ def get_checks_by_connector(connector_name: str):
         d = s.snippet
         s_connector = d.get('metadata').get('action_type')
         s_connector = s_connector.split('_')[-1].lower()
-        if connector_name.lower() == 'all':
-            if d.get('metadata').get('action_is_check') == True:
-                list_checks.append([s_connector.capitalize(), d.get('name'), d.get('uuid')])
-        elif re.match(connector_name.lower(), s_connector):
-            if d.get('metadata').get('action_is_check') == True:
-                list_checks.append([s_connector.capitalize(), d.get('name'), d.get('uuid')])
+        # HACK
+        if d.get('name').startswith('Test'):
+            d['metadata']['action_is_check'] = True
+
+        
+        if d.get('metadata').get('action_is_check') == False:
+            continue
+        if connector_name.lower() != 'all' and not re.match(connector_name.lower(), s_connector):
+            continue
+        if full_snippet == False:
+            list_checks.append([s_connector.capitalize(), d.get('name'), d.get('uuid')])
         else:
-            pass
-
-    tm.commit()
-    del root 
-    connection.close()
-    db.close()
-    return list_checks
-
-
-def get_check_snippets(connector_name: str):
-    """get_check_snippets This function queries the snippets DB for
-       checks of type connect and returns the checks.
-
-       :type connector_name: string
-       :param connector_name: Name of the connector 
-
-       :rtype: List of the checks 
-    """
-    try:
-        db = DB(CS_DB_PATH)
-    except Exception as e:
-        raise e 
-    tm = transaction.TransactionManager()
-    connection = db.open(tm)
-    root = connection.root()
-    cs = root.get('unskript_cs')
-    list_checks = []
-    if cs == None:
-        raise Exception("Code Snippets Are missing")
-    for s in cs:
-        d = s.snippet
-        s_connector = d.get('metadata').get('action_type')
-        s_connector = s_connector.split('_')[-1].lower()
-        if connector_name.lower() == 'all':
-            if d.get('metadata').get('action_is_check') == True:
-                list_checks.append(d)
-        elif re.match(connector_name.lower(), s_connector):
-            if d.get('metadata').get('action_is_check') == True:
-                list_checks.append(d)
-        else:
-            pass
+            list_checks.append(d)
 
     tm.commit()
     del root 
