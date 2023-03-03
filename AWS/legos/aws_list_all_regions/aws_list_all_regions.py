@@ -25,7 +25,7 @@ def aws_list_all_regions(handle) -> List:
         :rtype: Result List of result
     """
 
-    result = handle.aws_cli_command("aws ec2 describe-regions --all-regions --query 'Regions[].{Name:RegionName}' --output text")
+    result = handle.aws_cli_command("aws ec2 --region us-west-2 describe-regions --all-regions --query 'Regions[].{Name:RegionName}' --output text")
     if result is None or result.returncode != 0:
         print("Error while executing command : {}".format(result))
         return str()
