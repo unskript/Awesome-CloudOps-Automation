@@ -24,7 +24,7 @@ class InputSchema(BaseModel):
 
 
 def github_get_pull_request_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
@@ -61,11 +61,12 @@ def github_get_pull_request(handle, owner:str, repository:str, pull_request_numb
         result.append(prs_dict)
     except GithubException as e:
         if e.status == 403:
-            return [f"You need admin access"]
+            raise Exception("You need admin access")
         if e.status == 404:
-            return [f"No such pull number or repository or user found"]
-        else:
-            return [e.data]
+            raise Exception("No such pull number or repository or user found")
+        raise e.data
+    except Exception as e:
+        raise e
     return result
 
 
