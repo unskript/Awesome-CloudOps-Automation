@@ -250,7 +250,6 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_FAIL, len(failed_objects), 'N/A'])
                 failed_result_available = True
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
-                update_failed_logs(ids[idx], failed_result)
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
                 status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
@@ -479,32 +478,6 @@ task.configure(credentialsJson=\'\'\'{
     
     return failed_notebook
     
-
-def update_failed_logs(id: str, failed_result: dict):
-    """update_failed_logs This function dumps the failed result into a log file
-       in os.environ.get('EXECUTION_DIR')/failed/<ID>.log 
-
-       :type id: string
-       :param id: Action UUID which has failed the test
-
-       :type failed_result: dict
-       :param failed_result: The failed object of the given UUID
-
-       :rtype: None
-    """
-    failed_log_file = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + f'{id.strip()}.log'
-    content = ""
-    content = content + 'TIME STAMP: ' +  str(datetime.now()) + '\n'
-    content = content + 'ACTION UUID: ' +  id + '\n'
-    for k,v in failed_result.items():
-        content = content + 'CHECK NAME: ' + str(k) + '\n'
-        content = content + 'FAILED OBJECTS: \n' +  json.dumps(v) + '\n'
-
-    with open(failed_log_file, 'w') as f:
-        f.write(content)
-    
-    if os.path.exists(failed_log_file) == False:
-        print(f"ERROR: Not able to create log file for Failed id {id}")
 
 def update_audit_trail(id: str, action_name: str, connector_type: str, result: CheckOutputStatus, data : dict = {}):
     """update_audit_trail This function updates PSS for audit_logs entry
