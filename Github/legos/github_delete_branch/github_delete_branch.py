@@ -23,7 +23,7 @@ class InputSchema(BaseModel):
 
 
 def github_delete_branch_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
@@ -60,11 +60,12 @@ def github_delete_branch(handle, owner:str, repository: str, branch_name: str)->
         if flag_to_check_branch == 0:
             return [f"{branch_name} not found"]
     except GithubException as e:
-        if e.status== 403:
-            return [f"You need push access"]
-        if e.status==404:
-            return [f"No such username or repository"]
-        else:
-            return [e.data]
+        if e.status == 403:
+            raise Exception("You need admin access")
+        if e.status == 404:
+            raise Exception("No such username or repository")
+        raise e.data
+    except Exception as e:
+        raise e
     return result
 
