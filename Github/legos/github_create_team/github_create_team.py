@@ -31,7 +31,7 @@ class InputSchema(BaseModel):
 
 
 def github_create_team_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
@@ -70,5 +70,9 @@ def github_create_team(handle, organization_name:str, team_name:str,repositories
     try:
         result = organization.create_team(name=team_name, repo_names=repo_names, privacy=privacy_settings, description=description)
     except GithubException as e:
-        return [e.data]
+        if e.status == 404:
+            raise Exception("No such organization found")
+        raise e.data
+    except Exception as e:
+        raise e
     return result
