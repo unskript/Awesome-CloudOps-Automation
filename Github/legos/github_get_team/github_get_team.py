@@ -20,7 +20,7 @@ class InputSchema(BaseModel):
 
 
 def github_get_team_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
@@ -52,11 +52,12 @@ def github_get_team(handle, organization_name:str, team_name:str) -> List:
         result.append(team_details)
     except GithubException as e:
         if e.status == 403:
-            return [f"You need admin access"]
+            raise Exception("You need admin access")
         if e.status == 404:
-            return [f"No such organization or repository"]
-        else:
-            return [e.data]
+            raise Exception("No such organization or repository found")
+        raise e.data
+    except Exception as e:
+        raise e
     return result
 
 
