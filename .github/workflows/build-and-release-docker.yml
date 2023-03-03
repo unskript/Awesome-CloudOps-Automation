@@ -345,7 +345,8 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/Awesome-CloudOps-Automation.git Awesome-CloudOps-Automation
           cd $HOME/Awesome-CloudOps-Automation
           git checkout ${{ inputs.awesome_branch }}
-          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/unskript* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/Awesome-CloudOps-Automation/.github/templates/* $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/
           cd $HOME/devops/dockers/jupyterlab/oss_docker
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}

@@ -4,4 +4,5 @@
 #     This script can be used to list all available runbook
 #     and Run the runbook
 
-/usr/bin/env python /usr/local/bin/unskript-client.py "$@"
+cd /usr/local/bin
+/usr/bin/env python ./unskript-client.py "$@"
