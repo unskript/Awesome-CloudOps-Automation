@@ -21,7 +21,7 @@ class InputSchema(BaseModel):
 
 
 def github_get_open_branches_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
@@ -53,11 +53,12 @@ def github_get_open_branches(handle, owner: str, repository: str)-> List:
                 [result.append(branch.name) for branch in branches[:100]]
     except GithubException as e:
         if e.status == 403:
-            return [f"You need push access"]
-        elif e.status == 404:
-            return [f"No such username or repository"]
-        else:
-            return [e.data]
+            raise Exception("You need admin access")
+        if e.status == 404:
+            raise Exception("No such pull number or repository or user found")
+        raise e.data
+    except Exception as e:
+        raise e
     return result
 
 
