@@ -190,11 +190,6 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
         d = s.snippet
         s_connector = d.get('metadata').get('action_type')
         s_connector = s_connector.split('_')[-1].lower()
-        # HACK
-        if d.get('name').startswith('Test'):
-            d['metadata']['action_is_check'] = True
-
-        
         if d.get('metadata').get('action_is_check') == False:
             continue
         if connector_name.lower() != 'all' and not re.match(connector_name.lower(), s_connector):

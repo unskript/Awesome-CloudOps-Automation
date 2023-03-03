@@ -318,40 +318,6 @@ def run_checks(filter: str):
         run_ipynb(rb, status_of_runs)
 
 
-def run_all(filter: str):
-    """run_all This function takes the filter as an argument
-       if the filter is all, then all Runbooks in the $HOME/runbooks directory
-       is selected to run. If a filter is given like aws, kubernetes, postgresql
-       then all runbooks from that connector type will be run
-
-       :type filter: str
-       :param filter: Filter Name (Connector Name) Runbooks are stored in connectors
-
-       :rtype: None
-    """
-    runbooks = []
-    runbook_dir = os.environ.get('RUNBOOK_DIR')
-    runbook_dir = runbook_dir.strip('"')
-    if runbook_dir == None:
-        print("SYSTEM ERROR")
-        return 
-    
-    if filter == 'all':
-        f = runbook_dir.strip() + '/' + '*/*.ipynb'
-    else:
-        f = runbook_dir.strip() + '/' + filter.lower().strip() + '/*.ipynb'
-
-    runbooks = glob.glob(f)
-    runbooks.sort()
-    
-    status_list_of_dict = []
-
-    for r in runbooks:
-        run_ipynb(r, status_list_of_dict)
-    
-    print_run_summary(status_list_of_dict)
-
-
 def print_run_summary(status_list_of_dict):
     """print_run_summary This function is used to just print the Run Summary.
        :type status_list_of_dict: list 
@@ -666,23 +632,6 @@ def show_audit_trail(filter: str = None):
         elif filter.lower() == v.get('action_uuid').lower():
             pprint.pprint(f"{k,v}")
 
-    # failed_logs_dir = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/'
-    # if execution_id == 'all':
-    #     failed_log_files = glob.glob(failed_logs_dir + '*.log')
-    #     for logfile in failed_log_files:
-    #         with open(logfile, 'r') as f:
-    #             pprint.pprint(f.read())
-    #             print("")
-    # else:
-    #     failed_log_file = failed_logs_dir + execution_id.strip() + '.log'
-    #     if os.path.exists(failed_log_file) == True:
-    #         with open(failed_log_file, 'r') as f:
-    #             pprint.pprint(f.read())
-    
-
-
-    pass
-
 
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
@@ -847,7 +796,6 @@ if __name__ == "__main__":
     parser.description = description
     parser.add_argument('-lr', '--list-runbooks', help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
-    parser.add_argument('-ra', '--run', type=str, help='Run all available runbooks')
     parser.add_argument('-rc', '--run-checks', type=str, help='Run all available checks [all | connector | failed]')
     parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks [all | connector]')
     parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, per connector or all')
@@ -863,8 +811,6 @@ if __name__ == "__main__":
         list_runbooks()
     elif args.run_runbook not in  ('', None):
         run_ipynb(args.run_runbook)
-    elif args.run not in ('', None):
-        run_all(args.run)
     elif args.run_checks not in ('', None):
         run_checks(args.run_checks)
     elif args.display_failed_checks not in ('', None):
@@ -875,4 +821,3 @@ if __name__ == "__main__":
         show_audit_trail(args.show_audit_trail)
     else:
         parser.print_help() 
-    
