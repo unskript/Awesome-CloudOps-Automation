@@ -21,7 +21,7 @@ class InputSchema(BaseModel):
 
 
 def github_remove_member_from_org_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
