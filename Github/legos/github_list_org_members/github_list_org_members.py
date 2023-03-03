@@ -23,6 +23,13 @@ def github_list_org_members_printer(output):
     pprint.pprint(output)
 
 def github_list_org_members(handle, organization_name:str)-> List:
+    """github_remove_member_from_org returns the status to remove a member
+
+        :type organization_name: string
+        :param organization_name: Name of Github Organization. Eg: "unskript"
+        
+        :rtype: List of return status of removing a member from Org
+    """
     result = []
     try:
         organization = handle.get_organization(organization_name)
