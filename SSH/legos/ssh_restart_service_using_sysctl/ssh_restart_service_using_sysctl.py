@@ -12,6 +12,10 @@ class InputSchema(BaseModel):
         title='Hosts',
         description='List of hosts to connect to. For eg. ["host1", "host2"].'
     )
+    proxy_host: Optional[str] = Field(
+        title='Proxy host',
+        description='Override the proxy host provided in the credentials. It still uses the proxy_user and port from the credentials.'
+    )
     service_name: str = Field(
         title='Service Name',
         description='Service name to restart.'
@@ -29,7 +33,7 @@ def ssh_restart_service_using_sysctl_printer(output):
     pprint.pprint(output)
 
 
-def ssh_restart_service_using_sysctl(sshClient, hosts: List[str], service_name: str, sudo: bool = False) -> Dict:
+def ssh_restart_service_using_sysctl(sshClient, hosts: List[str], service_name: str, sudo: bool = False, proxy_host: str = None) -> Dict:
 
     """ssh_restart_service_using_sysctl restart Service Using sysctl
 
@@ -42,9 +46,12 @@ def ssh_restart_service_using_sysctl(sshClient, hosts: List[str], service_name: 
         :type sudo: bool
         :param sudo: Restart service with sudo.
 
-        :rtype: 
+        :type proxy_host: str
+        :param proxy_host: Optional proxy host to use.
+
+        :rtype:
     """
-    client = sshClient(hosts)
+    client = sshClient(hosts, proxy_host)
     runCommandOutput = client.run_command(command="systemctl restart %s" % service_name, sudo=sudo)
     client.join()
     res = {}
