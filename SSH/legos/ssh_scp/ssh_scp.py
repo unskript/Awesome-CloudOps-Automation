@@ -4,7 +4,7 @@
 ##
 
 from pydantic import BaseModel, Field
-from gevent import joinall
+from typing import Optional
 import pprint
 
 
@@ -12,6 +12,10 @@ class InputSchema(BaseModel):
     host: str = Field(
         title='Host',
         description='Hosts to connect to. For eg. "10.10.10.10"'
+    )
+    proxy_host: Optional[str] = Field(
+        title='Proxy host',
+        description='Override the proxy host provided in the credentials. It still uses the proxy_user and port from the credentials.'
     )
     remote_file: str = Field(
         title='Remote File',
@@ -39,6 +43,7 @@ def ssh_scp(
         host: str,
         remote_file: str,
         local_file: str,
+        proxy_host: str = None,
         direction: bool = True) -> str:
     """ssh_scp Copy files from or to remote host.
 
@@ -51,31 +56,16 @@ def ssh_scp(
         :type local_file: str
         :param local_file: Filename on the unSkript proxy. Eg /tmp/my_local_file
 
+        :type proxy_host: str
+        :param proxy_host: Proxy Host to connect host via. Eg 10.10.10.10.
+
         :type direction: bool
         :param direction: Direction of the copy operation. Default is receive-from-remote-server
 
         :rtype:
     """
-    client = sshClient([host])
+    client = sshClient([host], proxy_host)
     copy_args = [{'local_file': local_file, 'remote_file': remote_file}]
-
-    if direction is True:
-        cmds = client.copy_remote_file(remote_file=remote_file, local_file=local_file,
-                                       recurse=False,
-                                       suffix_separator="", copy_args=copy_args,
-                                       encoding='utf-8')
-
-    else:
-        cmds = client.copy_file(local_file=local_file, remote_file=remote_file,
-                                recurse=False, copy_args=None)
-
-    try:
-        joinall(cmds, raise_error=True)
-        if direction is True:
-            return f"Successfully copied file {host}://{remote_file} to {local_file}"
-        else:
-            return f"Successfully copied file {local_file} to {host}://{remote_file}"
-
-    except Exception as e:
-        return f"Error encountered while copying files {e}"
+    cmds = client.copy_file(local_file, remote_file, direction)
+    client.join()
 
