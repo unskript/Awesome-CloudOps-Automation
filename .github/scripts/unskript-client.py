@@ -75,17 +75,7 @@ def load_or_create_global_configuration():
         # READ EXISTING FILE AND SET ENV VARIABLES
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
             global_content = yaml.safe_load(f)
-    else:
-        # CREATE FILE WITH SOME PLACEHOLDER KEYS
-        temp_content = {}
-        temp_content['runbook_dir'] = os.environ.get('HOME') + "/runbooks"
-        temp_content['execution_dir'] = '/data/execution'
-        temp_content['display_execution_output'] = True
-        temp_content['envs'] = {"SOME_KEY": "SOME_VALUE"}
-        with open(GLOBAL_CONFIG_PATH, 'w') as f:
-            yaml.safe_dump(temp_content, f)
-        
-        global_content = temp_content
+
     
     for k,v in global_content.items():
         k = k.upper()
@@ -106,6 +96,9 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
     ids = get_code_cell_action_uuids(nb.dict())
     # Firstcell content. Here the workflow will take the UUIDS that we got from
     # get_code_cell_action_uuids
+
+    #FIXME: NEED TO CREATE FIRST CELL VARIABLES BASED ON ENV VARIABLE SET IN THE CONFIG FILE
+
     first_cell_content = f'''\
 import json
 from unskript import nbparams
@@ -244,20 +237,20 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
         try:
             if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_PASS, 0, 'N/A'])
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'PASS'])
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), ids[idx], get_connector_name_from_id(ids[idx], nb.dict()), 'PASS'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED: 
                 failed_objects = payload.get('objects')
                 failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects 
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_FAIL, len(failed_objects), 'N/A'])
                 failed_result_available = True
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'FAIL'])
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), ids[idx], get_connector_name_from_id(ids[idx], nb.dict()), 'FAIL'])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                 result_table.append([get_action_name_from_id(ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), 'ERROR'])
+                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict()), ids[idx], get_connector_name_from_id(ids[idx], nb.dict()), 'ERROR'])
         except Exception as e:
             pass
         update_current_execution(payload.get('status'), ids[idx], nb.dict())
-        update_audit_trail(ids[idx], 
+        update_check_run_trail(ids[idx], 
                            get_action_name_from_id(ids[idx], nb.dict()),
                            get_connector_name_from_id(ids[idx], nb.dict()),
                            CheckOutputStatus(payload.get('status')), 
@@ -317,6 +310,7 @@ def run_checks(filter: str):
     for rb in runbooks:
         run_ipynb(rb, status_of_runs)
 
+    update_audit_trail(status_of_runs)
     print_run_summary(status_of_runs)
 
 
@@ -482,8 +476,8 @@ task.configure(credentialsJson=\'\'\'{
     return failed_notebook
     
 
-def update_audit_trail(id: str, action_name: str, connector_type: str, result: CheckOutputStatus, data : dict = {}):
-    """update_audit_trail This function updates PSS for audit_logs entry
+def update_check_run_trail(id: str, action_name: str, connector_type: str, result: CheckOutputStatus, data : dict = {}):
+    """update_check_run_trail This function updates PSS for checks_run_trail entry
        
        :type id: str
        :param id: Action UUID to update entry in the audit log
@@ -504,17 +498,17 @@ def update_audit_trail(id: str, action_name: str, connector_type: str, result: C
     """
     content = {}
     try:
-        content = get_pss_record('audit_trail')
+        content = get_pss_record('check_run_trail')
     except:
         pass
     finally:
         k = str(datetime.now())
         temp_trail = {}
-        temp_trail[k] = {} 
-        temp_trail[k]['time_stamp'] = k
-        temp_trail[k]['action_uuid'] = id 
-        temp_trail[k]['check_name'] = action_name
-        temp_trail[k]['connector_type'] = connector_type.upper()
+        temp_trail[id] = {} 
+        temp_trail[id]['time_stamp'] = k
+        temp_trail[id]['action_uuid'] = id 
+        temp_trail[id]['check_name'] = action_name
+        temp_trail[id]['connector_type'] = connector_type.upper()
         s = ''
         if result == CheckOutputStatus.SUCCESS:
             s = "PASS"
@@ -522,13 +516,54 @@ def update_audit_trail(id: str, action_name: str, connector_type: str, result: C
             s = "FAILED"
         elif result == CheckOutputStatus.RUN_EXCEPTION:
             s = "ERRORED"
-        temp_trail[k]['status'] = s 
+        temp_trail[id]['status'] = s 
         if data != {}:
-            temp_trail[k]['failed_objects'] = data 
+            temp_trail[id]['failed_objects'] = data 
         content.update(temp_trail)
 
-    upsert_pss_record('audit_trail', content)
+    upsert_pss_record('check_run_trail', content)
 
+def update_audit_trail(status_dict_list: list):
+    """update_audit_trail This function will update the satus of each run of the runbook
+
+       :type status_dict_list: list
+       :param status_dict: List of Python Dictionary that has the status for all the checks that 
+             were run for the given runbook run
+
+       :rtype: None
+    """
+    content = {}
+    trail_data = {}
+    try:
+        content = get_pss_record('audit_trail')
+    except:
+        pass
+    finally:
+        k = str(datetime.now())
+        p = f = e = 0
+        for sd in status_dict_list:
+            if sd == {}:
+                continue 
+            id = uuid.uuid4()
+            trail_data = {}
+            trail_data[id] = {} 
+            trail_data[id]['time_stamp'] = k
+            trail_data[id]['check_status'] = {}
+            for s in sd.get('result'):
+                check_name,check_id,connector,status = s
+                if status == 'PASS':
+                    p += 1
+                elif status == 'FAIL':
+                    f += 1
+                elif status == 'ERROR':
+                    e += 1
+                trail_data[id]['check_status'][check_id] = {}
+                trail_data[id]['check_status'][check_id]['check_name']= check_name 
+                trail_data[id]['check_status'][check_id]['status'] = status
+                trail_data[id]['check_status'][check_id]['connector'] = connector
+                
+        trail_data[id]['summary'] = f"Summary (total/p/f/e): {p+e+f}/{p}/{f}/{e}"
+    upsert_pss_record('audit_trail', trail_data)
 
 def list_checks_by_connector(connector_name: str):
     """list_checks_by_connector This function reads the ZoDB and displays the
@@ -600,15 +635,28 @@ def show_audit_trail(filter: str = None):
     if filter.lower() == 'all':
         pprint.pprint(pss_content)
         return 
-         
+
+    exec_content = {}
+    try:
+        exec_content = get_pss_record('check_run_trail')
+    except:
+        pass
+    finally:
+        if exec_content == {}:
+            print("SYSTEM ERROR: Not able to print trail logs")
+            return 
+    
     for item in pss_content.items():
         k,v = item
-        if v.get('connector_type').lower() == filter.lower():
-            pprint.pprint(f"{k,v}")
-        elif filter.lower() == v.get('action_uuid').lower():
-            pprint.pprint(f"{k,v}")
-
-
+        for l,m in v.items():
+            if l == 'check_status':
+                for k1,v1 in m.items():
+                    if filter.lower() == k1:
+                        pprint.pprint(exec_content.get(filter))
+                        break
+                    elif filter.lower() == v1.get('connector'):
+                        pprint.pprint(f"{k}  {v1}")
+            
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
     """read_ipynb This function takes the Runbook name and reads the content
@@ -753,12 +801,11 @@ def create_creds_mapping():
         with open(creds, 'r') as f:
             c_data = json.load(f)
             d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), "id": c_data.get('metadata').get('id')}
-    upsert_pss_record('default_credential_id', d, True)
+    upsert_pss_record('default_credential_id', d, False)
 
 if __name__ == "__main__":
-    create_creds_mapping()
-    
     try:
+        create_creds_mapping()
         load_or_create_global_configuration()
     except Exception as e:
         raise e 
