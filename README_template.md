@@ -103,6 +103,67 @@ Contributions are what make the open source community such an amazing place to l
   1. Submit Your xRunBook to the repository Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
   2. Submit a PR!
 
+## Unskript CLI
+
+With `unskript-ctl.sh` (called unskript cuttle) allows you to
+  * List Existing Runbook
+  * List All Existing Health Checks
+  * List All Existing Health Check per connector
+  * Run All Existing Health Checks 
+  * Run All Existing Health Checks per connector
+  * Run an existing Runbook
+
+
+Here are the Options that are supported by the CTL Command
+```
+unskript-ctl.sh 
+usage: unskript-client [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
+
+Welcome to unSkript CLI Interface VERSION: 0.1.0
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -lr, --list-runbooks  List Available Runbooks
+  -rr RUN_RUNBOOK, --run-runbook RUN_RUNBOOK
+                        Run the given runbook
+  -rc RUN_CHECKS, --run-checks RUN_CHECKS
+                        Run all available checks [all | connector | failed]
+  -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
+                        Display Failed Checks [all | connector]
+  -lc LIST_CHECKS, --list-checks LIST_CHECKS
+                        List available checks, per connector or all
+  -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
+                        Show audit trail [all | connector | execution_id]
+```
+
+
+
+## Extending the docker
+You can use our base docker to extend the functionality to fit your need. Here is how to do it
+
+1. Create a Project Directory
+    a. mkdir -p $HOME/Awesome-CloudOps-Extension  && cd $HOME/Awesome-CloudOps-Extension
+2. Copy your Awesome extension to the folder, it could be a simple Shell script or an mission critical 
+   library that you need.
+    ```
+    echo "#!/bin/bash \n echo \"Hello from Awesome-CloudOps-Extension\"" > $HOME/Awesome-CloudOps-Extension/my-awesome-extension.sh
+    ```
+3. Create a Docker file in $HOME/Awesome-CloudOps-Extension
+    ```
+    FROM unskript/awesome-runbooks:latest as base
+
+    COPY my-awesome-extension.sh /usr/local/bin
+    RUN chmod +x /usr/local/bin/my-awesome-extension.sh
+    ```
+4. Build the Docker
+    ```
+    cd $HOME/Awesome-CloudOps-Extension
+    docker build -t my-awesome-docker .
+    ```
+
+Your new docker is ready! you can distribute the docker image via publishing to any docker registry.
+<br/>
+
 ## Import a xRunBook
   1. xRunBooks are stored locally at ```$HOME/.unskript/runbooks``` . Place your existing RunBook in this directory.
   2. Restart your Docker instance.
