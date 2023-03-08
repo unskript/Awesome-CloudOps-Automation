@@ -166,6 +166,8 @@ def list_runbooks():
     
     """
     runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/*.ipynb')
+    runbooks += glob.glob(os.environ.get('HOME') + '/runbooks/*/*.ipynb')
+
     runbooks.sort()
     table = [["Runbook Name",  "File Name"]]
     for runbook in runbooks:
