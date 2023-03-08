@@ -88,7 +88,12 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
     db = init_pss_db()
     with db.transaction() as connection: 
         root = connection.root()
-        root[name] = data
+        if overwrite:
+            root[name] = data
+        else:
+            d = root[name]
+            d.update(data)
+            root[name] = d
         del root
         del connection 
 
