@@ -855,7 +855,7 @@ if __name__ == "__main__":
     parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
     parser.add_argument('-rc', '--run-checks', type=str, help='Run all available checks [all | connector | failed]')
     parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks [all | connector]')
-    parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, per connector or all')
+    parser.add_argument('-lc', '--list-checks', type=str, help='List available Checks [all | connector]')
     parser.add_argument('-sa', '--show-audit-trail', type=str, help='Show audit trail [all | connector | execution_id]')
 
     args = parser.parse_args()
