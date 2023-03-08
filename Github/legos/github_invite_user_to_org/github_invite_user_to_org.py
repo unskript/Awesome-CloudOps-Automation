@@ -6,7 +6,7 @@
 from typing import Optional, List
 from pydantic import BaseModel, Field
 from github import GithubException
-from unskript.enums.github_user_role_enums.py import GithubUserRole
+from unskript.enums.github_user_role_enums import GithubUserRole
 import pprint
 
 
