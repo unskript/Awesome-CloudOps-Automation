@@ -98,7 +98,7 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
     # get_code_cell_action_uuids
 
     #FIXME: NEED TO CREATE FIRST CELL VARIABLES BASED ON ENV VARIABLE SET IN THE CONFIG FILE
-
+    
     first_cell_content = f'''\
 import json
 from unskript import nbparams
@@ -632,9 +632,25 @@ def show_audit_trail(filter: str = None):
     
     pss_content = get_pss_record('audit_trail')
 
+    s = '\x1B[1;20;42m' + "~~~~ CLI Used ~~~~" + '\x1B[0m'
+    print("")
+    print(s)
+    print("")
+    print(f"\033[1m {sys.argv[0:]} \033[0m")
+    print("")
+
     if filter.lower() == 'all':
-        pprint.pprint(pss_content)
-        return 
+        all_result_table = [["\033[1m Execution ID \033[0m", 
+                             "\033[1m Execution Summary \033[0m", 
+                             "\033[1m Execution Timestamp \033[0m"]]
+        for item in pss_content.items():
+            k,v = item
+            summary_text = "\033[1m" + v.get('summary') + "\033[0m"
+            each_row = [[k, summary_text, v.get('time_stamp')]]
+            all_result_table += each_row
+
+        print(tabulate(all_result_table, headers='firstrow', tablefmt='fancy_grid'))
+        return
 
     exec_content = {}
     try:
@@ -645,18 +661,36 @@ def show_audit_trail(filter: str = None):
         if exec_content == {}:
             print("SYSTEM ERROR: Not able to print trail logs")
             return 
-    
+    connector_result_table = [["\033[1m Execution ID \033[0m", 
+                             "\033[1m Check ID \033[0m \n \033[1m (Check Name) \033[0m", 
+                             "\033[1m Run Status \033[0m",
+                             "\033[1m Time Stamp \033[0m"]]
+    single_result_table = [["\033[1m Execution ID \033[0m", 
+                             "\033[1m Check ID \033[0m \n \033[1m (Check Name)/(Connector) \033[0m", 
+                             "\033[1m Run Status \033[0m",
+                             "\033[1m Time Stamp \033[0m"]] 
+    flag = -1
     for item in pss_content.items():
         k,v = item
         for l,m in v.items():
             if l == 'check_status':
                 for k1,v1 in m.items():
                     if filter.lower() == k1:
-                        pprint.pprint(exec_content.get(filter))
+                        flag = 1
+                        single_result_table += [[k, 
+                                      k1 + '\n' + '( ' + v1.get('check_name') + ' )' + f"( {exec_content.get(filter).get('connector_type')} )",
+                                      v1.get('status'), 
+                                      v.get('time_stamp')]]
                         break
                     elif filter.lower() == v1.get('connector'):
-                        pprint.pprint(f"{k}  {v1}")
+                        flag = 2
+                        connector_result_table += [[k, k1 + '\n' + '( ' + v1.get('check_name') + ' )', v1.get('status'), v.get('time_stamp')]]
+                        #pprint.pprint(f"{k} {k1} {v1}")
             
+    if flag == 1:
+        print(tabulate(single_result_table, headers='firstrow', tablefmt='fancy_grid'))
+    elif flag == 2:
+        print(tabulate(connector_result_table, headers='firstrow', tablefmt='fancy_grid'))
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
     """read_ipynb This function takes the Runbook name and reads the content
