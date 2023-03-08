@@ -43,6 +43,18 @@ def init_pss_db() -> DB:
     if not os.path.exists(PSS_DB_PATH):
         pss = ZODB.FileStorage.FileStorage(PSS_DB_PATH)
         db = DB(pss)
+    
+        # connection = db.open()
+        # root = connection.root()
+        with db.transaction() as connection:
+            root = connection.root()
+            root['audit_trail'] = {}
+            root['default_credential_id'] = {}
+            root['check_run_trail'] = {}
+            root['current_execution_status'] = {}
+            del root
+            del connection
+
     else:
         db = DB(PSS_DB_PATH)
     
@@ -76,15 +88,9 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
     db = init_pss_db()
     with db.transaction() as connection: 
         root = connection.root()
-        if overwrite == True:
-            root.name = data
-        else:
-            l = {}
-            if root.get(name) != None:
-                l = root.get(name)
-            l.update(data)
-            root.name = l 
-        del root 
+        root[name] = data
+        del root
+        del connection 
 
     db.close()
 
@@ -99,6 +105,7 @@ def get_pss_record(name: str):
     
        :rtype: record saved with the  name or None
     """
+
     if name in ("", None):
         print(f"ERROR: Name cannot be empty")
         return {} 
@@ -190,6 +197,10 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
         d = s.snippet
         s_connector = d.get('metadata').get('action_type')
         s_connector = s_connector.split('_')[-1].lower()
+        # HACK
+        if d.get('name').startswith('Test'):
+            d['metadata']['action_is_check'] = True
+                  
         if d.get('metadata').get('action_is_check') == False:
             continue
         if connector_name.lower() != 'all' and not re.match(connector_name.lower(), s_connector):
@@ -223,15 +234,21 @@ def get_creds_by_connector(connector_type: str):
     tm = transaction.TransactionManager()
     connection = db.open(tm)
     root = connection.root()
-    creds_list = root.get('default_credential_id')
-    creds_dict = creds_list[0]
-    for cred in creds_dict.keys():
-        if cred == connector_type: 
-            retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
-            break
-    
+    try:
+        creds_dict = root.get('default_credential_id')
+    except:
+        pass 
+    finally:
+        if creds_dict == None:
+            pass
+        else:
+            for cred in creds_dict.keys():
+                if cred == connector_type: 
+                    retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
+                    break
     tm.commit()
     del root 
     connection.close()
     db.close()
+
     return retval
