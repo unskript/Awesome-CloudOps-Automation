@@ -375,12 +375,12 @@ def update_current_execution(status, id: str, content: dict):
         return
 
     execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
-    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + f"{id}.ipynb"
+    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + f"{id}.ipynb"
 
     
     # If failed directory does not exists, lets create it
-    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/failed') == False:
-        os.mkdir(os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/failed'))
+    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace') == False:
+        os.mkdir(os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace'))
     
     prev_status = None
     es = {}
@@ -442,7 +442,7 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    failed_notebook = os.environ.get('EXECUTION_DIR').strip('"') + '/failed/' + str(uuid.uuid4()) + '.ipynb'
+    failed_notebook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
