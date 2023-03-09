@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from typing import List, Dict
 from unskript.connectors.aws import aws_get_paginator
 import pprint
-
+from beartype import beartype
 
 
 
