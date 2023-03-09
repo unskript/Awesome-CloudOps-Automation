@@ -1,0 +1,20 @@
+{
+  "title": "InputSchema",
+  "type": "object",
+  "properties": {
+    "region": {
+      "title": "Region",
+      "description": "AWS Region.",
+      "type": "string"
+    },
+    "queryId": {
+      "title": "queryId",
+      "description": "Id of Redshift Query",
+      "default": "",
+      "type": "string"
+    }
+  },
+  "required": [
+    "region"
+  ]
+}
