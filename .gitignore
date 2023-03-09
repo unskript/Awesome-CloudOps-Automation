@@ -1,7 +1,10 @@
 *.DS_Store
 .ipynb_checkpoints
 __pycache__
+
+# Ignore Temp files
 *.jsonx
+all_*legos.py
 
 # Build directory, ignore everything except gen_schema.sh
 build/*
