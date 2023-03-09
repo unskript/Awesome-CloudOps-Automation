@@ -841,6 +841,9 @@ def create_creds_mapping():
 
 if __name__ == "__main__":
     try:
+        if os.environ.get('EXECUTION_DIR') == None:
+          os.environ['EXECUTION_DIR'] = '/data/execution'
+          
         create_creds_mapping()
         load_or_create_global_configuration()
     except Exception as e:
