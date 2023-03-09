@@ -678,11 +678,10 @@ def show_audit_trail(filter: str = None):
         for l,m in v.items():
             if l == 'check_status':
                 for k1,v1 in m.items():
-                    print(f"{v}")
                     if filter.lower() == k1:
                         flag = 1
                         single_result_table += [[k, 
-                                      v1.get('failed_objects'),
+                                      exec_content.get(k1).get('failed_objects'),
                                       v1.get('status'), 
                                       v.get('time_stamp')]]
                         break
