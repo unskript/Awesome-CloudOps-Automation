@@ -1,4 +1,4 @@
-
+from __future__ import annotations
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
@@ -9,7 +9,6 @@ from unskript.connectors.aws import aws_get_paginator
 import pprint
 from beartype import beartype
 
-from __future__ import annotations
 
 from typing import Optional
 

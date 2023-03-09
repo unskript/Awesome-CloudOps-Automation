@@ -1,10 +1,11 @@
+from __future__ import annotations
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
 
 
-from __future__ import annotations
+
 
 from typing import Optional
 
