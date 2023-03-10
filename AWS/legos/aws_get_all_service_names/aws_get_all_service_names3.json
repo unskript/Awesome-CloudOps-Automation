@@ -1,5 +1,5 @@
 {
-  "action_title": "AWS_Get_All_Service_Names_v3",
+  "action_title": "AWS Get All Service Names v3",
   "action_description": "Get a list of all service names in a region",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_get_all_service_names3",
