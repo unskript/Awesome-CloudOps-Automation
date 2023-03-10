@@ -30,5 +30,4 @@ jobs:
           
       - name: Run Validator
         run: |
-          cd $HOME/Awesome-CloudOps-Automation
           /usr/bin/env python ./validator.py
