@@ -10,9 +10,8 @@ class InputSchema(BaseModel):
 from unskript.connectors.aws import aws_get_paginator
 from pydantic import BaseModel, Field
 from typing import List, Dict
-
 from beartype import beartype
-@beartype
+
 @beartype
 def aws_get_all_service_names3_printer(output):
     if output is None:

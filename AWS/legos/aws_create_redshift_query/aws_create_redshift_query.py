@@ -40,7 +40,6 @@ def aws_create_redshift_query(handle, region: str,cluster:str, database:str, sec
     client = handle.client('redshift-data', region_name=region)
     # define your query
     query = query
-    #query = "SELECT * FROM PG_TABLE_DEF;"
     # execute the query
     response = client.execute_statement(
         ClusterIdentifier=cluster,

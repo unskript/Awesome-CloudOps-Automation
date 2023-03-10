@@ -51,7 +51,7 @@ def aws_get_redshift_result(handle, region:str, resultId: str) -> List:
         #print("entryDict",entryDict)
         listResult.append(entryDict)
 
-    print(listResult)
+    #print(listResult)
     return listResult
 
 
