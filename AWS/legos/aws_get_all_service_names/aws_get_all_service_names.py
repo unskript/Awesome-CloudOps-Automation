@@ -13,7 +13,7 @@ from typing import List, Dict
 from beartype import beartype
 
 @beartype
-def aws_get_all_service_names3_printer(output):
+def aws_get_all_service_names_printer(output):
     if output is None:
         return
     pprint.pprint(output)
@@ -21,7 +21,7 @@ def aws_get_all_service_names3_printer(output):
 
 @beartype
 @beartype
-def aws_get_all_service_names3(handle, region:str) -> List:
+def aws_get_all_service_names(handle, region:str) -> List:
     sqClient = handle.client('service-quotas',region_name=region)
     resPaginate = aws_get_paginator(sqClient,'list_services','Services',PaginationConfig={
         'MaxItems': 1000,
