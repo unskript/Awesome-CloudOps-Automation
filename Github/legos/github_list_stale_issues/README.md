@@ -12,7 +12,7 @@ This Lego lists all stale issues in a Github Repository
 
         handle: Object of type unSkript Github Connector
         owner: String, Username of the GitHub user. Eg: "johnwick"
-        repository: String, Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"
+        repository: String, Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
         age_to_stale: Integer, Age in days to check if the issue creation or updation dates are older and hence classify those issues as stale Eg:45'
 
 ## Lego Input
