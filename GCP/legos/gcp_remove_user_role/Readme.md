@@ -5,7 +5,7 @@
 GCP lego for removing a role from a user (default: 'viewer')
 
 ## Lego Details
-    modify_policy_remove_member(policy, role: str, member: str)
+    gcp_remove_user_role(policy, role: str, member: str)
         role: user role to be removed
         member: user's id to be removed
 
