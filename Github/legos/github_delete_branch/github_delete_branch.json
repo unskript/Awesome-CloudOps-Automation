@@ -1,0 +1,11 @@
+{
+  "action_title": "Github Delete Branch",
+  "action_description": "Delete a github branch",
+  "action_type": "LEGO_TYPE_GITHUB",
+  "action_entry_function": "github_delete_branch",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true"
+}
