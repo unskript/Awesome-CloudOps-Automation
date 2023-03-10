@@ -10,7 +10,6 @@ import glob
 import sys 
 import time 
 
-from multiprocessing import Process, Manager
 from subprocess import run
 
 def git_top_dir() -> str:
@@ -62,19 +61,6 @@ def check_action_by_connector_names(connector: str = '') -> bool:
     for _dir in dirs_under_connector:
         if _dir in ('templates', '__init__.py'):
             continue 
-        # p = Process(target=check_dir_contents, args=(os.path.join(connector, 'legos', _dir),ret_val))
-        # p.start()
-        # process_list.append(p)
-        # idx += 1
-    
-        # if idx % 20 == 0:
-        #     # After 20 Open files, lets sleep for 2 sec to let system close all open file descriptors
-        #     # Jion all threads once done
-        #     for p in process_list:
-        #         p.join()
-        #         p.terminate()
-        #     time.sleep(2)
-        #     process_list = []
         check_dir_contents(os.path.join(connector, 'legos', _dir), ret_val)
 
     for k,v in ret_val.items():
@@ -119,10 +105,9 @@ def check_dir_contents(_dir: str, ret_val) -> bool:
             d = json.load(f)
 
         if d.get('action_entry_function') != os.path.basename(_dir):
-            pass
-            #print(f"WARNING: ENTRY FUNCTION IN {jsonfile} is Wrong Expecting: {os.path.basename(_dir)} Has: {d.get('action_entry_function')}")
-            # ret_val[_dir] = False
-            # return 
+            print(f"ERROR: ENTRY FUNCTION IN {jsonfile} is Wrong Expecting: {os.path.basename(_dir)} Has: {d.get('action_entry_function')}")
+            ret_val[_dir] = False
+            return 
     except Exception as e:
         ret_val[_dir] = False
         raise e
