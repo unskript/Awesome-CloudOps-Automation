@@ -52,8 +52,7 @@ def check_action_by_connector_names(connector: str = '') -> bool:
         return False
     
     process_list = []
-    m = Manager()
-    ret_val = m.dict()
+    ret_val = {}
     #  Spawn multiple process to verify for parallel processing
     #  Lets batch it and process it for every 20 
     idx = 0
