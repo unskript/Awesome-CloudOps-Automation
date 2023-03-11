@@ -2,7 +2,7 @@
   "action_title": "AWS Get Redshift Query Details",
   "action_description": "Given an QueryId, this Action will give you the status of the Query, along with other data like  the number of lines/",
   "action_type": "LEGO_TYPE_AWS",
-  "action_entry_function": "aws_get_redshift_query_results",
+  "action_entry_function": "aws_get_redshift_query_details",
   "action_needs_credential": "true",
   "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
   "action_is_check": "false",

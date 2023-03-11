@@ -7,14 +7,13 @@ from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
-    quota_code: Optional[str] = Field(
-        '"L-4FB7FF5D"',
+    quota_code: str = Field(
         description='The quota code for the Service Type',
         title='quota_code',
     )
     region: str = Field(..., description='AWS Region.', title='Region')
     service_code: str = Field(
-        '"ec2"', description='The service code to be queried', title='service_code'
+         description='The service code to be queried', title='service_code'
     )
 
 ##
