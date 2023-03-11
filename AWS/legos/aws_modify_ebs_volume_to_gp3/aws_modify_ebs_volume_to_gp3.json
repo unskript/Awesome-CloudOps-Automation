@@ -1,0 +1,11 @@
+{
+    "action_title": "AWS Modify EBS Volume to GP3",
+    "action_description": "AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_modify_ebs_volume_to_gp3",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_poll": true,
+    "action_supports_iteration": true
+}
+  

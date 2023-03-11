@@ -15,10 +15,12 @@ from beartype import beartype
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS Region.', title='Region')
     query: str = Field(
+
         description='sql query to run',
         title='query',
     )
     cluster: str = Field(
+
         description='Name of Redshift Cluster', title='cluster'
     )
     database: str = Field(

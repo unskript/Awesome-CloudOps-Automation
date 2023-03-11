@@ -18,7 +18,9 @@ from pydantic import BaseModel, Field
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS Region.', title='Region')
     queryId: str = Field(
+
          description='Id of Redshift Query', title='queryId'
+
     )
 
 @beartype

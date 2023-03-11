@@ -12,6 +12,7 @@ from beartype import beartype
 
 
 class InputSchema(BaseModel):
+
     resultId: str = Field(description='Redshift Query Result', title='resultId')
     region: str = Field(..., description='AWS Region', title='region')
 
