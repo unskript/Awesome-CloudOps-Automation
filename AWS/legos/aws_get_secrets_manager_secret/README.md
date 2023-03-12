@@ -8,9 +8,9 @@ This Action retrieves a Secret from AWS Secret Manager
 
 
 ## Lego Details
-    def aws_get_secrets_namager_secret(handle, region: str, secret_name:str) -> str:
+    def aws_get_secrets_manager_secret(handle, region: str, secret_name:str) -> str:
 
-        handle: Object of type unSkript datadog Connector
+        handle: Object of type unSkript AWS Connector
 		region: AWS Region
 		secret_name: Name of the AWS Secret to obtain
 

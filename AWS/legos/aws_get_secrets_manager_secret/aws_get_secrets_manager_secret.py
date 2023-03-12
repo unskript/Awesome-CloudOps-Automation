@@ -28,7 +28,7 @@ from beartype import beartype
 
 from beartype import beartype
 @beartype
-def aws_get_secrets_namager_secret_printer(output):
+def aws_get_secrets_manager_secret_printer(output):
     if output is None:
         return
     pprint.pprint({"secret": output})
@@ -36,7 +36,7 @@ def aws_get_secrets_namager_secret_printer(output):
 
 @beartype
 @beartype
-def aws_get_secrets_namager_secret(handle, region: str, secret_name:str) -> str:
+def aws_get_secrets_manager_secret(handle, region: str, secret_name:str) -> str:
 
 
     # Create a Secrets Manager client
