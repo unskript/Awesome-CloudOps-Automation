@@ -99,7 +99,7 @@
 * [Aws get s3 bucket list.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_s3_bucket_list) 
 * [Aws get schedule to retire instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances) 
 * [Aws get secret from secretmanager.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secret_from_secretmanager) 
-* [Aws get secrets namager secret.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secrets_namager_secret) 
+* [Aws get secrets manager secret.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secrets_manager_secret) 
 * [Aws get secrets manager secretARN.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secrets_manager_secretARN) 
 * [Aws get security group details.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_security_group_details) 
 * [Aws get service quota detailsv1.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quota_detailsv1) 
