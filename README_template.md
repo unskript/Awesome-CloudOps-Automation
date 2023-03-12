@@ -187,6 +187,8 @@ upload and distribute to/from any docker registry.
     FROM unskript/awesome-runbooks:930 as base 
     RUN mkdir -p /data
     ADD custom /data/ 
+
+    CMD ["./start.sh"]
     ```
 
     Now execute the docker build command `docker build -t <YOUR CUSTOM NAME>:<CUSTOM VERSION> .` 
