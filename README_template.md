@@ -141,7 +141,7 @@ optional arguments:
 ## Extending the docker
 You can use our base docker to extend the functionality to fit your need. The recepie below 
 could be used to package your custom Actions and re-build your custom docker that you can
-upload any docker registry. 
+upload and distribute to/from any docker registry. 
 
 ### Pre-requisite
 1. You have a working Python 3 environment installed on your build system
