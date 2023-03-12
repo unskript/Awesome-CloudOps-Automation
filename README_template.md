@@ -193,7 +193,7 @@ upload and distribute to/from any docker registry.
 
     Now execute the docker build command `docker build -t <YOUR CUSTOM NAME>:<CUSTOM VERSION> .` 
 
-    Build may take a few minutes, You can distribute the docker image via publishing to any docker registry.
+    Build may take a few minutes, Once built, You can distribute the docker image via publishing to any docker registry.
 <br/>
 
 ## Import a xRunBook
