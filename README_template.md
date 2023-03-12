@@ -154,6 +154,7 @@ upload and distribute to/from any docker registry.
 2. Next task is to create a custom Actions directory under Awesome-CloudOps-Automation. You could use any of
    the following methods to accomplish this task.
     1. Create directory under Awesome-CloudOps-Automation by name `custom`
+       ```cd $HOME/Awesome-CloudOps-Automation && mkdir custom```
     2. Submodule your Git repo that has your custom Actions in it. 
        ```cd $HOME/Awesome-CloudOps-Automation && git submodule add https://<YOUR REPO LOCATION> custom```
 
