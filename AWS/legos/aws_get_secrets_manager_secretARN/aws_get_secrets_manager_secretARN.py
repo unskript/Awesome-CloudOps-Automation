@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS Region.', title='Region')
     secret_name: str = Field(
-        '', description='AWS Secret Name', title='secret_name'
+         description='AWS Secret Name', title='secret_name'
     )
 
 
