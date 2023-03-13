@@ -347,6 +347,7 @@ jobs:
           git checkout ${{ inputs.awesome_branch }}
           cp $HOME/Awesome-CloudOps-Automation/build/scripts/* $HOME/devops/dockers/jupyterlab/oss_docker/
           cp $HOME/Awesome-CloudOps-Automation/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/template.ipynb
+          cp $HOME/Awesome-CloudOps-Automation/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/Welcome.ipynb
           cd $HOME/devops/dockers/jupyterlab/oss_docker
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
