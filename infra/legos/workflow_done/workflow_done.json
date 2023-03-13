@@ -2,7 +2,7 @@
     "action_title": "Infra: Finish runbook execution",
     "action_description": "Infra: use this action to finish the execution of a runbook. Once this is set, no more tasks will be executed",
     "action_type": "LEGO_TYPE_INFRA",
-    "action_entry_function": "infra_workflow_done",
+    "action_entry_function": "workflow_done",
     "action_needs_credential": false,
     "action_output_type": "ACTION_OUTPUT_TYPE_NONE"
 }
