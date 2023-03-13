@@ -25,14 +25,14 @@ from unskript.connectors.aws import aws_get_paginator
 
 from beartype import beartype
 @beartype
-def aws_get_service_quotas_v1_printer(output):
+def aws_get_service_quotas_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 #list_service_quotas
 #list_aws_default_service_quotas
 @beartype
-def aws_get_service_quotas_v1(handle, service_code:str, region:str) -> List:
+def aws_get_service_quotas(handle, service_code:str, region:str) -> List:
     sqClient = handle.client('service-quotas',region_name=region)
     resPaginate = aws_get_paginator(sqClient,'list_service_quotas','Quotas',
         ServiceCode=service_code,
