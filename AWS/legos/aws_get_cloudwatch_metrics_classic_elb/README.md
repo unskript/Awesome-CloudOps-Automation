@@ -7,7 +7,7 @@ This Lego get AWS CloudWatch Metrics for Classic Loadbalancer.
 
 ## Lego Details
 
-    aws_get_cloudwatch_ebs(hdl: Session, metric_name: ClassicELBMetrics, dimensions: List[dict], region: str, timeSince: int,statistics: StatisticsType, period: int)
+    aws_get_cloudwatch_metrics_classic_elb(hdl: Session, metric_name: ClassicELBMetrics, dimensions: List[dict], region: str, timeSince: int,statistics: StatisticsType, period: int)
 
         hdl: Object of type unSkript AWS Connector.
         metric_name: The name of the metric
