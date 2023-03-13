@@ -29,7 +29,7 @@ from beartype import beartype
 
 from beartype import beartype
 @beartype
-def aws_vpc_service_quota_warning_v1_printer(output):
+def aws_vpc_service_quota_warning_printer(output):
     if output is None:
         return
     pprint.pprint({"Instances": output})
@@ -37,7 +37,7 @@ def aws_vpc_service_quota_warning_v1_printer(output):
 
 @beartype
 @beartype
-def aws_vpc_service_quota_warning_v1(handle, region: str, warning_percentage: float) -> List:
+def aws_vpc_service_quota_warning(handle, region: str, warning_percentage: float) -> List:
 
 
     ## EC@ and VPCs
