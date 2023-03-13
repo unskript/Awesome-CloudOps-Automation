@@ -23,7 +23,7 @@ def aws_restart_ec2_instances_printer(output):
 
 @beartype
 def aws_restart_ec2_instances(handle, instance_ids: List, region: str) -> Dict:
-    """aws_restart_instances Restarts instances.
+    """aws_restart_ec2_instances Restarts instances.
 
         :type handle: object
         :param handle: Object returned by the task.validate(...) method.

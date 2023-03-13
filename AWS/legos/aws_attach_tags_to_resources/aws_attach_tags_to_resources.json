@@ -2,7 +2,7 @@
     "action_title": "AWS Attach Tags to Resources",
     "action_description": "AWS Attach Tags to Resources",
     "action_type": "LEGO_TYPE_AWS",
-    "action_entry_function": "aws_tag_resources",
+    "action_entry_function": "aws_attach_tags_to_resources",
     "action_needs_credential": true,
     "action_supports_poll": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
