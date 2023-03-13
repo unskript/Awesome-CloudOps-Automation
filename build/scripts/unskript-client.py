@@ -430,7 +430,7 @@ def update_current_execution(status, id: str, content: dict):
 
 def create_jit_runbook(check_list: list):
     """create_jit_runbook This function creates Just In Time runbook
-       with just one code cell. The content will be upended with the
+       with just one code cell. The content will be appended with the
        task lines... and used it create the jit runbook
 
        :type check_list: list
