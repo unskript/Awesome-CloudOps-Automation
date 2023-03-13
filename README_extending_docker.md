@@ -39,30 +39,35 @@ You can use our base docker to extend the functionality to fit your need. The re
     Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing Awesome Docker settings so all the credentials that you create are saved for the next run.  The second mount point
     `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we inform Awesome Docker to save any new custom Legos or Runbooks in that directory. This means any content that is created will survive Docker reboots.
 
-    You would see a welcome message that tells you to point your browser to `http://127.0.0.1:8888/lab/tree/Welcome.ipynb` Please do copy this URL and open it in your favorite browser (We recommend Google Chrome or MS Edge or Chromium)
+    You would see a welcome message that tells you to point your browser to `http://127.0.0.1:8888/lab/tree/GetStarted.ipynb` Please do copy this URL and open it in your favorite browser (We recommend Google Chrome or MS Edge or Chromium)
     
-5. Once the page is loaded. Go to the end of the Welcome page.  
+5. Once the page is loaded. Search for any pre-coded actions by typing keywords like `aws`, `kubernetes` `kubectl`,  `postgresql`, `mongo` etc..
+   Pick the standard Action that you want to extend in functionality, drag-n-drop it to the main cell area. (Follow the Documentation Link in the GetStarted.ipynb Runbook to go through the documentation.) 
 
-As the Page loads, you would see `Credentials` Options on top of the Page. Please click it and Create
-   new credentials for the `Connectors` that you are working on. Example, if you are working on Kubernetes, you may
-   want to create a K8S credential. 
+6. After you are done with the Modification, you can use the `Save-As` option of the Action tool bar (Refer Documentatino link on how to Save 
+   custom Actions). 
+   > Tip: If you want to verify the modification, you can create a credential for the given connector and test your modification to make sure
+   > you are satisfied with the changes.
 
-4. Once the credential is saved, you would see a message like `Active` to indicate that the credential was
-   created successfuly and is ready to be used.  Go ahead and create your own `Custom Action` and use the `Save As`
-   Option in the Action toolbar to save the custom action. 
+7. Next step is to build your custom docker. Following these commands
 
-5. Next, lets package the `Custom Action` into a new Docker build that is based off of `awesome-runbooks` 
-   Please Copy The content below and paste it to a file by name `Dockerfile` under `$HOME/Awesome-CloudOps-Automation`
-    ```
-    FROM unskript/awesome-runbooks:930 as base 
-    RUN mkdir -p /data
-    ADD custom /data/ 
+   ```
+   1. export CUSTOM_DOCKER_NAME=my-awesome-docker
+   2. export CUSTOM_DOCKER_VERSION='0.1.0'
+   3. cd $HOME/Awesome-CloudOps-Automation/
+   4. cp ./build/templates/Dockerfile.template Dockerfile
+   5. docker build -t $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_VERSION .
+   ```
 
-    CMD ["./start.sh"]
-    ```
+   It may take a few minutes to build the docker, once built, you can verify it using 
 
-    Now execute the docker build command `docker build -t <YOUR CUSTOM NAME>:<CUSTOM VERSION> .` 
+   ```
+   docker run -it -p 8888:8888 \
+       $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_VERSION 
+   ```
 
-    Build may take a few minutes, Once built, You can distribute the docker image via publishing to any docker registry.
+   This would run your `custom docker` and you can point your browser to `http://127.0.0.1:8888/lab/tree/Welcome.ipynb`! 
+
+8. Push your `custom docker` to any Docker registry so you can download at your deployment site.
 <br/>
 

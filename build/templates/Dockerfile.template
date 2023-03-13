@@ -1,0 +1,5 @@
+FROM unskript/awesome-runbooks:930 as base 
+RUN mkdir -p /data
+ADD custom /data/custom
+
+CMD ["./start.sh"]
