@@ -27,7 +27,7 @@ def github_list_stargazers_printer(output):
     pprint.pprint(output)
 
 def github_list_stargazers(handle, owner:str, repository:str) -> List:
-    """github_list_stargazers returns first 100 stargazers for a Github Repository
+    """github_list_stargazers returns last 100 stargazers for a Github Repository
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -38,7 +38,7 @@ def github_list_stargazers(handle, owner:str, repository:str) -> List:
         :type repository: string
         :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
-        :rtype: List of first 100 stargazers for a Github Repository
+        :rtype: List of last 100 stargazers for a Github Repository
     """
     result = []
     try:
