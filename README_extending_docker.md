@@ -7,25 +7,37 @@
 
 
 ## Extending the docker
-You can use our base docker to extend the functionality to fit your need. The recepie below could be used to package your custom Actions and re-build your custom docker that you can upload and distribute to/from any docker registry. 
+You can use our base docker to extend the functionality to fit your need. The steps below could be used to package your custom Actions and re-build your custom docker that you can upload and distribute to/from any docker registry. 
 
 ### Pre-requisite
 1. You have a working Python 3 environment installed on your build system
 2. You have Docker-ce installed on your build system
 
-### Receipe 
-1. If you have not already done, Please check-out the Awesome-CloudOps-Automation repo with this command
-   ```cd $HOME && git clone https://github.com/unskript/Awesome-CloudOps-Automation``` 
+### Steps 
+1. If you have not already done, please check-out the Awesome-CloudOps-Automation repo with this command
+
+   ```
+   cd $HOME 
+   git clone https://github.com/unskript/Awesome-CloudOps-Automation
+   ``` 
 
 2. Set an environment variable to point to the name of the custom directory. 
-   ```export CUSTOM_DIR_NAME=custom```
+   ```
+   export CUSTOM_DIR_NAME=custom
+   ```
 
 3. Next task is to create a custom Actions directory under Awesome-CloudOps-Automation. You could use any of
    the following methods to accomplish this task.
     1. Create directory under Awesome-CloudOps-Automation by name `custom`
-       ```cd $HOME/Awesome-CloudOps-Automation && mkdir $CUSTOM_DIR_NAME```
+       ```
+       cd $HOME/Awesome-CloudOps-Automation
+       mkdir $CUSTOM_DIR_NAME
+       ```
     2. Submodule your Git repo that has your custom Actions in it. 
-       ```cd $HOME/Awesome-CloudOps-Automation && git submodule add https://<YOUR REPO LOCATION> $CUSTOM_DIR_NAME```
+       ```
+       cd $HOME/Awesome-CloudOps-Automation
+       git submodule add https://<YOUR REPO LOCATION> $CUSTOM_DIR_NAME
+       ```
 
 4. Launch the Awesome Runbooks Docker. Either you can use a specific tag like `930` or `latest` 
       ```
@@ -36,8 +48,8 @@ You can use our base docker to extend the functionality to fit your need. The re
              unskript/awesome-runbooks:latest
       ```
 
-    Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing Awesome Docker settings so all the credentials that you create are saved for the next run.  The second mount point
-    `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we inform Awesome Docker to save any new custom Legos or Runbooks in that directory. This means any content that is created will survive Docker reboots.
+    * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing Awesome Docker settings so all the credentials that you create are saved for the next run.  
+    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we inform Awesome Docker to save any new custom Legos or Runbooks in that directory. This means any content that is created will survive Docker reboots.
 
     You would see a welcome message that tells you to point your browser to `http://127.0.0.1:8888/lab/tree/GetStarted.ipynb` Please do copy this URL and open it in your favorite browser (We recommend Google Chrome or MS Edge or Chromium)
     
