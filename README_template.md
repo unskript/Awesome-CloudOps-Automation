@@ -115,7 +115,7 @@ Contributions are what make the open source community such an amazing place to l
    2. If you will be using an existing credential, add an existing ACtion for that service (like AWS), and edit the code to create your new Action.
     3. If you are creating a new credential, reach out to the team - we'd love to help!
 2. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
-3.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
+3.  To submit to OSS (Open Source), follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
 
 
 <br/>
