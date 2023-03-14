@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pydantic import BaseModel, Field
 from github import GithubException
 import pprint
@@ -21,7 +21,7 @@ def github_get_user_printer(output):
         return
     pprint.pprint(output)
 
-def github_get_user(handle, owner:str) -> List:
+def github_get_user(handle, owner:str) -> Dict:
     """github_get_user returns details of a user
 
         :type handle: object
@@ -30,9 +30,8 @@ def github_get_user(handle, owner:str) -> List:
         :type owner: string
         :param owner: Username of the GitHub user. Eg: "johnwick"
 
-        :rtype: List of details of a user
+        :rtype: Dict of details of a user
     """
-    result = []
     try:
         user_details = {}
         user = handle.get_user(login=owner)
@@ -42,12 +41,11 @@ def github_get_user(handle, owner:str) -> List:
         user_details["bio"] = user.bio
         user_details["followers"] = user.followers
         user_details["following"] = user.following
-        result.append(user_details)
     except GithubException as e:
         if e.status == 404:
             raise Exception("User not found")
         raise e.data
     except Exception as e:
         raise e
-    return result
+    return user_details
 
