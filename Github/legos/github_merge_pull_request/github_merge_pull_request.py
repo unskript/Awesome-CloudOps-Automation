@@ -34,7 +34,7 @@ def github_merge_pull_request_printer(output):
     pprint.pprint(output)
 
 
-def github_merge_pull_request(handle, owner:str, repository:str, pull_request_number: int, commit_message:str) -> List:
+def github_merge_pull_request(handle, owner:str, repository:str, pull_request_number: int, commit_message:str) -> str:
     """github_merge_pull_request returns message and commit sha of successfully merged branch
 
         Note- The base branch is considered to be "master"
@@ -54,7 +54,7 @@ def github_merge_pull_request(handle, owner:str, repository:str, pull_request_nu
         :type commit_message: str
         :param commit_message: Commit Message
 
-        :rtype: List of details with message of successfully merged branch
+        :rtype: String of details with message of successfully merged branch
     """
     pr_number = int(pull_request_number)
     try:
@@ -63,7 +63,7 @@ def github_merge_pull_request(handle, owner:str, repository:str, pull_request_nu
         repo = handle.get_repo(repo_name)
         p = repo.get_pull(pr_number)
         commit = repo.merge(base="master", head=p.head.sha, commit_message=commit_message)
-        return[f"Successully merged branch with commit SHA- {commit.sha}"]
+        return f"Successully merged branch with commit SHA- {commit.sha}"
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
