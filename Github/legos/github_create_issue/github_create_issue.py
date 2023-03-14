@@ -4,7 +4,7 @@
 ##
 
 import pprint
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pydantic import BaseModel, Field
 from github import GithubException
 
@@ -39,7 +39,7 @@ def github_create_issue_printer(output):
     pprint.pprint(output)
 
 
-def github_create_issue(handle, owner:str, repository:str, title:str, description:str, assignee: str) -> List:
+def github_create_issue(handle, owner:str, repository:str, title:str, description:str, assignee: str) -> Dict:
     """github_create_issue returns details of newly created issue
 
         :type handle: object
@@ -60,9 +60,8 @@ def github_create_issue(handle, owner:str, repository:str, title:str, descriptio
         :type assignee: string
         :param assignee: Username of the Assignee
         
-        :rtype: List of newly created issue
+        :rtype: Dict of newly created issue
     """
-    result = []
     issue_details = {}
     try:
         owner = handle.get_user(owner)
@@ -72,7 +71,6 @@ def github_create_issue(handle, owner:str, repository:str, title:str, descriptio
         issue_details["title"] = res.title
         issue_details["issue_number"] = res.number
         issue_details["assignee"] = res.assignee.login
-        result.append(issue_details)
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
@@ -81,5 +79,5 @@ def github_create_issue(handle, owner:str, repository:str, title:str, descriptio
         raise e.data
     except Exception as e:
         raise e
-    return result
+    return issue_details
 
