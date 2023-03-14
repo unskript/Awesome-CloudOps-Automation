@@ -29,7 +29,7 @@ def github_close_pull_request_printer(output):
         return
     pprint.pprint(output)
 
-def github_close_pull_request(handle, owner:str, repository:str, pull_request_number: int) -> List:
+def github_close_pull_request(handle, owner:str, repository:str, pull_request_number: int) -> str:
     """github_close_pull_request returns time at which the pull request was closed
 
         :type handle: object
@@ -44,7 +44,7 @@ def github_close_pull_request(handle, owner:str, repository:str, pull_request_nu
         :type pull_request_number: int
         :param pull_request_number: Pull request number. Eg: 167 
 
-        :rtype: List of details of pull request closure
+        :rtype: String of details of pull request closure
     """
     result = []
     pr_number = int(pull_request_number)
@@ -57,9 +57,9 @@ def github_close_pull_request(handle, owner:str, repository:str, pull_request_nu
             if pr.state == "open":
                 result = pr.edit(state='closed')
             else:
-                return[f"PR number {pr.number} is already closed"]
+                return f"PR number {pr.number} is already closed"
             if result is None:
-                return [f"PR {pr.number} was closed at: {pr.closed_at} "]
+                return f"PR {pr.number} was closed at: {pr.closed_at} "
         except GithubException as e:
             if e.status == 404:
                 raise Exception("You need admin access of an organization in case the repository is a part of an organization")
