@@ -122,7 +122,7 @@ Contributions are what make the open source community such an amazing place to l
 
 
 # Community
-[Join the CloudOps Community Slack Channel](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) to connect with other users, contributors and awesome people behind awesome CloudOps automation project. 
+[Join the CloudOps Community Slack Channel](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) to connect with other users, contributors and awesome people (just like you) behind awesome CloudOps automation project. 
 
 <br/>
 
