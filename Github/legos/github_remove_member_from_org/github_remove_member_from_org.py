@@ -25,7 +25,7 @@ def github_remove_member_from_org_printer(output):
         return
     pprint.pprint(output)
 
-def github_remove_member_from_org(handle, organization_name:str, username:str)-> List:
+def github_remove_member_from_org(handle, organization_name:str, username:str)-> str:
     """github_remove_member_from_org returns the status to remove a member
 
         :type organization_name: string
@@ -51,6 +51,6 @@ def github_remove_member_from_org(handle, organization_name:str, username:str)->
     except Exception as e:
         raise e
     if result is None:
-        return[f"Successfully removed user {username}"]
+        return f"Successfully removed user {username}"
 
 
