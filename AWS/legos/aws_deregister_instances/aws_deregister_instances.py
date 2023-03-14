@@ -30,7 +30,7 @@ def aws_deregister_instances(handle, elb_name: str, instance_ids: List, region: 
         :param handle: Object returned by the task.validate(...) method.
 
         :type elb_name: string
-        :param elb_name: Name of the Load Balancer.
+        :param elb_name: Name of the AWS Load Balancer
         
         :type instance_ids: list
         :param instance_ids: List of instance IDs. For eg. ["i-foo", "i-bar"]
