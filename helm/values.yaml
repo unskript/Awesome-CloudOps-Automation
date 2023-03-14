@@ -38,11 +38,7 @@ deployment:
 logLevel: DEBUG
 
 
-nfs:
-  enabled: false
-  # IP address of NFS server. Required if enabled.
-  internalServerIPAddress:
-
+# FIX ME. Replace MongoDB style of persistence 
 credentialPvc:
   enabled: false
   name:
