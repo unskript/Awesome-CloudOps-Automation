@@ -1,28 +1,11 @@
 global:
   # Create RBAC resources
   rbac: true
-  # ImagePullSecrets for a ServiceAccount, list of secrets in the same namespace
-  # to use for pulling any images in pods that reference this ServiceAccount.
-  # Must be set for any cluster configured with private docker registry.
-  imagePullSecrets: []
-    # - private-registry-key
   commonLabels: {}
     # app.kubernetes.io/name: [your app name]
 
-# You can optionally create imagePull Secrets
-imagePullSecretsCreate:
-  enabled: false
-  annotations: {}
-    # this annotatoin allows to keep secret even if helm release is deleted
-    # "helm.sh/resource-policy": "keep"
-  secrets: []
-    # - name: "private"
-    # # base64 encoded value
-    #   --set imagePullSecretsCreate.secrets[0].data="UHJvZCBTZWNyZXQgSW5mb3JtYXRpb24K"
-    # - name: "private2"
-    #   --set imagePullSecretsCreate.secrets[1].data="UHJvZCBTZWNyZXQgSW5mb3JtYXRpb24K"
 
-# Enterprise Gateway image name and tag to use.
+# COMMENT (FIXME)
 image: unskript/awesome-runbooks:latest
 # Enterprise Gateway image pull policy.
 imagePullPolicy: Always
@@ -49,25 +32,10 @@ deployment:
   tolerations: []
   affinity: {}
   nodeSelector: {}
-  extraEnv: {
-    # SOME_ENV_VAR_WITH_SIMPLE_VALUE: "example"
-    # SOME_ENV_VAR_WITH_LONG_VALUE: >
-    #   'this example',
-    #   'will not preserve',
-    #   'line breaks',
-    # SOME_ENV_VAR_WITH_MULTILINE_VALUE: |
-    #   this example
-    #   will preserve
-    #   line breaks
-    EG_INHERITED_ENVS: "PATH"
-  }
+
 
 # Log output level.
 logLevel: DEBUG
-# Whether to mirror working directories.
-mirrorWorkingDirs: false
-# Optional authorization token passed in all requests (see --EnterpriseGatewayApp.auth_token)
-authToken:
 
 
 nfs:
