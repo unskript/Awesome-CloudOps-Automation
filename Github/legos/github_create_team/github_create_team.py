@@ -1,5 +1,5 @@
 
-from typing import Optional, List
+from typing import Optional, List, Dict
 from github import GithubException
 from pydantic import BaseModel, Field
 from unskript.enums.github_team_privacy_enums import GithubTeamPrivacy
@@ -35,7 +35,7 @@ def github_create_team_printer(output):
         return
     pprint.pprint(output)
 
-def github_create_team(handle, organization_name:str, team_name:str,repositories:list, privacy:GithubTeamPrivacy=None, description:str="") -> List:
+def github_create_team(handle, organization_name:str, team_name:str,repositories:list, privacy:GithubTeamPrivacy=None, description:str="") -> Dict:
     """github_create_team returns details of newly created team.
 
         :type handle: object
@@ -56,9 +56,10 @@ def github_create_team(handle, organization_name:str, team_name:str,repositories
         :type privacy: Enum
         :param privacy: Privacy type to be given to the team. "secret" - only visible to organization owners and members of this team, "closed"- visible to all members of this organization. By default type "secret" will be considered. 
 
-        :rtype: List of details of newly created team
+        :rtype: Dict of details of newly created team
     """
     result = []
+    team_details = {}
     repo_names =[]
     list_of_repos = ''
     if privacy is None or len(privacy)==0:
@@ -66,13 +67,15 @@ def github_create_team(handle, organization_name:str, team_name:str,repositories
     organization = handle.get_organization(organization_name)
     for repo in repositories:
         list_of_repos  = organization.get_repo(repo)
-    repo_names.append(list_of_repos)
+        repo_names.append(list_of_repos)
     try:
         result = organization.create_team(name=team_name, repo_names=repo_names, privacy=privacy_settings, description=description)
+        team_details["name"]= result.name
+        team_details["id"]= result.id
     except GithubException as e:
         if e.status == 404:
             raise Exception("No such organization found")
         raise e.data
     except Exception as e:
         raise e
-    return result
+    return team_details
