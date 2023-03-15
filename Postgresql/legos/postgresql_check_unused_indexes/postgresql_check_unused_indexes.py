@@ -24,23 +24,7 @@ class InputSchema(BaseModel):
 def postgresql_check_unused_indexes_printer(output):
     if output is None:
         return
-    data = []
-    output_rows =[]
-    for records in output:
-        if type(records)==list:
-            for r in records:
-                result = {
-                    "table": r[0],
-                    "index": r[1],
-                    "index_size": r[2],
-                    "index_scans": r[3],
-                }
-                output_rows.append(result)
-                data.append([r[0], r[1], r[2], r[3]])
-            if len(output) > 0:
-                headers = ["Table", "Index", "Index Size", "Index Scans"]
-                output_rows = tabulate(data, headers=headers, tablefmt="grid")
-    pprint.pprint(output_rows)
+    pprint.pprint(output)
 
 
 def postgresql_check_unused_indexes(handle, index_scans:int=50,index_size:int=50000) -> Tuple:
@@ -72,12 +56,22 @@ def postgresql_check_unused_indexes(handle, index_scans:int=50,index_size:int=50
     # 4. 'init' returns the size of the initialization fork, if any, associated with the relation.
     # We are getting the main data fork size
     
+    result = []
     cur = handle.cursor()
     cur.execute(query)
-    result = cur.fetchall()
+    res = cur.fetchall()
     handle.commit()
     cur.close()
     handle.close()
+    data = []
+    for records in res:
+        data = {
+            "table_name": records[0],
+            "index_name": records[1],
+            "index_size": records[2],
+            "index_scans": records[3],
+        }
+        result.append(data)
     if len(result) != 0:
         return (False, result)
     else:
