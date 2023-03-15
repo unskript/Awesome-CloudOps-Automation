@@ -5,7 +5,7 @@
     "action_entry_function": "postgres_calculate_bloat",
     "action_needs_credential": true,
     "action_supports_poll": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_STR",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_iteration": true
     }
     

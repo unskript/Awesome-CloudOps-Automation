@@ -15,10 +15,28 @@ class InputSchema(BaseModel):
 def postgres_calculate_bloat_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+    data = []
+    output_rows = []
+    for records in output:
+        result = {
+            "database_name": records[0],
+            "schema_name": records[1],
+            "table_name": records[2],
+            "can_estimate": records[3],
+            "live_rows_count": records[4],
+            "pct_bloat": records[5],
+            "mb_bloat": records[6],
+            "table_mb": records[7]
+        }
+        output_rows.append(result)
+        data.append([records[2], records[5], records[6]])
+    if len(output) > 0:
+        headers = ["Table", "% Bloat", "Size(MB)"]
+        output_rows = tabulate(data, headers=headers, tablefmt="grid")
+    pprint.pprint(output_rows)
 
 
-def postgres_calculate_bloat(handle) -> str:
+def postgres_calculate_bloat(handle) -> List:
     """postgres_calculate_bloat returns pecentage Bloat and Size Bloat of tables in a database
         
           :type handle: object
@@ -136,28 +154,8 @@ def postgres_calculate_bloat(handle) -> str:
 
     cur = handle.cursor()
     cur.execute(query)
-    output = []
-    res = cur.fetchall()
-    data = []
-    for records in res:
-        result = {
-            "database_name": records[0],
-            "schema_name": records[1],
-            "table_name": records[2],
-            "can_estimate": records[3],
-            "live_rows_count": records[4],
-            "pct_bloat": records[5],
-            "mb_bloat": records[6],
-            "table_mb": records[7]
-        }
-        output.append(result)
-        data.append([records[0], records[1], records[2], records[5], records[6]])
-
-    if len(res) > 0:
-        headers = ["db_name", "schema_name", "table_name", "pct_bloat", "mb_bloat"]
-        output = tabulate(data, headers=headers, tablefmt="grid")
-
+    result = cur.fetchall()
     handle.commit()
     cur.close()
     handle.close()
-    return output
+    return result
