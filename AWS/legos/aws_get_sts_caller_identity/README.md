@@ -7,7 +7,7 @@ This Lego get STS caller identity.
 
 ## Lego Details
 
-    aws_get_caller_identity(handle: object)
+    aws_get_sts_caller_identity(handle: object)
 
         handle: Object of type unSkript AWS Connector.
 

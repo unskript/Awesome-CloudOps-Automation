@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 
-from typing import Optional, List
+from typing import Optional, List, Dict
 from github import GithubException
 from pydantic import BaseModel, Field
 import pprint
@@ -24,7 +24,7 @@ def github_get_team_printer(output):
         return
     pprint.pprint(output)
 
-def github_get_team(handle, organization_name:str, team_name:str) -> List:
+def github_get_team(handle, organization_name:str, team_name:str) -> Dict:
     """github_get_team returns details of the team
 
         :type handle: object
@@ -49,7 +49,6 @@ def github_get_team(handle, organization_name:str, team_name:str) -> List:
         team_details["repos_count"]= team.repos_count
         team_details["privacy"]= team.privacy
         team_details["permission"]= team.permission
-        result.append(team_details)
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
@@ -59,5 +58,4 @@ def github_get_team(handle, organization_name:str, team_name:str) -> List:
     except Exception as e:
         raise e
     return result
-
 

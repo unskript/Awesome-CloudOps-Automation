@@ -345,7 +345,9 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/Awesome-CloudOps-Automation.git Awesome-CloudOps-Automation
           cd $HOME/Awesome-CloudOps-Automation
           git checkout ${{ inputs.awesome_branch }}
-          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/unskript* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/Awesome-CloudOps-Automation/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/Awesome-CloudOps-Automation/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/template.ipynb
+          cp $HOME/Awesome-CloudOps-Automation/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/Welcome.ipynb
           cd $HOME/devops/dockers/jupyterlab/oss_docker
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
@@ -354,6 +356,7 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
+          make syncrunbooks
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
