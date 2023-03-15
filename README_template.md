@@ -56,6 +56,7 @@ docker run -it -p 8888:8888 \
 ## [Cloud Sandbox](https://us.app.unskript.io/)
 * A free Cloud version of the OSS offering.
 
+
 ## Open and Use a xRunBook
 Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.  A table lists the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook.
 
@@ -102,6 +103,47 @@ Contributions are what make the open source community such an amazing place to l
     2.  Start building your lego from the proposed handle (GCP, k8s et al)
   1. Submit Your xRunBook to the repository Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
   2. Submit a PR!
+
+## Unskript CLI
+
+With `unskript-ctl.sh` (called unskript cuttle) allows you to
+  * List Existing Runbook
+  * List All Existing Health Checks
+  * List All Existing Health Check per connector
+  * Run All Existing Health Checks 
+  * Run All Existing Health Checks per connector
+  * Run an existing Runbook
+
+
+Here are the Options that are supported by the CTL Command
+```
+unskript-ctl.sh 
+usage: unskript-client [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
+
+Welcome to unSkript CLI Interface VERSION: 0.1.0
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -lr, --list-runbooks  List Available Runbooks
+  -rr RUN_RUNBOOK, --run-runbook RUN_RUNBOOK
+                        Run the given runbook
+  -rc RUN_CHECKS, --run-checks RUN_CHECKS
+                        Run all available checks [all | connector | failed]
+  -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
+                        Display Failed Checks [all | connector]
+  -lc LIST_CHECKS, --list-checks LIST_CHECKS
+                        List available checks, per connector or all
+  -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
+                        Show audit trail [all | connector | execution_id]
+```
+
+
+
+## Extending the docker
+Please find the recipe [Here](./README_extending_docker.md)
+
+<br/>
+
 
 ## Import a xRunBook
   1. xRunBooks are stored locally at ```$HOME/.unskript/runbooks``` . Place your existing RunBook in this directory.

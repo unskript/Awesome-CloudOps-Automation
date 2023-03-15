@@ -2,10 +2,12 @@
 .ipynb_checkpoints
 __pycache__
 
+# Ignore temp files (build artifacts) that gets generated
+# for custom Actions
+custom/*
+!custom/custom/contrib
+
 # Ignore Temp files
 *.jsonx
 all_*legos.py
 
-# Build directory, ignore everything except gen_schema.sh
-build/*
-!build/gen_schema.sh
