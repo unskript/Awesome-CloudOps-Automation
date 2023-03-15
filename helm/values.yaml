@@ -43,4 +43,4 @@ logLevel: DEBUG
 persistence:
   enabled: true
   mountpath: "/unskript"
-  name:
+  name: "credentials"

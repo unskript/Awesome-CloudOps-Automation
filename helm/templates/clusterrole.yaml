@@ -23,3 +23,4 @@ rules:
   - apiGroups: ["sparkoperator.k8s.io"]
     resources: ["sparkapplications", "sparkapplications/status", "scheduledsparkapplications", "scheduledsparkapplications/status"]
     verbs: ["get", "watch", "list", "create", "delete"]
+{{- end }}
