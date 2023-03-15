@@ -11,11 +11,14 @@ def postgresql_get_cache_hit_ratio_printer(output):
     if output is None:
         return
     
-    if len(output) > 0:
-        cache_hit_ratio = output[0][2] * 100
+    op = output[1]
+    if len(op) > 0:
+        cache_hit_ratio = op[0][2] * 100
         print(f"Cache hit ratio: {cache_hit_ratio:.2f}%")
     else:
         print("No cache hit ratio data available.")
+
+    pprint.pprint(output)
 
 
 def postgresql_get_cache_hit_ratio(handle) -> List:
@@ -37,4 +40,11 @@ def postgresql_get_cache_hit_ratio(handle) -> List:
     handle.commit()
     cur.close()
     handle.close()
-    return res
+    if res is not None and len(res) > 0:
+        cache_hit_ratio = res[0][2] * 100
+        if cache_hit_ratio > 99:
+            return (True, res)
+        else:
+            return (False, res)
+    else:
+        return (False, res)
