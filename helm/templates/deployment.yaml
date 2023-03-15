@@ -5,7 +5,6 @@ metadata:
   name: awesome-runbooks
   namespace: {{ .Release.Namespace }}
   labels:
-    gateway-selector: awesome-runbooks
     app: awesome-runbooks
     component: awesome-runbooks
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -35,14 +34,6 @@ spec:
         image: {{ .Values.image }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
-        # Optional authorization token passed in all requests
-        {{- if .Values.deployment.extraEnv }}
-        {{- range $key, $val := .Values.deployment.extraEnv }}
-        - name: {{ $key }}
-          value: |-
-{{ $val | indent 12 }}
-        {{- end }}
-        {{- end }}
         ports:
         {{ with index .Values.service.ports 0 }}
         - containerPort: {{ .port }}
@@ -55,23 +46,14 @@ spec:
           {{- toYaml .Values.deployment.resources | nindent 10 }}
         {{- end }}
 
-  {{- if .Values.nfs.enabled }}
+  {{- if .Values.persistence.enabled }}
         volumeMounts:
-        - name: nfs-credential
-          mountPath: "/unskript"
+        - name: credentials
+          mountPath: {{ .Values.persistence.mountpath }}
       volumes:
-      - name: nfs-credential
-        nfs:
-          server: {{ .Values.nfs.internalServerIPAddress }}
-          path: "/unskript"
-  {{- else if .Values.credentialPvc.enabled }}
-        volumeMounts:
-        - name: credential-pvc
-          mountPath: "/unskript"
-      volumes:
-      - name: credential-pvc
-        persistentVolumeClaim:
-          claimName: {{ .Values.credentialPvc.name }}
+        - name: credentials
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.name }}
 
   {{- if .Values.deployment.tolerations }}
       tolerations:

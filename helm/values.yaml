@@ -5,18 +5,16 @@ global:
     # app.kubernetes.io/name: [your app name]
 
 
-# COMMENT (FIXME)
+# @param image is the location of the docker image you want to pull from
+#        If you have a custom docker build, you may want to change the location
+#        below to the custom docker build.
 image: unskript/awesome-runbooks:latest
-# Enterprise Gateway image pull policy.
 imagePullPolicy: Always
-# K8s Enterprise Gateway Service
 service:
   type: "NodePort"
   externalIPs:
-    # Master public IP on which to expose EG.
     k8sMasterPublicIP: ''
   ports:
-    # The primary port on which Enterprise Gateway is servicing requests.
     - name: "http"
       port: 8888
       targetPort: 8888
@@ -38,7 +36,11 @@ deployment:
 logLevel: DEBUG
 
 
-# FIX ME. Replace MongoDB style of persistence 
-credentialPvc:
-  enabled: false
+
+## Enable persistence using Persistent Volume Claims
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  mountpath: "/unskript"
   name:
