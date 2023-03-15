@@ -28,7 +28,7 @@ You can use our base docker to extend the functionality to fit your need. The st
 
 3. Next task is to create a custom Actions directory under Awesome-CloudOps-Automation. You could use any of
    the following methods to accomplish this task.
-    1. Create directory under Awesome-CloudOps-Automation by name `custom`
+    1. Create directory under Awesome-CloudOps-Automation by name `$CUSTOM_DIR_NAME`
        ```
        cd $HOME/Awesome-CloudOps-Automation
        mkdir $CUSTOM_DIR_NAME
@@ -39,7 +39,7 @@ You can use our base docker to extend the functionality to fit your need. The st
        git submodule add https://<YOUR REPO LOCATION> $CUSTOM_DIR_NAME
        ```
 
-4. Launch the Awesome Runbooks Docker. Either you can use a specific tag like `930` or `latest` 
+4. Launch the Awesome Runbooks Docker. 
       ```
       docker run -it -p 8888:8888 \
              -v $HOME/.unskript:/unskript  \
@@ -47,17 +47,19 @@ You can use our base docker to extend the functionality to fit your need. The st
              --user root \
              unskript/awesome-runbooks:latest
       ```
+      
+      > Tip: If you are interested in build your custom docker image off of a Tag, you can replace the `latest` keyword
+      > in the above command with the tag number. You can find the tags [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)
 
-    * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing Awesome Docker settings so all the credentials that you create are saved for the next run.  
-    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we inform Awesome Docker to save any new custom Legos or Runbooks in that directory. This means any content that is created will survive Docker reboots.
-
-    You would see a welcome message that tells you to point your browser to `http://127.0.0.1:8888/lab/tree/GetStarted.ipynb` Please do copy this URL and open it in your favorite browser (We recommend Google Chrome or MS Edge or Chromium)
+    * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing credentials.   
+    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we save custom Legos or custom Runbooks in that directory. This means any content that is created will survive Docker reboots.
+    * You would see a Welcome Message once the Docker starts. At this juncture point your browser to `http://127.0.0.1:8888/lab/tree/GetStarted.ipynb` (We recommend Google Chrome or MS Edge or Chromium)
     
-5. Once the page is loaded. Search for any pre-coded actions by typing keywords like `aws`, `kubernetes` `kubectl`,  `postgresql`, `mongo` etc..
-   Pick the standard Action that you want to extend in functionality, drag-n-drop it to the main cell area. (Follow the Documentation Link in the GetStarted.ipynb Runbook to go through the documentation.) 
+5. Once the page is loaded, Search for any pre-coded actions by typing keywords like `aws`, `kubernetes` `kubectl`,  `postgresql`, `mongo` etc..
+   Pick the standard Action that you want to extend in functionality, drag-n-drop it to the main cell area. You can refer [to this](https://docs.unskript.com)
 
-6. After you are done with the Modification, you can use the `Save-As` option of the Action tool bar (Refer Documentatino link on how to Save 
-   custom Actions). 
+6. After you are done with the modification, you can use the `Save-As` option of the Action tool bar you can refer  [to this](https://docs.unskript.com) on how to save custom Action.
+
    > Tip: If you want to verify the modification, you can create a credential for the given connector and test your modification to make sure
    > you are satisfied with the changes.
 
