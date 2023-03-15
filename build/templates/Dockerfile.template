@@ -1,4 +1,4 @@
-FROM unskript/awesome-runbooks:930 as base 
+FROM unskript/awesome-runbooks:latest as base 
 RUN mkdir -p /data
 RUN mkdir -p /unskript
 ADD custom /data/custom
