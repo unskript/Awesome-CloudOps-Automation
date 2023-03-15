@@ -1,0 +1,15 @@
+{
+    "action_title": "PostgreSQL Find Bloated Tables",
+    "action_description": "This Lego finds bloated tables in Postgres",
+    "action_type": "LEGO_TYPE_POSTGRESQL",
+    "action_entry_function": "postgresql_find_bloated_tables",
+    "action_needs_credential": true,
+    "action_is_check": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {}
+    }
+    
