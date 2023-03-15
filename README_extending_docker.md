@@ -52,7 +52,7 @@ You can use our base docker to extend the functionality to fit your need. The st
       > in the above command with the tag number. You can find the tags [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)
 
     * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing credentials.   
-    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we save custom Legos or custom Runbooks. 
+    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we save custom Actions or custom Runbooks. 
     
        > Note: This means any content that is created will survive Docker reboots.
 
