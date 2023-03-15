@@ -42,7 +42,7 @@ def postgresql_get_cache_hit_ratio(handle) -> List:
     handle.close()
     if res is not None and len(res) > 0:
         cache_hit_ratio = res[0][2] * 100
-        if cache_hit_ratio > 99:
+        if cache_hit_ratio >= 99:
             return (True, res)
         else:
             return (False, res)
