@@ -52,13 +52,16 @@ You can use our base docker to extend the functionality to fit your need. The st
       > in the above command with the tag number. You can find the tags [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)
 
     * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing credentials.   
-    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we save custom Legos or custom Runbooks in that directory. This means any content that is created will survive Docker reboots.
+    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we save custom Legos or custom Runbooks. 
+    
+       > Note: This means any content that is created will survive Docker reboots.
+
     * You would see a Welcome Message once the Docker starts. At this juncture point your browser to `http://127.0.0.1:8888/lab/tree/GetStarted.ipynb` (We recommend Google Chrome or MS Edge or Chromium)
     
 5. Once the page is loaded, Search for any pre-coded actions by typing keywords like `aws`, `kubernetes` `kubectl`,  `postgresql`, `mongo` etc..
-   Pick the standard Action that you want to extend in functionality, drag-n-drop it to the main cell area. You can refer [to this](https://docs.unskript.com)
+   Pick the standard Action that you want to extend the functionality, drag-n-drop it to the main cell area. You can refer [to this](https://docs.unskript.com) to get familiar with the UI.
 
-6. After you are done with the modification, you can use the `Save-As` option of the Action tool bar you can refer  [to this](https://docs.unskript.com) on how to save custom Action.
+6. After you are done with the modification, you can use the `Save-As` option to save your custom Action. You can refer  [to this](https://docs.unskript.com) on how to save custom Action.
 
    > Tip: If you want to verify the modification, you can create a credential for the given connector and test your modification to make sure
    > you are satisfied with the changes.
@@ -82,6 +85,6 @@ You can use our base docker to extend the functionality to fit your need. The st
 
    This would run your `custom docker` and you can point your browser to `http://127.0.0.1:8888/lab/tree/Welcome.ipynb`! 
 
-8. Push your `custom docker` to any Docker registry so you can download at your deployment site.
+8. Push your `custom docker` to any docker registry for redistribution.
 <br/>
 
