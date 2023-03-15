@@ -56,15 +56,6 @@ docker run -it -p 8888:8888 \
 ## [Cloud Sandbox](https://us.app.unskript.io/)
 * A free Cloud version of the OSS offering.
 
-## Installing via helm chart
-
-You can install awesome-runbooks via helm chart. If you have not done so already, please clone the Awesome Repo.
-
-```
-git clone https://github.com/unskript/Awesome-CloudOps-Automation 
-cd $HOME/Awesome-CloudOps-Automation
-helm upgrade --install --namespace awesome-runbooks --create-namespace awesome-runbooks awesome-runbooks ./helm
-```
 
 ## Open and Use a xRunBook
 Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.  A table lists the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook.
