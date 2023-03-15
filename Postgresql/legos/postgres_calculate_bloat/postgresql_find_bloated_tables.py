@@ -9,58 +9,23 @@ from tabulate import tabulate
 from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
-    max_percent_bloat: Optional[int] = Field(
-        default=50,
-        title='Maximum Percent Bloat',
-        description='Upper threshold percentage value of table bloat. By default upper value is set to 50%.')
-    min_percent_bloat: Optional[int] = Field(
-        default=25,
-        title='Minimum Percent Bloat',
-        description='Lower threshold percentage value of table bloat. By default lower value is set to 25%.')
-    max_size_bloat: Optional[int] = Field(
-        default=1000,
-        title='Maximum Size Bloat (in MB)',
-        description='Upper threshold size of table bloat in Megabytes. By default upper value is set to 1000 MB i.e. 1 GB.')
-    min_size_bloat: Optional[int] = Field(
-        default=20,
-        title='Minimum Size Bloat (in MB)',
-        description='Lower threshold size of table bloat in Megabytes. By default lower value is set to 20 MB.')
+    pass
 
 
-def postgresql_find_bloated_tables_printer(output):
+def postgres_calculate_bloat_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def postgresql_find_bloated_tables(handle, max_percent_bloat:int=50, min_percent_bloat:int=25,max_size_bloat:int=1000, min_size_bloat:int= 20) -> Tuple:
-    """postgresql_find_bloated_tables returns bloated tables in a database
+def postgres_calculate_bloat(handle) -> str:
+    """postgres_calculate_bloat returns pecentage Bloat and Size Bloat of tables in a database
         
-        NOTE- By default we filter for tables which are either 50%
-                bloated and more than 20 MB in size, or more than 25%
-                bloated and more than 1 GB in size
-
           :type handle: object
           :param handle: Object returned from task.validate(...).
 
-          :type max_percent_bloat: int
-          :param max_percent_bloat: Optional, Upper threshold percentage value of table bloat. By default upper value is set to 50%.
-
-          :type min_percent_bloat: int
-          :param min_percent_bloatterval: Optional,  Lower threshold percentage value of table bloat. By default lower value is set to 25%.
-
-          :type max_size_bloat: int
-          :param max_size_bloat: Optional, Upper threshold size of table bloat in Megabytes. By default upper value is set to 1000 MB i.e. 1 GB.
-
-          :type min_size_bloat: int
-          :param min_size_bloat: Optional, Lower threshold size of table bloat in Megabytes. By default lower value is set to 20 MB.
-
-          :rtype: Status, Bloated tables in a database
+          :rtype: Pecentage Bloat and Size Bloat of tables in a database
       """
-    max_pct = int(max_percent_bloat)
-    min_pct = int(min_percent_bloat)
-    max_mb = int(max_size_bloat)
-    min_mb = int(min_size_bloat)
     query = "WITH constants AS ( SELECT current_setting('block_size')::numeric AS bs, 23 AS hdr, 8 AS ma), "\
     "no_stats AS ( SELECT table_schema, table_name, n_live_tup::numeric as est_rows,pg_table_size(relid)::numeric as table_size "\
     "FROM information_schema.columns "\
@@ -167,8 +132,6 @@ def postgresql_find_bloated_tables(handle, max_percent_bloat:int=50, min_percent
     "pct_bloat, mb_bloat, "\
     "table_mb "\
     "FROM bloat_data "\
-    "WHERE ( pct_bloat >= "+str(max_pct)+" AND mb_bloat >= "+str(min_mb)+" ) "\
-    "OR ( pct_bloat >= "+str(min_pct)+" AND mb_bloat >= "+str(max_mb)+" ) "\
     "ORDER BY pct_bloat DESC; "
 
     cur = handle.cursor()
@@ -197,7 +160,4 @@ def postgresql_find_bloated_tables(handle, max_percent_bloat:int=50, min_percent
     handle.commit()
     cur.close()
     handle.close()
-    if len(output) != 0:
-        return (False, output)
-    else:
-        return (True, None)
+    return output
