@@ -24,8 +24,23 @@ class InputSchema(BaseModel):
 def postgresql_check_unused_indexes_printer(output):
     if output is None:
         return
-
-    pprint.pprint(output)
+    data = []
+    output_rows =[]
+    for records in output:
+        if type(records)==list:
+            for r in records:
+                result = {
+                    "table": r[0],
+                    "index": r[1],
+                    "index_size": r[2],
+                    "index_scans": r[3],
+                }
+                output_rows.append(result)
+                data.append([r[0], r[1], r[2], r[3]])
+            if len(output) > 0:
+                headers = ["Table", "Index", "Index Size", "Index Scans"]
+                output_rows = tabulate(data, headers=headers, tablefmt="grid")
+    pprint.pprint(output_rows)
 
 
 def postgresql_check_unused_indexes(handle, index_scans:int=50,index_size:int=50000) -> Tuple:
@@ -59,27 +74,11 @@ def postgresql_check_unused_indexes(handle, index_scans:int=50,index_size:int=50
     
     cur = handle.cursor()
     cur.execute(query)
-    output = []
-    res = cur.fetchall()
-    data = []
-    for records in res:
-        result = {
-            "table": records[0],
-            "index": records[1],
-            "index_size": records[2],
-            "index_scans": records[3],
-        }
-        output.append(result)
-        data.append([records[0], records[1], records[2], records[3]])
-
-    if len(res) > 0:
-        headers = ["table", "index", "index_size", "index_scans"]
-        output = tabulate(data, headers=headers, tablefmt="grid")
-
+    result = cur.fetchall()
     handle.commit()
     cur.close()
     handle.close()
-    if len(output) != 0:
-        return (False, output)
+    if len(result) != 0:
+        return (False, result)
     else:
         return (True, None)
