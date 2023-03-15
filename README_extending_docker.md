@@ -66,7 +66,7 @@ You can use our base docker to extend the functionality to fit your need. The st
    > Tip: If you want to verify the modification, you can create a credential for the given connector and test your modification to make sure
    > you are satisfied with the changes.
 
-7. Next step is to build your custom docker. Following these commands
+7. Next step is to build your custom docker.
 
    ```
    1. export CUSTOM_DOCKER_NAME=my-awesome-docker
