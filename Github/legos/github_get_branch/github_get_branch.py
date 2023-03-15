@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 from github import GithubException
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pydantic import BaseModel, Field
 import pprint
 
@@ -29,7 +29,7 @@ def github_get_branch_printer(output):
         return
     pprint.pprint(output)
 
-def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> List:
+def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> Dict:
     """github_get_branch returns details of commits (if any) of a branche for a user.
 
         :type handle: object
@@ -44,9 +44,8 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> L
         :type branch_name: string
         :param branch_name: Branch Name Eg: "dummy-branch"
 
-        :rtype: List of branch with commits for a user for a repository
+        :rtype: Dict of branch with commits for a user for a repository
     """
-    result = []
     branch_info = {}
     try:
         user = handle.get_user(login=owner)
@@ -57,7 +56,6 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> L
             if branch.name == branch_name:
                 branch_info["branch"] = branch.name
                 branch_info["commit"] = branch.commit.sha
-                result.append(branch_info)
             else:
                 return [f"{branch_name} not found"]
     except GithubException as e:
@@ -67,5 +65,5 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> L
             return [f"No such username or repository"]
         else:
             return [e.data]
-    return result
+    return branch_info
 
