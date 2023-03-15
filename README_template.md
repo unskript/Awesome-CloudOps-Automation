@@ -15,7 +15,9 @@
   <p align="center">
     CloudOps automation made simple!
     <br />
-    <a href="https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript"><strong>Explore the docs</strong></a>
+    <br />
+      <a href="https://www.youtube.com/channel/UCvtSYNHVvuogq2u-F7UDMkw"><strong>unSkript on YouTube</strong></a>
     <br />
     <br />
     <a href="https://unskript.com/blog">Visit our blog</a>
@@ -35,14 +37,10 @@ A single repository to satisfy all your day-to-day CloudOps automation needs. Au
 
 >Are you looking for a script to automate your Kubernetes management? A script to restart the pod that is OOMkilled?  We've got you covered. 
 
-
-
 ___
 <br>
 
 # Quick Start Guide
-
-Get up and running quickly:
 
 ## Get started with Docker:
 
@@ -66,18 +64,25 @@ Click on the URL of the xRunBook you would like to explore. It will open in a ne
 2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and which inputs are used for each action. [How to Add Credentials](https://docs.unskript.com/unskript-product-documentation/guides/connectors).
 3. Once each Action has been assigned Credentials and inputs, run each Action (in order) to run your xRunBook.
 
-## Included xRunBooks 
 
-These xRunBooks are included in every install.  Use them as is, or make a copy to modify for your use!
+## Included xRunBooks
+<details>
+  <summary><b>See Full List</b></summary>
 
-| **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-[[DYNAMIC_LIST]]
+  These xRunBooks are included in every install.  Use them as is, or make a copy to modify for your use!
+
+  | **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
+  | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+  [[DYNAMIC_LIST]]
+</details>
+
+<br/>
+<br/>
 
 
-# Contributing
+# Contribute to Awesome-CloudOps-Automation
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
+Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
 
 ## How to Contribute?
 
@@ -89,7 +94,7 @@ Contributions are what make the open source community such an amazing place to l
 
 ## Contribution Tips:
 1. Use the [Docker environment](#get-started-with-docker), or our free [cloud sandbox](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) for testing your contribution.
-2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) so you can present yourself and get support.
+2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) to discuss your PR, and for support if you run into any issues.
 
 
 
@@ -103,46 +108,6 @@ Contributions are what make the open source community such an amazing place to l
     2.  Start building your lego from the proposed handle (GCP, k8s et al)
   1. Submit Your xRunBook to the repository Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
   2. Submit a PR!
-
-## Unskript CLI
-
-With `unskript-ctl.sh` (called unskript cuttle) allows you to
-  * List Existing Runbook
-  * List All Existing Health Checks
-  * List All Existing Health Check per connector
-  * Run All Existing Health Checks 
-  * Run All Existing Health Checks per connector
-  * Run an existing Runbook
-
-
-Here are the Options that are supported by the CTL Command
-```
-unskript-ctl.sh 
-usage: unskript-client [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
-
-Welcome to unSkript CLI Interface VERSION: 0.1.0
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -lr, --list-runbooks  List Available Runbooks
-  -rr RUN_RUNBOOK, --run-runbook RUN_RUNBOOK
-                        Run the given runbook
-  -rc RUN_CHECKS, --run-checks RUN_CHECKS
-                        Run all available checks [all | connector | failed]
-  -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
-                        Display Failed Checks [all | connector]
-  -lc LIST_CHECKS, --list-checks LIST_CHECKS
-                        List available checks, per connector or all
-  -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
-                        Show audit trail [all | connector | execution_id]
-```
-
-
-
-## Extending the docker
-Please find the recipe [Here](./README_extending_docker.md)
-
-<br/>
 
 
 ## Import a xRunBook
@@ -159,42 +124,10 @@ Please find the recipe [Here](./README_extending_docker.md)
 2. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
 3.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
 
-## Unskript CLI
-
-With `unskript-ctl.sh` (called unskript cuttle) allows you to
-  * List Existing Runbook
-  * List All Existing Health Checks
-  * List All Existing Health Check per connector
-  * Run All Existing Health Checks 
-  * Run All Existing Health Checks per connector
-  * Run an existing Runbook
-
-
-Here are the Options that are supported by the CTL Command
-```
-unskript-ctl.sh 
-usage: unskript-client [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
-
-Welcome to unSkript CLI Interface VERSION: 0.1.0
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -lr, --list-runbooks  List Available Runbooks
-  -rr RUN_RUNBOOK, --run-runbook RUN_RUNBOOK
-                        Run the given runbook
-  -rc RUN_CHECKS, --run-checks RUN_CHECKS
-                        Run all available checks [all | connector | failed]
-  -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
-                        Display Failed Checks [all | connector]
-  -lc LIST_CHECKS, --list-checks LIST_CHECKS
-                        List available checks, per connector or all
-  -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
-                        Show audit trail [all | connector | execution_id]
-```
 
 
 
-## Extending the docker
+## Extending Docker
 You can use our base docker to extend the functionality to fit your need. Here is how to do it
 
 1. Create a Project Directory
@@ -217,6 +150,39 @@ You can use our base docker to extend the functionality to fit your need. Here i
 
 Your new docker is ready! you can distribute the docker image via publishing to any docker registry.
 <br/>
+
+## unSkript CLI
+
+With `unskript-ctl.sh` (called unskript cuttle) allows you to
+  * List Existing Runbook
+  * List All Existing Health Checks
+  * List All Existing Health Check per connector
+  * Run All Existing Health Checks 
+  * Run All Existing Health Checks per connector
+  * Run an existing Runbook
+
+
+Here are the Options that are supported by the CTL Command
+```
+unskript-ctl.sh 
+usage: unskript-client [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
+
+Welcome to unSkript CLI Interface VERSION: 0.1.0
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -lr, --list-runbooks  List Available Runbooks
+  -rr RUN_RUNBOOK, --run-runbook RUN_RUNBOOK
+                        Run the given runbook
+  -rc RUN_CHECKS, --run-checks RUN_CHECKS
+                        Run all available checks [all | connector | failed]
+  -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
+                        Display Failed Checks [all | connector]
+  -lc LIST_CHECKS, --list-checks LIST_CHECKS
+                        List available checks, per connector or all
+  -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
+                        Show audit trail [all | connector | execution_id]
+```
 
 
 # Community
