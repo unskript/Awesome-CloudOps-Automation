@@ -31,7 +31,7 @@ In this document, we'll walk through the anatomy of a Lego/Action, how they are 
 The Directory structure followed on Awesome-CloudOps-Automation is:
 
 1. CONNECTOR is a directory of xRunBooks and Lego/Actions that are run for a particular service/API/etc. (for example: Redis, AWS or Slack)
-2. Inside the CONNECTOR Directory will be Jupyter files for each xRunBook, and the Lego subDirectory will hold all of the Actions.
+2. Inside the CONNECTOR Directory will be Jupyter files for each xRunBook, and the Lego subdirectory will hold all of the Actions.
 
 In this document, we'll walk through the steps in creating a Lego/Action.
 
@@ -130,7 +130,9 @@ This Lego take three inputs handle, volume_id and region. All three are required
 
 ## Lego JSON file
 
-The JSON file lists 
+If you created your Action with the Docker build of unSkript, the JSON file is generated for you. It can be found in the $USER/.unskript/custom/contrib/unskript/legos/{Action name} directory.
+
+Here is an example JSON file:
 Example:
 
 ```json
@@ -161,5 +163,11 @@ All of these fields are Mandatory.
 
 This is the Python file that is run in the xRunBook.  Examples can be found in the various Lego directories in this repository.
 
+The fastest way to create the Python file is to create your Action in the Docker build of unSkript. WHen you save your Action (from the three dot menu next to the "Run Action" button), it will be saved locally on your computer in the $USER/.unskript/custom/contrib/unskript/legos/{Action name} directory.
 
-##
+## __init__.py
+
+This can be copied from any other Action directory and pasted in.
+
+
+
