@@ -48,7 +48,7 @@ You can use our base docker to extend the functionality to fit your need. The st
              unskript/awesome-runbooks:latest
       ```
       
-      > Tip: If you are interested in build your custom docker image off of a Tag, you can replace the `latest` keyword
+      > Tip: If you are interested in building your custom docker image off of a Tag, you can replace the `latest` keyword
       > in the above command with the tag number. You can find the tags [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)
 
     * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing credentials.   
