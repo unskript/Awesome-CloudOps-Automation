@@ -10,7 +10,7 @@ This Lego lists all monitors in datadog.
 ## Lego Details
     datadog_list_all_monitors(handle: object)
 
-        handle: Object of type unSkript datadog Connector
+    handle: Object of type unSkript datadog Connector
 
 ## Lego Input
 This Lego no inputs
