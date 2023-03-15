@@ -13,7 +13,7 @@ from unskript.connectors.aws import aws_get_paginator
 
 from beartype import beartype
 @beartype
-def aws_get_ec2_data_traffic_v2_printer(output):
+def aws_get_ec2_data_traffic_printer(output):
     if output is None:
         return
     pprint.pprint(output)
@@ -27,7 +27,7 @@ class InputSchema(BaseModel):
 
 
 @beartype
-def aws_get_ec2_data_traffic_v2(handle, region: str) -> Dict:
+def aws_get_ec2_data_traffic(handle, region: str) -> Dict:
 
     ec2Client = handle.client('ec2', region_name=region)
     cloudwatch= handle.client('cloudwatch', region_name=region)

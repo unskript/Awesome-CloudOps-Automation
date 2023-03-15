@@ -7,7 +7,7 @@ This Lego attach given tags to given resources.
 
 ## Lego Details
 
-    aws_tag_resources(handle, resource_arn: list, tag_key: str, tag_value: str, region: str)
+    aws_attach_tags_to_resources(handle, resource_arn: list, tag_key: str, tag_value: str, region: str)
 
         handle: Object of type unSkript AWS Connector.
         resource_arn: Resource ARNs.
