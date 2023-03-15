@@ -27,7 +27,7 @@ def github_delete_branch_printer(output):
         return
     pprint.pprint(output)
 
-def github_delete_branch(handle, owner:str, repository: str, branch_name: str)-> List:
+def github_delete_branch(handle, owner:str, repository: str, branch_name: str)-> str:
     """github_delete_branch returns details of the deleted branch.
 
         :type handle: object
@@ -56,7 +56,7 @@ def github_delete_branch(handle, owner:str, repository: str, branch_name: str)->
                 flag_to_check_branch = 1
                 ref = repo.get_git_ref(f"heads/{branch_name}")
                 ref.delete()
-                result.append(f"{branch_name} successfully deleted")
+                return f"{branch_name} successfully deleted"
         if flag_to_check_branch == 0:
             return [f"{branch_name} not found"]
     except GithubException as e:
@@ -67,5 +67,4 @@ def github_delete_branch(handle, owner:str, repository: str, branch_name: str)->
         raise e.data
     except Exception as e:
         raise e
-    return result
 
