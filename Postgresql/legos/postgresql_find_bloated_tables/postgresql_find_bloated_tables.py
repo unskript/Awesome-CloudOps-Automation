@@ -18,12 +18,12 @@ class InputSchema(BaseModel):
         title='Minimum Percent Bloat',
         description='Lower threshold percentage value of table bloat. By default lower value is set to 25%.')
     max_size_bloat: Optional[int] = Field(
-        default=50,
+        default=1000,
         title='Maximum Size Bloat (in MB)',
         description='Upper threshold size of table bloat in Megabytes. By default upper value is set to 1000 MB i.e. 1 GB.')
     min_size_bloat: Optional[int] = Field(
-        default=25,
-        title='Maximum Size Bloat (in MB)',
+        default=20,
+        title='Minimum Size Bloat (in MB)',
         description='Lower threshold size of table bloat in Megabytes. By default lower value is set to 20 MB.')
 
 
@@ -33,12 +33,12 @@ def postgresql_find_bloated_tables_printer(output):
     pprint.pprint(output)
 
 
-def postgresql_find_bloated_tables(handle, max_percent_bloat:int=50, min_percent_bloat:int=25,max_size_bloat:int=20, min_size_bloat:int= 1000) -> Tuple:
+def postgresql_find_bloated_tables(handle, max_percent_bloat:int=50, min_percent_bloat:int=25,max_size_bloat:int=1000, min_size_bloat:int= 20) -> Tuple:
     """postgresql_find_bloated_tables returns bloated tables in a database
         
         NOTE- By default we filter for tables which are either 50%
-                bloated and more than 20mb in size, or more than 25%
-                bloated and more than 1GB in size
+                bloated and more than 20 MB in size, or more than 25%
+                bloated and more than 1 GB in size
 
           :type handle: object
           :param handle: Object returned from task.validate(...).
