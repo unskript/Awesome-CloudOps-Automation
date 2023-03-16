@@ -13,7 +13,7 @@ env:
   
 jobs:
   build-docker: 
-    uses: "./.github/workflows/build-and-release-docker.yaml"
+    uses: "./.github/workflows/build-and-release-docker.yml"
     with:
       release_tag: "${{ env.RELEASE_TAG }}"
       build_number: "${{ env.RELEASE_TAG }}"
