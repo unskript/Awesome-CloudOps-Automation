@@ -36,8 +36,11 @@ jobs:
           default_bump: minor
           default_prerelease_bump: minor
           tag_prefix: " "
+        env:
+          TAG: echo "`echo ${{ steps.tag_version.outputs.new_tag }} | cut -d'-' -f 1`"
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
+
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
