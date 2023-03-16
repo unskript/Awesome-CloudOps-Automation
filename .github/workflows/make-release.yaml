@@ -12,13 +12,14 @@ jobs:
   build-docker: 
     uses: "./.github/workflows/build-and-release-docker.yml"
     with:
+      enabled: true
       release_tag: "${{ inputs.release_tag }}"
       build_number: "${{ inputs.release_tag }}"
       elyra_branch: "master"
       unskript_branch: "master"
       celltoolbar_branch: "master"
       snippet_branch: "master"
-      
+
 
   make-release:
     runs-on: ubuntu-latest
