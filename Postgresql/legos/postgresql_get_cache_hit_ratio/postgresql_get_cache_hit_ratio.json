@@ -1,0 +1,14 @@
+{
+    "action_title": "PostgreSQL Get Cache Hit Ratio",
+    "action_description": "The result of the action will show the total number of blocks read from disk, the total number of blocks found in the buffer cache, and the cache hit ratio as a percentage. For example, if the cache hit ratio is 99%, it means that 99% of all data requests were served from the buffer cache, and only 1% required reading data from disk.",
+    "action_type": "LEGO_TYPE_POSTGRESQL",
+    "action_entry_function": "postgresql_get_cache_hit_ratio",
+    "action_needs_credential": true,
+    "action_is_check": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {}
+}
