@@ -9,6 +9,7 @@
 
 * [Postgres calculate bloat.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgres_calculate_bloat) 
 * [Postgresql call function.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_call_function) 
+* [Postgresql check unused indexes.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_check_unused_indexes) 
 * [Postgresql create table.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_create_table) 
 * [Postgresql delete query.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_delete_query) 
 * [Postgresql get cache hit ratio.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_cache_hit_ratio) 
