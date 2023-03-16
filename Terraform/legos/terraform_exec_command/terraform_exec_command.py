@@ -27,7 +27,7 @@ class InputSchema(BaseModel):
     )
 
 
-def terraform_exec_command(handle, repo, dir_path, command) -> str:
+def terraform_exec_command(handle, repo, dir_path: str = '', command: str = '') -> str:
     """terraform_exec_command Executes the terraform command 
        with any arguments.
 
@@ -46,13 +46,14 @@ def terraform_exec_command(handle, repo, dir_path, command) -> str:
         :rtype: Str Output of the command .
     """
     assert(command.startswith("terraform"))
-
     print(f'WARNING: Please note terraform apply and terraform destroy will be run with -auto-approve for non-interactive run')
 
     output = ''
     # sanitize inputs that have come from validate 
 
     try:
+        if dir_path == '':
+            dir_path = './'
         result = handle.sidecar_command(repo, handle.credential_id, dir_path, command, str(""))
         output = result.data.decode('utf-8')
         output = json.loads(output)['output']
