@@ -32,12 +32,13 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.BUILDER_PAT }}
+          dry_run: true
+          default_bump: minor
+          default_prerelease_bump: minor
+          tag_prefix: " "
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          dry-run: true
-          default_bump: minor
-          default_prerelease_bump: minor
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
