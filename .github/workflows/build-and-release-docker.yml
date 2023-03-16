@@ -1,6 +1,43 @@
 name: Build and Release Docker
 
 on:
+  workflow_call:
+    inputs:
+      release_tag:
+        required: true 
+        type: string
+      elyra_branch:
+        required: false
+        default: "master"
+        type: string
+      unskript_branch:
+        required: false
+        default: "master"
+        type: string
+      celltoolbar_branch:
+        required: false
+        default: "master"
+        type: string
+      snippet_branch:
+        required: false
+        default: "master"
+        type: string 
+      awesome_branch:
+        required: false
+        default: "master"
+        type: string
+      devops_branch:
+        required: false
+        default: "master"
+        type: string 
+      build_number:
+        required: true
+        type: string
+      latest:
+        required: false
+        default: true 
+        type: boolean 
+      
   workflow_dispatch: 
     inputs:
       enabled:
@@ -49,7 +86,7 @@ on:
 
 concurrency:
   group: ${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
       
 env:
   DOCKER_REGISTRY: docker.io
