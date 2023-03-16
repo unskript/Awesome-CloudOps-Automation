@@ -52,6 +52,7 @@
 * [Aws filter ec2 without lifetime tag.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_without_lifetime_tag) 
 * [Aws filter instances without termination and lifetime tag.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag) 
 * [Aws filter large ec2 instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_large_ec2_instances) 
+* [Aws filter long running instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_long_running_instances) 
 * [Aws filter public s3 buckets by acl.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_public_s3_buckets_by_acl) 
 * [Aws filter target groups by tags.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_target_groups_by_tags) 
 * [Aws filter unencrypted s3 buckets.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unencrypted_s3_buckets) 
@@ -163,6 +164,7 @@
 
  * [Datadog get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_handle) 
 * [Datadog get monitorid.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_monitorid) 
+* [Datadog list all monitors.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_list_all_monitors) 
 * [Datadog mute or unmute alerts.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_mute_or_unmute_alerts) 
 * [Datadog schedule downtime.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_schedule_downtime) 
 
@@ -221,20 +223,26 @@
 # Github
 
  * [Github check if pull request is merged.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_check_if_pull_request_is_merged) 
+* [Github count stars.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_count_stars) 
+* [Github create issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_create_issue) 
 * [Github create team.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_create_team) 
 * [Github delete branch.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_delete_branch) 
 * [Github get branch.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_branch) 
 * [Github get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_handle) 
 * [Github get pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_pull_request) 
 * [Github get team.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_team) 
+* [Github get user.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_user) 
 * [Github invite user to org.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_invite_user_to_org) 
 * [Github list open issues.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_open_issues) 
+* [Github list pull request commits.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_request_commits) 
 * [Github list pull request reviewers.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_request_reviewers) 
 * [Github list pull requests.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_requests) 
 * [Github list stale issues.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_stale_issues) 
+* [Github list stale pull requests.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_stale_pull_requests) 
 * [Github list stargazers.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_stargazers) 
 * [Github list team members.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_team_members) 
 * [Github list team repos.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_team_repos) 
+* [Github merge pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_merge_pull_request) 
 
 
 
@@ -405,10 +413,14 @@
 
 # Postgresql
 
- * [Postgresql call function.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_call_function) 
+ * [Postgres calculate bloat.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgres_calculate_bloat) 
+* [Postgresql call function.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_call_function) 
+* [Postgresql check unused indexes.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_check_unused_indexes) 
 * [Postgresql create table.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_create_table) 
 * [Postgresql delete query.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_delete_query) 
+* [Postgresql get cache hit ratio.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_cache_hit_ratio) 
 * [Postgresql get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_handle) 
+* [Postgresql get index usage.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_index_usage) 
 * [Postgresql handling transaction.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_handling_transaction) 
 * [Postgresql long running queries.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_long_running_queries) 
 * [Postgresql read query.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_read_query) 
@@ -542,3 +554,10 @@
 
  * [Opensearch get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/opensearch/legos/opensearch_get_handle) 
 * [Opensearch search.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/opensearch/legos/opensearch_search) 
+
+
+
+# unskript-ctl
+
+ * [Db utils.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/unskript-ctl/legos/db_utils) 
+* [Unskript client.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/unskript-ctl/legos/unskript-client) 
