@@ -96,7 +96,7 @@ env:
   DOCKER_IMAGE: unskript/awesome-runbooks
   DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  USERNAME: "jayasimha-raghavan-unskript"
+  USERNAME: ${{ secrets.BUILD_USER }}
   DOCKER_TARGET: linux/amd64, linux/arm64
    
 jobs:

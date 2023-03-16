@@ -19,7 +19,7 @@ jobs:
       unskript_branch: "master"
       celltoolbar_branch: "master"
       snippet_branch: "master"
-
+    secrets: inherit
 
   make-release:
     runs-on: ubuntu-latest
