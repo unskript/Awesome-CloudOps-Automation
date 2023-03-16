@@ -3,6 +3,9 @@ name: Build and Release Docker
 on:
   workflow_call:
     inputs:
+      enabled: 
+        required: true
+        type: boolean
       release_tag:
         required: true 
         type: string
