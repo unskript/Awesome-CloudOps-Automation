@@ -25,26 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     #needs: ["build-docker"]
     steps:
-      - uses: actions/checkout@v3 
-        with:
-            ref: '${{ inputs.release_tag }}'
-      - uses: "actions/github-script@v6"
-        with:
-          github-token: "${{ secrets.BUILDER_PAT_ENCODED }}"
-          script: |
-            try {
-              const response = await github.rest.repos.createRelease({
-                draft: false,
-                generate_release_notes: true,
-                name: process.env.RELEASE_TAG,
-                owner: context.repo.owner,
-                prerelease: false,
-                repo: context.repo.repo,
-                tag_name: process.env.RELEASE_TAG,
-              });
-
-              core.exportVariable('RELEASE_ID', response.data.id);
-              core.exportVariable('RELEASE_UPLOAD_URL', response.data.upload_url);
-            } catch (error) {
-              core.setFailed(error.message);
-            }
+      - name: Create Release notes 
+        uses: docker://decathlon/release-notes-generator-action:2.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUILDER_PAT }}
+          FILENAME: ReleaseNotes.md
