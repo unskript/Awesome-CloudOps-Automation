@@ -26,6 +26,7 @@ jobs:
     #needs: ["build-docker"]
     steps:
       - uses: actions/checkout@v3
+      - run: git fetch --prune --unshallow
       - name: Build Change Log
         uses: mikepenz/release-changelog-builder-action@v3.7.0
         env:
