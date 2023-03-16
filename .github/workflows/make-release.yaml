@@ -1,6 +1,7 @@
 name: Make Release
+
 on:
-  workflow_dispatch:
+  workflow_dispatch: 
     inputs:
       release_tag:
         description: "Release Tag"
@@ -12,7 +13,7 @@ env:
   
 jobs:
   build-docker: 
-    uses: "./build-and-release-docker.yaml@master"
+    uses: "./.github/workflows/build-and-release-docker.yaml"
     with:
       release_tag: "${{ env.RELEASE_TAG }}"
       build_number: "${{ env.RELEASE_TAG }}"
