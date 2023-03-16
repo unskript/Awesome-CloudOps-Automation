@@ -11,6 +11,7 @@
 * [Postgresql call function.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_call_function) 
 * [Postgresql create table.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_create_table) 
 * [Postgresql delete query.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_delete_query) 
+* [Postgresql get cache hit ratio.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_cache_hit_ratio) 
 * [Postgresql get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_handle) 
 * [Postgresql get index usage.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_index_usage) 
 * [Postgresql handling transaction.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_handling_transaction) 
