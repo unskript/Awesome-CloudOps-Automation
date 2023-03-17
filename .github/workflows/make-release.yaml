@@ -37,15 +37,17 @@ jobs:
           default_prerelease_bump: minor
           tag_prefix: " "
           custom_tag: ${{ inputs.release_tag }}
-        env:
-          TAG: echo "`echo ${{ steps.tag_version.outputs.new_tag }} | cut -d'-' -f 1`"
+      - name: Create Docker Information Content
+        run: |
+          echo "## Download Latest Docker" > /tmp/docker_release.txt
+          echo "```DOWNLOAD INSTRUCTION HERE```" >> /tmp/docker_release.txt
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
-
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
+          bodyFile: "/tmp/docker_release.txt"
           generateReleaseNotes: true
           makeLatest: legacy
           omitBody: false
