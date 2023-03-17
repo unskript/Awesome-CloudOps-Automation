@@ -11,7 +11,6 @@ on:
 jobs:
   bump-version: 
     runs-on: ubuntu-latest
-    id: bump-version
     steps:
       - uses: actions/checkout@v3 
       - run: git fetch --prune --unshallow
