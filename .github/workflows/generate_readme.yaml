@@ -3,6 +3,11 @@ on:
   push:
     branches:
       - master
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   generate-readme:
     if: "!startsWith(github.event.head_commit.message, 'generateReadme:')"
