@@ -41,6 +41,9 @@ jobs:
         run: |
           echo "## Download Latest Docker" > /tmp/docker_release.txt
           echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_release.txt
+          echo "${{ steps.tag_version.outputs.new_tag }}" >> /tmp/docker_release.txt
+          cat /tmp/docker_release.txt
+          
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
