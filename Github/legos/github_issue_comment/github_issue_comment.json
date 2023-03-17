@@ -1,0 +1,11 @@
+{
+  "action_title": "Github Comment on an Issue",
+  "action_description": "Add a comment to the selected GitHub Issue",
+  "action_type": "LEGO_TYPE_GITHUB",
+  "action_entry_function": "github_comment_on_issue",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true"
+}
