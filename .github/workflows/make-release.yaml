@@ -58,15 +58,16 @@ jobs:
           TAG_NAME=$(echo ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' -f 1)
           echo "TAGNAME: $TAG_NAME"
           echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
-          echo "${{ env.GITHUB_ONLY_TAG }}" >> /tmp/docker_rn.md
           echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.tag_version.outputs.new_version }}
-          name: Release ${{ steps.tag_version.outputs.new_version }}
+          #tag: ${{ steps.tag_version.outputs.new_version }}
+          tag: ${{ env.GITHUB_ONLY_TAG }}
+          # name: Release ${{ steps.tag_version.outputs.new_version }}
+          name: Release ${{ env.GITHUB_ONLY_TAG }}
           #body: ${{ steps.steps.tag_version.outputs.changelog }}
           bodyFile: "/tmp/docker_rn.md"
           generateReleaseNotes: true
