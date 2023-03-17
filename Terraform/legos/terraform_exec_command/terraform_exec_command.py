@@ -26,7 +26,7 @@ class InputSchema(BaseModel):
     )
 
 
-def terraform_exec_command(handle, repo, dir_path, command) -> str:
+def terraform_exec_command(handle, repo, command, dir_path:str=None) -> str:
     """terraform_exec_command Executes the terraform command
        with any arguments.
 
