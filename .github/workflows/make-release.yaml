@@ -42,16 +42,16 @@ jobs:
         id: create_docker_rn
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
-          echo "\`\`\`docker run -it -p 8888:8888 \n    -v $HOME/Awesome-CloudOps-Automation/custom:/data \n     -v $HOME/.unskript:/unskript \n    --user root \n    unskript/awesome-runbooks:${{ needs.sanitize_tag.outputs.ONLY_TAG }}\`\`\`" >> /tmp/docker_rn.md
+          echo "\`\`\`docker run -it -p 8888:8888 \n    -v $HOME/Awesome-CloudOps-Automation/custom:/data \n     -v $HOME/.unskript:/unskript \n    --user root \n    unskript/awesome-runbooks:${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}\`\`\`" >> /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
-          echo "${{ needs.sanitize_tag.outputs.CHANGELOG }}" >> /tmp/docker_rn.md
+          echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ needs.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
-          name: Release ${{ needs.sanitize_tag.GITHUB_ONLY_TAG }}
+          tag: ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
+          name: Release ${{ steps.sanitize_tag.GITHUB_ONLY_TAG }}
           bodyFile: "/tmp/docker_rn.md"
           generateReleaseNotes: true
           makeLatest: legacy
