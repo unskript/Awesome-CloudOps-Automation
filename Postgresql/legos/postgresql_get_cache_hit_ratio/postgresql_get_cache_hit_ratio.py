@@ -6,6 +6,8 @@ import pprint
 from typing import List, Any, Optional, Tuple
 from pydantic import BaseModel, Field
 
+class InputSchema(BaseModel):
+    pass
 
 def postgresql_get_cache_hit_ratio_printer(output):
     if output is None:
