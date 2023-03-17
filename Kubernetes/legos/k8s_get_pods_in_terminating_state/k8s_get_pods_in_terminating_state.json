@@ -1,5 +1,5 @@
 {
-    "action_title": "Get all K8s Pods in Terminaing State",
+    "action_title": "Get all K8s Pods in Terminating State",
     "action_description": "Get all K8s pods in Terminating State",
     "action_type": "LEGO_TYPE_K8S",
     "action_entry_function": "k8s_get_pods_in_terminating_state",
