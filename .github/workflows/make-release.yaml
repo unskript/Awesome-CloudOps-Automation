@@ -56,7 +56,7 @@ jobs:
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
           echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_rn.md
-          echo "${{ build-docker.steps.tag_version.outputs.new_tag }}" >> /tmp/docker_rn.md
+          echo "${{ bump-version.steps.tag_version.outputs.new_tag }}" >> /tmp/docker_rn.md
           echo "${{ bump-version.steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
