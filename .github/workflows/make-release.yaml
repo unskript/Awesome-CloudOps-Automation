@@ -35,7 +35,8 @@ jobs:
           dry_run: true
           default_bump: minor
           default_prerelease_bump: minor
-          tag_prefix: " "
+          append_to_pre_release_tag: ""
+          tag_prefix: ""
 
     #  - name: Create Docker 
     #   uses: "./.github/workflows/build-and-release-docker.yml"
