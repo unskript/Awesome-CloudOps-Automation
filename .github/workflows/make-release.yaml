@@ -57,8 +57,8 @@ jobs:
           echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_rn.md
           TAG_NAME=$(echo ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' -f 1)
           echo "TAGNAME: $TAG_NAME"
-          echo "TAG_NAME=$(echo ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' -f 1)" >> $GITHUB_OUTPUT
-          echo "${{ steps.create_docker_rn.output.TAG_NAME }}" >> /tmp/docker_rn.md
+          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "${{ steps.create_docker_rn.output.GITHUB_ONLY_TAG }}" >> /tmp/docker_rn.md
           echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
