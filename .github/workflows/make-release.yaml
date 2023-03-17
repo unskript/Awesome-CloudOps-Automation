@@ -36,6 +36,7 @@ jobs:
           default_bump: minor
           default_prerelease_bump: minor
           tag_prefix: " "
+          custom_tag: ${{ inputs.release_tag }}
         env:
           TAG: echo "`echo ${{ steps.tag_version.outputs.new_tag }} | cut -d'-' -f 1`"
       - name: Create a GitHub release
