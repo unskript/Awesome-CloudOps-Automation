@@ -9,20 +9,7 @@ on:
         type: string
   
 jobs:
-  # build-docker: 
-  #   needs: ['bump-version']
-  #   uses: "./.github/workflows/build-and-release-docker.yml"
-  #   with:
-  #     enabled: true
-  #     release_tag: "${{ inputs.release_tag }}"
-  #     build_number: "${{ inputs.release_tag }}"
-  #     elyra_branch: "master"
-  #     unskript_branch: "master"
-  #     celltoolbar_branch: "master"
-  #     snippet_branch: "master"
-  #   secrets: inherit
-
-  make-release:
+  bump-version: 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3 
@@ -38,37 +25,47 @@ jobs:
           append_to_pre_release_tag: ""
           tag_prefix: ""
 
-    #  - name: Create Docker 
-    #   uses: "./.github/workflows/build-and-release-docker.yml"
-    #   with:
-    #     enabled: true
-    #     release_tag: "${{ inputs.release_tag }}"
-    #     build_number: "${{ inputs.release_tag }}"
-    #     elyra_branch: "master"
-    #     unskript_branch: "master"
-    #     celltoolbar_branch: "master"
-    #     snippet_branch: "master"
-    #   secrets: inherit      
-      
+  sanitize_tag:
+    runs-on: ubuntu-latest 
+    needs: bump-version
+    steps:
+      - name: Sanitize Tag
+        run: |
+          TAG_NAME=$(echo ${{ needs.bump-version.outputs.new_tag }} | cut -d '-' -f 1))
+          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
+          echo "GITHUB_CHANGELOG=${{ needs.bump-version.outputs.changelog }}" >> $GITHUB_ENV
+
+  # build-docker: 
+  #   needs: sanitize_tag
+  #   uses: "./.github/workflows/build-and-release-docker.yml"
+  #   with:
+  #     enabled: true
+  #     release_tag: "${{ env.GITHUB_ONLY_TAG }}"
+  #     build_number: "${{ env.GITHUB_ONLY_TAG }}"
+  #     elyra_branch: "master"
+  #     unskript_branch: "master"
+  #     celltoolbar_branch: "master"
+  #     snippet_branch: "master"
+  #   secrets: inherit
+
+  make-release:
+    runs-on: ubuntu-latest
+    needs: sanitize_tag
+    steps:
       - name: Create Docker ReleaseNotes
         id: create_docker_rn
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
-          echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_rn.md
-          TAG_NAME=$(echo ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' -f 1)
-          echo "TAGNAME: $TAG_NAME"
-          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
-          echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
+          echo "\`\`\`docker run -it -p 8888:8888 \n    -v $HOME/Awesome-CloudOps-Automation/custom:/data \n     -v $HOME/.unskript:/unskript \n    --user root \n    unskript/awesome-runbooks:${{ env.GITHUB_ONLY_TAG }}\`\`\`" >> /tmp/docker_rn.md
+          echo "" >> /tmp/docker_rn.md
+          echo "${{ env.GITHUB_CHANGELOG }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          #tag: ${{ steps.tag_version.outputs.new_version }}
           tag: ${{ env.GITHUB_ONLY_TAG }}
-          # name: Release ${{ steps.tag_version.outputs.new_version }}
           name: Release ${{ env.GITHUB_ONLY_TAG }}
-          #body: ${{ steps.steps.tag_version.outputs.changelog }}
           bodyFile: "/tmp/docker_rn.md"
           generateReleaseNotes: true
           makeLatest: legacy
