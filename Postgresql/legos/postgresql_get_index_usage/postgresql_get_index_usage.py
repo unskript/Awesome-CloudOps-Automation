@@ -7,6 +7,8 @@ from typing import List, Any, Optional, Tuple
 from tabulate import tabulate
 from pydantic import BaseModel, Field
 
+class InputSchema(BaseModel):
+    pass
 
 def postgresql_get_index_usage_printer(output):
     data = []
