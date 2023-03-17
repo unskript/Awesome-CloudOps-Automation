@@ -2,7 +2,7 @@
 <h1>Post Slack Message </h1>
 
 ## Description
-This Lego Post Slack Messageand gives a message sent status.
+This Lego Post Slack Message and gives a message sent status.
 
 
 ## Lego Details
