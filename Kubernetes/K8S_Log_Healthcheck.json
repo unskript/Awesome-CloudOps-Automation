@@ -1,0 +1,9 @@
+{
+  "name": "Kubernetes Log Healthcheck",
+  "description": "This RunBook checks the logs of every pod in a namespace for warning messages.",
+  "uuid": "ee1aa2cb2a0854604bcc516389cf542af17c8de07e5da70524286a112c4eef6f",
+  "icon": "CONNECTOR_TYPE_K8S",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE", "CATEGORY_TYPE_TROUBLESHOOTNG" ],
+  "connector_types": [ "CONNECTOR_TYPE_K8S" ],
+  "version": "1.0.0"
+}

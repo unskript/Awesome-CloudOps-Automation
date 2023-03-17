@@ -7,10 +7,10 @@ This Lego filter AWS publicly accessible RDS instances.
 
 ## Lego Details
 
-    aws_publicly_accessible_db_instances(handle: object, region: str,)
+    aws_get_publicly_accessible_db_instances(handle: object, region: str,)
 
         handle: Object of type unSkript AWS Connector.
-        region: Region of the RDS.
+        region: Optional, AWS region. Eg: “us-west-2”
 
 ## Lego Input
 This Lego take two inputs handle and region.

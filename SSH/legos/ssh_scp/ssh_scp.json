@@ -1,0 +1,19 @@
+{
+"action_title": "SCP: Remote file transfer over SSH",
+"action_description": "Copy files from or to remote host. Files are copied over SCP. ",
+"action_type": "LEGO_TYPE_SSH",
+"action_entry_function": "ssh_scp",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_STR",
+"action_supports_iteration": true,
+"action_verbs": [
+"copy",
+"transfer",
+"scp"
+],
+"action_nouns": [
+"ssh",
+"file"
+]
+}

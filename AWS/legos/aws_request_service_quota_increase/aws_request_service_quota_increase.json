@@ -1,0 +1,11 @@
+{
+  "action_title": "AWS_Request_Service_Quota_Increase",
+  "action_description": "Given an AWS Region, Service Code, quota code and a new value for the quota, this Action sends a request to AWS for a new value. Your Connector must have servicequotas:RequestServiceQuotaIncrease enabled for this to work.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_request_service_quota_increase",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true"
+}

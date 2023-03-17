@@ -2,26 +2,28 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from typing import List, Any, Union
+import pprint 
 
+from typing import List, Any, Optional, Tuple
 from tabulate import tabulate
 from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
-    interval: int = Field(
+    interval: Optional[int] = Field(
         default=5,
-        title='Interval(in seconds)',
+        title='Interval(in minutes)',
         description='Return queries running longer than interval')
 
 
 def postgresql_long_running_queries_printer(output):
-    print("\n")
-    print(output)
-    return output
+    if output is None:
+        return
+
+    pprint.pprint(output)
 
 
-def postgresql_long_running_queries(handle, interval: int = 5) -> Union[List[Any], str]:
+def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
     """postgresql_long_running_queries Runs postgres query with the provided parameters.
 
           :type handle: object
@@ -36,15 +38,13 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Union[List[Any
 
     # Multi-line will create an issue when we package the Legos.
     # Hence concatinating it into a single line.
-
     query = "SELECT pid, user, pg_stat_activity.query_start, now() - pg_stat_activity.query_start AS query_time, query, state " \
-        " FROM pg_stat_activity WHERE state = 'active' AND (now() - pg_stat_activity.query_start) > interval '%d seconds';" % interval
+        " FROM pg_stat_activity WHERE state = 'active' AND (now() - pg_stat_activity.query_start) > interval '%d minutes';" % interval
 
     cur = handle.cursor()
     cur.execute(query)
     output = []
     res = cur.fetchall()
-
     data = []
     for records in res:
         result = {
@@ -66,4 +66,7 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Union[List[Any
     handle.commit()
     cur.close()
     handle.close()
-    return output
+    if len(output) != 0:
+        return (False, output)
+    else:
+        return (True, output)

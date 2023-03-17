@@ -9,15 +9,13 @@ This Lego enable Elasticsearch Shard Allocation for any shards for any indices.
 
 ## Lego Details
 
-    elasticsearch_enable_shard_allocation(handle: object,host: str, port: int, api_key: str)
+    elasticsearch_enable_shard_allocation(handle: object)
 
         handle: Object of type unSkript ElasticSearch Connector
-        host: URL of your Elasticsearch server
-        port: Port used by your Elasticsearch server
-        api_key: API Key for authentication of the request
+        
 
 ## Lego Input
-This Lego take four inputs handle, host, port and api_key.
+This Lego takes only the handle object that is returned from `task.validate(...)`
 
 ## Lego Output
 Here is a sample output.

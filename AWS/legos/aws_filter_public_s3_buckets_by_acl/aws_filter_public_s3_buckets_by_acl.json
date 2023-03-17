@@ -1,0 +1,16 @@
+{
+  "action_title": "Get AWS public S3 Buckets using ACL",
+  "action_description": "Get AWS public S3 Buckets using ACL",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_filter_public_s3_buckets_by_acl",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+  "action_supports_poll": true,
+  "action_supports_iteration": true,
+  "action_is_check":true,
+  "action_verbs": ["filter"],
+  "action_nouns": ["aws","s3","public","buckets","by","acl"],
+  "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SECOPS" ],
+  "action_next_hop":["305fe6a6f0512eb2d91b71c508b3a192e5b7021bf8196f4deeec5397f2b85e84"],
+  "action_next_hop_parameter_mapping":{}
+}

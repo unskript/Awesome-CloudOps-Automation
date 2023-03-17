@@ -1,6 +1,6 @@
 {
   "name": "Renew AWS SSL Certificates that are close to expiration",
-  "description": "This runbook can be used to list all AWS SSL (ACM) Certificates that need to be renewed within 30 days. Optionally it can renew the certificate using AWS ACM service.",
+  "description": "This runbook can be used to list all AWS SSL (ACM) Certificates that need to be renewed within a given threshold number of days. Optionally it can renew the certificate using AWS ACM service.",
   "uuid": "76681732b20a69913f0d9248272271bf2f4ab6459498ec6d0ab055870e0db0bb",
   "icon": "CONNECTOR_TYPE_AWS",
   "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SECOPS" ],

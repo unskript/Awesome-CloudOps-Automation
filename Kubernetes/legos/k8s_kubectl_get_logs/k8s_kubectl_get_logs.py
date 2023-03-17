@@ -5,7 +5,7 @@ class InputSchema(BaseModel):
     k8s_cli_string: str = Field(
         title='Kubectl Command',
         description='kubectl get logs for a given pod',
-        default='kubectl logs {pod_name} -n {namespace}'
+        default='"kubectl logs {pod_name} -n {namespace}"'
     )
     pod_name: str = Field(
         title='Pod Name',

@@ -1,0 +1,18 @@
+{
+"action_title": "Call REST Methods",
+"action_description": "Call REST Methods.",
+"action_type": "LEGO_TYPE_REST",
+"action_entry_function": "rest_methods",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_iteration": true,
+"action_verbs": [
+"call"
+],
+"action_nouns": [
+"rest",
+"methods",
+"apis"
+]
+}

@@ -7,14 +7,13 @@ This Lego Filter AWS ALB listeners without HTTP redirection.
 
 ## Lego Details
 
-    aws_listeners_without_http_redirect(handle, loadbalancer_arn: list, region: str)
+    aws_get_alb_listeners_without_http_redirect(handle, region: str)
 
         handle: Object of type unSkript AWS Connector
-        loadbalancer_arn: List of LoadBalancerArn.
-        region: Region to filter instances.
+        region: Optional, AWS region. Eg: “us-west-2”
 
 ## Lego Input
-This Lego take three inputs handle, loadbalancer_arn and region. 
+This Lego take two inputs handle and region. 
 
 ## Lego Output
 Here is a sample output.

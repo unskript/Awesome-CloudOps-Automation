@@ -1,5 +1,5 @@
 ##
-# Copyright (c) 2021 unSkript, Inc
+# Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
 from jira import JIRA, Issue
@@ -12,7 +12,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 class InputSchema(BaseModel):
     jql: str = Field(
-        title="Jira issue search using Jira Query Languagae (JQL)",
+        title="Jira issue search using Jira Query Language (JQL)",
         description="Search string to execute in JIRA. "
         "Valid JQL expression eg \"project = EN and status in (\"Selected for Development\") AND labels in (beta)\""
     )
@@ -40,7 +40,7 @@ def legoPrinter(func):
 
 
 @legoPrinter
-def jira_search_issue(handle: JIRA, jql: str, max_results: int = 0) -> List[Dict]:
+def jira_search_issue(handle: JIRA, jql: str, max_results: int = 0) -> List:
     """jira_search_issue get Jira issues matching JQL queries.
         :type jql: str
         :param jql: Search string to execute in JIRA.

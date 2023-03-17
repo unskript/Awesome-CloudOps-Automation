@@ -3,26 +3,32 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
 import pprint
 
 
 class InputSchema(BaseModel):
-    region: str = Field(
+    region: Optional[str] = Field(
         title='Region for RDS',
         description='Region of the RDS.'
     )
 
 
-def aws_publicly_accessible_db_instances_printer(output):
+def aws_get_publicly_accessible_db_instances_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+        
+    if isinstance(output, CheckOutput):
+        print(output.json())
+    else:
+        pprint.pprint(output)
 
 
-def aws_publicly_accessible_db_instances(handle, region: str) -> List:
-    """aws_list_apllication_loadbalancers lists application loadbalancers ARNs.
+def aws_get_publicly_accessible_db_instances(handle, region: str = "") -> CheckOutput:
+    """aws_get_publicly_accessible_db_instances Gets all publicly accessible DB instances
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -30,16 +36,30 @@ def aws_publicly_accessible_db_instances(handle, region: str) -> List:
         :type region: string
         :param region: Region of the RDS.
 
-        :rtype: List with publicly accessible RDS instances.
+        :rtype: CheckOutput with status result and list of publicly accessible RDS instances.
     """
-
-    ec2Client = handle.client('rds', region_name=region)
     result = []
-    try:
-        response = aws_get_paginator(ec2Client, "describe_db_instances", "DBInstances")
-        for db in response:
-            if db['PubliclyAccessible']:
-                result.append(db['DBInstanceIdentifier'])
-    except Exception as error:
-        result.append(error)
-    return result
+    all_regions = [region]
+    if not region:
+        all_regions = aws_list_all_regions(handle)
+    for reg in all_regions:
+        try:
+            ec2Client = handle.client('rds', region_name=reg)
+            response = aws_get_paginator(ec2Client, "describe_db_instances", "DBInstances")
+            for db in response:
+                db_instance_dict = {}
+                if db['PubliclyAccessible']:
+                    db_instance_dict["region"] = reg
+                    db_instance_dict["instance"] = db['DBInstanceIdentifier']
+                    result.append(db_instance_dict)
+        except Exception as error:
+            pass
+        
+    if len(result) != 0:
+        return CheckOutput(status=CheckOutputStatus.FAILED,
+                   objects=result,
+                   error=str(""))
+    else:
+        return CheckOutput(status=CheckOutputStatus.SUCCESS,
+                   objects=result,
+                   error=str("")) 

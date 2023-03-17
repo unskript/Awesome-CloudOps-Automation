@@ -1,60 +1,77 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
+from unskript.legos.aws.aws_list_application_loadbalancers.aws_list_application_loadbalancers import aws_list_application_loadbalancers
 import pprint
 
 
 class InputSchema(BaseModel):
-    loadbalancer_arn: list = Field(
-        title='LoadBalancerArn',
-        description='List of LoadBalancerArn.')
-
-    region: str = Field(
+    region: Optional[str] = Field(
+        default="",
         title='Region',
         description='AWS Region of the ALB listeners.')
 
 
-def aws_listeners_without_http_redirect_printer(output):
+def aws_get_alb_listeners_without_http_redirect_printer(output):
     if output is None:
         return
+        
     pprint.pprint(output)
 
 
-def aws_listeners_without_http_redirect(handle, loadbalancer_arn: list, region: str) -> List:
-    """aws_get_auto_scaling_instances List of Dict with instanceId and attached groups.
+def aws_get_alb_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
+    """aws_get_alb_listeners_without_http_redirect List of ALB listeners without HTTP redirection.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
 
-        :type loadbalancer_arn: list
-        :param loadbalancer_arn: List of LoadBalancerArn.
-
         :type region: string
         :param region: Region to filter ALB listeners.
 
-        :rtype: List of ALB listeners without HTTP redirection.
+        :rtype: Tuple of status result and list of ALB listeners without HTTP redirection.
     """
-    ec2Client = handle.client('elbv2', region_name=region)
     result = []
-    for alb in loadbalancer_arn:
+    all_regions = [region]
+    alb_list = []
+    if not region:
+        all_regions = aws_list_all_regions(handle)
+
+    for reg in all_regions:
         try:
-            response = aws_get_paginator(ec2Client, "describe_listeners", "Listeners",
-                                         LoadBalancerArn=alb)
-            for listner in response:
-                if 'SslPolicy' not in listner:
-                    resp = aws_get_paginator(ec2Client, "describe_rules", "Rules",
-                                         ListenerArn=listner['ListenerArn'])
-                    for rule in resp:
-                        for action in rule['Actions']:
-                            if action['Type'] != 'redirect':
-                                result.append(listner['ListenerArn'])
+            alb_dict = {}
+            loadbalancer_arn = aws_list_application_loadbalancers(handle, reg)
+            alb_dict["region"] = reg
+            alb_dict["alb_arn"] = loadbalancer_arn
+            alb_list.append(alb_dict)
         except Exception as error:
-            result.append(error)
-    return result
+            pass
+        
+    for alb in alb_list:
+        try:
+            ec2Client = handle.client('elbv2', region_name=alb["region"])
+            for load in alb["alb_arn"]:
+                response = aws_get_paginator(ec2Client, "describe_listeners", "Listeners",
+                                             LoadBalancerArn=load)
+                for listner in response:
+                    if 'SslPolicy' not in listner:
+                        resp = aws_get_paginator(ec2Client, "describe_rules", "Rules",
+                                             ListenerArn=listner['ListenerArn'])
+                        for rule in resp:
+                            for action in rule['Actions']:
+                                listener_dict = {}
+                                if action['Type'] != 'redirect':
+                                    listener_dict["region"] = alb["region"]
+                                    listener_dict["listener_arn"] = listner['ListenerArn']
+                                    result.append(listener_dict)
+        except Exception as error:
+            pass
 
-
-
+    if len(result) != 0:
+        return (False, result)
+    else:
+        return (True, [])
     

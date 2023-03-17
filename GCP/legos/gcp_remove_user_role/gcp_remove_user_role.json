@@ -1,0 +1,9 @@
+{
+    "action_title": "Remove role from user",
+    "action_description": "GCP lego for removing a role from a user (default: 'viewer')",
+    "action_entry_function": "gcp_remove_user_role",
+    "action_type": "LEGO_TYPE_GCP",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true
+}

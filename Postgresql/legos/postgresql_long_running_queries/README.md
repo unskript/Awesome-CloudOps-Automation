@@ -10,7 +10,7 @@ This Lego finds Long Running PostgreSQL Queries.
     postgresql_long_running_queries(handle, interval: int = 5)
 
         handle: Object of type unSkript POSTGRESQL Connector
-        interval: Interval(in seconds).
+        interval: Optional-Interval(in minutes).
        
 
 ## Lego Input

@@ -1,0 +1,14 @@
+{
+    "action_title": "Get all K8s Pods in CrashLoopBackOff State",
+    "action_description": "Get all K8s pods in CrashLoopBackOff State",
+    "action_type": "LEGO_TYPE_K8S",
+    "action_entry_function": "k8s_get_pods_in_crashloopbackoff_state",
+    "action_is_check": true,
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_next_hop": ["1d3a64b3c396be6d27b260606aa5570f61e79f3b7adcda457e026da657edc079"],
+    "action_next_hop_parameter_mapping": {}
+}
