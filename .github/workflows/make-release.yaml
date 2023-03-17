@@ -57,8 +57,7 @@ jobs:
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
           echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_rn.md
-          tag_sanitized =`echo ${{ steps.tag_version.outputs.new_tag }} | cut -d'-' f 1`
-          echo "$tag_sanitized">> /tmp/docker_rn.md
+          echo "`echo ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' f 1`" >> /tmp/docker_rn.md
           echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
