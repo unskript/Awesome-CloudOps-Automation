@@ -56,16 +56,16 @@ jobs:
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
           echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_rn.md
-          echo "${{ jobs.build-docker.steps.tag_version.outputs.new_tag }}" >> /tmp/docker_rn.md
-          echo "${{ jobs.bump-version.steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
+          echo "${{ build-docker.steps.tag_version.outputs.new_tag }}" >> /tmp/docker_rn.md
+          echo "${{ bump-version.steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ jobs.bump-version.steps.tag_version.outputs.new_version }}
-          name: Release ${{ jobs.bump-version.steps.tag_version.outputs.new_version }}
-          #body: ${{ jobs.bump-version.steps.tag_version.outputs.changelog }}
+          tag: ${{ bump-version.steps.tag_version.outputs.new_version }}
+          name: Release ${{ bump-version.steps.tag_version.outputs.new_version }}
+          #body: ${{ bump-version.steps.tag_version.outputs.changelog }}
           bodyFile: "/tmp/docker_rn.md"
           generateReleaseNotes: true
           makeLatest: legacy
