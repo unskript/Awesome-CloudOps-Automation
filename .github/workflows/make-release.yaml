@@ -29,16 +29,16 @@ jobs:
     runs-on: ubuntu-latest 
     needs: bump-version
     outputs:
-        GITHUB_ONLY_TAG: ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
-        GITHUB_CHANGELOG: ${{ steps.sanitize_tag.outputs.GITHUB_CHANGELOG }}
+        ONLY_TAG: ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
+        CHANGELOG: ${{ steps.sanitize_tag.outputs.GITHUB_CHANGELOG }}
     steps:
       - name: Sanitize Tag
         id: sanitize_tag
         run: |
           TAG_NAME=$(echo ${{ needs.bump-version.outputs.new_tag }} | cut -d '-' -f 1)
-          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
-          echo "GITHUB_CHANGELOG=${{ needs.bump-version.outputs.changelog }}" >> $GITHUB_ENV
-          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $"GITHUB_OUTPUT"
+          # echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
+          # echo "GITHUB_CHANGELOG=${{ needs.bump-version.outputs.changelog }}" >> $GITHUB_ENV
+          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> "$GITHUB_OUTPUT"
           echo "GITHUB_CHANGELOG=${{ needs.bump-version.outputs.changelog }}" >> "$GITHUB_OUTPUT"
 
 
@@ -57,15 +57,15 @@ jobs:
 
   make-release:
     runs-on: ubuntu-latest
-    needs: sanitize_tag
+    needs: ['sanitize_tag', 'bump-version']
     steps:
       - name: Create Docker ReleaseNotes
         id: create_docker_rn
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
-          echo "\`\`\`docker run -it -p 8888:8888 \n    -v $HOME/Awesome-CloudOps-Automation/custom:/data \n     -v $HOME/.unskript:/unskript \n    --user root \n    unskript/awesome-runbooks:${{ env.GITHUB_ONLY_TAG }}\`\`\`" >> /tmp/docker_rn.md
+          echo "\`\`\`docker run -it -p 8888:8888 \n    -v $HOME/Awesome-CloudOps-Automation/custom:/data \n     -v $HOME/.unskript:/unskript \n    --user root \n    unskript/awesome-runbooks:${{ needs.sanitize_tag.outputs.ONLY_TAG }}\`\`\`" >> /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
-          echo "${{ needs.sanitize_tag.outputs.GITHUB_CHANGELOG }}" >> /tmp/docker_rn.md
+          echo "${{ needs.sanitize_tag.outputs.CHANGELOG }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
       - name: Create a GitHub release
