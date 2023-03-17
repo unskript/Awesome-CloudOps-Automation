@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
         description='Repository that has Terraform Scripts eg: https://github.com/acme/acme.git'
     )
     dir_path: Optional[str] = Field(
-        None,
+        "./",
         title='Directory Path',
         description='Directory within Repository to run the terraform command eg: acme, ./, acme/terrform/main'
     )
@@ -27,7 +27,7 @@ class InputSchema(BaseModel):
     )
 
 
-def terraform_exec_command(handle, repo, dir_path: str = '', command: str = '') -> str:
+def terraform_exec_command(handle, repo, dir_path, command) -> str:
     """terraform_exec_command Executes the terraform command 
        with any arguments.
 
@@ -52,8 +52,6 @@ def terraform_exec_command(handle, repo, dir_path: str = '', command: str = '') 
     # sanitize inputs that have come from validate 
 
     try:
-        if dir_path == '':
-            dir_path = './'
         result = handle.sidecar_command(repo, handle.credential_id, dir_path, command, str(""))
         output = result.data.decode('utf-8')
         output = json.loads(output)['output']
