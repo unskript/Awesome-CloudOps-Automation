@@ -54,11 +54,12 @@ jobs:
     #   secrets: inherit      
       
       - name: Create Docker ReleaseNotes
+        id: create_docker_rn
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
           echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_rn.md
-          tag_sanitized=`echo ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' f 1`
-          echo "TAG: $tag_sanitized" >> /tmp/docker_rn.md
+          echo "TAG_NAME=$(cat ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' -f 1)" >> $GITHUB_OUTPUT
+          echo "${{ steps.create_docker_rn.output.TAG_NAME }}" >> /tmp/docker_rn.md
           echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
