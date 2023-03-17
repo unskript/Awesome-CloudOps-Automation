@@ -11,6 +11,7 @@ on:
 jobs:
   bump-version: 
     runs-on: ubuntu-latest
+    id: bump-version
     steps:
       - uses: actions/checkout@v3 
       - run: git fetch --prune --unshallow
@@ -38,6 +39,7 @@ jobs:
           TAG_NAME=$(echo ${{ needs.bump-version.outputs.new_tag }} | cut -d '-' -f 1)
           # echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
           # echo "GITHUB_CHANGELOG=${{ needs.bump-version.outputs.changelog }}" >> $GITHUB_ENV
+          echo "TAGNAME: $TAG_NAME"
           echo "GITHUB_ONLY_TAG=$TAG_NAME" >> "$GITHUB_OUTPUT"
           echo "GITHUB_CHANGELOG=${{ needs.bump-version.outputs.changelog }}" >> "$GITHUB_OUTPUT"
 
