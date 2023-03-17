@@ -13,6 +13,9 @@ This Lego Post Slack Message with an Image and gives a message sent status.
         channel: Name of slack channel.
         message: Message sent to channel.
         image: File Name of the image to be sent in the message.
+    
+    Note: Your Slack App will need the ```files:write``` scope.  Your Bot will also need to be a member of the channel that you wish to send the message to.
+
 
 ## Lego Input
 This Lego take four inputs handle, channel, message and image.

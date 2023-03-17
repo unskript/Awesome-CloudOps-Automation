@@ -13,6 +13,8 @@ pp = pprint.PrettyPrinter(indent=2)
 
 from beartype import beartype
 
+## note: Your Slack App will need the files:write scope.  Your Bot will also need to be a member of the channel
+
 class InputSchema(BaseModel):
     channel: str = Field(
         title='Channel',
