@@ -28,7 +28,6 @@ jobs:
 
   make-release:
     runs-on: ubuntu-latest
-    #needs: ["build-docker"]
     steps:
       - uses: actions/checkout@v3 
       - run: git fetch --prune --unshallow
@@ -58,7 +57,7 @@ jobs:
         run: |
           echo "## Download Latest Docker" > /tmp/docker_rn.md
           echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_rn.md
-          echo "${{ steps.tag_version.outputs.new_tag }}" >> /tmp/docker_rn.md
+          echo "`echo ${{ steps.tag_version.outputs.new_tag }} | cut -d'-', f 1`" >> /tmp/docker_rn.md
           echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
 
