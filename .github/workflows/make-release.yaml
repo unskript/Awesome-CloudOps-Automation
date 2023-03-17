@@ -40,7 +40,7 @@ jobs:
       - name: Create Docker Information Content
         run: |
           echo "## Download Latest Docker" > /tmp/docker_release.txt
-          echo "```DOWNLOAD INSTRUCTION HERE```" >> /tmp/docker_release.txt
+          echo "\`\`\`HELLO WORLD\`\`\`" >> /tmp/docker_release.txt
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
