@@ -6,6 +6,9 @@ from pydantic import BaseModel, Field
 import pprint
 
 
+class InputSchema(BaseModel):
+    pass
+
 def aws_get_sts_caller_identity_printer(output):
     if output is None:
         return

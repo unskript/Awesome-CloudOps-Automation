@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
         description='Repository that has Terraform Scripts eg: https://github.com/acme/acme.git'
     )
     dir_path: Optional[str] = Field(
-        None,
+        "./",
         title='Directory Path',
         description='Directory within Repository to run the terraform command eg: acme, ./, acme/terrform/main'
     )
@@ -46,7 +46,6 @@ def terraform_exec_command(handle, repo, dir_path, command) -> str:
         :rtype: Str Output of the command .
     """
     assert(command.startswith("terraform"))
-
     print(f'WARNING: Please note terraform apply and terraform destroy will be run with -auto-approve for non-interactive run')
 
     output = ''
