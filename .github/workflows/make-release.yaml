@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Sanitize Tag
         run: |
-          TAG_NAME=$(echo ${{ needs.bump-version.outputs.new_tag }} | cut -d '-' -f 1))
+          TAG_NAME=$(echo ${{ needs.bump-version.outputs.new_tag }} | cut -d '-' -f 1)
           echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
           echo "GITHUB_CHANGELOG=${{ needs.bump-version.outputs.changelog }}" >> $GITHUB_ENV
 
