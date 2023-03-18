@@ -41,14 +41,15 @@ jobs:
       - name: Create Docker ReleaseNotes
         id: create_docker_rn
         run: |
-          echo "## Download Docker" > /tmp/docker_rn.md
+          echo "## Awesome Docker" > /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
-          echo "> docker run -it -p 8888:8888" >> /tmp/docker_rn.md
-          echo ">    -v \$HOME/Awesome-CloudOps-Automation/custom:/data" >> /tmp/docker_rn.md
-          echo ">    -v \$HOME/.unskript:/unskript" >> /tmp/docker_rn.md  
-          echo ">    --user root" >> /tmp/docker_rn.md
-          echo ">    unskript/awesome-runbooks:${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}" >> /tmp/docker_rn.md
+          # echo "> docker run -it -p 8888:8888" >> /tmp/docker_rn.md
+          # echo ">    -v \$HOME/Awesome-CloudOps-Automation/custom:/data" >> /tmp/docker_rn.md
+          # echo ">    -v \$HOME/.unskript:/unskript" >> /tmp/docker_rn.md  
+          # echo ">    --user root" >> /tmp/docker_rn.md
+          # echo ">    unskript/awesome-runbooks:${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}" >> /tmp/docker_rn.md
+          echo "Please find the Latest build [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)" >> /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
           echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
           cat /tmp/docker_rn.md
@@ -76,7 +77,7 @@ jobs:
     needs: make-release
     uses: "./.github/workflows/build-and-release-docker.yml"
     with:
-      enabled: false
+      enabled: true
       release_tag: "${{ needs.make-release.outputs.GITHUB_ONLY_TAG }}"
       build_number: "${{ needs.make-release.outputs.GITHUB_ONLY_TAG }}"
       elyra_branch: "master"
