@@ -1,0 +1,77 @@
+name: Make Release
+
+on:
+  workflow_dispatch: 
+  
+jobs:
+  make-release:
+    runs-on: ubuntu-latest
+    outputs:
+      GITHUB_ONLY_TAG: ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
+      GITHUB_CHANGELOG: ${{ steps.tag_version.outputs.changelog }}
+    steps:
+      - uses: actions/checkout@v3 
+      - run: git fetch --prune --unshallow
+      - name: Bump version and push 
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.BUILDER_PAT }}
+          dry_run: true
+          default_bump: minor
+          default_prerelease_bump: minor
+          append_to_pre_release_tag: ""
+          tag_prefix: ""
+
+      - name: Sanitize Tag
+        id: sanitize_tag
+        run: |
+          TAG_NAME=$(echo ${{ steps.tag_version.outputs.new_tag }} | cut -d '-' -f 1)
+          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_ENV
+          echo "GITHUB_CHANGELOG=${{ steps.tag_version.outputs.changelog }}" >> $GITHUB_ENV
+          echo "TAGNAME: $TAG_NAME"
+          echo "GITHUB_ONLY_TAG=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "GITHUB_CHANGELOG=${{ steps.tag_version.outputs.changelog }}" >> $GITHUB_OUTPUT
+      
+      - name: Create Docker ReleaseNotes
+        id: create_docker_rn
+        run: |
+          echo "## Awesome Docker" > /tmp/docker_rn.md
+          echo "" >> /tmp/docker_rn.md
+          echo "" >> /tmp/docker_rn.md
+          echo "Please find the Latest build [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)" >> /tmp/docker_rn.md
+          echo "" >> /tmp/docker_rn.md
+          echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
+          cat /tmp/docker_rn.md
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
+          name: Release ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
+          bodyFile: "/tmp/docker_rn.md"
+          generateReleaseNotes: true
+          makeLatest: legacy
+          omitBody: false
+          omitBodyDuringUpdate: false
+          omitDraftDuringUpdate: false
+          omitName: false
+          omitNameDuringUpdate: false
+          omitPrereleaseDuringUpdate: false
+          removeArtifacts: false
+          replacesArtifacts: true
+          skipIfReleaseExists: false
+          updateOnlyUnreleased: false
+
+  build-docker: 
+    needs: make-release
+    uses: "./.github/workflows/build-and-release-docker.yml"
+    with:
+      enabled: true
+      release_tag: "${{ needs.make-release.outputs.GITHUB_ONLY_TAG }}"
+      build_number: "${{ needs.make-release.outputs.GITHUB_ONLY_TAG }}"
+      elyra_branch: "master"
+      unskript_branch: "master"
+      celltoolbar_branch: "master"
+      snippet_branch: "master"
+    secrets: inherit
