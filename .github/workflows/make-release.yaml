@@ -2,11 +2,6 @@ name: Make Release
 
 on:
   workflow_dispatch: 
-    inputs:
-      release_tag:
-        description: "Release Tag"
-        required: true
-        type: string
   
 jobs:
   make-release:
@@ -44,11 +39,6 @@ jobs:
           echo "## Awesome Docker" > /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
-          # echo "> docker run -it -p 8888:8888" >> /tmp/docker_rn.md
-          # echo ">    -v \$HOME/Awesome-CloudOps-Automation/custom:/data" >> /tmp/docker_rn.md
-          # echo ">    -v \$HOME/.unskript:/unskript" >> /tmp/docker_rn.md  
-          # echo ">    --user root" >> /tmp/docker_rn.md
-          # echo ">    unskript/awesome-runbooks:${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}" >> /tmp/docker_rn.md
           echo "Please find the Latest build [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)" >> /tmp/docker_rn.md
           echo "" >> /tmp/docker_rn.md
           echo "${{ steps.tag_version.outputs.changelog }}" >> /tmp/docker_rn.md
