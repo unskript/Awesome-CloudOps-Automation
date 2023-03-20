@@ -22,6 +22,7 @@ class InputSchema(BaseModel):
          description='Id of Redshift Query', title='queryId'
 
     )
+    
 
 @beartype
 def aws_get_redshift_query_details(handle, region: str, queryId:str) -> Dict:
@@ -30,6 +31,14 @@ def aws_get_redshift_query_details(handle, region: str, queryId:str) -> Dict:
     response = client.describe_statement(
     Id=queryId
     )
-    return response
+    resultReady = response['HasResultSet']
+    queryTimeNs = response['Duration']
+    ResultRows = response['ResultRows']
+    details = {"Status": response['Status'],
+                "resultReady": resultReady, 
+               "queryTimeNs":queryTimeNs,
+               "ResultRows":ResultRows
+              }
+    return details
 
 
