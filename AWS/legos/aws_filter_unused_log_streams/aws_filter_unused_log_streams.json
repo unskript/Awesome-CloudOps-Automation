@@ -1,0 +1,11 @@
+{
+    "action_title": "AWS Filter Unused Log Stream",
+    "action_description": "This action lists all log streams that are unused for all the log groups by the given threshold.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_filter_unused_log_streams",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true
+}
+    
