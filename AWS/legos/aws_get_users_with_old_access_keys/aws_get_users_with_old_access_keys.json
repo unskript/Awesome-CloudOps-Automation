@@ -1,0 +1,10 @@
+{
+    "action_title": "AWS Get IAM Users with Old Access Keys",
+    "action_description": "This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_get_users_with_old_access_keys",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_poll": true,
+    "action_supports_iteration": true
+}
