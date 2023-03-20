@@ -52,4 +52,4 @@ def aws_list_unattached_elastic_ips(handle, region: str = "") -> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
