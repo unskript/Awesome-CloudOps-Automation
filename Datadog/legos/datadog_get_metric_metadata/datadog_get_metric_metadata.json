@@ -1,0 +1,10 @@
+{
+    "action_title": "Datadog get metric metadata",
+    "action_description": "Get the metadata of a metric.",
+    "action_type": "LEGO_TYPE_DATADOG",
+    "action_entry_function": "datadog_get_metric_metadata",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_supports_iteration": true
+}
