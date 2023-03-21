@@ -146,7 +146,7 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 ## Create a new xRunBook:
   
   - **Using Docker**:
-    1. Your RunBooks are stored locally at ```$HOME/.unskript/runbooks``` Copy an existing xRunBook, rename it and then restart Docker.
+    1. Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook, rename it and then restart Docker.
     2. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin editing.
   - **unSkript Sandbox**:
     1. The onboarding flow will drop you into Runbook creation with sandbox credentials
@@ -156,7 +156,7 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
 
 ## Import a xRunBook
-  1. xRunBooks are stored locally at ```$HOME/.unskript/runbooks``` . Place your existing RunBook in this directory.
+  1. xRunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automatin/custom/runbooks``` . Place your existing RunBook in this directory.
   2. Restart your Docker instance.
   3. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin using your xRunBook.
 
@@ -173,27 +173,8 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
 
 ## Extending Docker
-You can use our base docker to extend the functionality to fit your need. Here is how to do it
+You can use our base docker to extend the functionality to fit your need. Follow this [document](./README_extending_docker.md)to create you own custom docker.
 
-1. Create a Project Directory
-    a. mkdir -p $HOME/Awesome-CloudOps-Extension  && cd $HOME/Awesome-CloudOps-Extension
-2. Copy your Awesome extension to the folder, it could be a simple Shell script or an mission critical 
-   library that you need.
-    a. echo "#!/bin/bash \n echo \"Hello from Awesome-CloudOps-Extension\"" > $HOME/Awesome-CloudOps-Extension/my-awesome-extension.sh
-3. Create a Docker file in $HOME/Awesome-CloudOps-Extension
-    ```
-    FROM unskript/awesome-runbooks:latest as base
-
-    COPY my-awesome-extension.sh /usr/local/bin
-    RUN chmod +x /usr/local/bin/my-awesome-extension.sh
-    ```
-4. Build the Docker
-    ```
-    cd $HOME/Awesome-CloudOps-Extension
-    docker build -t my-awesome-docker .
-    ```
-
-Your new docker is ready! you can distribute the docker image via publishing to any docker registry.
 <br/>
 
 ## unSkript CLI
