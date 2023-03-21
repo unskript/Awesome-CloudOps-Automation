@@ -35,30 +35,31 @@ Simplify CloudOps automation for developers and DevOps engineers.
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our `Actions` that build automated `Runbooks`. 
 
->Are you looking for a script to automate your Kubernetes management? A script to restart the pod that is OOMkilled?  We've got you covered. 
+>Better. Faster. Smarter
 
 ___
 <br>
 
 # Quick Start Guide
 
-## Get started with Docker:
 
-```
-docker run -it -p 8888:8888 \
- -v $HOME/.unskript:/data \
- --user root \
- docker.io/unskript/awesome-runbooks:latest
-```
+|**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
+| :---: | :---: |
+| Open Source version with all of the Actions and RunBooks runs in a local Docker instance. | Includes all of the features of the Open Source, plus some basic enterprise features like [scheduling](https://docs.unskript.com/unskript-product-documentation/guides/xrunbooks/schedules) and [environments](https://docs.unskript.com/unskript-product-documentation/guides/proxies/connect-your-environment). |
+| ```docker run -it -p 8888:8888  -v $HOME/.unskript:/data --user root  docker.io/unskript/awesome-runbooks:latest``` | [Free Trial: Cloud](https://us.app.unskript.io/) |
 
-## [Cloud Sandbox](https://us.app.unskript.io/)
-* A free Cloud version of the OSS offering.
+
 
 
 ## Open and Use a xRunBook
-Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.  A table lists the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook.
 
-Click on the URL of the xRunBook you would like to explore. It will open in a new browser tab. To run this XRunBook:
+|**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
+| :---: | :---: |
+| Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb. | Once you have completed the Onboarding Flow, All the RunBooks can be found in the xRunBoks link, under the *unSkript xRunBooks* tab |
+| A table lists the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook. Click on the URL of the xRunBook you would like to explore. | You can Search, or select a category or RunBook. To open a xRUnBook, Click the 3 dot menu and import into your workspace. |
+
+
+
 
 1. Check the `Parameters` button at the top of the page. This lists all of the input parameters, and the default values.  Change them if needed.
 2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and which inputs are used for each action. [How to Add Credentials](https://docs.unskript.com/unskript-product-documentation/guides/connectors).
@@ -99,30 +100,26 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
 
 ## Create a new xRunBook:
-  
-  - **Using Docker**:
-    1. Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook, rename it and then restart Docker.
-    2. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin editing.
-  - **unSkript Sandbox**:
-    1. The onboarding flow will drop you into Runbook creation with sandbox credentials
-    2.  Start building your lego from the proposed handle (GCP, k8s et al)
+  |**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
+| :---: | :---: |
+| Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open. | From the xRunBooks Page, Click the **Create New** button. Name you xRunBook, Give it a description, and choose your proxy.  |
+| Your saved xRunBook can be found at ```$HOME/.unskript/runbooks``` | Once you save your xRunBook, navigate to the xRunBooks listing.  The 3 dot menu next to your RunBook has a "Download" option. | 
+
+
   1. Submit Your xRunBook to the repository Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
   2. Submit a PR!
 
 
-## Import a xRunBook
-  1. xRunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automatin/custom/runbooks``` . Place your existing RunBook in this directory.
-  2. Restart your Docker instance.
-  3. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin using your xRunBook.
-
 ## Create a new Action:
 
-1. Creating a new Action is simple:  
+### Create a new action inside an existing RunBook.
+
    1. If you will not use external credentials, click *+Add Action* at the top of the menu.
-   2. If you will be using an existing credential, add an existing ACtion for that service (like AWS), and edit the code to create your new Action.
-    3. If you are creating a new credential, reach out to the team - we'd love to help!
-2. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
-3.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
+   2. If you will be using an existing credential, add an existing Action for that service (like AWS), and edit the code to create your new Action.
+   3. If the service you'd like to build for does not have credentials set up yey, please [file an issue](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=Credential%2Ctriage&template=add_credential.yml&title=%5BCredential%5D%3A+).
+### Creating and connecting you Action
+1. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
+2.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
 
 
 
@@ -134,7 +131,7 @@ You can use our base docker to extend the functionality to fit your need. Follow
 
 ## unSkript CLI
 
-With `unskript-ctl.sh` (called unskript cuttle) allows you to
+With `unskript-ctl.sh` (called unSkript cuttle) allows you to
   * List Existing Runbook
   * List All Existing Health Checks
   * List All Existing Health Check per connector
@@ -171,7 +168,7 @@ optional arguments:
 
 <br/>
 
-# Roadmap
+# Road Map
 
 See the [open issues](https://github.com/unskript/awesome-cloudops-automation/issues) for a list of proposed features (and known issues).
 
