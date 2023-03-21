@@ -13,6 +13,9 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
+    [[BADGE]]
+  
+  <p align="center">
     CloudOps automation made simple!
     <br />
     <a href="https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript"><strong>Explore the docs</strong></a>
@@ -35,7 +38,7 @@ Simplify CloudOps automation for developers and DevOps engineers.
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our `Actions` that build automated `Runbooks`. 
 
->Better. Faster. Smarter
+>Better. Faster. Smarter SRE.
 
 ___
 <br>
@@ -116,8 +119,9 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
    1. If you will not use external credentials, click *+Add Action* at the top of the menu.
    2. If you will be using an existing credential, add an existing Action for that service (like AWS), and edit the code to create your new Action.
-   3. If the service you'd like to build for does not have credentials set up yey, please [file an issue](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=Credential%2Ctriage&template=add_credential.yml&title=%5BCredential%5D%3A+).
-### Creating and connecting you Action
+   3. If the service you'd like to build for does not have credentials yet, please [file an issue](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=Credential%2Ctriage&template=add_credential.yml&title=%5BCredential%5D%3A+).
+### Creating and connecting your Action
+
 1. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
 2.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
 
@@ -125,7 +129,7 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
 
 ## Extending Docker
-You can use our base docker to extend the functionality to fit your need. Follow this [document](./README_extending_docker.md)to create you own custom docker.
+You can use our base docker to extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create you own custom docker.
 
 <br/>
 
