@@ -278,7 +278,8 @@
 
 # Jira
 
- * [Jira assign issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/legos/jira_assign_issue) 
+ * [Jira add comment.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/legos/jira_add_comment) 
+* [Jira assign issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/legos/jira_assign_issue) 
 * [Jira create issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/legos/jira_create_issue) 
 * [Jira get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/legos/jira_get_handle) 
 * [Jira get issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/legos/jira_get_issue) 
