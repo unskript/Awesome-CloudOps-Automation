@@ -3,6 +3,9 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
+from datadog_api_client.v1.api.monitors_api import MonitorsApi
+from datadog_api_client import ApiClient
+from datadog_api_client.exceptions import NotFoundException
 import pprint
 
 class InputSchema(BaseModel):
@@ -23,15 +26,20 @@ def datadog_get_monitorid(handle, name: str) -> int:
 
         :rtype: The monitor id.
     """
-    monitor_response = handle.Monitor.get_all(name=name)
-    monitor_id = None
-    if len(monitor_response) > 0:
-        for monitor in monitor_response:
-            if monitor["name"] == name:
-                monitor_id = monitor["id"]
-                break
-
-    if not monitor_id:
-        raise Exception("No monitor named {} found".format(name))
-    
-    return monitor_id
+    try:
+        with ApiClient(handle) as api_client:
+            api_instance = MonitorsApi(api_client)
+            monitors = []
+            page = 0
+            while True:
+                response = api_instance.list_monitors(page_size=30, page=page, name=name)
+                if response == []:
+                    break
+                monitors.extend(response)
+                page += 1
+    except Exception as e:
+        raise e
+    if len(monitors) == 1:
+        return int(monitors[0]['id'])
+    else:
+        raise NotFoundException
