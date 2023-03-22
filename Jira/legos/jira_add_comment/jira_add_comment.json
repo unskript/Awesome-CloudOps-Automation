@@ -1,0 +1,11 @@
+{
+    "action_title": "Jira Add Comment",
+    "action_description": "Add a Jira Comment",
+    "action_type": "LEGO_TYPE_JIRA",
+    "action_entry_function": "jira_add_comment",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_INT",
+    "action_supports_poll": true,
+    "action_supports_iteration": true
+}
+    
