@@ -12,8 +12,8 @@
   </a>
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
-  
-  <p align="center"><img src ='https://img.shields.io/static/v1?label=ActionCount&message=401&color=green'><img src ='https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange'></p>
+  <p align="center">
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=401&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -38,7 +38,7 @@ Simplify CloudOps automation for developers and DevOps engineers.
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our `Actions` that build automated `Runbooks`. 
 
->Better. Faster. Smarter
+>Better. Faster. Smarter SRE.
 
 ___
 <br>
