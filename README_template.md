@@ -131,7 +131,7 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
 
 ## Import a xRunBook
-  1. xRunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automatin/custom/runbooks``` . Place your existing RunBook in this directory.
+  1. xRunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` . Place your existing RunBook in this directory.
   2. Restart your Docker instance.
   3. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin using your xRunBook.
 
