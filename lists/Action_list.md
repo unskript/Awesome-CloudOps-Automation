@@ -247,6 +247,7 @@
 * [Github list team repos.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_team_repos) 
 * [Github list webhooks.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_webhooks) 
 * [Github merge pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_merge_pull_request) 
+* [Github remove member from org.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_remove_member_from_org) 
 
 
 
