@@ -27,10 +27,13 @@ def datadog_list_all_monitors(handle) -> List[dict]:
         with ApiClient(handle) as api_client:
             api_instance = MonitorsApi(api_client)
             monitors = []
-            total_no_pages = api_instance.search_monitors()['metadata']['page_count']
-            for page in range(0, int(total_no_pages)):
-                monitor_response = api_instance.search_monitors(page=page)
-                monitors.extend(monitor_response['monitors'])
+            page = 0
+            while True:
+                response = api_instance.list_monitors(page_size=30,page=page)
+                if response == []:
+                    break
+                monitors.extend(response)
+                page += 1
     except Exception as e:
         raise e
     return monitors
