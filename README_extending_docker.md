@@ -21,7 +21,8 @@ You can use our base docker to extend the functionality to fit your need. The st
    git clone https://github.com/unskript/Awesome-CloudOps-Automation
    ``` 
 
-2. Set an environment variable to point to the name of the custom directory. 
+2. Next, lets setup an environment variable to the custom directory. The `custom` directory is where we save your `runbooks` and `Actions`. Set an environment variable to point to the name of the custom directory.
+   
    ```
    export CUSTOM_DIR_NAME=custom
    ```
