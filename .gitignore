@@ -4,6 +4,8 @@ __pycache__
 
 # Ignore temp files (build artifacts) that gets generated
 # for custom Actions
+custom/*
+
 
 # Ignore Temp files
 *.jsonx
