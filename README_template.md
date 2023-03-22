@@ -57,15 +57,15 @@ cd Awesome-CloudOps-Automation
 * Second: Lets create a custom directory where all your changes are stored. (Note: Please modify the path to Awesome Repo if it is different from $HOME)
 
 ```
-export ACA_CUSTOM_DIRECTORY=custom
-mkdir -p $HOME/Awesome-CloudOps-Automation/$ACA_CUSTOM_DIRECTORY
+export ACA_CUSTOM_DIR_NAME=custom
+mkdir -p $HOME/Awesome-CloudOps-Automation/$ACA_CUSTOM_DIR_NAME
 ```
 
 * Third: Lets launch the docker with the path to our CUSTOM DIRECTORY
 
 ```
 docker run -it -p 8888:8888 \
- -v $HOME/Awesome-CloudOps-Automation/$ACA_CUSTOM_DIRECTORY:/data \
+ -v $HOME/Awesome-CloudOps-Automation/$ACA_CUSTOM_DIR_NAME:/data \
  -v $HOME/.unskript:/unskript \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
