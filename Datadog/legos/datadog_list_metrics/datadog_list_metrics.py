@@ -28,7 +28,7 @@ def datadog_list_metrics(handle, query: str = "") -> Dict:
         :rtype: A Dict containing the queried metrics
     """
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = MetricsApi(api_client)
             metrics = api_instance.list_metrics(q=query)
     except Exception as e:

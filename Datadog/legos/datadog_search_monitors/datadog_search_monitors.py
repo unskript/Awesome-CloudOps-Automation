@@ -42,7 +42,7 @@ def datadog_search_monitors(handle,
         :rtype: The list of monitors.
     """
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = MonitorsApi(api_client)
             monitors = []
             page = 0

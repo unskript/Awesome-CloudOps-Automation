@@ -27,7 +27,7 @@ def datadog_get_monitorid(handle, name: str) -> int:
         :rtype: The monitor id.
     """
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = MonitorsApi(api_client)
             monitors = []
             page = 0

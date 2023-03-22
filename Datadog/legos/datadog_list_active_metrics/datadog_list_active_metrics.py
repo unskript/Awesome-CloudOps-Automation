@@ -41,7 +41,7 @@ def datadog_list_active_metrics(handle,
     time_delta = datetime.datetime.utcnow() - timedelta(seconds=int(from_time))
     from_epoch = int(time_delta.timestamp())
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = MetricsApi(api_client)
             metrics = api_instance.list_active_metrics(_from=from_epoch, tag_filter=tag_filter)
     except Exception as e:

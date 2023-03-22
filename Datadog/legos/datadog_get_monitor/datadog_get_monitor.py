@@ -30,7 +30,7 @@ def datadog_get_monitor(handle,
         :rtype: Dict of monitor details
     """
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = MonitorsApi(api_client)
             monitor_details = api_instance.get_monitor(monitor_id=int(monitor_id))
     except Exception as e:

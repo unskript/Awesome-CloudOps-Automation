@@ -27,8 +27,8 @@ def datadog_get_incident(handle, incident_id: str) -> Dict:
         :rtype: A Dict containing the incident
     """
     try:
-        handle.unstable_operations["get_incident"] = True
-        with ApiClient(handle) as api_client:
+        handle.handle_v2.unstable_operations["get_incident"] = True
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = IncidentsApi(api_client)
             incident = api_instance.get_incident(incident_id=incident_id)
     except Exception as e:

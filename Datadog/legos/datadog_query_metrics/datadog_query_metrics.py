@@ -45,7 +45,7 @@ def datadog_query_metrics(handle,
         :rtype: Dict of queried metric
     """
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = MetricsApi(api_client)
             response = api_instance.query_metrics(
                 _from=int((datetime.utcnow() - timedelta(seconds=int(from_time))).timestamp()),

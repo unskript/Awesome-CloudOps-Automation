@@ -30,7 +30,7 @@ def datadog_get_event(handle, event_id: int) -> Dict:
         :rtype: A Dict containing the event
     """
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = EventsApi(api_client)
             event = api_instance.get_event(event_id=int(event_id))
     except Exception as e:

@@ -30,7 +30,7 @@ def datadog_get_metric_metadata(handle,
         :rtype: Dict of metadata of metric
     """
     try:
-        with ApiClient(handle) as api_client:
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = MetricsApi(api_client)
             metric_metadata = api_instance.get_metric_metadata(metric_name=metric_name)
     except Exception as e:

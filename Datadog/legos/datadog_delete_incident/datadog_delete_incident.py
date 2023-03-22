@@ -27,8 +27,8 @@ def datadog_delete_incident(handle, incident_id: str) -> None:
         :rtype: None
     """
     try:
-        handle.unstable_operations["delete_incident"] = True
-        with ApiClient(handle) as api_client:
+        handle.handle_v2.unstable_operations["delete_incident"] = True
+        with ApiClient(handle.handle_v2) as api_client:
             api_instance = IncidentsApi(api_client)
             deleted_incident = api_instance.delete_incident(incident_id=incident_id)
     except Exception as e:
