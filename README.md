@@ -148,14 +148,15 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
 
 ## Create a new xRunBook:
+
   |**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
 | :---: | :---: |
 | Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open. | From the xRunBooks Page, Click the **Create New** button. Name you xRunBook, Give it a description, and choose your proxy.  |
 | Your saved xRunBook can be found at ```$HOME/.unskript/runbooks``` | Once you save your xRunBook, navigate to the xRunBooks listing.  The 3 dot menu next to your RunBook has a "Download" option. | 
 
-
   1. Submit Your xRunBook to the repository Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
   2. Submit a PR!
+
 
 
 ## Create a new Action:
@@ -174,7 +175,9 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 
 
 ## Extending Docker
+
 You can use our base docker to extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create you own custom docker.
+
 
 <br/>
 
