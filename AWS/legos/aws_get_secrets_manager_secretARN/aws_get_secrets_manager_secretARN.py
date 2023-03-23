@@ -10,6 +10,17 @@ import pprint
 from beartype import beartype
 
 
+class InputSchema(BaseModel):
+    region: str = Field(
+        description='AWS Region.', 
+        title='Region'
+        )
+    secret_name: str = Field(
+         description='AWS Secret Name', 
+         title='secret_name'
+        )
+
+
 @beartype
 def aws_get_secrets_manager_secretARN_printer(output):
     if output is None:
