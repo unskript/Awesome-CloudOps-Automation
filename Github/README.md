@@ -13,6 +13,7 @@
 * [Github get team.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_team) 
 * [Github get user.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_user) 
 * [Github invite user to org.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_invite_user_to_org) 
+* [Github issue comment.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_issue_comment) 
 * [Github list open issues.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_open_issues) 
 * [Github list pull request commits.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_request_commits) 
 * [Github list pull request reviewers.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_request_reviewers) 
