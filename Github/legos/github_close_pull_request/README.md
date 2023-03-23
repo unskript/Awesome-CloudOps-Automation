@@ -8,14 +8,15 @@ This Lego closes an open pull requests for a user based on PR number
 
 ## Lego Details
 
-    github_close_pull_request(handle: object , owner:str, repository:str)
+    github_close_pull_request(handle: object , owner:str, repository:str, pull_request_number)
 
         handle: Object of type unSkript Github Connector
         owner: String, Username of the GitHub user. Eg: "johnwick"
         repository: String, Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"
+        pull_request_number: Int, Pull request number. Eg: 167 
 
 ## Lego Input
-This Lego take 3 inputs handle, owner, repository
+This Lego take 4 inputs handle, owner, repository, pull_request_number
 
 ## Lego Output
 Here is a sample output.
