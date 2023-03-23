@@ -2,7 +2,7 @@
     "action_title": "AWS List Expiring Access Keys",
     "action_description": "List Expiring IAM User Access Keys",
     "action_type": "LEGO_TYPE_AWS",
-    "action_entry_function": "aws_list_expiring_access_keys",
+    "action_entry_function": "aws_list_old_access_keys",
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
     "action_supports_poll": true,
