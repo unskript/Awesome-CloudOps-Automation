@@ -120,6 +120,7 @@
 * [Aws list attached user policies.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies) 
 * [Aws list expiring access keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys) 
 * [Aws list expiring acm certificates.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates) 
+* [Aws list unattached elastic ips.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unattached_elastic_ips) 
 * [Aws list unhealthy instances in target group.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unhealthy_instances_in_target_group) 
 * [Aws list users with old passwords.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_users_with_old_passwords) 
 * [Aws loadbalancer list instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_loadbalancer_list_instances) 
