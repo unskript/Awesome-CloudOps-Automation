@@ -64,10 +64,12 @@ def github_get_issue(handle, owner:str, repository:str, issue_number:int) -> Dic
                 if type(issue.assignee) == 'NoneType':
                     issue_details["assignee"] = issue.assignee.login
                 else:
-                    issue_details["assignee"] = issue.assignee.login
+                    issue_details["assignee"] = issue.assignee
                 issue_details["body"] = issue.body
                 issue_details["state"] = issue.state
-                issue_details["updated_at"] = issue.updated_at
+                dummy_date = issue.updated_at
+                formatted_date = dummy_date.strftime("%d-%m-%Y")
+                issue_details["updated_at"] = formatted_date
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
