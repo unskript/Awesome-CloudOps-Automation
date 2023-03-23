@@ -35,7 +35,7 @@ def github_create_team_printer(output):
         return
     pprint.pprint(output)
 
-def github_create_team(handle, organization_name:str, team_name:str,repositories:list, privacy:GithubTeamPrivacy=None, description:str="") -> Dict:
+def github_create_team(handle, organization_name:str, team_name:str,repositories:list, privacy:GithubTeamPrivacy=GithubTeamPrivacy.secret, description:str="") -> Dict:
     """github_create_team returns details of newly created team.
 
         :type handle: object
