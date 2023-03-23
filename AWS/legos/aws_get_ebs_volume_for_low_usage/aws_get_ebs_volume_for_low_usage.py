@@ -81,4 +81,4 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
