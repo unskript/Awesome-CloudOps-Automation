@@ -20,7 +20,7 @@ def aws_list_expiring_access_keys_printer(output):
         return
     pprint.pprint(output)
 
-def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
+def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
     """aws_list_expiring_access_keys returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
