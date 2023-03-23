@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
     )
 
 
-def aws_publicly_accessible_db_instances_printer(output):
+def aws_get_publicly_accessible_db_instances_printer(output):
     if output is None:
         return
         
@@ -27,8 +27,8 @@ def aws_publicly_accessible_db_instances_printer(output):
         pprint.pprint(output)
 
 
-def aws_publicly_accessible_db_instances(handle, region: str = "") -> CheckOutput:
-    """aws_publicly_accessible_db_instances Gets all publicly accessible DB instances
+def aws_get_publicly_accessible_db_instances(handle, region: str = "") -> CheckOutput:
+    """aws_get_publicly_accessible_db_instances Gets all publicly accessible DB instances
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
