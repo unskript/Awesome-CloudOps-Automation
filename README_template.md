@@ -46,10 +46,33 @@ ___
 # Quick Start Guide
 
 
+
 |**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
 | :---: | :---: |
 | Open Source version with all of the Actions and RunBooks runs in a local Docker instance. | Includes all of the features of the Open Source, plus some basic enterprise features like [scheduling](https://docs.unskript.com/unskript-product-documentation/guides/xrunbooks/schedules) and [environments](https://docs.unskript.com/unskript-product-documentation/guides/proxies/connect-your-environment). |
 | ```docker run -it -p 8888:8888  -v $HOME/.unskript:/data --user root  docker.io/unskript/awesome-runbooks:latest``` | [Free Trial: Cloud](https://us.app.unskript.io/) |
+
+
+* First: Clone this `Awesome-CloudOps-Automation` 
+In the snippet below, we are cloning the Awesome repo under $HOME directory. Please modify the command below to clone it into any other
+directory.
+
+```
+cd $HOME
+git clone https://github.com/unskript/Awesome-CloudOps-Automation 
+cd Awesome-CloudOps-Automation
+```
+
+
+* Second: Lets launch the docker with the path to our CUSTOM DIRECTORY
+
+```
+docker run -it -p 8888:8888 \
+ -v $HOME/Awesome-CloudOps-Automation/custom:/data \
+ -v $HOME/.unskript:/unskript \
+ --user root \
+ docker.io/unskript/awesome-runbooks:latest
+```
 
 
 
@@ -113,6 +136,12 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
   2. Submit a PR!
 
 
+
+## Import a xRunBook
+  1. xRunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` . Place your existing RunBook in this directory.
+  2. Restart your Docker instance.
+  3. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin using your xRunBook.
+
 ## Create a new Action:
 
 ### Create a new action inside an existing RunBook.
@@ -147,7 +176,7 @@ With `unskript-ctl.sh` (called unSkript cuttle) allows you to
 Here are the Options that are supported by the CTL Command
 ```
 unskript-ctl.sh 
-usage: unskript-client [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
+usage: unskript-ctl [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
 
 Welcome to unSkript CLI Interface VERSION: 0.1.0
 
@@ -161,7 +190,7 @@ optional arguments:
   -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
                         Display Failed Checks [all | connector]
   -lc LIST_CHECKS, --list-checks LIST_CHECKS
-                        List available checks, per connector or all
+                        List available checks, [all | connector]
   -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
                         Show audit trail [all | connector | execution_id]
 ```

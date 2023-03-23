@@ -4,7 +4,8 @@
 ##
 import pprint
 from typing import List
-
+from datadog_api_client.v1.api.monitors_api import MonitorsApi
+from datadog_api_client import ApiClient
 from pydantic import BaseModel
 
 
@@ -22,10 +23,18 @@ def datadog_list_all_monitors(handle) -> List[dict]:
 
         :rtype: The list of monitors.
     """
-    metadata = handle.Monitor.search()["metadata"]
-    monitors = []
-    total_no_pages = metadata.get("page_count")
-    for page in range(0, total_no_pages):
-        monitor_response = handle.Monitor.get_all(page=page)
-        monitors.extend(monitor_response)
+    try:
+        with ApiClient(handle.handle_v2) as api_client:
+            api_instance = MonitorsApi(api_client)
+            monitors = []
+            page = 0
+            while True:
+                response = api_instance.list_monitors(page_size=30,page=page)
+                if response == []:
+                    break
+                monitors.extend(response)
+                page += 1
+    except Exception as e:
+        raise e
     return monitors
+

@@ -21,29 +21,30 @@ You can use our base docker to extend the functionality to fit your need. The st
    git clone https://github.com/unskript/Awesome-CloudOps-Automation
    ``` 
 
-2. Set an environment variable to point to the name of the custom directory. 
+2. Next, lets setup an environment variable to the custom directory. The `custom` directory is where we save your `runbooks` and `Actions`. Set an environment variable to point to the name of the custom directory.
+   
    ```
-   export CUSTOM_DIR_NAME=custom
+   export ACA_CUSTOM_DIR_NAME=custom
    ```
 
 3. Next task is to create a custom Actions directory under Awesome-CloudOps-Automation. You could use any of
    the following methods to accomplish this task.
-    1. Create directory under Awesome-CloudOps-Automation by name `$CUSTOM_DIR_NAME`
+    1. Create directory under Awesome-CloudOps-Automation by name `$ACA_CUSTOM_DIR_NAME`
        ```
        cd $HOME/Awesome-CloudOps-Automation
-       mkdir $CUSTOM_DIR_NAME
+       mkdir $ACA_CUSTOM_DIR_NAME
        ```
     2. Submodule your Git repo that has your custom Actions in it. 
        ```
        cd $HOME/Awesome-CloudOps-Automation
-       git submodule add https://<YOUR REPO LOCATION> $CUSTOM_DIR_NAME
+       git submodule add https://<YOUR REPO LOCATION> $ACA_CUSTOM_DIR_NAME
        ```
 
 4. Launch the Awesome Runbooks Docker. 
       ```
       docker run -it -p 8888:8888 \
              -v $HOME/.unskript:/unskript  \
-             -v $HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME:/data \
+             -v $HOME/Awesome-CloudOps-Automation/$ACA_CUSTOM_DIR_NAME:/data \
              --user root \
              unskript/awesome-runbooks:latest
       ```
@@ -52,7 +53,7 @@ You can use our base docker to extend the functionality to fit your need. The st
       > in the above command with the tag number. You can find the tags [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)
 
     * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing credentials.   
-    * The second mount point `$HOME/Awesome-CloudOps-Automation/$CUSTOM_DIR_NAME` is where we save custom Actions or custom Runbooks. 
+    * The second mount point `$HOME/Awesome-CloudOps-Automation/$ACA_CUSTOM_DIR_NAME` is where we save custom Actions or custom Runbooks. 
     
        > Note: This means any content that is created will survive Docker reboots.
 
