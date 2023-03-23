@@ -15,7 +15,9 @@
   <p align="center">
     CloudOps automation made simple!
     <br />
-    <a href="https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript"><strong>Explore the docs</strong></a>
+    <br />
+      <a href="https://www.youtube.com/channel/UCvtSYNHVvuogq2u-F7UDMkw"><strong>unSkript on YouTube</strong></a>
     <br />
     <br />
     <a href="https://unskript.com/blog">Visit our blog</a>
@@ -35,14 +37,10 @@ A single repository to satisfy all your day-to-day CloudOps automation needs. Au
 
 >Are you looking for a script to automate your Kubernetes management? A script to restart the pod that is OOMkilled?  We've got you covered. 
 
-
-
 ___
 <br>
 
 # Quick Start Guide
-
-Get up and running quickly:
 
 ## Get started with Docker:
 
@@ -56,6 +54,7 @@ docker run -it -p 8888:8888 \
 ## [Cloud Sandbox](https://us.app.unskript.io/)
 * A free Cloud version of the OSS offering.
 
+
 ## Open and Use a xRunBook
 Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.  A table lists the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook.
 
@@ -65,13 +64,16 @@ Click on the URL of the xRunBook you would like to explore. It will open in a ne
 2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and which inputs are used for each action. [How to Add Credentials](https://docs.unskript.com/unskript-product-documentation/guides/connectors).
 3. Once each Action has been assigned Credentials and inputs, run each Action (in order) to run your xRunBook.
 
-## Included xRunBooks 
 
-These xRunBooks are included in every install.  Use them as is, or make a copy to modify for your use!
+## Included xRunBooks
+<details>
+  <summary><b>See Full List</b></summary>
 
-| **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| AWS | [AWS Access Key Rotation](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/AWS_Access_Key_Rotation.ipynb)
+  These xRunBooks are included in every install.  Use them as is, or make a copy to modify for your use!
+
+  | **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
+  | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+  | AWS | [AWS Access Key Rotation](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/AWS_Access_Key_Rotation.ipynb)
 | AWS | [Add new IAM user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/Add_new_IAM_user.ipynb)
 | AWS | [Configure url endpoint on a cloudwatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb)
 | AWS | [Copy ami to all given AWS regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/Copy_ami_to_all_given_AWS_regions.ipynb)
@@ -117,11 +119,15 @@ These xRunBooks are included in every install.  Use them as is, or make a copy t
 | Kubernetes | [Rollback k8s Deployment and Update Jira](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/Rollback_k8s_Deployment_and_Update_Jira.ipynb)
 | Postgresql | [Display Postgresql Long Running](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb) | [Open in browser](http://127.0.0.1:8888/lab/tree/Display_Postgresql_Long_Running.ipynb)
 
+</details>
+
+<br/>
+<br/>
 
 
-# Contributing
+# Contribute to Awesome-CloudOps-Automation
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
+Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
 
 ## How to Contribute?
 
@@ -133,7 +139,7 @@ Contributions are what make the open source community such an amazing place to l
 
 ## Contribution Tips:
 1. Use the [Docker environment](#get-started-with-docker), or our free [cloud sandbox](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) for testing your contribution.
-2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) so you can present yourself and get support.
+2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) to discuss your PR, and for support if you run into any issues.
 
 
 
@@ -147,6 +153,7 @@ Contributions are what make the open source community such an amazing place to l
     2.  Start building your lego from the proposed handle (GCP, k8s et al)
   1. Submit Your xRunBook to the repository Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
   2. Submit a PR!
+
 
 ## Import a xRunBook
   1. xRunBooks are stored locally at ```$HOME/.unskript/runbooks``` . Place your existing RunBook in this directory.
@@ -163,7 +170,64 @@ Contributions are what make the open source community such an amazing place to l
 3.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
 
 
+
+
+## Extending Docker
+You can use our base docker to extend the functionality to fit your need. Here is how to do it
+
+1. Create a Project Directory
+    a. mkdir -p $HOME/Awesome-CloudOps-Extension  && cd $HOME/Awesome-CloudOps-Extension
+2. Copy your Awesome extension to the folder, it could be a simple Shell script or an mission critical 
+   library that you need.
+    a. echo "#!/bin/bash \n echo \"Hello from Awesome-CloudOps-Extension\"" > $HOME/Awesome-CloudOps-Extension/my-awesome-extension.sh
+3. Create a Docker file in $HOME/Awesome-CloudOps-Extension
+    ```
+    FROM unskript/awesome-runbooks:latest as base
+
+    COPY my-awesome-extension.sh /usr/local/bin
+    RUN chmod +x /usr/local/bin/my-awesome-extension.sh
+    ```
+4. Build the Docker
+    ```
+    cd $HOME/Awesome-CloudOps-Extension
+    docker build -t my-awesome-docker .
+    ```
+
+Your new docker is ready! you can distribute the docker image via publishing to any docker registry.
 <br/>
+
+## unSkript CLI
+
+With `unskript-ctl.sh` (called unskript cuttle) allows you to
+  * List Existing Runbook
+  * List All Existing Health Checks
+  * List All Existing Health Check per connector
+  * Run All Existing Health Checks 
+  * Run All Existing Health Checks per connector
+  * Run an existing Runbook
+
+
+Here are the Options that are supported by the CTL Command
+```
+unskript-ctl.sh 
+usage: unskript-client [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
+
+Welcome to unSkript CLI Interface VERSION: 0.1.0
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -lr, --list-runbooks  List Available Runbooks
+  -rr RUN_RUNBOOK, --run-runbook RUN_RUNBOOK
+                        Run the given runbook
+  -rc RUN_CHECKS, --run-checks RUN_CHECKS
+                        Run all available checks [all | connector | failed]
+  -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
+                        Display Failed Checks [all | connector]
+  -lc LIST_CHECKS, --list-checks LIST_CHECKS
+                        List available checks, per connector or all
+  -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
+                        Show audit trail [all | connector | execution_id]
+```
 
 
 # Community

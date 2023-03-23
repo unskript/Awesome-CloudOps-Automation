@@ -10,7 +10,7 @@ class InputSchema(BaseModel):
     pass
 
 
-def infra_workflow_done(handle: InfraConnector):
+def workflow_done(handle: InfraConnector):
     """infra_workflow_done stops workflow execution (Not implemented).
         :rtype: None.
     """
