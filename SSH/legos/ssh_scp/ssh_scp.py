@@ -44,7 +44,7 @@ def ssh_scp(
         remote_file: str,
         local_file: str,
         proxy_host: str = None,
-        direction: bool = True) -> str:
+        direction: bool = True):
     """ssh_scp Copy files from or to remote host.
 
         :type host: str
