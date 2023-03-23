@@ -39,7 +39,7 @@ def slack_post_message(
         response = handle.chat_postMessage(
             channel=channel,
             text=message)
-        return f"Successfuly Sent Message on Channel: #{channel}"
+        return f"Successfully Sent Message on Channel: #{channel}"
     except SlackApiError as e:
         pp.pprint(
             f"Failed sending message to slack channel {channel}, Error: {e.response['error']}")
