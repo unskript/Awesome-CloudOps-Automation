@@ -8,7 +8,12 @@ jobs:
     if: "!startsWith(github.event.head_commit.message, 'generateReadme:')"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Harden Runner
+      uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+      with:
+        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+    - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
       with:
         token: '${{ secrets.GENERATE_README }}'
     - run: "pip install MarkupSafe==2.0.1"
@@ -17,17 +22,22 @@ jobs:
     - run: "pip install Markdown==3.3.7"
     - run: "jupyter nbconvert --execute generate_readme.ipynb --inplace"
     - run: "jupyter nbconvert --clear-output --inplace generate_readme.ipynb"
-    - uses: EndBug/add-and-commit@v9.1.1
+    - uses: EndBug/add-and-commit@61a88be553afe4206585b31aa72387c64295d08b # v9.1.1
       with:
         message: 'generateReadme: Refresh'
   copy-file:
     runs-on: ubuntu-latest
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+      with:
+        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
     - name: Pushes action and runbook lists to docs
-      uses: dmnemec/copy_file_to_another_repo_action@main
+      uses: dmnemec/copy_file_to_another_repo_action@bbebd3da22e4a37d04dca5f782edd5201cb97083 # main
       env:
         API_TOKEN_GITHUB: '${{ secrets.GENERATE_README }}'
       with:
@@ -40,11 +50,16 @@ jobs:
   copy-file2:
     runs-on: ubuntu-latest
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+      with:
+        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
     - name: Pushes action and runbook lists to docs
-      uses: dmnemec/copy_file_to_another_repo_action@main
+      uses: dmnemec/copy_file_to_another_repo_action@bbebd3da22e4a37d04dca5f782edd5201cb97083 # main
       env:
         API_TOKEN_GITHUB: '${{ secrets.GENERATE_README }}'
       with:

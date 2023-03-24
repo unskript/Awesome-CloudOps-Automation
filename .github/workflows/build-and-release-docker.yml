@@ -99,6 +99,9 @@ env:
   USERNAME: ${{ secrets.BUILD_USER }}
   DOCKER_TARGET: linux/amd64, linux/arm64
    
+permissions:
+  contents: read
+
 jobs:
   build-elyra: 
     runs-on: ubuntu-latest 
@@ -107,7 +110,12 @@ jobs:
       fail-fast: false 
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
@@ -116,7 +124,7 @@ jobs:
           pip install shyaml
       
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.7'
           
@@ -129,7 +137,7 @@ jobs:
           python3 ./setup.py sdist
           mv dist/elyra*.tar.gz /tmp
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: elyra-${{ github.run_id }}
           path: /tmp/elyra-3.0.0.dev0.tar.gz
@@ -142,8 +150,13 @@ jobs:
       fail-fast: false 
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: elyra-${{ github.run_id }}
           path: /tmp/elyra
@@ -156,7 +169,7 @@ jobs:
           sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7 
       
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.7'
 
@@ -180,12 +193,12 @@ jobs:
           mv dist/code*tar /tmp
           mv dist/unskript-0.1.0-py2.py3-none-any.whl /tmp
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: schema-${{ github.run_id }}
           path: /tmp/code_snippet_schemas.tar
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
@@ -198,13 +211,18 @@ jobs:
       fail-fast: false 
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
      
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.7'
 
@@ -229,7 +247,7 @@ jobs:
           mv dist/*.whl /tmp
   
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: toolbar-${{ github.run_id }}
           path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
@@ -241,13 +259,18 @@ jobs:
       fail-fast: false 
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
       
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.7'
 
@@ -271,7 +294,7 @@ jobs:
           mv dist/*.whl /tmp
   
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: code-snippets-${{ github.run_id }}
           path: /tmp/jupyterlab_code_snippets-2.1.1-py3-none-any.whl
@@ -284,10 +307,15 @@ jobs:
       fail-fast: false 
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.7'
 
@@ -297,7 +325,7 @@ jobs:
           pip install shyaml
 
       - name: Setup Docker Buildx 
-        uses: crazy-max/ghaction-docker-buildx@v1
+        uses: crazy-max/ghaction-docker-buildx@e01797ad2ea9a981005ad58c99afa8d842e3d3eb # v1.6.2
         with:
           version: latest
           config: .github/buildkitd.toml 
@@ -320,27 +348,27 @@ jobs:
           pwd
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/devops.git devops
       
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: code-snippets-${{ github.run_id }}
           path: /tmp/code_snippet
     
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: toolbar-${{ github.run_id }}
           path: /tmp/jlab_enhanced_cell_toolbar
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: schema-${{ github.run_id }}
           path: /tmp/unskript
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: elyra-${{ github.run_id }}
           path: /tmp/elyra
@@ -366,7 +394,7 @@ jobs:
           fi
           echo "BUILD_TAGS=$bt" >> $GITHUB_ENV
       
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af # v2.0.0
         with:
           name: |
             elyra-${{ github.run_id }}
@@ -409,13 +437,18 @@ jobs:
       fail-fast: false
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - name: Install system dependencies
         run: |
           pip install shyaml
 
 
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af # v2.0.0
         with:
           name: |
             elyra-${{ github.run_id }}
