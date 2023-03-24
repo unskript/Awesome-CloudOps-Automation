@@ -24,7 +24,7 @@ def aws_list_expiring_acm_certificates_printer(output):
         return
     pprint.pprint(output)
 
-def aws_list_expiring_acm_certificates(handle, threshold_days: int, region: str=None)-> Tuple:
+def aws_list_expiring_acm_certificates(handle, threshold_days: int = 90, region: str=None)-> Tuple:
     """aws_list_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object

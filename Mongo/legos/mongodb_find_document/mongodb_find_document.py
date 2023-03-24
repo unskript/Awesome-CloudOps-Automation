@@ -76,7 +76,7 @@ def mongodb_find_document(
         database_name: str,
         collection_name: str,
         filter: dict,
-        command: FindCommands,
+        command: FindCommands = FindCommands.find,
         document: dict = {},
         projection: dict = {},
         sort: List = []) -> List:

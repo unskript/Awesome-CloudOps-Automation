@@ -25,7 +25,7 @@ def aws_change_acl_permissions_of_buckets_printer(output):
     pprint.pprint(output)
 
 
-def aws_change_acl_permissions_of_buckets(handle, bucket_name: str, acl: CannedACLPermissions=None, region: str = None) -> Dict:
+def aws_change_acl_permissions_of_buckets(handle, bucket_name: str, acl: CannedACLPermissions=CannedACLPermissions.private, region: str = None) -> Dict:
     """ aws_put_bucket_acl get Dict of buckets ACL change info.
 
             :type handle: Session
