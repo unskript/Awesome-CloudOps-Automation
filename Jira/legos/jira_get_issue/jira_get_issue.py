@@ -17,19 +17,12 @@ class InputSchema(BaseModel):
     )
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        description, labels, attachment = func(*args, **kwargs)
-        print('\n')
-        pp.pprint(description)
-        pp.pprint(labels)
-        pp.pprint(attachment)
+def jira_get_issue_printer(output):
+    if output is None:
         return
-    return Printer
+    pp.pprint(output)
 
-
-@legoPrinter
-def jira_get_issue(hdl: JIRA, issue_id: str) -> str:
+def jira_get_issue(hdl: JIRA, issue_id: str) -> dict:
     """jira_get_issue Get Jira Issue Info
 
         :type issue_id: str
@@ -39,4 +32,4 @@ def jira_get_issue(hdl: JIRA, issue_id: str) -> str:
     """
     # Input param validation.
     issue = hdl.issue(issue_id)
-    return issue.fields.description, issue.fields.labels, issue.fields.attachment
+    return issue.raw

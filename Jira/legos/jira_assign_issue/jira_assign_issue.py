@@ -7,9 +7,6 @@ from jira.client import JIRA
 from pydantic import BaseModel, Field
 import pprint
 
-pp = pprint.PrettyPrinter(indent=4)
-
-
 class InputSchema(BaseModel):
     issue_id: str = Field(
         title="Issue ID",
@@ -21,19 +18,14 @@ class InputSchema(BaseModel):
     )
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        output = func(*args, **kwargs)
-        print('\n')
-        pp.pprint(output)
-        return output
-    return Printer
+def jira_assign_issue_printer(output):
+    if output is None:
+        return
+    pprint.pprint(output)
 
-
-@legoPrinter
 def jira_assign_issue(hdl: JIRA, issue_id: str, user_id: str) -> str:
     """jira_assign_issue assigns a given Jira issue to a user
-    
+
         :type issue_id: str
         :param issue_id: JIRA issue ID to assign. Eg ENG-42
 
