@@ -66,16 +66,11 @@ class InputSchema(BaseModel):
     )
 
 
-def jira_create_issue_printer(func):
-    def Printer(*args, **kwargs):
-        output = func(*args, **kwargs)
-        print('\n')
-        pp.pprint(output)
-        return output
-    return Printer
+def jira_create_issue_printer(output):
+    if output is None:
+        return
+    pp.pprint(output)
 
-
-@jira_create_issue_printer
 def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type: IssueType, description: str = "", fields: dict=None) -> str:
     """create_issue creates issue in jira.
         :type project_name: str

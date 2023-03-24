@@ -26,15 +26,12 @@ class InputSchema(BaseModel):
     )
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        output = func(*args, **kwargs)
-        print('\n')
-        return output
-    return Printer
+def jira_issue_change_status_printer(output):
+    if output is None:
+        return
+    pp.pprint(output)
 
 
-@legoPrinter
 def jira_issue_change_status(hdl: JIRA, issue_id: str, status: str, transition: str = ""):
     """jira_get_issue_status gets the status of a given Jira issue.
         :type issue_id: str
