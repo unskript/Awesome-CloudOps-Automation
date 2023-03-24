@@ -10,7 +10,6 @@ import datetime
 
 class InputSchema(BaseModel):
     threshold_days: int = Field(
-        90,
         title="Threshold Days",
         description="Threshold number(in days) to check for expiry. Eg: 30 -lists all certificates which are expiring within 30 days"
     )
