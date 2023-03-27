@@ -718,7 +718,7 @@ def read_ipynb(filename: str) -> nbformat.NotebookNode:
     return nb
 
 def get_code_cell_action_uuids(content: dict) -> list:
-    """get_code_cell_action_uuids This function takes in the notenode dictionary
+    """get_code_cell_action_uuids This function takes in the notebooknode dictionary
            iterates over it to find all the Action UUIds for the code-cells and 
            returns it as a list
 
@@ -822,7 +822,7 @@ def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
 
 def create_creds_mapping():
     """create_creds_mapping This function creates a credential ZoDB collection with the name
-       default_credential_id. The mapping will be based on the Credential TYPE, he mapping would
+       default_credential. The mapping will be based on the Credential TYPE, he mapping would
        be a list of dictionaries with {"name", "id"}
 
        This function reads the credentials directory for all the available credentials and updates
@@ -837,7 +837,7 @@ def create_creds_mapping():
         with open(creds, 'r') as f:
             c_data = json.load(f)
             d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), "id": c_data.get('metadata').get('id')}
-    upsert_pss_record('default_credential_id', d, False)
+    upsert_pss_record('default_credential', d, False)
 
 if __name__ == "__main__":
     try:

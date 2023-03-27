@@ -19,6 +19,12 @@ import re
 import ZODB, ZODB.FileStorage
 from ZODB import DB
 
+try:
+    sys.path.append(f"/usr/share/unskript")
+    from unskript_db_utils import PssDB, CodeSnippetsDB
+except Exception as e:
+    raise e
+
 """
 Utility function that will be used in the unskript-client for DB
 access. The utility functions uses ZoDB. 
@@ -27,38 +33,6 @@ access. The utility functions uses ZoDB.
 """
 LIST OF CONSTANTS USED IN THIS FILE
 """
-PSS_DB_DIR="/data/db"
-PSS_DB_PATH="/data/db/unskript_pss.db"
-CS_DB_PATH="/var/unskript/snippets.db"
-SNIPPETS_FILE="/var/unskript/code_snippets.json"
-CUSTOM_SNIPPETS="/data/custom/custom_snippets.json"
-
-def init_pss_db() -> DB:
-    """init_pss_db This function initializes PSS db. 
-       :rtype: DB object. 
-    """
-    if not os.path.exists(PSS_DB_DIR):
-        os.mkdir(PSS_DB_DIR)
-    
-    if not os.path.exists(PSS_DB_PATH):
-        pss = ZODB.FileStorage.FileStorage(PSS_DB_PATH)
-        db = DB(pss)
-    
-        # connection = db.open()
-        # root = connection.root()
-        with db.transaction() as connection:
-            root = connection.root()
-            root['audit_trail'] = {}
-            root['default_credential_id'] = {}
-            root['check_run_trail'] = {}
-            root['current_execution_status'] = {}
-            del root
-            del connection
-
-    else:
-        db = DB(PSS_DB_PATH)
-    
-    return db
 
 
 def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
@@ -85,19 +59,46 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
     if isinstance(data, dict) != True:
         raise Exception(f"Data is expected to be of type Dictionary type, found {type(data)}")
     
-    db = init_pss_db()
-    with db.transaction() as connection: 
-        root = connection.root()
-        if overwrite:
-            root[name] = data
-        else:
-            d = root[name]
-            d.update(data)
-            root[name] = d
-        del root
-        del connection 
-
-    db.close()
+    db = PssDB()
+    db_data = []
+    if name == 'audit_trail':
+        key = [x for x in data.keys()][0]
+        k = str(key.urn.split(':')[-1])
+        db_data.append(k)
+        db_data.append(data[key].get('time_stamp'))
+        check_id = [x for x in data[key].get('check_status').keys()][0]
+        db_data.append(check_id)
+        db_data.append(data[key]['check_status'][check_id].get('check_name'))
+        db_data.append(data[key]['check_status'][check_id].get('status'))
+        db_data.append(data[key]['check_status'][check_id].get('connector'))
+        db_data.append(data[key].get('summary'))
+    elif name == 'default_credential':
+        for k,v in data.items():
+            t = []
+            t.append(k)
+            t.append(data[k].get('name')) 
+            t.append(data[k].get('id'))
+            db.insert_or_replace(name, t)
+        return
+    elif name == 'current_execution_status':
+        check_id = [x for x in data.get('exec_status').keys()][0]
+        db_data.append(check_id)
+        db_data.append(data['exec_status'][check_id].get('failed_runbook'))
+        db_data.append(data['exec_status'][check_id].get('check_name'))
+        db_data.append(data['exec_status'][check_id].get('current_status'))
+        db_data.append(data['exec_status'][check_id].get('connector_type'))
+        db_data.append(data['exec_status'][check_id].get('passed_timestamp'))
+        db_data.append(data['exec_status'][check_id].get('failed_timestamp'))
+    elif name == 'check_run_trail':
+        check_id = [x for x in data.keys()][0]
+        db_data.append(check_id)
+        db_data.append(data[check_id].get('time_stamp'))
+        db_data.append(data[check_id].get('check_name'))
+        db_data.append(data[check_id].get('connector_type'))
+        db_data.append(data[check_id].get('status'))
+        db_data.append(data[check_id].get('failed_objects'))
+        
+    db.insert_or_replace(name, db_data)
 
 
 def get_pss_record(name: str):
@@ -115,67 +116,64 @@ def get_pss_record(name: str):
         print(f"ERROR: Name cannot be empty")
         return {} 
     
-    db = init_pss_db()
-    data = None
-    with db.transaction() as connection:
-        root = connection.root()
-        data = root.get(name)
-        if data == None:
-            # If data does not exist, lets create it
-            root[name] = {}
-        del root 
-    
-    db.close()
-
-    if data == None:
+    data = {}
+    db = PssDB()
+    cur = db.cursor()
+    result = cur.execute(f"SELECT * FROM {name}")
+    if name == 'audit_trail':
+        for r in result: 
+            temp_data = {}
+            exec_id = r[0]
+            check_id = r[2]
+            temp_data[exec_id] = {}
+            temp_data[exec_id]['time_stamp'] = r[1]
+            temp_data[exec_id]['check_status'] = {}
+            temp_data[exec_id]['check_status'][check_id] = {}
+            temp_data[exec_id]['check_status'][check_id]['status'] = r[4]
+            temp_data[exec_id]['check_status'][check_id]['connector'] = r[5]
+            temp_data[exec_id]['summary'] = r[6]
+            data.update(temp_data)
+    elif name == 'default_credential':
+        for r in result:
+            temp_data = {}
+            type = r[0]
+            temp_data[type] = {}
+            temp_data[type]['name'] = r[1]
+            temp_data[type]['id'] = r[2]
+            data.update(temp_data)
+    elif name == 'check_run_trail':
+        for r in result:
+            temp_data = {}
+            check_id = r[0]
+            temp_data[check_id] = {}
+            temp_data[check_id]['time_stamp'] = r[1]
+            temp_data[check_id]['action_uuid'] = check_id 
+            temp_data[check_id]['check_name'] = r[2] 
+            temp_data[check_id]['connector_type'] = r[3] 
+            temp_data[check_id]['status'] = r[4] 
+            temp_data[check_id]['failed_objects'] = r[5]
+            data.update(temp_data)
+    elif name == 'current_execution_status':
+        for r in result:
+            temp_data = {}
+            check_id = r[0]
+            temp_data['exec_status'] = {}
+            temp_data['exec_status'][check_id] = {}
+            temp_data['exec_status'][check_id]['failed_runbook'] = r[1]
+            temp_data['exec_status'][check_id]['check_name'] = r[2]
+            temp_data['exec_status'][check_id]['current_status'] = r[3]
+            temp_data['exec_status'][check_id]['connector_type'] = r[4]
+            temp_data['exec_status'][check_id]['passed_timestamp'] = r[5]
+            temp_data['exec_status'][check_id]['failed_timestamp'] = r[6]
+            data.update(temp_data)
+    else:
+        pass
+             
+    if not data:
         print(f"ERROR: No records found by the name {name}")
         return {}
 
     return data
-
-def delete_pss_record(record_name: str, document_name: str) -> bool:
-    """delete_pss_record This function deletes ZoDB entry by name
-       document_name in the record name. The Record Name is the name
-       is the collection name where the document_name is stored. 
-
-       :type record_name: string
-       :param record_name: Name of Key with which the data was stored on ZoDB
-
-       :type document_name: string
-       :param document_name: Document name, which should be delete form the data
-              that was saved with the key record_name. 
-
-       :rtype: Boolean
-    """
-    if record_name in ("", None) or document_name in ("", None):
-        print(f"ERROR: Record Name and/or Document Name cannot be empty")
-        return False 
-    
-    db = init_pss_db()
-    tm = transaction.TransactionManager()
-    connection = db.open(tm)
-    root = connection.root()
-  
-    data = root.get(record_name)
-    if data == None:
-        return False 
-
-    # Data would be list of dictionaries. 
-    # Lets iterate over the list to find the matching key and delete it
-    after_delete_data = []
-    for d in data:
-        for k in d.keys():
-            if k == document_name:
-                pass
-            else:
-                after_delete_data.append(d)
-    
-    root[record_name] = after_delete_data
-    
-    tm.commit()
-    del root 
-    connection.close()
-    return True 
 
 
 def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
@@ -187,36 +185,40 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
 
        :rtype: List of the checks 
     """
-    try:
-        db = DB(CS_DB_PATH)
-    except Exception as e:
-        raise e 
-    tm = transaction.TransactionManager()
-    connection = db.open(tm)
-    root = connection.root()
-    cs = root.get('unskript_cs')
-    list_checks = []
-    if cs == None:
-        raise Exception("Code Snippets Are missing")
-    for s in cs:
-        d = s.snippet
-        s_connector = d.get('metadata').get('action_type')
-        s_connector = s_connector.split('_')[-1].lower()
-                  
-        if d.get('metadata').get('action_is_check') == False:
-            continue
-        if connector_name.lower() != 'all' and not re.match(connector_name.lower(), s_connector):
-            continue
-        if full_snippet == False:
-            list_checks.append([s_connector.capitalize(), d.get('name'), d.get('uuid')])
-        else:
-            list_checks.append(d)
+    list_check = []
+    db = CodeSnippetsDB()
+    cur = db.cursor()
+    if connector_name.lower() == 'all':
+        query = f"SELECT * FROM snippets;"
+    else:
+        c_name = "LEGO_TYPE_" + connector_name.upper() + "*"
+        #query = f"SELECT * FROM snippets WHERE type = \"{c_name}\";"
+        query = f"SELECT * FROM snippets WHERE type GLOB \"{c_name}\";"
+        print(f"QUERY is {query}")
+    
+    # FOR FUTURE USE
+    all_lego_result = cur.execute(query)
 
-    tm.commit()
-    del root 
-    connection.close()
-    db.close()
-    return list_checks
+    all_check_result = []
+    for r in all_lego_result:
+        # Lets filter all checks legos
+        data = r[-1] 
+        data_dict = json.loads(data)
+        if data_dict.get('metadata').get('action_is_check') == True:
+            all_check_result.append(r)
+
+     
+    for r in all_check_result:
+        if full_snippet:
+            data = r[-1]
+            data_dict = json.loads(data)
+            list_check.append(data_dict)
+        else:
+            c_name = r[2]
+            c_name = c_name.replace('LEGO_TYPE_', '')
+            list_check.append([c_name.upper(), r[0], r[3]])
+
+    return list_check
 
 def get_creds_by_connector(connector_type: str):
     """get_creds_by_connector This function queries ZoDB and returns the
@@ -232,25 +234,12 @@ def get_creds_by_connector(connector_type: str):
     if connector_type is ('', None):
         return retval
     
-    db = init_pss_db() 
-    tm = transaction.TransactionManager()
-    connection = db.open(tm)
-    root = connection.root()
-    try:
-        creds_dict = root.get('default_credential_id')
-    except:
-        pass 
-    finally:
-        if creds_dict == None:
-            pass
-        else:
-            for cred in creds_dict.keys():
-                if cred == connector_type: 
-                    retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
-                    break
-    tm.commit()
-    del root 
-    connection.close()
-    db.close()
+    creds_dict = get_pss_record('default_credential')
+    if not creds_dict:
+        return retval 
+    
+    for cred in creds_dict.keys():
+        if cred == connector_type: 
+            retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
 
     return retval
