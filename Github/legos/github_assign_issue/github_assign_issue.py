@@ -63,10 +63,8 @@ def github_assign_issue(handle, owner:str, repository:str, issue_number:int, ass
         owner = handle.get_user(owner)
         repo_name = owner.login + '/' + repository
         repo = handle.get_repo(repo_name)
-        issues = repo.get_issues()
-        for issue in issues:
-            if issue.number == issue_no:
-                result = issue.add_to_assignees(assignee)
+        issue = repo.get_issue(issue_no)
+        result = issue.add_to_assignees(assignee)
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
