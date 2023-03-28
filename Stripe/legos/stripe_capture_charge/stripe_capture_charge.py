@@ -13,19 +13,16 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_capture_charge_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        output = func(*args, **kwargs)
-        print('\n')
-        pp.pprint(output)
-        return output
-    return Printer
 
-
-@legoPrinter
 def stripe_capture_charge(handle, charge_id:str) -> Any:
     """stripe_capture_charge Capture the payment of an existing, uncaptured, charge.
 
@@ -40,6 +37,6 @@ def stripe_capture_charge(handle, charge_id:str) -> Any:
         charge = handle.Charge.capture(charge_id)
         return charge
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

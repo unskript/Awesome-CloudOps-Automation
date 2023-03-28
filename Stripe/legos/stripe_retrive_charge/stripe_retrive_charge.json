@@ -1,5 +1,5 @@
 {
-    "action_title": " Retrive a Charge",
+    "action_title": "Retrive a Charge",
     "action_description": " Retrive a Charge",
     "action_type": "LEGO_TYPE_STRIPE",
     "action_entry_function": "stripe_retrive_charge",

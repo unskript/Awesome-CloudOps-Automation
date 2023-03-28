@@ -4,7 +4,6 @@
 ##
 import pprint
 from typing import Any
-
 from pydantic import BaseModel, Field
 
 
@@ -51,19 +50,15 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_update_customer_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        update_customer = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(update_customer)
-        return update_customer
-    return Printer
-
-
-@legoPrinter
 def stripe_update_customer(
         handle,
         customer_id: str,
@@ -75,7 +70,6 @@ def stripe_update_customer(
         metadata: dict,
         shipping: dict,
         address: dict) -> Any:
-
     """stripe_update_customer Update a customer
 
         :type customer_id: string
@@ -108,7 +102,6 @@ def stripe_update_customer(
         :rtype: String with response from the describe command.
     """
     # Input param validation
-
     try:
         customer = handle.Customer.modify(
             customer_id,
@@ -123,6 +116,6 @@ def stripe_update_customer(
         )
         return customer
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

@@ -4,7 +4,6 @@
 ##
 import pprint
 from typing import Any, Dict
-
 from pydantic import BaseModel, Field
 
 
@@ -48,22 +47,15 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_update_charge_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        update_charge = func(*args, **kwargs)
-        if update_charge:
-            print('\n\n')
-            pp.pprint(update_charge)
-            return update_charge
-        else:
-            return None
-    return Printer
-
-
-@legoPrinter
 def stripe_update_charge(
         handle,
         charge_id: str,
@@ -105,7 +97,6 @@ def stripe_update_charge(
         :rtype: String with response from the describe command.
     """
     # Input param validation
-
     try:
         charge = handle.Charge.modify(
             charge_id,
@@ -119,6 +110,6 @@ def stripe_update_charge(
         )
         return charge
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

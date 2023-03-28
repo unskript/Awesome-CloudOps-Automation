@@ -6,6 +6,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
 from tabulate import tabulate
+import pprint
 
 class InputSchema(BaseModel):
     amount: int = Field(
@@ -23,17 +24,16 @@ class InputSchema(BaseModel):
         description='Reason for the Charge. Small Description about charge.')
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        od, data = func(*args, **kwargs)
-        print('\n')
-        print(od)
-        print('\n\n', "* More details can be found in data variable", type(data))
-        return od, data
-    return Printer
+def stripe_create_charge_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-@legoPrinter
+
 def stripe_create_charge(handle, amount: int, source: str = "", description: str = "", currency: str = "usd") -> Tuple:
     """stripe_create_charge Charges a credit card or other payment source to the given amount
         in the given currency.

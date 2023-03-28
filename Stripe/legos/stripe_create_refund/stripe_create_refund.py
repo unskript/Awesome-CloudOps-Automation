@@ -4,8 +4,9 @@
 ##
 import pprint
 from typing import Any
-
 from pydantic import BaseModel, Field
+
+
 class InputSchema(BaseModel):
     charge_id: str = Field(
         title='Charge Id',
@@ -13,22 +14,15 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_create_refund_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        refund_obj = func(*args, **kwargs)
-        if refund_obj:
-            print('\n\n')
-            pp.pprint(refund_obj)
-            return refund_obj
-        else:
-            return None
-    return Printer
-
-
-@legoPrinter
 def stripe_create_refund(handle, charge_id:str) -> Any:
     """stripe_create_refund Create a Refund
 
@@ -43,7 +37,6 @@ def stripe_create_refund(handle, charge_id:str) -> Any:
         refund_obj = handle.Refund.create(charge=charge_id)
         return refund_obj
     except Exception as e:
-        print('\n\n')
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

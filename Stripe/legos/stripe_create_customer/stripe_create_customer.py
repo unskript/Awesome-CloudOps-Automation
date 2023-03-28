@@ -13,19 +13,16 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_create_customer_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        customer = func(*args, **kwargs)
-        print('\n')
-        pp.pprint(customer)
-        return customer
-    return Printer
 
-
-@legoPrinter
 def stripe_create_customer(handle, params:dict) -> Any:
     """stripe_create_customer Create a customer
 
@@ -35,11 +32,10 @@ def stripe_create_customer(handle, params:dict) -> Any:
         :rtype: String with response from the describe command.
     """
     # Input param validation
-
     try:
         customer = handle.Customer.create(**params)
         return customer
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

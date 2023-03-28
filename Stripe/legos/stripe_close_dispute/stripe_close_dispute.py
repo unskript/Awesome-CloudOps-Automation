@@ -14,19 +14,16 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_close_dispute_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        output = func(*args, **kwargs)
-        print('\n')
-        pp.pprint(output)
-        return output
-    return Printer
 
-
-@legoPrinter
 def stripe_close_dispute(handle, dispute_id:str) -> Any:
     """stripe_close_dispute Close Dispute
 
@@ -36,11 +33,10 @@ def stripe_close_dispute(handle, dispute_id:str) -> Any:
         :rtype: String with response from the describe command.
     """
     # Input param validation
-
     try:
         resp = handle.Dispute.close(dispute_id)
         return resp
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None
