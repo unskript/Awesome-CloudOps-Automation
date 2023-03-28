@@ -12,6 +12,39 @@ from tabulate import tabulate
 class InputSchema(BaseModel):
     pass
 
+def k8s_get_cluster_health_printer(output):
+    if not output:
+        return
+    print(output)
+    
+def normalize_cpu(value):
+    """
+    Return CPU in milicores if it is configured with value
+    """
+    if re.match(r"[0-9]{1,9}m", str(value)):
+      cpu = re.sub("[^0-9]", "", value)
+    elif re.match(r"[0-9]{1,4}$", str(value)):
+      cpu = int(value) * 1000
+    elif re.match(r"[0-9]{1,15}n", str(value)):
+      cpu = int(re.sub("[^0-9]", "", value)) // 1000000
+    elif re.match(r"[0-9]{1,15}u", str(value)):
+      cpu = int(re.sub("[^0-9]", "", value)) // 1000
+    return int(cpu)
+
+def normalize_memory(value):
+    """
+    Return Memory in MB
+    """
+    if re.match(r"[0-9]{1,9}Mi?", str(value)):
+      mem = re.sub("[^0-9]", "", value)
+    elif re.match(r"[0-9]{1,9}Ki?", str(value)):
+      mem = re.sub("[^0-9]", "", value)
+      mem = int(mem) // 1024
+    elif re.match(r"[0-9]{1,9}Gi?", str(value)):
+      mem = re.sub("[^0-9]", "", value)
+      mem = int(mem) * 1024
+    return int(mem)
+
 
 def k8s_get_abnormal_events(node_api, node_name: str, security_level: str = "Warning") -> str:
     """k8s_get_abnormal_events This is a helper function that is called by the main function to
@@ -49,10 +82,10 @@ def k8s_get_cluster_health(handle) -> Tuple:
     nodes = node_api.list_node() 
     for node in nodes.items():
         # Lets check Node Pressure, more than 80%, will need to to raise an exception
-        cpu_usage = node.status.allocatable['cpu']
-        cpu_capacity = node.status.capacity['cpu']
-        mem_usage = node.status.allocatable['memory']
-        mem_capacity = node.status.capacity['memory']
+        cpu_usage = normalize_cpu(node.status.allocatable['cpu'])
+        cpu_capacity = normalize_cpu(node.status.capacity['cpu'])
+        mem_usage = normalize_memory(node.status.allocatable['memory'])
+        mem_capacity = normalize_memory(node.status.capacity['memory'])
         cpu_usage_percent = (cpu_usage / cpu_capacity) * 100
         mem_usage_percent = (mem_usage / mem_capacity) * 100 
         if cpu_usage_percent >= 80 or mem_usage_percent >= 80:
