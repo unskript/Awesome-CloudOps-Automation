@@ -91,7 +91,7 @@ def k8s_get_cluster_health(handle) -> Tuple:
         cpu_usage_percent = (cpu_usage / cpu_capacity) * 100
         mem_usage_percent = (mem_usage / mem_capacity) * 100 
         if cpu_usage_percent >= 80 or mem_usage_percent >= 80:
-            raise Exception(f"Node {node.metadata.name} experiencing high CPU / MEM usage")
+            raise Exception(f"Node {node.metadata.name} Experiencing High CPU {round(cpu_usage_percent,2)}% / MEM {round(mem_usage_percent,2)}% usage")
         
         # Lets get abnormal events. Lets go with `warning` as the default level
         events = k8s_get_abnormal_events(node_api, node.metadata.name)
