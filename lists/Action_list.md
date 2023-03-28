@@ -84,6 +84,7 @@
 * [Aws get cloudwatch metrics redshift.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_redshift) 
 * [Aws get cloudwatch metrics sqs.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_sqs) 
 * [Aws get cloudwatch statistics.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_statistics) 
+* [Aws get ebs volumes without gp3 type.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type) 
 * [Aws get ec2 cpu consumption.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_cpu_consumption) 
 * [Aws get ec2 data traffic.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_data_traffic) 
 * [Aws get ec2 instance age.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_instance_age) 
