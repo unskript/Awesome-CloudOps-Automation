@@ -1,6 +1,6 @@
 {
-    "action_title": " Retrieve a Charge",
-    "action_description": " Retrieve a Charge",
+    "action_title": " Retrive a Charge",
+    "action_description": " Retrive a Charge",
     "action_type": "LEGO_TYPE_STRIPE",
     "action_entry_function": "stripe_retrive_charge",
     "action_needs_credential": true,
