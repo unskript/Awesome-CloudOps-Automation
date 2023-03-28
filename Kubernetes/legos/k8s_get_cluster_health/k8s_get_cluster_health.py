@@ -2,6 +2,8 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import re
+
 from typing import Optional, List, Tuple
 from kubernetes import client
 from kubernetes.client.rest import ApiException
