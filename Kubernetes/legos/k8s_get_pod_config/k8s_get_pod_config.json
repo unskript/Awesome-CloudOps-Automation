@@ -6,6 +6,6 @@
     "action_needs_credential": true,
     "action_supports_poll": true,
     "action_supports_iteration": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_STR"
-}
+    "action_output_type": "ACTION_OUTPUT_TYPE_STR",
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ,"CATEGORY_TYPE_K8S","CATEGORY_TYPE_K8S_POD"]
     
