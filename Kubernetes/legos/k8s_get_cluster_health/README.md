@@ -24,6 +24,7 @@ This Lego takes handle (K8S) object returned from the task.validator(...)
 
 ## Lego Output
 Here is a sample output.
+<img src="./1.png">
 
 
 ## See it in Action
