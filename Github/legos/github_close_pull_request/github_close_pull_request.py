@@ -1,4 +1,3 @@
-
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
@@ -24,13 +23,14 @@ class InputSchema(BaseModel):
     )
 
 
-def github_get_pull_request_reviewers_printer(output):
+
+def github_close_pull_request_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_request_number: int) -> List:
-    """github_get_pull_request_reviewers returns reviewers of a pull request
+def github_close_pull_request(handle, owner:str, repository:str, pull_request_number: int) -> str:
+    """github_close_pull_request returns time at which the pull request was closed
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -42,9 +42,9 @@ def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_r
         :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
         :type pull_request_number: int
-        :param pull_request_number: Pull request number. Eg: 167
+        :param pull_request_number: Pull request number. Eg: 167 
 
-        :rtype: List of reviewers of a pull request
+        :rtype: String of details of pull request closure
     """
     result = []
     pr_number = int(pull_request_number)
@@ -53,10 +53,17 @@ def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_r
         repo_name = owner.login+'/'+repository
         repo = handle.get_repo(repo_name)
         pr = repo.get_pull(pr_number)
-        review_requests = pr.get_review_requests()
-        for request in review_requests:
-            for r in request:
-                result.append(r.login)
+        try:
+            if pr.state == "open":
+                result = pr.edit(state='closed')
+            else:
+                return f"PR number {pr.number} is already closed"
+            if result is None:
+                return f"PR {pr.number} was closed at: {pr.closed_at} "
+        except GithubException as e:
+            if e.status == 404:
+                raise Exception("You need admin access of an organization in case the repository is a part of an organization")
+            raise e.data
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
@@ -65,8 +72,6 @@ def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_r
         raise e.data
     except Exception as e:
         raise e
-    if len(result) == 0:
-        return [f"No reviewers added for Pull Number {pr.number}"]
     return result
 
 

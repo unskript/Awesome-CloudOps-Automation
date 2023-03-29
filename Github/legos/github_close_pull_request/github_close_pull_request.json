@@ -1,0 +1,11 @@
+{
+  "action_title": "Github Close Pull Request",
+  "action_description": "Close pull request based on pull request number",
+  "action_type": "LEGO_TYPE_GITHUB",
+  "action_entry_function": "github_close_pull_request",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_STR",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true"
+}
