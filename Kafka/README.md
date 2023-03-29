@@ -2,7 +2,7 @@
 
  # Kafka Actions 
 
-* [Kafka check in sync replicas.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_check_in_sync_replicas) 
+* [Kafka check in-sync replicas.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_check_in_sync_replicas) 
 * [Kafka check offline partitions.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_check_offline_partitions) 
 * [Kafka check replicas available.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_check_replicas_available) 
 * [Kafka get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_get_handle) 
