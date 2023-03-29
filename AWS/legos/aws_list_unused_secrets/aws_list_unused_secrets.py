@@ -69,4 +69,4 @@ def aws_list_unused_secrets(handle, max_age_days: int = 30, region: str = "") ->
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
