@@ -56,20 +56,18 @@ def github_get_issue(handle, owner:str, repository:str, issue_number:int) -> Dic
         owner = handle.get_user(owner)
         repo_name = owner.login + '/' + repository
         repo = handle.get_repo(repo_name)
-        issues = repo.get_issues()
-        for issue in issues:
-            if issue.number == issue_no:
-                issue_details["title"] = issue.title
-                issue_details["issue_number"] = issue.number
-                if type(issue.assignee) == 'NoneType':
-                    issue_details["assignee"] = issue.assignee.login
-                else:
-                    issue_details["assignee"] = issue.assignee
-                issue_details["body"] = issue.body
-                issue_details["state"] = issue.state
-                dummy_date = issue.updated_at
-                formatted_date = dummy_date.strftime("%d-%m-%Y")
-                issue_details["updated_at"] = formatted_date
+        issue = repo.get_issue(issue_no)
+        issue_details["title"] = issue.title
+        issue_details["issue_number"] = issue.number
+        if type(issue.assignee) == 'NoneType':
+            issue_details["assignee"] = issue.assignee.login
+        else:
+            issue_details["assignee"] = issue.assignee
+        issue_details["body"] = issue.body
+        issue_details["state"] = issue.state
+        dummy_date = issue.updated_at
+        formatted_date = dummy_date.strftime("%d-%m-%Y")
+        issue_details["updated_at"] = formatted_date
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
