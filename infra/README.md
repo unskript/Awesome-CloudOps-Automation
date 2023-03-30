@@ -2,7 +2,7 @@
 
  # infra Actions 
 
-* [Workflow done.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_done) 
+* [Infra workflow done.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/infra_workflow_done) 
 * [Workflow ss append keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_append_keys) 
 * [Workflow ss create keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_create_keys) 
 * [Workflow ss delete keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_delete_keys) 

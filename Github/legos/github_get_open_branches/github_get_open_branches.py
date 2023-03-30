@@ -3,10 +3,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
 from pydantic import BaseModel, Field
-from github import GithubException
+from typing import List
 import pprint
+from github import GithubException
 
 
 class InputSchema(BaseModel):
@@ -18,45 +18,39 @@ class InputSchema(BaseModel):
         description='Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"',
         title='Repository',
     )
-    pull_request_number: int = Field(
-        description='Pull request number. Eg: 167', 
-        title='Pull Request Number'
-    )
 
 
-def github_get_pull_request_reviewers_printer(output):
+def github_get_open_branches_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_request_number: int) -> List:
-    """github_get_pull_request_reviewers returns reviewers of a pull request
+
+def github_get_open_branches(handle, owner: str, repository: str)-> List:
+    """github_get_open_branches returns 100 open github branches for a user.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
-
+    
         :type owner: string
         :param owner: Username of the GitHub user. Eg: "johnwick"
 
         :type repository: string
         :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
-        :type pull_request_number: int
-        :param pull_request_number: Pull request number. Eg: 167
-
-        :rtype: List of reviewers of a pull request
+        :rtype: List of branches for a user for a repository
     """
     result = []
-    pr_number = int(pull_request_number)
     try:
-        owner = handle.get_user(owner)
-        repo_name = owner.login+'/'+repository
-        repo = handle.get_repo(repo_name)
-        pr = repo.get_pull(pr_number)
-        review_requests = pr.get_review_requests()
-        for request in review_requests:
-            for r in request:
-                result.append(r.login)
+        user = handle.get_user(login=owner)
+        repos = user.get_repos()
+        repo_name = owner+"/"+repository
+        if len(list(repos)) == 0:
+            return [f"{owner} does not have any repositories"]
+        for repo in repos:
+            if repo.full_name == repo_name:
+                branches = repo.get_branches()
+                [result.append(branch.name) for branch in branches[:100]]
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
@@ -65,8 +59,7 @@ def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_r
         raise e.data
     except Exception as e:
         raise e
-    if len(result) == 0:
-        return [f"No reviewers added for Pull Number {pr.number}"]
     return result
+
 
 

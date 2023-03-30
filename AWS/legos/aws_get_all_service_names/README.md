@@ -8,13 +8,13 @@ For a given region, this Action will output all the Service Names
 
 ## Lego Details
 
-    def aws_get_all_service_names2(handle, region:str) -> List:
+    def aws_get_all_service_names(handle, region:str) -> List:
 
         handle: Object of type unSkript AWS Connector
         region: Location of the S3 buckets.
 
 ## Lego Input
-This Lego take2 two inputs handle and region.
+This Lego take two inputs handle and region.
 
 ## Lego Output
 Here is a sample output.
