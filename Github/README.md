@@ -10,6 +10,7 @@
 * [Github delete branch.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_delete_branch) 
 * [Github get branch.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_branch) 
 * [Github get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_handle) 
+* [Github get issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_issue) 
 * [Github get open branches.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_open_branches) 
 * [Github get pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_pull_request) 
 * [Github get team.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_team) 
