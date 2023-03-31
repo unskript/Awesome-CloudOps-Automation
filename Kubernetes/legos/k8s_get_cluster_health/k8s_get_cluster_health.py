@@ -97,7 +97,7 @@ def k8s_get_cluster_health(handle) -> Tuple:
         # Lets get abnormal events. Lets go with `warning` as the default level
         events = k8s_get_abnormal_events(node_api, node.metadata.name)
         if events != '':
-            return (False, [{"error": events}])
+            return (False, [{"events": events}])
         
         # Get Node & Pod Condition
         node_condition = []
