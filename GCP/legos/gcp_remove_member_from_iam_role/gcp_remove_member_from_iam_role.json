@@ -1,6 +1,6 @@
 {
     "action_title": "GCP Remove Member from IAM Role",
-    "action_description": "Remove member from the IAM role which alredy available",
+    "action_description": "Remove member from the chosen IAM role.",
     "action_type": "LEGO_TYPE_GCP",
     "action_entry_function": "gcp_remove_member_from_iam_role",
     "action_needs_credential": true,

@@ -1,6 +1,6 @@
 {
   "name": "Detach EC2 Instance from ASG",
-  "description": "This runbook can be used to detatch an instance from Auto Scaling Group. You can remove (detach) an instance that is in the Service state from an Auto Scaling group. After the instance is detached, you can manage it independently from the rest of the Auto Scaling group. By detaching an instance, you can move an instance out of one Auto Scaling group and attach it to a different group. For more information, see Attach EC2 instances to your Auto Scaling group.",
+  "description": "This runbook can be used to detach an instance from Auto Scaling Group. You can remove (detach) an instance that is in the Service state from an Auto Scaling group. After the instance is detached, you can manage it independently from the rest of the Auto Scaling group. By detaching an instance, you can move an instance out of one Auto Scaling group and attach it to a different group. For more information, see Attach EC2 instances to your Auto Scaling group.",
   "uuid": "5ef84b8b1ddc1b41112bc18d14fdda95535f0b271a31232c821f7b56753b77fd",
   "icon": "CONNECTOR_TYPE_AWS",
   "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],

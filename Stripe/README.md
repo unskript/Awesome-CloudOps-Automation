@@ -10,7 +10,7 @@
 * [Get Stripe Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_handle/stripe_get_handle.py): Get Stripe Handle
 * [Retrieve details of a dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_dispute/stripe_retrieve_dispute.py): Retrieve details of a dispute
 * [Retrieve a refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_refund/stripe_retrieve_refund.py): Retrieve a refund
-* [ Retrive a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrive_charge/stripe_retrive_charge.py):  Retrive a Charge
+* [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrive_charge/stripe_retrive_charge.py): Retrieves a Charge
 * [Update a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_charge/stripe_update_charge.py): Update a Charge
 * [Update Dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_dispute/stripe_update_dispute.py): Update Dispute
 * [Update Refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_refund/stripe_update_refund.py): Updates the specified refund by setting the values of the parameters passed.

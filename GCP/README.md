@@ -1,6 +1,6 @@
 
 # GCP Actions
-* [GCP Add Member to IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_member_to_iam_role/gcp_add_member_to_iam_role.py): Adding member to the IAM role which alredy available
+* [GCP Add Member to IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_member_to_iam_role/gcp_add_member_to_iam_role.py): Adding member to the IAM role which already available
 * [GCP Add Role to Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_role_to_service_account/gcp_add_role_to_service_account.py): Adding role and member to the service account
 * [Create GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_bucket/gcp_create_bucket.py): Create a new GCP bucket in the given location
 * [Create GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_filestore_instance/gcp_create_filestore_instance.py): Create a new GCP Filestore Instance in the given location
@@ -21,9 +21,9 @@
 * [GCP List GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_gke_cluster/gcp_list_gke_cluster.py): GCP List GKE Cluster
 * [GCP List Nodes in GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_nodes_in_gke_cluster/gcp_list_nodes_in_gke_cluster.py): GCP List Nodes of GKE Cluster
 * [List all Public GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets/gcp_list_public_buckets.py): List all publicly available GCP buckets
-* [List GCP Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_secrets/gcp_list_secrets.py): Liset GCP Secrets
+* [List GCP Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_secrets/gcp_list_secrets.py): List of your GCP Secrets
 * [GCP List Service Accounts](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts/gcp_list_service_accounts.py): GCP List Service Accounts
-* [GCP Remove Member from IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role/gcp_remove_member_from_iam_role.py): Remove member from the IAM role which alredy available
+* [GCP Remove Member from IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role/gcp_remove_member_from_iam_role.py): Remove member from the chosen IAM role.
 * [GCP Remove Role from Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_role_from_service_account/gcp_remove_role_from_service_account.py): Remove role and member from the service account
 * [Remove role from user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role/gcp_remove_user_role.py): GCP lego for removing a role from a user (default: 'viewer')
 * [GCP Resize a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_resize_gke_cluster/gcp_resize_gke_cluster.py): GCP Resize a GKE cluster by modifying nodes
