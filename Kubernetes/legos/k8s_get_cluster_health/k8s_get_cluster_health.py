@@ -121,6 +121,7 @@ def k8s_get_cluster_health(handle) -> Tuple:
         
 
         # Check the status of the Kubernetes pods
+        # FIXME: Use field selector to match condition. 
         pods = pods_api.list_pod_for_all_namespaces()
 
         for pod in pods.items:
