@@ -1,12 +1,16 @@
+---
 name: Create New Action with files
 description: File an Action Request with files
 title: "[Action]: "
-labels: ["action", "triage"]
+labels:
+  - action
+  - triage
 body:
   - type: markdown
-   attributes:
-      value: |
-        Thanks for taking the time to suggest a new Action! If you have used ChatGPT to generate the files for an action, you can submit them here.
+    attributes:
+      value: >
+        Thanks for taking the time to suggest a new Action! If you have used
+        ChatGPT to generate the files for an action, you can submit them here.
   - type: input
     id: contact
     attributes:
@@ -28,7 +32,7 @@ body:
     attributes:
       label: Action Readme
       description: paste in your readme file (in markdown)
-      placeholder: 
+      placeholder: null
     validations:
       required: true
   - type: textarea
@@ -36,15 +40,14 @@ body:
     attributes:
       label: Action json
       description: paste in your json file
-      placeholder: 
+      placeholder: null
     validations:
       required: true
-   - type: textarea
+  - type: textarea
     id: Actionpy
     attributes:
       label: Action python
       description: paste in your python file
-      placeholder: 
     validations:
       required: true
   - type: textarea
@@ -52,7 +55,7 @@ body:
     attributes:
       label: Action Outputs
       description: What do you want to see in the Action output (and type)
-      placeholder: 
+      placeholder: null
     validations:
       required: true
   - type: textarea
@@ -66,7 +69,8 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      description: By submitting this issue, you agree to follow our [Code of
+        Conduct](https://example.com)
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
