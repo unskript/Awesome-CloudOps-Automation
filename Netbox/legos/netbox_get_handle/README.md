@@ -4,7 +4,7 @@
 <br>
 
 ## Description
-This Lego Get Nomad Handle.
+This Lego Get Netbox Handle.
 
 
 ## Lego Details
