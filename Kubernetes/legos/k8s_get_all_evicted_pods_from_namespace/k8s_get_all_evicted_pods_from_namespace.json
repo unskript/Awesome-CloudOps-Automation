@@ -8,7 +8,7 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
-    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" , "CATEGORY_TYPE_K8S", "CATEGORY_TYPE_K8S_POD"],
     "action_next_hop": ["a9b8a0c8ecdb5ef76f01e81689319f16095d6136620a4c7f78d57e81ba9a3ba0"],
     "action_next_hop_parameter_mapping": {}
 }
