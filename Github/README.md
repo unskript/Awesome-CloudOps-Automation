@@ -2,6 +2,7 @@
 
  # Github Actions 
 
+* [Github assign issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_assign_issue) 
 * [Github check if pull request is merged.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_check_if_pull_request_is_merged) 
 * [Github close pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_close_pull_request) 
 * [Github count stars.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_count_stars) 
