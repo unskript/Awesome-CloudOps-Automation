@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from botocore.exceptions import ClientError
 import pprint
@@ -19,19 +19,20 @@ class InputSchema(BaseModel):
 def aws_filter_unencrypted_s3_buckets_printer(output):
     if output is None:
         return
+
     pprint.pprint(output)
 
 
 def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> Tuple:
-    """aws_filter_unencrypted_s3_buckets List of unencrypted bucket name .
+    """aws_filter_unencrypted_s3_buckets List of unencrypted S3 bucket name .
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
-        
+
         :type region: string
         :param region: Filter S3 buckets.
 
-        :rtype: Tuple with execution result and unencrypted bucket name.
+        :rtype: Tuple with status result and list of unencrypted S3 bucket name.
     """
     result = []
     all_regions = [region]
@@ -53,10 +54,9 @@ def aws_filter_unencrypted_s3_buckets(handle, region: str = "") -> Tuple:
                     result.append(bucket_dict)
         except Exception as error:
             pass
-
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+    
+    if len(result) != 0:
+        return (False, result)
+    else:
+        return (True, [])
 

@@ -10,6 +10,7 @@ import datetime
 
 class InputSchema(BaseModel):
     threshold_days: int = Field(
+        default=90,
         title="Threshold Days",
         description="Threshold number(in days) to check for expiry. Eg: 30"
     )
@@ -19,7 +20,7 @@ def aws_list_expiring_access_keys_printer(output):
         return
     pprint.pprint(output)
 
-def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
+def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
     """aws_list_expiring_access_keys returns all the ACM issued certificates which are about to expire given a threshold number of days
 
         :type handle: object
@@ -28,18 +29,19 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
         :type threshold_days: int
         :param threshold_days: Threshold number of days to check for expiry. Eg: 30 -lists all access Keys which are expiring within 30 days
 
-        :rtype: Result Dictionary of result
+        :rtype: Status, List of expiring access keys and Error if any 
     """
-    final_result=[]
+    result =[]
     all_users=[]
     try:
         all_users = aws_list_all_iam_users(handle=handle)
     except Exception as error:
-        pass
+        raise error 
+
     for each_user in all_users:
         try:
             iamClient = handle.client('iam')
-            result = {}
+            final_result={}
             response = iamClient.list_access_keys(UserName=each_user)
             for x in response["AccessKeyMetadata"]:
                 if len(response["AccessKeyMetadata"])!= 0:
@@ -48,14 +50,14 @@ def aws_list_expiring_access_keys(handle, threshold_days: int)-> Tuple:
                     diff = right_now-create_date
                     days_remaining = diff.days
                     if days_remaining > threshold_days:
-                        result["username"] = x["UserName"]
-                        result["access_key_id"] = x["AccessKeyId"]
-            if len(result)!=0:
-                final_result.append(result)
+                        final_result["username"] = x["UserName"]
+                        final_result["access_key_id"] = x["AccessKeyId"]
+            if len(final_result)!=0:
+                result.append(final_result)
         except Exception as e:
-            pass
-    execution_flag = False
-    if len(final_result) > 0:
-        execution_flag = True
-    output = (execution_flag, final_result)
-    return output
+            raise e
+            
+    if len(result) != 0:
+        return (False, result)
+    else:
+        return (True, [])

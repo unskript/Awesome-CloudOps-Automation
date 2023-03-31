@@ -2,7 +2,7 @@
     "action_title": "Get AWS CloudWatch Metrics for AWS/NetworkELB",
     "action_description": "Get AWS CloudWatch Metrics for Network Loadbalancer",
     "action_type": "LEGO_TYPE_AWS",
-    "action_entry_function": "aws_get_cloudwatch_metrics_NetworkELB",
+    "action_entry_function": "aws_get_cloudwatch_metrics_network_elb",
     "action_needs_credential": true,
     "action_supports_poll": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_STR",

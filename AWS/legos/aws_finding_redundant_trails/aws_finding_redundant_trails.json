@@ -1,0 +1,15 @@
+{
+    "action_title": "Finding Redundant Trails in AWS",
+    "action_description": "This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_finding_redundant_trails",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_is_check":true,
+    "action_categories": ["CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT"],
+    "action_next_hop": ["c4d55f5dd5bb964460f4ad7335daa8bb094792b0d64149dbddca019513f05598"],
+    "action_next_hop_parameter_mapping": {}
+}
+  

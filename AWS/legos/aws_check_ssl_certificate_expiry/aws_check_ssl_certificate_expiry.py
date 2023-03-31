@@ -74,4 +74,4 @@ def aws_check_ssl_certificate_expiry(
     for k,v in result.items():
         if v < threshold_days:
             expiring_domain_list[k]=v
-    print(expiring_domain_list)
+    return expiring_domain_list

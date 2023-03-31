@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from beartype import beartype
 import argparse
 from google.oauth2 import service_account
+import pprint
 
 class InputSchema(BaseModel):
     role: str = Field(
@@ -18,14 +19,13 @@ class InputSchema(BaseModel):
         description = "GCP Resource in the form of project/<PROJECT_ID>/serviceAccounts/<SERVICE_ACCOUNT_NAME>"
         
     )
-def modify_policy_remove_member_printer(output):
+def gcp_remove_user_role_printer(output):
     if output is None:
         return
     pprint.pprint("User role removed successfully.")
     pprint.pprint(output)
 
-@beartype
-def modify_policy_remove_member(policy, role: str, member: str, resource: str):
+def gcp_remove_user_role(policy, role: str, member: str, resource: str):
     """Removes a  member from a role binding.
 
         :type role: string

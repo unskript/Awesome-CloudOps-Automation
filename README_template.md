@@ -3,7 +3,7 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![Twitter][twitter-shield]][twitter-url]
-![awesome-cloudops][awesome-shield]
+
 
 <br />
 <p align="center">
@@ -13,12 +13,17 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    CloudOps automation made simpler!
+    [[BADGE]]
+  
+  <p align="center">
+    CloudOps automation made simple!
     <br />
-    <a href="https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript"><strong>Explore the docs</strong></a>
+    <br />
+      <a href="https://www.youtube.com/channel/UCvtSYNHVvuogq2u-F7UDMkw"><strong>unSkript on YouTube</strong></a>
     <br />
     <br />
-    <a href="https://medium.com/unskript">Visit our blog</a>
+    <a href="https://unskript.com/blog">Visit our blog</a>
     ·
     <a href="https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&template=bug_report.md&title=">Report Bug</a>
     ·
@@ -31,55 +36,85 @@
 Simplify CloudOps automation for developers and DevOps engineers. 
 
 ## Vision 
-A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our `Actions` that build automated `Runbooks`. 
+A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our *Actions* that build automated *RunBooks*. 
 
->Are you looking for a script to automate your Kubernetes management? A script to restart the pod that is OOMkilled? We will cover these workflows (and more!). 
-
-
+>**Better. Faster. Smarter SRE.**
 
 ___
 <br>
 
-# Quick start Guide
+# Quick Start Guide
 
-## Get started with Docker:
+
+
+## Open Source Docker
+
+* Open Source version with all of the Actions and RunBooks runs in a local Docker instance. 
+* Clone this `Awesome-CloudOps-Automation` repository. In the snippet below, we are cloning the Awesome repo under $HOME directory. Please modify the command below to clone it into any other directory.
+
+```
+cd $HOME
+git clone https://github.com/unskript/Awesome-CloudOps-Automation 
+cd Awesome-CloudOps-Automation
+```
+
+* Launch the docker with the path to our CUSTOM DIRECTORY
 
 ```
 docker run -it -p 8888:8888 \
- -v $HOME/.unskript:/data \
+ -v $HOME/Awesome-CloudOps-Automation/custom:/data \
+ -v $HOME/.unskript:/unskript \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
 
-> Note: New files are created inside Docker and will persist unless --rm option is used. If you'd like to also save the credentials and xRunBooks on your local machine, use Docker's -v parameter when you start the container.
+* [YouTube Playlist to get Started in Docker](https://www.youtube.com/watch?v=QT0sghAo_t0&list=PLG7TPzTSJYkfCAtWKpdTjlRcyS21mXsE2)
 
-## Open and Use a xRunBook
-Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.  A table will display the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook.
+---
+## Cloud Free Trial
+* Includes all of the features of the Open Source, plus some basic enterprise features like [scheduling](https://docs.unskript.com/unskript-product-documentation/guides/xrunbooks/schedules) and [environments](https://docs.unskript.com/unskript-product-documentation/guides/proxies/connect-your-environment). 
+* [Free Trial: Cloud](https://us.app.unskript.io/) 
+* [YouTube Playlist using Free Trial](https://www.youtube.com/watch?v=QjqAcJEiQNo&list=PLG7TPzTSJYkeOIAOj9iaxCaczKHX_qwZ_)
 
-Click on the URL of the xRunBook you would like to explore. It will open in a new browser tab. To run this XRunBook:
+---
+<br/>
+
+# Open and Use a xRunBook
+
+|**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
+| :---: | :---: |
+| Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb. | Once you have completed the Onboarding Flow, All the RunBooks can be found in the xRunBoks link, under the *unSkript xRunBooks* tab |
+| A table lists the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook. Click on the URL of the xRunBook you would like to explore. | You can Search, or select a category or RunBook. To open a xRUnBook, Click the 3 dot menu and import into your workspace. |
+
+
+
 
 1. Check the `Parameters` button at the top of the page. This lists all of the input parameters, and the default values.  Change them if needed.
-2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and which inputs are used for each action.
+2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and which inputs are used for each action. [How to Add Credentials](https://docs.unskript.com/unskript-product-documentation/guides/connectors).
 3. Once each Action has been assigned Credentials and inputs, run each Action (in order) to run your xRunBook.
 
-## Add your own Runbook
-
-All xRunBooks are stored in the ~/.unskript/runbooks Folder. When Docker starts, any new file that in that folder gets loaded and you can navigate it to by http://127.0.0.1:8888:8888/lab/tree/<FILENAME>.ipyn
-
-## Included xRunBooks 
-
-These xRunBooks are included in every install.  Use them as is, or make a copy to modify for your use!
-
-| **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-[[DYNAMIC_LIST]]
 
 
-## Contributing
+## Included xRunBooks
+<details>
+  <summary><b>See Full List</b></summary>
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
+  These xRunBooks are included in every install.  Use them as is, or make a copy to modify for your use!
 
-### How to Contribute?
+  | **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
+  | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+  [[DYNAMIC_LIST]]
+</details>
+
+<br/>
+<br/>
+
+
+# Contribute to Awesome-CloudOps-Automation
+
+Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
+
+## How to Contribute?
 
 1. Work with us on any of our [open issues](https://github.com/unskript/awesome-cloudops-automation/issues).
 2. Create a new Action. Read the [Action developer guide](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/DEVELOPERGUIDE.md) for more details.
@@ -87,71 +122,95 @@ Contributions are what make the open source community such an amazing place to l
 
 
 
-### Contribution Tips:
+## Contribution Tips:
 1. Use the [Docker environment](#get-started-with-docker), or our free [cloud sandbox](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) for testing your contribution.
-2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) so you can present yourself and get support.
+2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) to discuss your PR, and for support if you run into any issues.
 
-### Step by step process for HacktoberFest
-#### Issues
-1. Find or propose an issue you want to work on. 
-2. Prepare the issue before you start working on it. 
-    - Make sure the description is clear. 
-    - Tag yourself in Assignees section. 
 
-3. To create a new xRunBook:
-  
-  - **Using Docker**:
-    1. `git clone https://github.com/unskript/Awesome-CloudOps-Automation`
-    2. `cd Awesome-CloudOps-Automation`
-    3. ```CONTAINER=`docker ps -l | grep awesome-runbooks | awk '{print $1}'` ```
-    4. `docker cp templates/runbooks/GCP.ipynb $CONTAINER:/home/jovyan/runbooks/`<YOUR_RUNBOOK_NAME.ipynb>
-    5. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin editing.
-  - **unSkript sandbox**:
-    1. The onboarding flow will drop you into Runbook creation with sandbox credentials
-    2.  Start building your lego from the proposed handle (GCP, k8s et al)
-5. Create a branch
-6. Copy over the template directory into a directory naming your connector and your Action(lego) name:
+
+## Create a new xRunBook:
+  |**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
+| :---: | :---: |
+| Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open. | From the xRunBooks Page, Click the **Create New** button. Name you xRunBook, Give it a description, and choose your proxy.  |
+| Your saved xRunBook can be found at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` | Once you save your xRunBook, navigate to the xRunBooks listing.  The 3 dot menu next to your RunBook has a "Download" option. | 
+
+
+  1. Submit Your xRunBook to the repository. Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
+  2. Copy the saved RunBook from the Custom folder into the folder of the Connector used, and submit a PR!
+
+
+
+## Import a xRunBook
+  1. xRunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` . Place your existing RunBook in this directory.
+  2. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin using your xRunBook.
+
+## Create a new Action:
+
+### Create a new action inside an existing RunBook.
+
+   1. If you will not use external credentials, click *+Add Action* at the top of the menu.
+   2. If you will be using an existing credential, add an existing Action for that service (like AWS), and edit the code to create your new Action.
+   3. If the service you'd like to build for does not have credentials yet, please [file an issue](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=Credential%2Ctriage&template=add_credential.yml&title=%5BCredential%5D%3A+).
+### Creating and connecting your Action
+
+1. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
+2.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
+
+
+
+
+## Extending Docker
+You can use our base docker to extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create you own custom docker.
+
+<br/>
+
+## unSkript CLI
+
+With `unskript-ctl.sh` (called unSkript cuttle) allows you to
+  * List Existing Runbook
+  * List All Existing Health Checks
+  * List All Existing Health Check per connector
+  * Run All Existing Health Checks 
+  * Run All Existing Health Checks per connector
+  * Run an existing Runbook
+
+
+Here are the Options that are supported by the CTL Command
 ```
-cp -r templates/legos <your_connector>/legos/<your_lego_name> 
+unskript-ctl.sh 
+usage: unskript-ctl [-h] [-lr] [-rr RUN_RUNBOOK] [-rc RUN_CHECKS] [-df DISPLAY_FAILED_CHECKS] [-lc LIST_CHECKS] [-sa SHOW_AUDIT_TRAIL]
+
+Welcome to unSkript CLI Interface VERSION: 0.1.0
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -lr, --list-runbooks  List Available Runbooks
+  -rr RUN_RUNBOOK, --run-runbook RUN_RUNBOOK
+                        Run the given runbook
+  -rc RUN_CHECKS, --run-checks RUN_CHECKS
+                        Run all available checks [all | connector | failed]
+  -df DISPLAY_FAILED_CHECKS, --display-failed-checks DISPLAY_FAILED_CHECKS
+                        Display Failed Checks [all | connector]
+  -lc LIST_CHECKS, --list-checks LIST_CHECKS
+                        List available checks, [all | connector]
+  -sa SHOW_AUDIT_TRAIL, --show-audit-trail SHOW_AUDIT_TRAIL
+                        Show audit trail [all | connector | execution_id]
 ```
->For Example: `cp -r templates/legos GCP/legos/gcp_filter_instance_by_label` will create a gcp_filter_instance_by_label xRunBook in the GCP directory.
-
-7. To create a Lego/action, you need to populate 4 files
-    - lego.json : add the description, headline and function_name
-    - lego.py : copy over the code you wrote inside the Jupyter interface into this file. 
-      * To Copy foober.ipynb from Docker to your local machine:
-       * ```CONTAINER=`docker ps -l | grep awesome-runbooks | awk '{print $1}'` ```
-      *  ```docker cp $CONTAINER:/home/jovyan/runbooks/foobar.ipynb foobar.ipynb```
-
-    - README.md : some description about what the lego does
-    - 1.png : a screenshot of the output of your code
-7. Open a Pull Request and add a member of the core team as Reviewer (Jayasimha, Shloka, Amit, Abhishek)
-9. Expect feedback and merge in the next 48h-72h.
-10. Once merged, promote your work on LinkedIn, Twitter and other social media channels! (Optional, but people need to know you are awesome 😉)
 
 
-![](https://github.com/unskript/Awesome-CloudOps-Automation/blob/9ca0b1a41bf0215933f09c2651a0d199cd702b90/.github/onboarding_hfest_2022.gif?raw=true)
-
-
-##### Guideline to create Runbook
-
-You can read the [Guideline for creating a Runbook](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/guidelines-to-creating-runbook.md)
-
-
-## HacktoberFest 2022 Resource
-
-The resources that are available for testing for our HacktoberFest are [here](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/hfest_2022_resource.md)
-
-
-## Community
+# Community
 [Join the CloudOps Community Slack Channel](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) to connect with other users, contributors and awesome people behind awesome CloudOps automation project. 
 
-## Roadmap
+<br/>
+
+# Road Map
 
 See the [open issues](https://github.com/unskript/awesome-cloudops-automation/issues) for a list of proposed features (and known issues).
 
 
-## License
+<br/>
+
+# License
 Except as otherwise noted this project is licensed under the `Apache License, Version 2.0` .
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 .

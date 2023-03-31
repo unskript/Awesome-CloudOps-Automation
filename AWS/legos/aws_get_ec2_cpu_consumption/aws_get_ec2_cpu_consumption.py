@@ -11,7 +11,7 @@ from unskript.connectors.aws import aws_get_paginator
 
 from beartype import beartype
 @beartype
-def aws_get_ec2_CPU_averagev2_printer(output):
+def aws_get_ec2_cpu_consumption_printer(output):
     if output is None:
         return
     pprint.pprint(output)
@@ -22,7 +22,7 @@ class InputSchema(BaseModel):
         description='AWS Region of the ECS service')
 
 @beartype
-def aws_get_ec2_CPU_averagev2(handle, region: str) -> Dict:
+def aws_get_ec2_cpu_consumption(handle, region: str) -> Dict:
 
 
     ec2Client = handle.client('ec2', region_name=region)

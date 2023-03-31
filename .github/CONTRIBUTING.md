@@ -1,7 +1,5 @@
 # Contributing
-We like contributions, Thanks for taking time to contribute and helping us make this project better! The following is a set of guidelines for contributing to awesome-cloudops-automation. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
-
-When contributing to this repository, please first discuss the change you wish to make via GitHub issue.
+We like contributions, Thanks for taking time to contribute and helping us make this project better! The following is a set of guidelines for contributing to awesome-cloudops-automation. 
  
 Please note we have a code of conduct, please follow it in all your interactions with the project.
  
@@ -9,7 +7,6 @@ Please note we have a code of conduct, please follow it in all your interactions
  
 ### Due diligence
 -------------
- 
 Before submitting a bug, please do the following:
  
 * Perform **basic troubleshooting** steps:
@@ -25,14 +22,8 @@ Make sure issue you raised gets the attention it deserves: issues with missing
 information may be ignored or punted back to you, delaying a fix.  The below
 constitutes a bare minimum; more info is almost always better:
  
-* **What version of the core programming language interpreter/compiler are you
- using?** For example, Most of our services are written in Java so you what version of Java you're on?
-* **What operating system are you on?** Windows? (10? Home? Pro?)
- Mac OS X?  (10.x.x?) Linux? (Which distro? Which version of that
- distro? 32 or 64 bits?) Again, more detail is better.
-* **Are you using latest codebase and are on main branch?** Ideally, you
- followed the advice above and have ruled out (or verified that the problem
- exists in) a few different versions.
+* **Which environment are you using?** Are you using the free trial, the Docker build? What browser are you using?  Including the unSkript build number (which can be seen at the top of each RunBook) will help us triage.
+
 * **How can the developers recreate the bug on their end?** If possible,
  include a copy of your code or an example repo, the command you used to invoke it, and the full
  output of your run (if applicable.)
@@ -44,41 +35,25 @@ constitutes a bare minimum; more info is almost always better:
  it easy for others to take just that one set of changes from your repository,
  in case you have multiple unrelated changes floating around.
  
-   * A corollary: **don't submit unrelated changes in the same branch/pull
-     request**! The maintainer shouldn't have to reject your awesome bugfix
-     because the feature you put in with it needs more review.
  
 * **Base your new branch off of the appropriate branch** on the main
  repository:
  
    * **Bug fixes** should be based on the branch named after the **oldest
      supported release line** the bug affects.
- 
-       * E.g. if a feature was introduced in 1.1, the latest release line is
-         1.3, and a bug is found in that feature - make your branch based on
-         1.1.  The maintainer will then forward-port it to 1.3 and master.
+
        * Bug fixes requiring large changes to the code or which have a chance
-         of being otherwise disruptive, may need to base off of **main**
+         of being otherwise disruptive, may need to base off of **master**
          instead. This is a judgement call -- ask the devs!
  
-   * **New features** should branch off of **the 'main' branch**.
+   * **New features** should branch off of **the 'master' branch**.
  
        * Note that depending on how long it takes for the dev team to merge
-         your patch, the copy of ``main`` you worked off of may get out of
+         your patch, the copy of ``master`` you worked off of may get out of
          date! If you find yourself 'bumping' a pull request that's been
          sidelined for a while, **make sure you rebase or merge to latest
          main** to ensure a speedier resolution.
  
-### Tests aren't optional
----------------------
- 
-Any bugfix that doesn't include a test proving the existence of the bug being
-fixed, may be suspect.  Ditto for new features that can't prove they actually
-work.
- 
-We've found that test-first development really helps make features better
-architected and identifies potential edge cases earlier instead of later.
-Writing tests before the implementation is strongly encouraged.
  
 ## Full example
 ------------
@@ -89,8 +64,7 @@ submitting a basic bugfix. (This workflow only changes slightly if the project
 is hosted at Bitbucket, self-hosted, or etc.)
  
 ### Preparing your Fork
- 
- 
+  
 1. Click 'Fork' on Github, creating e.g. `yourname/theproject`.
 2. Clone your project: `git clone git@github.com:yourname/theproject`.
 3. `cd theproject`
@@ -98,7 +72,7 @@ is hosted at Bitbucket, self-hosted, or etc.)
  
 ### Making your Changes
  
- 
+
 1. Write tests expecting the correct/fixed functionality; make sure they fail.
 2. Hack, hack, hack.
 3. Run tests again, making sure they pass.
@@ -119,12 +93,7 @@ is hosted at Bitbucket, self-hosted, or etc.)
 ## Support Channels
 ---
 Whether you are a user or contributor, official support channels include:
-- GitHub issues: hhttps://github.com/unskript/Awesome-CloudOps-Automation/issues/new
-- Slack: 
+- GitHub issues: https://github.com/unskript/Awesome-CloudOps-Automation/issues/new
+- Slack: https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation
  
-## Sources
----
- 
-Currently this document draws from the contribution documentation for a handful
-of some open source projects: [Fabric](http://fabfile.org), [Invoke](http://pyinvoke.org), [Paramiko](http://paramiko.org), etc.
  

@@ -15,14 +15,25 @@ class InputSchema(BaseModel):
         title='Region',
         description='Name of the AWS Region'
     )
+    termination_tag_name: Optional[str] = Field(
+        default="terminationDateTag",
+        title='Termination Date Tag Name',
+        description='Name of the Termination Date Tag given to an EC2 instance. By default "terminationDateTag" is considered '
+    )
+    lifetime_tag_name: Optional[str] = Field(
+        default="lifetimeTag",
+        title='Lifetime Tag Name',
+        description='Name of the Lifetime Date Tag given to an EC2 instance. By default "lifetimeTag" is considered '
+    )
 
 
 def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
     if output is None:
         return
+    
     pprint.pprint(output)
 
-def fetch_instances_from_valid_region(res,r) -> List:
+def fetch_instances_from_valid_region(res,r, termination_tag_name, lifetime_tag_name):
     result=[]
     instances_dict={}
     for reservation in res:
@@ -30,22 +41,22 @@ def fetch_instances_from_valid_region(res,r) -> List:
                 try:
                     tagged_instance = instance['Tags']
                     tag_keys = [tags['Key'] for tags in tagged_instance]
-                    if 'terminationDateTag' not in tag_keys or 'lifetimeTag' not in tag_keys:
+                    if termination_tag_name not in tag_keys or lifetime_tag_name not in tag_keys:
                         result.append(instance['InstanceId'])
-                    elif 'terminationDateTag' not in tag_keys and 'lifetimeTag' not in tag_keys:
+                    elif termination_tag_name not in tag_keys and lifetime_tag_name not in tag_keys:
                         result.append(instance['InstanceId'])
-                    if 'terminationDateTag' in tag_keys:
+                    if termination_tag_name in tag_keys:
                         for x in instance['Tags']:
-                            if x['Key'] == 'terminationDateTag':
+                            if x['Key'] == termination_tag_name:
                                 right_now = date.today()
                                 date_object = datetime.strptime(x['Value'], '%d-%m-%Y').date()
                                 if date_object < right_now:
                                     result.append(instance['InstanceId'])
-                            elif x['Key'] == 'lifetimeTag':
+                            elif x['Key'] == lifetime_tag_name:
                                 launch_time = instance['LaunchTime']
                                 convert_to_datetime = launch_time.strftime("%d-%m-%Y")
                                 launch_date = datetime.strptime(convert_to_datetime,'%d-%m-%Y').date()
-                                if x['Value'] is not 'INDEFINITE':
+                                if x['Value'] != 'INDEFINITE':
                                     if launch_date < right_now:
                                         result.append(instance['InstanceId'])
                 except Exception as e:
@@ -56,19 +67,25 @@ def fetch_instances_from_valid_region(res,r) -> List:
         instances_dict['instances']= result
     return instances_dict
 
-def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None) -> Tuple:
+def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None, termination_tag_name:str='terminationDateTag', lifetime_tag_name:str='lifetimeTag') -> Tuple:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 
         Assumed tag key format - terminationDateTag, lifetimeTag
-        Assumed Date format for both keys is - dd-mm-yy
+        Assumed Date format for both keys is -> dd-mm-yy
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
 
         :type region: string
-        :param region: Used to filter the instance for specific region.
+        :param region: Optional, Name of AWS Region
 
-        :rtype: Tuple of result and instances which dont having terminationDateTag and lifetimeTag
+        :type termination_tag_name: string
+        :param termination_tag_name: Optional, Name of the Termination Date Tag given to an EC2 instance. By default "terminationDateTag" is considered 
+
+        :type lifetime_tag_name: string
+        :param lifetime_tag_name: Optional, Name of the Lifetime Date Tag given to an EC2 instance. By default "lifetimeTag" is considered 
+
+        :rtype: Tuple of status, instances which dont having terminationDateTag and lifetimeTag, and error
     """
     final_list=[]
     all_regions = [region]
@@ -78,13 +95,12 @@ def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: st
         try:
             ec2Client = handle.client('ec2', region_name=r)
             all_reservations = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
-            instances_without_tags = fetch_instances_from_valid_region(all_reservations,r)
-            final_list.append(instances_without_tags)
+            instances_without_tags = fetch_instances_from_valid_region(all_reservations, r, termination_tag_name, lifetime_tag_name)
+            if len(instances_without_tags)!=0:
+                final_list.append(instances_without_tags)
         except Exception as e:
             pass
-    execution_flag = False
-    if len(final_list) > 0:
-        execution_flag = True
-    output = (execution_flag, final_list)
-    return output
-
+    if len(final_list)!=0:
+        return (False, final_list)
+    else:
+        return (True, None)

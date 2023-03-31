@@ -18,11 +18,12 @@ class InputSchema(BaseModel):
 def k8s_get_all_evicted_pods_from_namespace_printer(output):
     if output is None:
         return
+
     pprint.pprint(output)
 
 
 def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tuple:
-    """k8s_kubectl_command executes the given kubectl command on the pod
+    """k8s_get_all_evicted_pods_from_namespace returns all evicted pods
 
         :type handle: object
         :param handle: Object returned from the Task validate method
@@ -30,7 +31,7 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
         :type namespace: str
         :param namespace: k8s namespace.
 
-        :rtype: Tuple of execution result and list of evicted pods
+        :rtype: Tuple of status result and list of evicted pods
     """
     if handle.client_side_validation != True:
         print(f"K8S Connector is invalid: {handle}")
@@ -59,9 +60,8 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
     except Exception as e:
         pass
     
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+    if len(result) != 0:
+        return (False, result)
+    else:
+        return (True, [])
     

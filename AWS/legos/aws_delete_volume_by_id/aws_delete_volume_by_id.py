@@ -16,13 +16,13 @@ class InputSchema(BaseModel):
         description='AWS Region.')
 
 
-def aws_delete_volumes_printer(output):
+def aws_delete_volume_by_id_printer(output):
     if output is None:
         return
     pprint.pprint({"Output": output})
 
 
-def aws_delete_volumes(handle, volume_id: str, region: str) -> str:
+def aws_delete_volume_by_id(handle, volume_id: str, region: str) -> str:
     """aws_filter_ebs_unattached_volumes Returns an array of ebs volumes.
 
         :type handle: object

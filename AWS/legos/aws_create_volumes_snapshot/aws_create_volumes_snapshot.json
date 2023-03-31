@@ -1,0 +1,11 @@
+{
+    "action_title": "AWS Create Snapshot For Volume",
+    "action_description": "Create a snapshot for EBS volume of the EC2 Instance for backing up the data stored in EBS",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_create_volumes_snapshot",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_poll": true,
+    "action_supports_iteration": true
+  }
+  

@@ -14,13 +14,13 @@ class InputSchema(BaseModel):
         description = "Name of the project e.g unskript-dev"
     )
 
-def gcp_list_service_account_from_project_printer(output):
+def gcp_list_service_accounts_printer(output):
     if output is None:
         return
     pprint(output)
 
-def gcp_list_service_account_from_project(handle, project_id: str) -> List:
-    """gcp_list_service_account_from_project Returns a list of service accounts
+def gcp_list_service_accounts(handle, project_id: str) -> List:
+    """gcp_list_service_accounts Returns a list of service accounts
 
         :type project_id: string
         :param project_id: Name of the project

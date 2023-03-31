@@ -20,13 +20,13 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region.')
 
-def aws_tag_resources_printer(output):
+def aws_attach_tags_to_resources_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-def aws_tag_resources(handle, resource_arn: list, tag_key: str, tag_value: str, region: str) -> Dict:
-    """aws_tag_resources Returns an Dict of resource info.
+def aws_attach_tags_to_resources(handle, resource_arn: list, tag_key: str, tag_value: str, region: str) -> Dict:
+    """aws_attach_tags_to_resources Returns an Dict of resource info.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).

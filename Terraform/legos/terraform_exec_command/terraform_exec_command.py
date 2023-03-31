@@ -3,7 +3,6 @@
 # All rights reserved.
 #
 from pydantic import BaseModel, Field
-from beartype import beartype
 from typing_extensions import Annotated
 
 import requests
@@ -18,7 +17,6 @@ class InputSchema(BaseModel):
         description='Repository that has Terraform Scripts eg: https://github.com/acme/acme.git'
     )
     dir_path: Optional[str] = Field(
-        None,
         title='Directory Path',
         description='Directory within Repository to run the terraform command eg: acme, ./, acme/terrform/main'
     )
@@ -28,8 +26,8 @@ class InputSchema(BaseModel):
     )
 
 
-def terraform_exec_command(handle, repo, dir_path, command) -> str:
-    """terraform_exec_command Executes the terraform command 
+def terraform_exec_command(handle, repo, command, dir_path:str=None) -> str:
+    """terraform_exec_command Executes the terraform command
        with any arguments.
 
        :type handle: object
@@ -47,17 +45,21 @@ def terraform_exec_command(handle, repo, dir_path, command) -> str:
         :rtype: Str Output of the command .
     """
     assert(command.startswith("terraform"))
-
     print(f'WARNING: Please note terraform apply and terraform destroy will be run with -auto-approve for non-interactive run')
 
+    # Reason we are doing this instead of setting the default value in InputSchema is "" dont get inserted for the default value.
+    # causing an issue when we drag and drop in jupyter.
+    if dir_path is None:
+        dir_path = "./"
+
     output = ''
-    # sanitize inputs that have come from validate 
+    # sanitize inputs that have come from validate
 
     try:
         result = handle.sidecar_command(repo, handle.credential_id, dir_path, command, str(""))
         output = result.data.decode('utf-8')
         output = json.loads(output)['output']
     except Exception as e:
-        output = f"Execution was not successful %s " % e 
-        
+        output = f"Execution was not successful %s " % e
+
     return output

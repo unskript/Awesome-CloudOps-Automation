@@ -12,8 +12,8 @@ This Lego get k8s kube system config map.
     k8s_get_config_map_kube_system(handle: object,config_map_name: str, namespace: str)
 
         handle: Object of type unSkript K8S Connector
-        config_map_name: Kubernetes Config Map Name.
-        namespace: Kubernetes namespace.
+        config_map_name: Kubernetes Config Map Name.(Optional)
+        namespace: Kubernetes namespace.(Optional)
 
 ## Lego Input
 This Lego take three input handle, config_map_name and namespace.

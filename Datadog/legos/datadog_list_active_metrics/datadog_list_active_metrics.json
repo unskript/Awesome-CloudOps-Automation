@@ -1,0 +1,10 @@
+{
+    "action_title": "Datadog list active metrics",
+    "action_description": "Get the list of actively reporting metrics from a given time until now.",
+    "action_type": "LEGO_TYPE_DATADOG",
+    "action_entry_function": "datadog_list_active_metrics",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_supports_iteration": true
+}

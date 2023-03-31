@@ -5,7 +5,7 @@
 import subprocess
 import pprint
 from pydantic import BaseModel, Field
-from typing import Dict
+from typing import Dict, Tuple
 from subprocess import PIPE
 import json
 
@@ -19,7 +19,7 @@ def elasticsearch_check_health_status_printer(output):
     print(output)
 
 
-def elasticsearch_check_health_status(handle) -> Dict:
+def elasticsearch_check_health_status(handle) -> Tuple:
     """elasticsearch_check_health_status checks the status of an Elasticsearch cluster .
 
             :type handle: object
@@ -27,9 +27,16 @@ def elasticsearch_check_health_status(handle) -> Dict:
 
             :rtype: Result Dict of result
     """
-    
+    result = []
+    cluster_health ={}
     output = handle.web_request("/_cluster/health?pretty",  # Path
                                 "GET",                      # Method
                                 None)                       # Data
     
-    return output 
+    if output['status'] != 'green':
+        cluster_health[output['cluster_name']] = output['status'] 
+        result.append(cluster_health)
+    if len(result) != 0:
+        return(False, result)
+    else:
+        return(True, None)

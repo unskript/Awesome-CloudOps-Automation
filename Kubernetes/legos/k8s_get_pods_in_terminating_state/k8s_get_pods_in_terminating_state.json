@@ -1,0 +1,14 @@
+{
+    "action_title": "Get all K8s Pods in Terminating State",
+    "action_description": "Get all K8s pods in Terminating State",
+    "action_type": "LEGO_TYPE_K8S",
+    "action_entry_function": "k8s_get_pods_in_terminating_state",
+    "action_is_check": true,
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "action_next_hop": ["7108717393788c2d76687490938faffe5e6e2a46f05405f180e089a166761173"],
+    "action_next_hop_parameter_mapping": {}
+}

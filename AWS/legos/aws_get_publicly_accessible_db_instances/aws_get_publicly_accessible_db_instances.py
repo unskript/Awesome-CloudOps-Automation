@@ -3,7 +3,8 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Optional, List, Tuple
+from typing import Optional, Tuple
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
 import pprint
@@ -11,19 +12,24 @@ import pprint
 
 class InputSchema(BaseModel):
     region: Optional[str] = Field(
+        '',
         title='Region for RDS',
         description='Region of the RDS.'
     )
 
 
-def aws_publicly_accessible_db_instances_printer(output):
+def aws_get_publicly_accessible_db_instances_printer(output):
     if output is None:
         return
-    pprint.pprint(output)
+        
+    if isinstance(output, CheckOutput):
+        print(output.json())
+    else:
+        pprint.pprint(output)
 
 
-def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
-    """aws_publicly_accessible_db_instances Gets all publicly accessible DB instances
+def aws_get_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
+    """aws_get_publicly_accessible_db_instances Gets all publicly accessible DB instances
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -31,7 +37,7 @@ def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
         :type region: string
         :param region: Region of the RDS.
 
-        :rtype: Tuple with execution result and publicly accessible RDS instances.
+        :rtype: CheckOutput with status result and list of publicly accessible RDS instances.
     """
     result = []
     all_regions = [region]
@@ -49,8 +55,8 @@ def aws_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
                     result.append(db_instance_dict)
         except Exception as error:
             pass
-    execution_flag = False
-    if len(result) > 0:
-        execution_flag = True
-    output = (execution_flag, result)
-    return output
+        
+    if len(result) != 0:
+        return (False, result)
+    else:
+        return (True, [])

@@ -1,0 +1,33 @@
+name: Run Legoschema
+on:
+  pull_request:
+    types: [opened, reopened, edited, ready_for_review]
+  push:
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  run-validator: 
+    runs-on: ubuntu-latest 
+    strategy:
+      fail-fast: false 
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+      
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          
+      - name: Run Validator
+        run: |
+          /usr/bin/env python ./validator.py
