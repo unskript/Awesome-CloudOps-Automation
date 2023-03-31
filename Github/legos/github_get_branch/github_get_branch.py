@@ -25,7 +25,7 @@ class InputSchema(BaseModel):
 
 
 def github_get_branch_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
@@ -60,10 +60,11 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> D
                 return [f"{branch_name} not found"]
     except GithubException as e:
         if e.status == 403:
-            return [f"You need push access"]
+            raise Exception("You need admin access")
         if e.status == 404:
-            return [f"No such username or repository"]
-        else:
-            return [e.data]
-    return branch_info
+            raise Exception("No such repository or user found")
+        raise e.data
+    except Exception as e:
+        raise e
+    return result
 

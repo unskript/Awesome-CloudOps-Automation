@@ -54,6 +54,7 @@
 * [Aws filter instances without termination and lifetime tag.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag) 
 * [Aws filter large ec2 instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_large_ec2_instances) 
 * [Aws filter long running instances.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_long_running_instances) 
+* [Aws filter old ebs snapshots.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_old_ebs_snapshots) 
 * [Aws filter public s3 buckets by acl.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_public_s3_buckets_by_acl) 
 * [Aws filter target groups by tags.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_target_groups_by_tags) 
 * [Aws filter unencrypted s3 buckets.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unencrypted_s3_buckets) 
@@ -237,19 +238,24 @@
 
 # Github
 
- * [Github check if pull request is merged.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_check_if_pull_request_is_merged) 
+ * [Github assign issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_assign_issue) 
+* [Github check if pull request is merged.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_check_if_pull_request_is_merged) 
+* [Github close pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_close_pull_request) 
 * [Github count stars.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_count_stars) 
 * [Github create issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_create_issue) 
 * [Github create team.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_create_team) 
 * [Github delete branch.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_delete_branch) 
 * [Github get branch.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_branch) 
 * [Github get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_handle) 
+* [Github get issue.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_issue) 
+* [Github get open branches.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_open_branches) 
 * [Github get pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_pull_request) 
 * [Github get team.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_team) 
 * [Github get user.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_user) 
 * [Github invite user to org.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_invite_user_to_org) 
 * [Github issue comment.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_issue_comment) 
 * [Github list open issues.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_open_issues) 
+* [Github list org members.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_org_members) 
 * [Github list pull request commits.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_request_commits) 
 * [Github list pull request reviewers.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_request_reviewers) 
 * [Github list pull requests.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_pull_requests) 
@@ -258,6 +264,7 @@
 * [Github list stargazers.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_stargazers) 
 * [Github list team members.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_team_members) 
 * [Github list team repos.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_team_repos) 
+* [Github list teams in org.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_teams_in_org) 
 * [Github list webhooks.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_webhooks) 
 * [Github merge pull request.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_merge_pull_request) 
 * [Github remove member from org.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_remove_member_from_org) 
@@ -563,7 +570,7 @@
 
 # infra
 
- * [Workflow done.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_done) 
+ * [Infra workflow done.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/infra_workflow_done) 
 * [Workflow ss append keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_append_keys) 
 * [Workflow ss create keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_create_keys) 
 * [Workflow ss delete keys.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_delete_keys) 
