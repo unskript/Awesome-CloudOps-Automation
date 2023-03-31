@@ -33,9 +33,9 @@ def k8s_get_nodes_with_insufficient_resources(handle) -> Tuple:
     retval = []
     nodes = api_client.list_node().items
     for node in nodes:
-        if node.status.allocatable.cpu < node.status.capacity.cpu \
-            or node.status.allocatable.memory < node.status.capacity.memory \
-            or node.status.allocatable.storage < node.status.capacity.storage:
+        if node.status.allocatable.get('cpu') < node.status.capacity.get('cpu') \
+            or node.status.allocatable.get('memory') < node.status.capacity.get('memory') \
+            or node.status.allocatable.get('storage') < node.status.capacity.get('storage'):
             retval.append(node)
     
     if not retval:

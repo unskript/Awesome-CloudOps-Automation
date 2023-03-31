@@ -14,7 +14,7 @@ This Lego Returns Nodes that have insufficient resources
         handle: Object of type unSkript K8S Connector
 
 ## Lego Input
-This Lego take just one input, the Handle
+This Lego takes just one input, the Handle
 
 ## Lego Output
 Here is a sample output.
