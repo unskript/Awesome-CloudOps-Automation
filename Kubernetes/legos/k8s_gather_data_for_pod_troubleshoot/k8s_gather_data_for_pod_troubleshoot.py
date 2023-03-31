@@ -3,6 +3,7 @@
 # All rights reserved.
 ##
 import pprint
+import json 
 
 from kubernetes import client
 from pydantic import BaseModel, Field
@@ -50,11 +51,12 @@ def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) 
     retval['status'] = status
     
     # Gather Events pertaining to the POD
-    pod_events = ''
-    events = pod_api.list_namespaced_event(namespace=namespace)
+    field_selector = f"involvedObject.name={pod_name}"
+
+    pod_events = []
+    events = pod_api.list_namespaced_event(namespace=namespace, field_selector=field_selector)
     for event in events.items:
-        if event.involved_object.name == pod_name:
-            pod_events += event
+        pod_events.append(json.loads(event))
 
     retval['events'] = pod_events 
 
