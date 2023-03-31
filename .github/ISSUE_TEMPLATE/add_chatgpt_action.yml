@@ -1,9 +1,9 @@
-name: Create New Action
-description: File an Action Request
+name: Create New Action with files
+description: File an Action Request with files
 title: "[Action]: "
 labels: ["action", "triage"]
 body:
- - type: markdown
+  - type: markdown
    attributes:
       value: |
         Thanks for taking the time to suggest a new Action! If you have used ChatGPT to generate the files for an action, you can submit them here.
