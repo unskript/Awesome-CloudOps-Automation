@@ -21,7 +21,7 @@ def aws_modify_public_db_snapshots_printer(output):
     pprint.pprint(output)
 
 
-def aws_modify_public_db_snapshots(handle, db_snapshot_identifier: str, region: str) -> List:
+def aws_modify_public_db_snapshots(handle, db_snapshot_identifier: list, region: str) -> List:
     """aws_modify_public_db_snapshots lists of publicly accessible DB Snapshot Idntifier Info.
 
         :type handle: object

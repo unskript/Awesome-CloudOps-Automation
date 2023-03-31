@@ -4,10 +4,13 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_list_expiring_access_keys",
     "action_needs_credential": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_verbs": ["list"],
     "action_nouns": ["expiring","access","aws"],
-    "action_is_check": true
+    "action_is_check": true,
+    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
+    "action_next_hop": ["e591113f7afc699ee564d67ef912ea2d689acc91d7640a2a05e68c039153bd33","0297f6c80f0416d10484fa2593510515eef2900add97924e3e73beaab5fea819","4ce21d2ac0824cafdddbb4245ffcb1d4c34786ed68c075fb1041eb8c7e22f01d"],
+    "action_next_hop_parameter_mapping": {}
 }

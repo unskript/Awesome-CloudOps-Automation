@@ -7,7 +7,7 @@ This Lego filter AWS application loadBalancers.
 
 ## Lego Details
 
-    aws_list_apllication_loadbalancers(handle: object, region: str)
+    aws_list_application_loadbalancers(handle: object, region: str)
 
         handle: Object of type unSkript AWS Connector
         region: Region of the Classic loadbalancer.

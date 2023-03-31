@@ -38,6 +38,6 @@ def aws_get_manual_database_snapshots(handle, region: str) -> List:
         for snapshot in response:
             result.append(snapshot['DBSnapshotIdentifier'])
     except Exception as error:
-        result.append(error)
+        pass
 
     return result
