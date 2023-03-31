@@ -81,7 +81,17 @@ def k8s_get_cluster_health(handle) -> Tuple:
     """
     node_api = pods_api = client.CoreV1Api(api_client=handle)
 
-    nodes = node_api.list_node() 
+    nodes = node_api.list_node()
+    
+    # Node List : Will hold list of failed nodes
+    # Events List: Holds the events List per Node
+    # Node Condition: Holds State of the node
+    # Pod Condition: Holds state of the pods
+
+    node_list = []
+    events_list = []
+    node_condition = []
+    pod_condition = []
     for node in nodes.items():
         # Lets check Node Pressure, more than 80%, will need to to raise an exception
         cpu_usage = normalize_cpu(node.status.allocatable['cpu'])
@@ -91,16 +101,16 @@ def k8s_get_cluster_health(handle) -> Tuple:
         cpu_usage_percent = (cpu_usage / cpu_capacity) * 100
         mem_usage_percent = (mem_usage / mem_capacity) * 100 
         if cpu_usage_percent >= 80 or mem_usage_percent >= 80:
-            print(f"Node {node.metadata.name} Experiencing High CPU {round(cpu_usage_percent,2)}% / MEM {round(mem_usage_percent,2)}% usage")
-            return (False, [node])
+            #print(f"Node {node.metadata.name} Experiencing High CPU {round(cpu_usage_percent,2)}% / MEM {round(mem_usage_percent,2)}% usage")
+            node_list.append(node)
 
         # Lets get abnormal events. Lets go with `warning` as the default level
         events = k8s_get_abnormal_events(node_api, node.metadata.name)
         if events != '':
-            return (False, [{"events": events}])
+            events_list.append(events)
         
         # Get Node & Pod Condition
-        node_condition = []
+       
         conditions = node.status.conditions
         for condition in conditions:
             
@@ -109,12 +119,10 @@ def k8s_get_cluster_health(handle) -> Tuple:
             else:
                 node_condition.append(condition)
         
-        if not node_condition:
-            return (False, [{"node_condition": node_condition}])
 
         # Check the status of the Kubernetes pods
         pods = pods_api.list_pod_for_all_namespaces()
-        pod_condition = []
+
         for pod in pods.items:
             conditions = pod.status.conditions
             for condition in conditions:
@@ -123,7 +131,14 @@ def k8s_get_cluster_health(handle) -> Tuple:
             else:
                 pod_condition.append(condition)
         
-        if not pod_condition:
-            return (False, [{"unhealthy_pods": pod_condition}])
+    if node_list:
+        return (False, [{"node": node_list}])
+    if events_list:
+        return (False, [{"events": events_list}])
+    if node_condition:
+        return (False, [{"node_condition": node_condition}])
+    if pod_condition:
+        return (False, [{"unhealthy_pods": pod_condition}])
+    
     
     return (True, []) 
