@@ -8,16 +8,16 @@ This Lego assigns a Github issue to a user
 
 ## Lego Details
 
-    github_assign_issue(handle, owner:str, repository:str, issue_number:int, assignees:str)
+    github_assign_issue(handle, owner:str, repository:str, issue_number:int, assignee:str)
 
         handle: Object of type unSkript Github Connector
         owner: String, Username of the GitHub user. Eg: "johnwick"
         repository: String, Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"
         issue_number:int, Issue number. Eg: 345
-        assignees: String, Username of the assignee.
+        assignee: String, Username of the assignee.
 
 ## Lego Input
-This Lego take 5 inputs handle, owner, repository, issue_number, assignees
+This Lego take 5 inputs handle, owner, repository, issue_number, assignee
 
 ## Lego Output
 Here is a sample output.
