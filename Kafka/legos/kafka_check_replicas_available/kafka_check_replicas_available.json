@@ -1,0 +1,11 @@
+{
+    "action_title": "Kafka Check Replicas Available",
+    "action_description": "Checks if the number of replicas not available for communication is equal to zero.",
+    "action_type": "LEGO_TYPE_KAFKA",
+    "action_entry_function": "kafka_check_replicas_available",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_supports_iteration": true
+}
+    

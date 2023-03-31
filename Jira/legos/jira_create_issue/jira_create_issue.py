@@ -4,10 +4,9 @@
 ##
 import enum
 import pprint
-from typing import Optional
+from typing import Optional, Any
 from jira import JIRA
 from pydantic import BaseModel, Field
-from unskript.enums.jira_enums import IssueType
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -38,7 +37,7 @@ class InputSchema(BaseModel):
         title="Description",
         description="Description of the issue"
     )
-    issue_type: IssueType = Field(
+    issue_type: str = Field(
         title="Issue Type",
         description="JIRA Issue Type."
     )
@@ -61,7 +60,7 @@ class InputSchema(BaseModel):
                 Select list (single choice) field is passed as: {"SelectListSingleTest": ["123"]}
                 URL Field is passed as: {"UrlFieldTest": "http://www.example.com}
                 RadioButton field is passed as: {"RadioButtonTest": "Q1"}
-            For more information about custom fields visit: https://confluence.atlassian.com/adminjiracloud/custom-fields-types-in-company-managed-projects-972327807.html
+            For more information about custom fields visit: https://support.atlassian.com/jira-cloud-administration/docs/custom-fields-types-in-company-managed-projects/
             '''
     )
 
@@ -71,7 +70,7 @@ def jira_create_issue_printer(output):
         return
     pp.pprint(output)
 
-def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type: IssueType, description: str = "", fields: dict=None) -> str:
+def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type: str, description: str = "", fields: dict=None) -> str:
     """create_issue creates issue in jira.
         :type project_name: str
         :param project_name: The name of the project for which the issue will be generated
@@ -80,12 +79,12 @@ def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type:
         :type description: str
         :param description: Description of the issue
         :type issue_type: IssueType
-        :param issue_type: JIRA Issue Type. Possible values: Bug|Task|Story|Epic
+        :param issue_type: JIRA Issue Type.
         :type fields: dict
         :param fields: User needs to pass the fields in the format of dict(KEY=VALUE) pair
         :rtype: String with issues key
     """
-    issue_type = issue_type.value if issue_type else None
+    issue_type = issue_type if issue_type else None
     if fields:
         issue_fields = {
             'project': project_name,
@@ -95,11 +94,13 @@ def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type:
         }
 
 
-        for f in handle.fields():
-            if 'schema' not in f:
-                continue
-            for key in list(fields.keys()):
+        for key in list(fields.keys()):
+            found = False
+            for f in handle.fields():
+                if 'schema' not in f:
+                    continue
                 if f['name'] == key:
+                    found = True
                     custom_field_type = f['schema'].get("custom", "")
                     if custom_field_type == CustomFieldTypes.MULTICHECKBOXES.value:
                         issue_fields.update({f['id']: [{'value': i} for i in fields[key]]})
@@ -111,10 +112,8 @@ def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type:
                         issue_fields.update({f['id']: fields[key]})
 
                     elif custom_field_type == CustomFieldTypes.USERPICKER.value:
-                        get_user_groups = handle._get_json("groupuserpicker?query={%s}" % fields[key])
-                        if get_user_groups["users"]["total"] != 0:
-                            account_id = get_user_groups["users"]["users"][0]["accountId"]
-                            issue_fields.update({f['id']: {"accountId":account_id}})
+                        accountId = get_user_accountId(handle, fields[key])
+                        issue_fields.update({f['id']: {"accountId":accountId}})
 
                     elif custom_field_type == CustomFieldTypes.TEXTAREA.value:
                         issue_fields.update({f['id']: fields[key]})
@@ -145,17 +144,39 @@ def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type:
 
                     else:
                         if f['schema']['type'] == "array":
-                            issue_fields.update({f['id']: [{'name': i} for i in fields[key]]})
+                            #There can be 2 scenarios here.
+                            # For labels, its an array of strings.
+                            # {'id': 'labels', 'key': 'labels', 'name': 'Labels', 'custom': False, 'orderable': True,
+                            # 'navigable': True, 'searchable': True, 'clauseNames': ['labels'],
+                            # 'schema': {'type': 'array', 'items': 'string', 'system': 'labels'}}
+                            #
+                            # For others, its an array of dictionary.
+                            # {'id': 'components', 'key': 'components', 'name': 'Components', 'custom': False,
+                            # 'orderable': True, 'navigable': True, 'searchable': True, 'clauseNames': ['component'],
+                            # 'schema': {'type': 'array', 'items': 'component', 'system': 'components'}}
+                            if f['schema']['items'] == "string":
+                                issue_fields.update({f['id']: fields[key]})
+                            else:
+                                issue_fields.update({f['id']: [{'name': i} for i in fields[key]]})
                         elif f['schema']['type'] == "user":
-                            get_user_groups = handle._get_json("groupuserpicker?query={%s}" % fields[key])
-                            if get_user_groups["users"]["total"] != 0:
-                                account_id = get_user_groups["users"]["users"][0]["accountId"]
-                                issue_fields.update({f['id']: {"id": account_id}})
+                            accountId = get_user_accountId(handle, fields[key])
+                            issue_fields.update({f['id']: {"id": accountId}})
                         else:
                             issue_fields.update({f['id']: {'name': fields[key]}})
+
+            if found is False:
+                    raise(Exception(f'Invalid field: {key}'))
+
 
         issue = handle.create_issue(fields=issue_fields)
     else:
         issue = handle.create_issue(project=project_name, summary=summary,
                                     description=description, issuetype={'name': issue_type})
     return issue.key
+
+def get_user_accountId(handle: JIRA, user: str)->str:
+    get_user = handle._get_json("user/search?query=[%s]" % user)
+    if len(get_user) != 0:
+        return get_user[0].get('accountId')
+    else:
+        raise(Exception(f'Unable to get accountId for {user}'))
