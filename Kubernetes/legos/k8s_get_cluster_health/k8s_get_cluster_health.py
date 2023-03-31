@@ -91,37 +91,39 @@ def k8s_get_cluster_health(handle) -> Tuple:
         cpu_usage_percent = (cpu_usage / cpu_capacity) * 100
         mem_usage_percent = (mem_usage / mem_capacity) * 100 
         if cpu_usage_percent >= 80 or mem_usage_percent >= 80:
-            raise Exception(f"Node {node.metadata.name} Experiencing High CPU {round(cpu_usage_percent,2)}% / MEM {round(mem_usage_percent,2)}% usage")
-        
+            print(f"Node {node.metadata.name} Experiencing High CPU {round(cpu_usage_percent,2)}% / MEM {round(mem_usage_percent,2)}% usage")
+            return (False, [node])
+
         # Lets get abnormal events. Lets go with `warning` as the default level
         events = k8s_get_abnormal_events(node_api, node.metadata.name)
         if events != '':
             return (False, [{"error": events}])
         
         # Get Node & Pod Condition
-        node_condition = ''
+        node_condition = []
         conditions = node.status.conditions
         for condition in conditions:
+            
             if condition.type == 'Ready' and condition.status == 'True':
                 break
             else:
-                node_condition += f"\tNode {node.metadata.name} is not ready" 
+                node_condition.append(condition)
         
         if not node_condition:
-            return (False, [{"error": node_condition}])
+            return (False, [{"node_condition": node_condition}])
 
         # Check the status of the Kubernetes pods
         pods = pods_api.list_pod_for_all_namespaces()
-        pod_condition = ''
+        pod_condition = []
         for pod in pods.items:
             conditions = pod.status.conditions
             for condition in conditions:
                 if condition.type == 'Ready' and condition.status == 'True':
                     break
             else:
-                pod_condition += f"\tPod {pod.metadata.namespace}/{pod.metadata.name} is not ready"
+                pod_condition.append(condition)
         
         if not pod_condition:
-            return (False, [{"error": pod_condition}])
+            return (False, [{"unhealthy_pods": pod_condition}])
     
     return (True, []) 
