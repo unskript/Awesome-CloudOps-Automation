@@ -27,7 +27,7 @@ def jira_get_issue_status(hdl: JIRA, issue_id: str)->str:
     """jira_get_issue_status get issue status
 
         :type issue_id: str
-        :param issue_id: Issue ID.
+        :param issue_id: Issue ID.  
 
         :rtype:
     """
