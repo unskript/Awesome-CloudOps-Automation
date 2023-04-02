@@ -23,7 +23,7 @@ def jira_get_issue_status_printer(output):
     pp.pprint(output)
 
 
-def jira_get_issue_status(hdl: JIRA, issue_id: str):
+def jira_get_issue_status(hdl: JIRA, issue_id: str)->str:
     """jira_get_issue_status get issue status
 
         :type issue_id: str
