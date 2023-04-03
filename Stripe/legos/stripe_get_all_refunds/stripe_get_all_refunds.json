@@ -1,10 +1,11 @@
 {
     "action_title": "Get list of refunds",
-    "action_description": " Get list of refunds",
+    "action_description": " Get list of refunds for the given threshold.",
     "action_type": "LEGO_TYPE_STRIPE",
     "action_entry_function": "stripe_get_all_refunds",
     "action_needs_credential": true,
     "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_iteration": true
 }
     

@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -43,7 +43,7 @@ def stripe_update_dispute(handle,
                           dispute_id: str,
                           submit: bool = False,
                           metadata=None,
-                          evidence=None) -> Any:
+                          evidence=None) -> List:
     """stripe_update_dispute Update a Dispute.
 
         :type dispute_id: string
@@ -58,9 +58,10 @@ def stripe_update_dispute(handle,
         :type evidence: dict
         :param evidence: Evidence to upload, to respond to a dispute.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
+    result = []
     if evidence is None:
         evidence = {}
     if metadata is None:
@@ -72,7 +73,8 @@ def stripe_update_dispute(handle,
              metadata=metadata if metadata else {},
              evidence=evidence if evidence else {},
         )
-        return dispute
+        result.append(dispute)
+        return result
     except Exception as e:
         pprint.pprint(e)
 

@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -29,7 +29,7 @@ def stripe_update_refund_printer(output):
         pprint.pprint(output)
 
 
-def stripe_update_refund(handle, refund_id:str, metadata:dict) -> Any:
+def stripe_update_refund(handle, refund_id:str, metadata:dict) -> List:
     """stripe_update_refund Updates the specified refund by setting the values of the parameters passed.
 
         :type metadata: dict
@@ -38,15 +38,17 @@ def stripe_update_refund(handle, refund_id:str, metadata:dict) -> Any:
         :type refund_id: string
         :param refund_id: Refund Id
         
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
+    result = []
     try:
         refund = handle.Refund.modify(
             refund_id,
             metadata=metadata,
         )
-        return refund
+        result.append(refund)
+        return result
     except Exception as e:
         pprint.pprint(e)
 

@@ -4,7 +4,7 @@
 ##
 import pprint
 from pydantic import BaseModel, Field
-from typing import Any
+from typing import List
 
 class InputSchema(BaseModel):
     params: dict = Field(
@@ -23,18 +23,20 @@ def stripe_create_customer_printer(output):
 
 
 
-def stripe_create_customer(handle, params:dict) -> Any:
+def stripe_create_customer(handle, params:dict) -> List:
     """stripe_create_customer Create a customer
 
         :type params: dict
         :param params: Params in key=value form.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
+    result = []
     try:
         customer = handle.Customer.create(**params)
-        return customer
+        result.append(customer)
+        return result
     except Exception as e:
         pprint.pprint(e)
 

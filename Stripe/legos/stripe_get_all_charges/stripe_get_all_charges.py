@@ -7,7 +7,10 @@ from pydantic import BaseModel
 from tabulate import tabulate
 
 class InputSchema(BaseModel):
-    pass
+    max_results: int = Field(
+        title='Maximum Results',
+        description='Threshold to get maximum result.'
+    )
 
 
 def stripe_get_all_charges_printer(output):
@@ -18,13 +21,19 @@ def stripe_get_all_charges_printer(output):
 
 
 
-def stripe_get_all_charges(handle) -> List:
+def stripe_get_all_charges(handle, max_results: int = 25) -> List:
     """stripe_get_all_charges Returns a list of charges that was previously created. The
         charges are returned in sorted order, with the most recent charges appearing first.
 
+        :type max_results: int
+        :param max_results: Threshold to get maximum result.
+
         :rtype: Returns the results of all recent charges.
     """
-    data = handle.Charge.list(limit=10)
+    if max_results == 0:
+        data = handle.Charge.list()
+    else:
+        data = handle.Charge.list(limit=max_results)
     op = []
     for item in data:
         op.append([item['amount'], item['id'], item['description']])

@@ -29,7 +29,7 @@ def stripe_retrive_charge(handle, charge_id:str) -> Dict:
         :type charge_id: string
         :param charge_id: Charge ID.
 
-        :rtype: String with response from the describe command.
+        :rtype: Dict with response from the describe API.
     """
     # Input param validation
     charge = handle.Charge.retrieve(charge_id)

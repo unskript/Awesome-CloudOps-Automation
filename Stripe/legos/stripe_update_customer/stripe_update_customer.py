@@ -3,7 +3,7 @@
 # All rights reserved.
 ##
 import pprint
-from typing import Any
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -69,7 +69,7 @@ def stripe_update_customer(
         balance: int,
         metadata: dict,
         shipping: dict,
-        address: dict) -> Any:
+        address: dict) -> List:
     """stripe_update_customer Update a customer
 
         :type customer_id: string
@@ -99,9 +99,10 @@ def stripe_update_customer(
         :type address: dict
         :param address: The customer’s address.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
+    result = []
     try:
         customer = handle.Customer.modify(
             customer_id,
@@ -114,7 +115,8 @@ def stripe_update_customer(
             address=address if address else {},
             shipping=shipping if shipping else None,
         )
-        return customer
+        result.append(customer)
+        return result
     except Exception as e:
         pprint.pprint(e)
 

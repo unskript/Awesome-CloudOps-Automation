@@ -4,7 +4,7 @@
 ##
 import pprint
 from pydantic import BaseModel, Field
-from typing import Any
+from typing import List
 
 class InputSchema(BaseModel):
     charge_id: str = Field(
@@ -23,19 +23,20 @@ def stripe_capture_charge_printer(output):
 
 
 
-def stripe_capture_charge(handle, charge_id:str) -> Any:
+def stripe_capture_charge(handle, charge_id:str) -> List:
     """stripe_capture_charge Capture the payment of an existing, uncaptured, charge.
 
         :type charge_id: string
         :param charge_id: Capture the payment of an existing, uncaptured, charge.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
-
+    result = []
     try:
         charge = handle.Charge.capture(charge_id)
-        return charge
+        result.append(charge)
+        return result
     except Exception as e:
         pprint.pprint(e)
 

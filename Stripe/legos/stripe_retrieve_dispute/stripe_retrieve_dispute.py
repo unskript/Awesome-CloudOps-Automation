@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -23,17 +23,19 @@ def stripe_retrieve_dispute_printer(output):
         pprint.pprint(output)
 
 
-def stripe_retrieve_dispute(handle, dispute_id:str) -> Any:
+def stripe_retrieve_dispute(handle, dispute_id:str) -> List:
     """stripe_retrieve_dispute Get Dispute data
 
         :type dispute_id: string
         :param dispute_id: Retrieve details of a dispute.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
+    result = []
     try:
         resp = handle.Dispute.retrieve(dispute_id)
-        return resp
+        result.append(resp)
+        return result
     except Exception as e:
         pp.pprint(e)
 

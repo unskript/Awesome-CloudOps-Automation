@@ -7,7 +7,10 @@ from pydantic import BaseModel
 from typing import List
 
 class InputSchema(BaseModel):
-    pass
+    max_results: int = Field(
+        title='Maximum Results',
+        description='Threshold to get maximum result.'
+    )
 
 
 def stripe_get_all_customers_printer(output):
@@ -19,12 +22,24 @@ def stripe_get_all_customers_printer(output):
         pprint.pprint(output)
 
 
-def stripe_get_all_customers(handle) -> List:
-    """stripe_get_all_customers Returns a list of customers that was perviously created. The
-        charges are returned in sorted order, with the most recent charges appearing first.
+def stripe_get_all_customers(handle, max_results: int = 25) -> List:
+    """stripe_get_all_customers Returns a list of customers that was perviously created.
 
-        :rtype: Returns the results of all recent charges.
+        :type max_results: int
+        :param max_results: Threshold to get maximum result.
+
+        :rtype: Returns the results of all customers.
     """
     # Input param validation.
-    output = handle.Customer.list()
-    return output["data"]
+    result = []
+    try:
+        if max_results == 0:
+            output = handle.Customer.list()
+            result = output["data"]
+        else:
+            output = handle.Customer.list(limit=max_results)
+            result = output["data"]
+    except Exception as e:
+        print(e)
+
+    return result

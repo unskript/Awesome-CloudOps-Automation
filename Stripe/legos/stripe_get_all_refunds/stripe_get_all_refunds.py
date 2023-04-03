@@ -4,11 +4,14 @@
 ##
 import pprint
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, List
 
 
 class InputSchema(BaseModel):
-    pass
+    max_results: int = Field(
+        title='Maximum Results',
+        description='Threshold to get maximum result.'
+    )
 
 
 def stripe_get_all_refunds_printer(output):
@@ -20,12 +23,24 @@ def stripe_get_all_refunds_printer(output):
         pprint.pprint(output)
 
 
-def stripe_get_all_refunds(handle) -> Dict:
-    """stripe_get_all_customers Returns a list of refunds that was perviously created. The
+def stripe_get_all_refunds(handle, max_results: int = 25) -> List:
+    """stripe_get_all_refunds Returns a list of refunds that was previously created. The
         charges are returned in sorted order, with the most recent charges appearing first.
+
+        :type max_results: int
+        :param max_results: Threshold to get maximum result.
 
         :rtype: Returns the results of all recent charges.
     """
-
-    output = handle.Refund.list()
-    return output
+    result = []
+    starting_after = None
+    if max_results == 0:
+        output = handle.Refund.list()
+        result.append(output)
+    else:
+        output = handle.Refund.list(
+                        limit=max_results,
+                        starting_after=starting_after)
+        result.append(output)
+        
+    return result

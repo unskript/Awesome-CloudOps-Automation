@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -23,7 +23,7 @@ def stripe_retrieve_customer_printer(output):
         pprint.pprint(output)
 
 
-def stripe_retrieve_customer(handle, customer_id:str) -> Any:
+def stripe_retrieve_customer(handle, customer_id:str) -> List:
     """stripe_retrieve_customer Get customer data
 
         :type customer_id: string
@@ -32,10 +32,11 @@ def stripe_retrieve_customer(handle, customer_id:str) -> Any:
         :rtype: String with response from the describe command.
     """
     # Input param validation
-
+    result = []
     try:
         customer = handle.Customer.retrieve(customer_id)
-        return customer
+        result.append(customer)
+        return result
     except Exception as e:
         pprint.pprint(e)
 

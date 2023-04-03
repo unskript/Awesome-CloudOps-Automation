@@ -4,7 +4,7 @@
 ##
 import pprint
 from pydantic import BaseModel, Field
-from typing import Any
+from typing import List
 
 
 class InputSchema(BaseModel):
@@ -24,18 +24,20 @@ def stripe_close_dispute_printer(output):
 
 
 
-def stripe_close_dispute(handle, dispute_id:str) -> Any:
+def stripe_close_dispute(handle, dispute_id:str) -> List:
     """stripe_close_dispute Close Dispute
 
         :type dispute_id: string
         :param dispute_id: Dispute ID
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
+    result = []
     try:
         resp = handle.Dispute.close(dispute_id)
-        return resp
+        result.append(resp)
+        return result
     except Exception as e:
         pprint.pprint(e)
 

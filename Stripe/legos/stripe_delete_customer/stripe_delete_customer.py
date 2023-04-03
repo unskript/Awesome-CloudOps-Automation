@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -23,18 +23,20 @@ def stripe_delete_customer_printer(output):
         pprint.pprint(output)
 
 
-def stripe_delete_customer(handle, customer_id:str) -> Any:
+def stripe_delete_customer(handle, customer_id:str) -> List:
     """stripe_delete_customer Delete Customer
 
         :type customer_id: string
         :param customer_id: Customer Id.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
+    result = []
     try:
         resp = handle.Customer.delete(customer_id)
-        return resp
+        result.append(resp)
+        return result
     except Exception as e:
         pprint.pprint(e)
 
