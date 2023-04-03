@@ -6,10 +6,18 @@ from typing import Tuple
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 from pydantic import BaseModel, Field
+try:
+    from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory
+except:
+    pass
 
 
 class InputSchema(BaseModel):
-    pass
+    threshold: int = Field(
+        85,
+        title='Threshold'
+        description='Threshold in %age. Default is 85%'
+    )
 
 def k8s_get_nodes_with_insufficient_resources_printer(output):
     if output is None:
@@ -18,11 +26,15 @@ def k8s_get_nodes_with_insufficient_resources_printer(output):
     print(output)
 
 
-def k8s_get_nodes_with_insufficient_resources(handle) -> Tuple:
+def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tuple:
     """k8s_get_failed_deployments Returns the list of all failed deployments across all namespaces
 
     :type handle: Object
     :param handle: Object returned from task.validate(...) function
+
+    :type threshold: int
+    :param threshold: Threshold in Percentage. Default value being 85. Any node resource exceeding that threshold
+                      is flagged as having insufficient resource.
 
     :rtype: Tuple of the result
     """
@@ -33,12 +45,18 @@ def k8s_get_nodes_with_insufficient_resources(handle) -> Tuple:
     retval = []
     nodes = api_client.list_node().items
     for node in nodes:
-        if node.status.allocatable.get('cpu') < node.status.capacity.get('cpu') \
-            or node.status.allocatable.get('memory') < node.status.capacity.get('memory') \
-            or node.status.allocatable.get('storage') < node.status.capacity.get('storage'):
-            retval.append(node)
+        cpu_allocated = normalize_cpu(node.status.allocatable.get('cpu'))
+        cpu_capacity = normalize_cpu(node.status.capacity.get('cpu'))
+        mem_allocated = normalize_memory(node.status.allocatable.get('memory'))
+        mem_capacity = normalize_memory(node.status.capacity.get('memory'))
+        storage_allocated = normalize_memory(node.status.allocatable.get('ephemeral-storage'))
+        storage_capacity = normalize_memory(node.status.capacity.get('ephemeral-storage'))
+        if (cpu_allocated / cpu_capacity * 100) >= threshold \
+            or (mem_allocated / mem_capacity * 100) >= threshold \
+            or (storage_allocated / storage_capacity * 100) >= threshold:
+            retval.append({'name': node.metadata.name, 'capacity': node.status.capacity})
+
+    if  retval:
+        return(False, retval)
     
-    if not retval:
-        return(True, [])
-    
-    return (False, retval)
+    return (True, [])
