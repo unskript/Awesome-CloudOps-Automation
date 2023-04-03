@@ -31,12 +31,12 @@ def k8s_get_pods_in_not_running_state(handle) -> Tuple:
     if handle.client_side_validation != True:
         raise Exception(f"K8S Connector is invalid {handle}")
 
-    kubectl_command = "kubectl get pods --all-namespaces --field-selector=status.phase!=Running -o name | cut -d'/' -f 2"
+    kubectl_command = "kubectl get pods --all-namespaces --field-selector=status.phase!=Running -o jsonpath=\"{.items[*]['metadata.name', 'metadata.namespace']}\""
     result = handle.run_native_cmd(kubectl_command)
     if result.stderr:
         raise Exception(f"Error occurred while executing command {result.stderr}")
     
     if result.stdout:
-        return (False, [result.stdout])
+        return (False, [result.stdout.split()])
     
     return (True, [])

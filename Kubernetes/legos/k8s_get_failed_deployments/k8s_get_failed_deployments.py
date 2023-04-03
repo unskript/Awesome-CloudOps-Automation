@@ -33,9 +33,12 @@ def k8s_get_failed_deployments(handle) -> Tuple:
     deployments = apps_client.list_deployment_for_all_namespaces().items 
     retval = {} 
     for deployment in deployments:
+        # FIXME. Check for deployment.status.condition 
         if deployment.status.available_replicas == 0:
             retval.update(deployment)
     
+    # FIXME: Add print for diagnostic. 
+    # Return deployment name and namespace in a Tuple. 
     if not retval:
         return (False, [retval])
     
