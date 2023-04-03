@@ -15,7 +15,7 @@ except:
 class InputSchema(BaseModel):
     threshold: int = Field(
         85,
-        title='Threshold'
+        title='Threshold',
         description='Threshold in %age. Default is 85%'
     )
 
