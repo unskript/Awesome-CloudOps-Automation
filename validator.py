@@ -101,6 +101,7 @@ def check_dir_contents(_dir: str, ret_val) -> bool:
     
     try:
         with open(jsonfile, 'r') as f:
+            print(f"Processing JSON File {jsonfile}")
             d = json.load(f)
 
         if d.get('action_entry_function') != os.path.basename(_dir):
