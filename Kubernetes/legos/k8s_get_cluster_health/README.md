@@ -15,12 +15,13 @@ If all these checks a boolean True value is returned, if not False and the reaso
 
 ## Lego Details
 
-    k8s_get_cluster_health(handle: object)
+    k8s_get_cluster_health(handle: object, threshold: int)
 
         handle: Object of type unSkript K8S Connector
+        threshold: int CPU / Memory Threshold %age
 
 ## Lego Input
-This Lego takes handle (K8S) object returned from the task.validator(...)
+This Lego takes two parameters handle & threshold. Handle (K8S) object returned from the task.validator(...), CPU/Memory Threshold %age. 
 
 ## Lego Output
 Here is a sample output.
