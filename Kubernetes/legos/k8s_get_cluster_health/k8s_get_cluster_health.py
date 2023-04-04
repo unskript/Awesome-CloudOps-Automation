@@ -10,42 +10,23 @@ from kubernetes.client.rest import ApiException
 from pydantic import BaseModel, Field
 from tabulate import tabulate
 
+try:
+    from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory
+except:
+    pass
 
 class InputSchema(BaseModel):
-    pass
+    threshold : int = Field(
+        80,
+        title='Threshold',
+        description='CPU & Memory Threshold %age'
+    )
 
 def k8s_get_cluster_health_printer(output):
     if not output:
         return
     print(output)
     
-def normalize_cpu(value):
-    """
-    Return CPU in milicores if it is configured with value
-    """
-    if re.match(r"[0-9]{1,9}m", str(value)):
-      cpu = re.sub("[^0-9]", "", value)
-    elif re.match(r"[0-9]{1,4}$", str(value)):
-      cpu = int(value) * 1000
-    elif re.match(r"[0-9]{1,15}n", str(value)):
-      cpu = int(re.sub("[^0-9]", "", value)) // 1000000
-    elif re.match(r"[0-9]{1,15}u", str(value)):
-      cpu = int(re.sub("[^0-9]", "", value)) // 1000
-    return int(cpu)
-
-def normalize_memory(value):
-    """
-    Return Memory in MB
-    """
-    if re.match(r"[0-9]{1,9}Mi?", str(value)):
-      mem = re.sub("[^0-9]", "", value)
-    elif re.match(r"[0-9]{1,9}Ki?", str(value)):
-      mem = re.sub("[^0-9]", "", value)
-      mem = int(mem) // 1024
-    elif re.match(r"[0-9]{1,9}Gi?", str(value)):
-      mem = re.sub("[^0-9]", "", value)
-      mem = int(mem) * 1024
-    return int(mem)
 
 
 def k8s_get_abnormal_events(node_api, node_name: str, security_level: str = "Warning") -> str:
@@ -66,7 +47,7 @@ def k8s_get_abnormal_events(node_api, node_name: str, security_level: str = "War
 
     return event_string
 
-def k8s_get_cluster_health(handle) -> Tuple:
+def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
     """k8s_get_cluster_health This function takes the Handle as an input parameter,
        finds out all the Nodes present in the Cluster, Finds out the following
        * Any abnormal events seen on the node
@@ -76,22 +57,16 @@ def k8s_get_cluster_health(handle) -> Tuple:
        :type handle: object
        :param handle: Object returned from task.validator(...)
 
+       :type threshold: int
+       :param threshold: CPU and Memory Threshold 
+
        :rtype: Tuple
        :param: Tuple that contains result and any errors   
     """
     node_api = pods_api = client.CoreV1Api(api_client=handle)
 
     nodes = node_api.list_node()
-    
-    # Node List : Will hold list of failed nodes
-    # Events List: Holds the events List per Node
-    # Node Condition: Holds State of the node
-    # Pod Condition: Holds state of the pods
-
-    node_list = []
-    events_list = []
-    node_condition = []
-    pod_condition = []
+    retval = {}
     for node in nodes.items():
         # Lets check Node Pressure, more than 80%, will need to to raise an exception
         cpu_usage = normalize_cpu(node.status.allocatable['cpu'])
@@ -100,46 +75,41 @@ def k8s_get_cluster_health(handle) -> Tuple:
         mem_capacity = normalize_memory(node.status.capacity['memory'])
         cpu_usage_percent = (cpu_usage / cpu_capacity) * 100
         mem_usage_percent = (mem_usage / mem_capacity) * 100 
-        if cpu_usage_percent >= 80 or mem_usage_percent >= 80:
-            #print(f"Node {node.metadata.name} Experiencing High CPU {round(cpu_usage_percent,2)}% / MEM {round(mem_usage_percent,2)}% usage")
-            node_list.append(node)
+        retval['node_name'] = node.metadata.name 
+        if cpu_usage_percent >= threshold:
+            retval['cpu_high'] = True
+        if mem_usage_percent >= threshold:
+            retval['mem_high'] = True 
 
         # Lets get abnormal events. Lets go with `warning` as the default level
         events = k8s_get_abnormal_events(node_api, node.metadata.name)
         if events != '':
-            events_list.append(events)
+            retval['events'] = events
         
-        # Get Node & Pod Condition
-       
+        # Get Node & Pod Condition  
         conditions = node.status.conditions
         for condition in conditions:
             
             if condition.type == 'Ready' and condition.status == 'True':
+                retval['not_ready'] = False
                 break
             else:
-                node_condition.append(condition)
+                retval['not_ready'] = True
+                retval['node_condition'] = condition 
         
 
         # Check the status of the Kubernetes pods
-        # FIXME: Use field selector to match condition. 
         pods = pods_api.list_pod_for_all_namespaces()
-
+        retval['not_ready_pods'] = {}
         for pod in pods.items:
             conditions = pod.status.conditions
             for condition in conditions:
                 if condition.type == 'Ready' and condition.status == 'True':
                     break
-            else:
-                pod_condition.append(condition)
+                else:
+                    retval['not_ready_pods'].update({'name': pod.metadata.name, 'namespace': pod.metadata.namespace}) 
         
-    if node_list:
-        return (False, [{"node": node_list}])
-    if events_list:
-        return (False, [{"events": events_list}])
-    if node_condition:
-        return (False, [{"node_condition": node_condition}])
-    if pod_condition:
-        return (False, [{"unhealthy_pods": pod_condition}])
-    
+    if retval:
+        return (False, [retval])
     
     return (True, []) 
