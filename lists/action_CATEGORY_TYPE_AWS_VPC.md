@@ -1,0 +1,10 @@
+# Actions in CATEGORY_TYPE_AWS_VPC
+*AWS [Filter AWS Target groups by tag name](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_target_groups_by_tags/aws_filter_target_groups_by_tags.py): Filter AWS Target groups which have the provided tag attached to it. It also returns the value of that tag for each target group
+*AWS [AWS Get Internet Gateway by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc/aws_get_internet_gateway_by_vpc.py): AWS Get Internet Gateway by VPC ID
+*AWS [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/aws_get_nat_gateway_by_vpc.py): This action is used to get the details about nat gateways configured for VPC.
+*AWS [AWS_VPC_service_quota_warning](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_vpc_service_quota_warning/aws_vpc_service_quota_warning.py): Given an AWS Region and a warning percentage, this Action queries all VPC quota limits, and returns any of Quotas that are over the alert value.
+*Airflow [Get Status for given DAG](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Airflow/legos/airflow_check_dag_status/airflow_check_dag_status.py): Get Status for given DAG
+*Airflow [Get Airflow handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Airflow/legos/airflow_get_handle/airflow_get_handle.py): Get Airflow handle
+*Airflow [List DAG runs for given DagID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Airflow/legos/airflow_list_DAG_runs/airflow_list_DAG_runs.py): List DAG runs for given DagID
+*Airflow [Airflow trigger DAG run](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Airflow/legos/airflow_trigger_dag_run/airflow_trigger_dag_run.py): Airflow trigger DAG run
+*Azure [Get Azure Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Azure/legos/azure_get_handle/azure_get_handle.py): Get Azure Handle
