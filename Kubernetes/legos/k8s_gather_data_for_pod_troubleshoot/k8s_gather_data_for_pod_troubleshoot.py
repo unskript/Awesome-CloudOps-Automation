@@ -25,7 +25,7 @@ def k8s_gather_data_for_pod_troubleshoot_printer(output):
     pprint.pprint(output)
 
 
-def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) -> dict:
+def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) -> str:
     """k8s_gather_data_for_pod_troubleshoot This function gathers data from the k8s namespace
        to assist in troubleshooting of a pod. The gathered data are returned in the form of a
        Dictionary with `logs`, `events` and `details` keys. 
@@ -39,28 +39,24 @@ def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) 
        :type namespace: str 
        :param namespace: Namespace where the above K8S POD is found (Mandatory parameter)
 
-       :rtype: Python Dictionary that has status, logs, events & details as key for the pod
+       :rtype: Output of kubectl describe pod command
     """
-    retval = {}
     if not pod_name or not namespace:
         raise Exception("POD Name and Namespace are mandatory parameters, cannot be None")
 
-    pod_api = client.CoreV1Api(api_client=handle)
-    # Gather the Status first
-    status = pod_api.read_namespaced_pod_status(name=pod_name, namespace=namespace)
-    retval['status'] = status
-    
-    # Gather Events pertaining to the POD
-    field_selector = f"involvedObject.name={pod_name}"
-
-    pod_events = []
-    events = pod_api.list_namespaced_event(namespace=namespace, field_selector=field_selector)
-    for event in events.items:
-        pod_events.append(json.loads(event))
-
-    retval['events'] = pod_events 
-
-    # Gather Logs pertaining to the POD
-    retval['logs'] = pod_api.read_namespaced_pod_log(name=pod_name, namespace=namespace)
-
+    retval = {}
+    # Get Describe POD details
+    kubectl_client = f'kubectl describe pod {pod_name} -n {namespace}'
+    result = handle.run_native_cmd(kubectl_client)
+    if not result.stderr:
+        retval['describe'] =  result.stdout 
+    else:
+        retval['error'] = result.stderr 
+    # Get Logs for the POD 
+    kubectl_client = f'kubectl logs {pod_name} -n {namespace}'
+    result = handle.run_native_cmd(kubectl_client)
+    if not result.stderr:
+        retval['logs'] =  result.stdout 
+    else:
+        retval['error'] = result.stderr 
     return retval
