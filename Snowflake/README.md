@@ -1,6 +1,4 @@
 
-
- # Snowflake Actions 
-
-* [Snowflake read query.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Snowflake/legos/snowflake_read_query) 
-* [Snowflake write query.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Snowflake/legos/snowflake_write_query) 
+# Snowflake Actions
+* [Snowflake Read Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Snowflake/legos/snowflake_read_query/snowflake_read_query.py): Snowflake Read Query
+* [Snowflake Write Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Snowflake/legos/snowflake_write_query/snowflake_write_query.py): Snowflake Write Query

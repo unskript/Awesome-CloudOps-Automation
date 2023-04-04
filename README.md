@@ -13,7 +13,9 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=0&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=0&color=orange>
+
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=421&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
+
   
   <p align="center">
     CloudOps automation made simple!
@@ -102,7 +104,54 @@ docker run -it -p 8888:8888 \
 
   | **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
   | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-  
+
+  |AWS |[AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Access_Key_Rotation.ipynb) | 
+|AWS |[Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Add_new_IAM_user.ipynb) | 
+|AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
+|AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
+|AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 
+|AWS |[Detach EC2 Instance from ASG](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_Instance_from_ASG.ipynb) | 
+|AWS |[Detach EC2 Instance from ASG and Load balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_ec2_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_ec2_Instance_from_ASG.ipynb) | 
+|AWS |[Detect ECS failed deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detect_ECS_failed_deployment.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detect_ECS_failed_deployment.ipynb) | 
+|AWS |[AWS EC2 Disk Cleanup](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/EC2_Disk_Cleanup.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/EC2_Disk_Cleanup.ipynb) | 
+|AWS |[Enforce HTTP Redirection across all AWS ALB instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Enforce_HTTP_Redirection_across_AWS_ALB.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Enforce_HTTP_Redirection_across_AWS_ALB.ipynb) | 
+|AWS |[Enforce Mandatory Tags Across All AWS Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Enforce_Mandatory_Tags_Across_All_AWS_Resources.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Enforce_Mandatory_Tags_Across_All_AWS_Resources.ipynb) | 
+|AWS |[Handle AWS EC2 Instance Scheduled to retire](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Find_EC2_Instances_Scheduled_to_retire.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Find_EC2_Instances_Scheduled_to_retire.ipynb) | 
+|AWS |[Get unhealthy EC2 instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Get_Aws_Elb_Unhealthy_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Get_Aws_Elb_Unhealthy_Instances.ipynb) | 
+|AWS |[Lowering AWS CloudTrail Costs by Removing Redundant Trails](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Lowering_AWS_CloudTrail_Costs_by_Removing_Redundant_Trails.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Lowering_AWS_CloudTrail_Costs_by_Removing_Redundant_Trails.ipynb) | 
+|AWS |[Monitor AWS DynamoDB provision capacity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Monitor_AWS_DynamoDB_provision_capacity.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Monitor_AWS_DynamoDB_provision_capacity.ipynb) | 
+|AWS |[List unused Amazon EC2 key pairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Notify_about_unused_keypairs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Notify_about_unused_keypairs.ipynb) | 
+|AWS |[Publicly Accessible Amazon RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Publicly_Accessible_Amazon_RDS_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Publicly_Accessible_Amazon_RDS_Instances.ipynb) | 
+|AWS |[Remediate unencrypted S3 buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Remediate_unencrypted_S3_buckets.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Remediate_unencrypted_S3_buckets.ipynb) | 
+|AWS |[Renew AWS SSL Certificates that are close to expiration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Renew_SSL_Certificate.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Renew_SSL_Certificate.ipynb) | 
+|AWS |[Resize EBS Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Resize_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Resize_EBS_Volume.ipynb) | 
+|AWS |[Resize list of pvcs.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Resize_List_Of_Pvcs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Resize_List_Of_Pvcs.ipynb) | 
+|AWS |[Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Resize_PVC.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Resize_PVC.ipynb) | 
+|AWS |[Restart AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restart_AWS_EC2_Instances_By_Tag.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restart_AWS_EC2_Instances_By_Tag.ipynb) | 
+|AWS |[Restart AWS Instances with a given tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restart_Aws_Instance_given_Tag.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restart_Aws_Instance_given_Tag.ipynb) | 
+|AWS |[Restart unhealthy services in a Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restart_Unhealthy_Services_Target_Group.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restart_Unhealthy_Services_Target_Group.ipynb) | 
+|AWS |[Restrict S3 Buckets with READ/WRITE Permissions to all Authenticated Users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restrict_S3_Buckets_with_READ_WRITE_Permissions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restrict_S3_Buckets_with_READ_WRITE_Permissions.ipynb) | 
+|AWS |[Launch AWS EC2 from AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Run_EC2_from_AMI.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Run_EC2_from_AMI.ipynb) | 
+|AWS |[Secure Publicly accessible Amazon RDS Snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Secure_Publicly_accessible_Amazon_RDS_Snapshot.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Secure_Publicly_accessible_Amazon_RDS_Snapshot.ipynb) | 
+|AWS |[Stop Untagged AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Stop_Untagged_EC2_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Stop_Untagged_EC2_Instances.ipynb) | 
+|AWS |[Terminate EC2 Instances Without Valid Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Terminate_EC2_Instances_Without_Valid_Lifetime_Tag.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Terminate_EC2_Instances_Without_Valid_Lifetime_Tag.ipynb) | 
+|AWS |[Troubleshooting Your EC2 Configuration in a Private Subnet](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Troubleshooting_Your_EC2_Configuration_in_Private_Subnet.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Troubleshooting_Your_EC2_Configuration_in_Private_Subnet.ipynb) | 
+|AWS |[Update and Manage AWS User permission](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | 
+|ElasticSearch |[Elasticsearch Rolling restart](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | 
+|Jenkins |[Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | 
+|Kubernetes |[k8s: Delete Evicted Pods From All Namespaces](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Delete_Evicted_Pods_From_Namespaces.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Delete_Evicted_Pods_From_Namespaces.ipynb) | 
+|Kubernetes |[k8s: Get kube system config map](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Get_Kube_System_Config_Map.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Get_Kube_System_Config_Map.ipynb) | 
+|Kubernetes |[k8s: Get candidate nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Get_Candidate_Nodes_Given_Config.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/K8S_Get_Candidate_Nodes_Given_Config.ipynb) | 
+|Kubernetes |[Kubernetes Log Healthcheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Log_Healthcheck.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/K8S_Log_Healthcheck.ipynb) | 
+|Kubernetes |[k8s: Pod Stuck in CrashLoopBackoff State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Pod_Stuck_In_CrashLoopBack_State.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/K8S_Pod_Stuck_In_CrashLoopBack_State.ipynb) | 
+|Kubernetes |[k8s: Pod Stuck in ImagePullBackOff State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Pod_Stuck_In_ImagePullBackOff_State.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/K8S_Pod_Stuck_In_ImagePullBackOff_State.ipynb) | 
+|Kubernetes |[k8s: Pod Stuck in Terminating State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Pod_Stuck_In_Terminating_State.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/K8S_Pod_Stuck_In_Terminating_State.ipynb) | 
+|Kubernetes |[k8s: Resize List of PVCs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_List_of_PVCs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_List_of_PVCs.ipynb) | 
+|Kubernetes |[k8s: Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_PVC.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_PVC.ipynb) | 
+|Kubernetes |[Rollback Kubernetes Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | 
+|Postgresql |[Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Postgresql/Display_Postgresql_Long_Running.ipynb) | 
+
+
 </details>
 
 <br/>

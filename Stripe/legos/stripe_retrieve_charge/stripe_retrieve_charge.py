@@ -26,8 +26,8 @@ def legoPrinter(func):
 
 
 @legoPrinter
-def stripe_retrive_charge(handle, charge_id:str) -> Dict:
-    """stripe_retrive_charge Retrive the Charge for given ID
+def stripe_retrieve_charge(handle, charge_id:str) -> Dict:
+    """stripe_retrieve_charge Retrieve the Charge for given ID
 
         :type charge_id: string
         :param charge_id: Charge ID.
