@@ -13,7 +13,9 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
+
     <img src=https://img.shields.io/static/v1?label=ActionCount&message=421&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
+
   
   <p align="center">
     CloudOps automation made simple!
@@ -102,6 +104,7 @@ docker run -it -p 8888:8888 \
 
   | **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
   | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+
   |AWS |[AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Access_Key_Rotation.ipynb) | 
 |AWS |[Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Add_new_IAM_user.ipynb) | 
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
@@ -147,6 +150,7 @@ docker run -it -p 8888:8888 \
 |Kubernetes |[k8s: Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_PVC.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_PVC.ipynb) | 
 |Kubernetes |[Rollback Kubernetes Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | 
 |Postgresql |[Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Postgresql/Display_Postgresql_Long_Running.ipynb) | 
+
 
 </details>
 
