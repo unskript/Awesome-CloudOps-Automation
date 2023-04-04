@@ -34,3 +34,19 @@ def normalize_memory(value):
       mem = re.sub("[^0-9]", "", value)
       mem = int(mem) * 1024
     return int(mem)
+
+def normalize_storage(value):
+    """
+    Return Storage in Numeric value
+    """
+    multiplier_dict = {"k": 1000, "Ki": 1024, "M": 1000000, "Mi": 1048576 , "G": 1000000000, "Gi": 1073741824}
+    size = 0 
+    y = re.findall(r'[A-Za-z]+|\d+', value)
+    print(y)
+    try:
+        if y[1] in multiplier_dict:
+            size += multiplier_dict.get(y[1]) * int(y[0])
+    except IndexError:
+        size += int(y[0])
+    
+    return int(size)

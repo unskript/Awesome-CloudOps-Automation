@@ -7,7 +7,7 @@ from kubernetes import client
 from kubernetes.client.rest import ApiException
 from pydantic import BaseModel, Field
 try:
-    from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory
+    from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory, normalize_storage
 except:
     pass
 
@@ -49,11 +49,14 @@ def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tu
         cpu_capacity = normalize_cpu(node.status.capacity.get('cpu'))
         mem_allocated = normalize_memory(node.status.allocatable.get('memory'))
         mem_capacity = normalize_memory(node.status.capacity.get('memory'))
-        storage_allocated = normalize_memory(node.status.allocatable.get('ephemeral-storage'))
-        storage_capacity = normalize_memory(node.status.capacity.get('ephemeral-storage'))
-        if (cpu_allocated / cpu_capacity * 100) >= threshold \
-            or (mem_allocated / mem_capacity * 100) >= threshold \
-            or (storage_allocated / storage_capacity * 100) >= threshold:
+        storage_allocated = normalize_storage(node.status.allocatable.get('ephemeral-storage'))
+        storage_capacity = normalize_storage(node.status.capacity.get('ephemeral-storage'))
+        cpu_usage_percent = (cpu_capacity - cpu_allocated)/cpu_capacity * 100
+        mem_usage_percent = (mem_capacity - mem_allocated)/mem_capacity * 100
+        storage_usage_percent = (storage_capacity - storage_allocated)/storage_capacity * 100
+        if cpu_usage_percent >= threshold \
+            or mem_usage_percent >= threshold \
+            or storage_usage_percent >= threshold:
             retval.append({'name': node.metadata.name, 'capacity': node.status.capacity})
 
     if  retval:
