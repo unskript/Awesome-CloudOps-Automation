@@ -9,8 +9,11 @@ from kubernetes import client
 import pprint
 
 class InputSchema(BaseModel):
-    namespace: Optional[str] = Field(
-        default='',
+    service_name: str = Field(
+        title="Service Name",
+        description="K8S Service Name to gather data"
+    )
+    namespace: str = Field(
         title='Namespace',
         description='k8s Namespace')
 
@@ -20,46 +23,35 @@ def k8s_gather_data_for_service_troubleshoot_printer(output):
         return 
     pprint.pprint(output)
 
-def k8s_gather_data_for_service_troubleshoot(handle, namespace: str) -> dict:
-    if not namespace:
-        raise Exception("Namespace is a mandatory parameter")
+def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace: str) -> dict:
+    """k8s_gather_data_for_service_troubleshoot This utility function can be used to gather data
+       for a given service in a namespace. 
+
+       :type handle: object
+       :param handle: Object returned from task.validate(...) function
+
+       :type servicename: str
+       :param servicename: Service Name that needs gathering data
+
+       :type namespace: str
+       :param namespace: K8S Namespace
+
+       :rtype: Dictionary containing the result
+    """
+    if not namespace or not servicename :
+        raise Exception("Namespace and Servicename are mandatory parameter")
     
-    core_api = client.CoreV1Api(api_client=handle)
-    api_client = client.ApiClient(handle)
-    extension_api = client.ExtensionsV1beta1Api(api_client=handle)
-    services = core_api.list_namespaced_service(namespace=namespace)
+    # Get Service Detail
+    describe_cmd = f'kubectl describe svc {servicename} -n {namespace}'
+    describe_output = handle.run_native_cmd(describe_cmd)
     retval = {}
-
-    ingress_list = api_client.configuration()
-    for service in services.items:
-        endpoints = core_api.list_namespaced_endpoints(namespace=namespace, field_selector=f'metadata.name={service}')
-        service_active = False
-        if endpoints and endpoints.items and endpoints.items[0].subsets and endpoints.items[0].subsets[0].addresses:
-            service_active = True
+    if not describe_output.stderr:
+        retval['describe'] = describe_output.stdout 
+    
+    ingress_rules_cmd = f'kubectl get svc {servicename} -n {namespace} | jq ".items[].spec.rules[]'
+    ingress_rules_output = handle.run_native_cmd(ingress_rules_cmd)
+    if not ingress_rules_output.stderr:
+        retval['ingress_rules'] = ingress_rules_output.stdout
         
-        retval[service.metadata.name] = {}
-        retval[service.metadata.name]['active'] = service_active 
-        retval[service.metadata.name]['namespace'] = service.metadata.namespace 
-        retval[service.metadata.name]['type'] = service.spec.type
-        retval[service.metadata.name]['cluster_ip'] = service.spec.cluster_ip
-        retval[service.metadata.name]['port'] = service.spec.port
-
-        selector_string = selector_string = ','.join([f"{k}={v}" for k, v in service.spec.selector.items()])
-        pods = core_api.list_namespaced_pod(namespace, label_selector=selector_string)
-        retval[service.metadata.name]['pods'] = [x.metadata.name for x in pods.items]
-        for ingress in ingress_list.items:
-            for rule in ingress.spec.rules:
-                for http_path in rule.http.paths:
-                    if http_path.backend.service_name == service.metadata.name:
-                        retval[service.metadata.name]['ingress'] = {}
-                        retval[service.metadata.name]['ingress'] = {'name': ingress.metadata.name, 
-                                                                    'namespace': ingress.metadata.namespace,
-                                                                    'host': rule.host,
-                                                                    'path': http_path.path}
-        
-        
-
-        
-
-
+    
     return retval
