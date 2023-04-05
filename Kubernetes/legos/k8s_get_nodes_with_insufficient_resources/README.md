@@ -9,13 +9,13 @@ This Lego Returns Nodes that have insufficient resources
 
 ## Lego Details
 
-    k8s_get_nodes_with_insufficient_resources(handle: object, namespace: str)
+    k8s_get_nodes_with_insufficient_resources(handle: object, threshold: int)
 
         handle: Object of type unSkript K8S Connector
-        namespace: Optional string that has K8S Namespace 
+        threshold: Optional int Threshold for CPU and Memory utilization. 
 
 ## Lego Input
-This Lego takes just two inputs, the Handle and Namespace (Optional)
+This Lego takes just two inputs, the Handle and Threshold (Optional)
 
 ## Lego Output
 Here is a sample output.
