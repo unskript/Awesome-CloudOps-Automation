@@ -46,26 +46,20 @@ def k8s_get_unbound_pvcs(handle, namespace:str = '') -> Tuple:
         pod_list = v1.list_namespaced_pod(namespace).items
 
     retval = []
-    matched_volume = {}
+    mounted_volume = {}
     list_all_volumes = {}
-    # Iterate through each PVC and check its status
+    # Iterate through each PVC 
     for pvc in pvc_list:
-        # Check if the PVC is bound to a volume
-        for pod in pod_list:
-            found = False
-            for volume in pod.spec.volumes:
-                if volume.persistent_volume_claim != None:
-                    if volume.persistent_volume_claim.claim_name == pvc.metadata.name:
-                        found = True
-                        matched_volume[pvc.metadata.name] = pvc.metadata.namespace
-                        list_all_volumes[pvc.metadata.name] = pvc.metadata.namespace
-                        break
-                    else:
-                        list_all_volumes[pvc.metadata.name] = pvc.metadata.namespace
+        list_all_volumes.update({'name': pvc.metadata.name, 'namespace': pvc.metadata.namespace})
     
-    if len(matched_volume) != len(list_all_volumes):
+    for pod in pod_list:
+        for volume in pod.spec.volumes:
+                if volume.persistent_volume_claim != None:
+                    mounted_volume.update({'name': volume.persistent_volume_claim.claim_name, 'namespace': pod.metadata.namespace})
+    
+    if len(mounted_volume) != len(list_all_volumes):
        for k,v in list_all_volumes.items():
-           if k not in matched_volume.keys():
+           if k not in mounted_volume.keys():
                retval.append({'name': k, 'namespace': v})
 
     if retval:
