@@ -24,8 +24,8 @@ class InputSchema(BaseModel):
     )
 
 
-def github_list_pull_request_reviewers_printer(output):
-    if not output:
+def github_get_pull_request_reviewers_printer(output):
+    if output is None:
         return
     pprint.pprint(output)
 

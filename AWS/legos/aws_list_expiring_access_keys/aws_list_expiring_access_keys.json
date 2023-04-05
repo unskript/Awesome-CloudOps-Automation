@@ -10,7 +10,7 @@
     "action_verbs": ["list"],
     "action_nouns": ["expiring","access","aws"],
     "action_is_check": true,
-    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS", "CATEGORY_TYPE_AWS_IAM"],
     "action_next_hop": ["924025582b6c1b3ea3c8c834f1ee430a2df8bd42c5119191cb5c5da3121f1d18"],
     "action_next_hop_parameter_mapping": {}
 }

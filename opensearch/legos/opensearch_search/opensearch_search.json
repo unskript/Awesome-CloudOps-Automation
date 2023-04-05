@@ -10,5 +10,6 @@
 "action_verbs": ["search"],
 "action_nouns": [
 "opensearch"
-]
+],
+"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_OPENSEARCH"]
 }

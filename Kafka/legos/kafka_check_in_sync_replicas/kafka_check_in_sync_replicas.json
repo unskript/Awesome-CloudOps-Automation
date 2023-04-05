@@ -1,0 +1,11 @@
+{
+    "action_title": "Kafka Check In-Sync Replicas",
+    "action_description": "Checks number of actual min-isr for each topic-partition with configuration for that topic.",
+    "action_type": "LEGO_TYPE_KAFKA",
+    "action_entry_function": "kafka_check_in_sync_replicas",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_supports_iteration": true
+}
+    

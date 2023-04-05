@@ -1,0 +1,76 @@
+---
+name: Create New Action with files
+description: File an Action Request with files
+title: "[Action]: "
+labels:
+  - action
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Thanks for taking the time to suggest a new Action! If you have used
+        ChatGPT to generate the files for an action, you can submit them here.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: Actionname
+    attributes:
+      label: Action Name
+      description: What is the Name for your Action?
+      placeholder: List all Open GitHub Pull Requests
+    validations:
+      required: true
+  - type: textarea
+    id: Actionreadme
+    attributes:
+      label: Action Readme
+      description: paste in your readme file (in markdown)
+      placeholder: null
+    validations:
+      required: true
+  - type: textarea
+    id: Actionjson
+    attributes:
+      label: Action json
+      description: paste in your json file
+      placeholder: null
+    validations:
+      required: true
+  - type: textarea
+    id: Actionpy
+    attributes:
+      label: Action python
+      description: paste in your python file
+    validations:
+      required: true
+  - type: textarea
+    id: Actionoutputs
+    attributes:
+      label: Action Outputs
+      description: What do you want to see in the Action output (and type)
+      placeholder: null
+    validations:
+      required: true
+  - type: textarea
+    id: comments
+    attributes:
+      label: Comments
+      description: Do you have any additional information for this Action?
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of
+        Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
