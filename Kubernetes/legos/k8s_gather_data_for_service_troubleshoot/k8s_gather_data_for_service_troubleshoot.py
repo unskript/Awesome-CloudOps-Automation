@@ -2,11 +2,12 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
+import pprint
+import json
 
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
 from kubernetes import client
-import pprint
 
 class InputSchema(BaseModel):
     service_name: str = Field(
@@ -47,11 +48,37 @@ def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace
     retval = {}
     if not describe_output.stderr:
         retval['describe'] = describe_output.stdout 
-    
-    ingress_rules_cmd = f'kubectl describe ingress -n {namespace}'
+
+    # To Get the Ingress rule, we first find out the name of the ingress
+    # Find out the ingress rules in the given namespace, find out the
+    # Matching rule in the ingress that matches the service name and append it
+    # to the `ingress` key.
+    rule_name = ''
+    ingress_rules_for_service = []
+    ingress_rule_name_cmd = f"kubectl get ingress -n {namespace} -o name" 
+    ingress_rule_name_output = handle.run_native_cmd(ingress_rule_name_cmd)
+    if not ingress_rule_name_output.stderr:
+        rule_name = ingress_rule_name_output.stdout
+        
+    ingress_rules_cmd = f"kubectl get ingress -n {namespace}" + ' -o jsonpath="{.items[*].spec.rules}"'
     ingress_rules_output = handle.run_native_cmd(ingress_rules_cmd)
     if not ingress_rules_output.stderr:
-        retval['ingress_rules'] = ingress_rules_output.stdout
-        
+        rules = json.loads(ingress_rules_output.stdout)
+        for r in rules:
+            h = r.get('host')
+            for s_p in r.get('http').get('paths'):
+                if s_p.get('backend').get('service').get('name') == servicename:
+                    ingress_rules_for_service.append([h, s_p.get('backend').get('service').get('port'), s_p.get('path')])
+    
+    if ingress_rules_for_service:
+        retval['ingress'] = []
+        for ir in ingress_rules_for_service:
+            if len(ir) >= 3:
+                retval['ingress'].append({'name': rule_name, 
+                            'namespace': namespace, 
+                            'host': ir[0],
+                            'port': ir[1],
+                            'path': ir[-1]})
+   
     
     return retval
