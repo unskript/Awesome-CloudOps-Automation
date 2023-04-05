@@ -2,7 +2,7 @@
     "action_title": "Gather Data for K8S Service Troubleshoot",
     "action_description": "Gather Data for K8S Service Troubleshoot",
     "action_type": "LEGO_TYPE_K8S",
-    "action_entry_function": "k8s_gather_for_service_troubleshoot",
+    "action_entry_function": "k8s_gather_data_for_service_troubleshoot",
     "action_needs_credential": true,
     "action_supports_poll": true,
     "action_supports_iteration": true,
