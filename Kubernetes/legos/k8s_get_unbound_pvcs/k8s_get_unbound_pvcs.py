@@ -46,21 +46,24 @@ def k8s_get_unbound_pvcs(handle, namespace:str = '') -> Tuple:
         pod_list = v1.list_namespaced_pod(namespace).items
 
     retval = []
-    mounted_volume = {}
-    list_all_volumes = {}
+    mounted_volume = []
+    list_all_volumes = []
     # Iterate through each PVC 
     for pvc in pvc_list:
-        list_all_volumes.update({'name': pvc.metadata.name, 'namespace': pvc.metadata.namespace})
+        list_all_volumes.append([pvc.metadata.name, pvc.metadata.namespace])
     
     for pod in pod_list:
         for volume in pod.spec.volumes:
                 if volume.persistent_volume_claim != None:
-                    mounted_volume.update({'name': volume.persistent_volume_claim.claim_name, 'namespace': pod.metadata.namespace})
+                    mounted_volume.append([volume.persistent_volume_claim.claim_name,  pod.metadata.namespace])
     
     if len(mounted_volume) != len(list_all_volumes):
-       for k,v in list_all_volumes.items():
-           if k not in mounted_volume.keys():
-               retval.append({'name': k, 'namespace': v})
+        unmounted_volumes = set([x[0] for x in list_all_volumes]) - set([x[0] for x in mounted_volume])
+        for um in unmounted_volumes:
+            n = [x for x in list_all_volumes if x[0] == um][0]
+            unmounted_pvc_name = n[0]
+            unmounted_pvc_namespace = n[1]
+            retval.append({'name': unmounted_pvc_name, 'namespace': unmounted_pvc_namespace})
 
     if retval:
         return (False, retval)
