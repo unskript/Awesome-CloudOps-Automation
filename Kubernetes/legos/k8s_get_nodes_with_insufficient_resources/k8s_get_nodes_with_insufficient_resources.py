@@ -45,19 +45,19 @@ def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tu
     retval = []
     nodes = api_client.list_node().items
     for node in nodes:
-        cpu_allocated = normalize_cpu(node.status.allocatable.get('cpu'))
+        cpu_allocatable = normalize_cpu(node.status.allocatable.get('cpu'))
         cpu_capacity = normalize_cpu(node.status.capacity.get('cpu'))
-        mem_allocated = normalize_memory(node.status.allocatable.get('memory'))
+        mem_allocatable = normalize_memory(node.status.allocatable.get('memory'))
         mem_capacity = normalize_memory(node.status.capacity.get('memory'))
-        storage_allocated = normalize_storage(node.status.allocatable.get('ephemeral-storage'))
+        storage_allocatable = normalize_storage(node.status.allocatable.get('ephemeral-storage'))
         storage_capacity = normalize_storage(node.status.capacity.get('ephemeral-storage'))
-        cpu_usage_percent = (cpu_capacity - cpu_allocated)/cpu_capacity * 100
-        mem_usage_percent = (mem_capacity - mem_allocated)/mem_capacity * 100
-        storage_usage_percent = (storage_capacity - storage_allocated)/storage_capacity * 100
+        cpu_usage_percent = (cpu_capacity - cpu_allocatable)/cpu_capacity * 100
+        mem_usage_percent = (mem_capacity - mem_allocatable)/mem_capacity * 100
+        storage_usage_percent = (storage_capacity - storage_allocatable)/storage_capacity * 100
         if cpu_usage_percent >= threshold \
             or mem_usage_percent >= threshold \
             or storage_usage_percent >= threshold:
-            retval.append({'name': node.metadata.name, 'capacity': node.status.capacity})
+            retval.append({'name': node.metadata.name, 'resource': node.status.allocatable})
 
     if  retval:
         return(False, retval)
