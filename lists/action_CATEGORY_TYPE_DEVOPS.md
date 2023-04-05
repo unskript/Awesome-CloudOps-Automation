@@ -223,6 +223,8 @@
 
 * **Azure**: [Get Azure Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Azure/legos/azure_get_handle/azure_get_handle.py): Get Azure Handle
 
+* **ChatGPT**: [ChatGPT Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ChatGPT/legos/chatgpt_get_handle/chatgpt_get_handle.py): Get ChatGPT Handle
+
 * **Datadog**: [Datadog delete incident](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_delete_incident/datadog_delete_incident.py): Delete an incident given its id
 
 * **Datadog**: [Datadog get event](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_event/datadog_get_event.py): Get an event given its id
