@@ -14,7 +14,7 @@ class InputSchema(BaseModel):
     )
 
 
-def stripe_retrive_charge_printer(output):
+def stripe_retrieve_charge_printer(output):
     if isinstance(output, (list, tuple)):
         pprint.pprint(output)
     elif isinstance(output, dict):
@@ -23,7 +23,7 @@ def stripe_retrive_charge_printer(output):
         pprint.pprint(output)
 
 
-def stripe_retrive_charge(handle, charge_id:str) -> Dict:
+def stripe_retrieve_charge(handle, charge_id:str) -> Dict:
     """stripe_retrive_charge Retrive the Charge for given ID
 
         :type charge_id: string
