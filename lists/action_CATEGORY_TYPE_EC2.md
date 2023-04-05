@@ -1,1 +1,0 @@
-# Actions in CATEGORY_TYPE_EC2
