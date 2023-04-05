@@ -39,7 +39,7 @@ def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) 
        :type namespace: str 
        :param namespace: Namespace where the above K8S POD is found (Mandatory parameter)
 
-       :rtype: Output of kubectl describe pod command
+       :rtype: Output of in the form of dictionary with `describe` and `logs` keys
     """
     if not pod_name or not namespace:
         raise Exception("POD Name and Namespace are mandatory parameters, cannot be None")

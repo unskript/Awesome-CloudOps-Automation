@@ -23,7 +23,7 @@ This Lego takes three mandatory inputs. Handle (K8S) object returned from the ta
 POD Name and Namespace where the POD exists. 
 
 ## Lego Output
-This Action outputs a Dict with `status`, `logs` and `events` as keys. Here is a sample output.
+This Action outputs a Dict with `describe` and `logs` as keys. Here is a sample output.
 <img src="./1.png">
 
 
