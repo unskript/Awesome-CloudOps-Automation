@@ -2,10 +2,14 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
+import re
+import pprint 
+
 from typing import Tuple
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 from pydantic import BaseModel, Field
+from tabulate import tabulate 
 try:
     from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory, normalize_storage
 except:
@@ -23,7 +27,14 @@ def k8s_get_nodes_with_insufficient_resources_printer(output):
     if output is None:
         return 
     
-    print(output)
+    res_hdr = ["Name", "Resource"]
+    data = []
+    for o in output[1]:
+        if isinstance(o, dict) == True:
+            res_hdr = ["Name", "Resource"]
+            data.append([o.get('name'), pprint.pformat(o.get('resource'))])        
+    print(tabulate(data, headers=res_hdr, tablefmt='fancy_grid'))
+
 
 
 def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tuple:
