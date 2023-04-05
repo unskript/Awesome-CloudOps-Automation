@@ -68,7 +68,9 @@ def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str):
             owner_name = owner_references[0].name
             owner_kind = owner_references[0].kind 
             if owner_kind == 'Deployment':
-                deployment_name = owner_name 
+                deployment_name = owner_name
+            else:
+                raise Exception(f"Unexpected owner_references kind in pod metadata {pod.metadata.owner_references} Only Deployment is supported")
 
         if deployment_name != '':
             deployment = apps_api.read_namespaced_deployment(name=deployment_name, namespace=namespace)
@@ -83,14 +85,8 @@ def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str):
 
             pod.metadata.labels.update(new_label)
             core_api.patch_namespaced_pod(pod_name, namespace, pod)
-
-            label_selector = ','.join([f'{key}={value}' for key, value in deployment.spec.selector.match_labels.items()])
-            updated_pods = core_api.list_namespaced_pod(namespace, label_selector=label_selector)
-            updated_pod_names = [x.metadata.name for x in updated_pods.items]
-            if pod_name not in updated_pod_names:
-                print(f"Successfully Removed POD from {deployment.metadata.name} {pod_name} in {namespace} Namespace")
         else:
-            print(f"ERROR: Could not remove Remove {pod_name} from its deployment in {namespace} ")
+            print(f"ERROR: Could not remove {pod_name} from its deployment in {namespace} ")
     except Exception as e:
         raise e
 
