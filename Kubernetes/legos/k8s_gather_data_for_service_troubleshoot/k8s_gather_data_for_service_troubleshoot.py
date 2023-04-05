@@ -48,7 +48,7 @@ def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace
     if not describe_output.stderr:
         retval['describe'] = describe_output.stdout 
     
-    ingress_rules_cmd = f'kubectl get svc {servicename} -n {namespace} | jq ".items[].spec.rules[]'
+    ingress_rules_cmd = f'kubectl describe ingress -n {namespace}'
     ingress_rules_output = handle.run_native_cmd(ingress_rules_cmd)
     if not ingress_rules_output.stderr:
         retval['ingress_rules'] = ingress_rules_output.stdout
