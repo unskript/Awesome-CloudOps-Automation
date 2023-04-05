@@ -8,21 +8,21 @@ This Action can be used to remove a POD from Kubernetes deployment. We do it by 
 
 ## Lego Details
 
-    k8s_remove_pod_from_deployment(handle: object, pod_name: str, namespace: str, deployment_label: str='app')
+    k8s_remove_pod_from_deployment(handle: object, pod_name: str, namespace: str)
 
         handle: Object of type unSkript K8S Connector
         pod_name: String, Name of the POD (Mandatory parameter)
         namespace: String, Namespace where the POD exists
-        deployment_label: Sring, Optional field that specifies what is the selector label used for deployment, default value is `app`
+
 
 ## Lego Input
-This Lego takes three mandatory inputs and an optional input. Handle (K8S) object returned from the task.validator(...),
-POD Name and Namespace where the POD exists. `deployment_label` is the optional input. If not given `app` is used.
+This Lego takes three mandatory inputs. Handle (K8S) object returned from the `task.validator(...)`, POD Name and Namespace where the POD exists. 
 
 ## Lego Output
-Here is a sample output.
-<img src="./1.png">
+Here are two sample outputs
 
+<img src="./1.png">
+<img src="./2.png">
 
 ## See it in Action
 

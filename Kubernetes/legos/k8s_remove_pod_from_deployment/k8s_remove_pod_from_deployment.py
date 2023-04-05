@@ -17,11 +17,6 @@ class InputSchema(BaseModel):
         title="Namespace",
         description="K8S Namespace where the POD exists"
     )
-    deployment_label: Optional[str] = Field(
-        "app",
-        description="Deployment Label, default value is app",
-        title="Deployment Label"
-    )
 
 def k8s_remove_pod_from_deployment(output):
     if not output:
@@ -30,7 +25,7 @@ def k8s_remove_pod_from_deployment(output):
     pprint.pprint(output)
 
 
-def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str, deployment_label: str='app'):
+def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str):
     """k8s_remove_pod_from_deployment This action can be used to remove the given POD in a namespace
        from a deployment. 
 
@@ -42,9 +37,6 @@ def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str, deploy
 
        :type namespace: str 
        :param namespace: Namespace where the above K8S POD is found (Mandatory parameter)
-
-       :type deployment_label: str
-       :param deployment_label: Selector label if used other than app for the pod
 
        :rtype: None
     """
@@ -70,22 +62,35 @@ def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str, deploy
     # doing a patch operation 
     try:
         pod = core_api.read_namespaced_pod(name=pod_name, namespace=namespace)
-        pod_labels = pod.metadata.labels
-        new_labels = {}
-        d_label = pod_labels.get(deployment_label)
-        new_labels[deployment_label] = d_label + '-out-for-maintenance'
+        owner_references = pod.metadata.owner_references
+        deployment_name = ''
+        if isinstance(owner_references, list):
+            owner_name = owner_references[0].name
+            owner_kind = owner_references[0].kind 
+            if owner_kind == 'Deployment':
+                deployment_name = owner_name 
 
-        pod.metadata.labels.update(new_labels)
-        core_api.patch_namespaced_pod(pod_name, namespace, pod)
+        if deployment_name != '':
+            deployment = apps_api.read_namespaced_deployment(name=deployment_name, namespace=namespace)
+            deployment_labels  = [key for key, value in deployment.spec.selector.match_labels.items()]
+    
+            pod_labels = [key for key,value in pod.metadata.labels.items()]
 
-        deployment = apps_api.read_namespaced_deployment(name=d_label, namespace=namespace)
-        label_selector = ','.join([f'{key}={value}' for key, value in deployment.spec.selector.match_labels.items()])
-        updated_pods = core_api.list_namespaced_pod(namespace, label_selector=label_selector)
-        updated_pod_names = [x.metadata.name for x in updated_pods.items]
-        if pod_name not in updated_pod_names:
-            print(f"Successfully Removed POD from {deployment.metadata.name} {pod_name} in {namespace} Namespace")
+            common_labels = set(deployment_labels) & set(pod_labels)
+            new_label = {}
+            for label in common_labels:
+                new_label[label] = pod.metadata.labels.get(label) + '-out-for-maintenance'
+
+            pod.metadata.labels.update(new_label)
+            core_api.patch_namespaced_pod(pod_name, namespace, pod)
+
+            label_selector = ','.join([f'{key}={value}' for key, value in deployment.spec.selector.match_labels.items()])
+            updated_pods = core_api.list_namespaced_pod(namespace, label_selector=label_selector)
+            updated_pod_names = [x.metadata.name for x in updated_pods.items]
+            if pod_name not in updated_pod_names:
+                print(f"Successfully Removed POD from {deployment.metadata.name} {pod_name} in {namespace} Namespace")
         else:
-            print(f"ERROR: Could not remove Remove {pod_name} in {namespace} from {deployment.metadata.name}")
+            print(f"ERROR: Could not remove Remove {pod_name} from its deployment in {namespace} ")
     except Exception as e:
         raise e
 
