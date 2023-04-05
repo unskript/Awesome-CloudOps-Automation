@@ -33,14 +33,13 @@ def stripe_get_all_refunds(handle, max_results: int = 25) -> List:
         :rtype: Returns the results of all recent charges.
     """
     result = []
-    starting_after = None
     if max_results == 0:
         output = handle.Refund.list()
-        result.append(output)
+        for refunds in output.auto_paging_iter():
+            result.append(refunds)
     else:
-        output = handle.Refund.list(
-                        limit=max_results,
-                        starting_after=starting_after)
-        result.append(output)
-        
+        output = handle.Refund.list(limit=max_results)
+        for refunds in output:
+            result.append(refunds)
+            
     return result

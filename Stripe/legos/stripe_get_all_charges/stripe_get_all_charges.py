@@ -30,12 +30,17 @@ def stripe_get_all_charges(handle, max_results: int = 25) -> List:
 
         :rtype: Returns the results of all recent charges.
     """
-    if max_results == 0:
-        data = handle.Charge.list()
-    else:
-        data = handle.Charge.list(limit=max_results)
-    op = []
-    for item in data:
-        op.append([item['amount'], item['id'], item['description']])
+    result = []
+    try:
+        if max_results == 0:
+            data = handle.Charge.list()
+            for charge in data.auto_paging_iter():
+                result.append([charge['amount'], charge['id'], charge['description']])
+        else:
+            data = handle.Charge.list(limit=max_results)
+            for charge in data:
+                result.append([charge['amount'], charge['id'], charge['description']])
+    except Exception as e:
+        print(e)
 
-    return op
+    return result

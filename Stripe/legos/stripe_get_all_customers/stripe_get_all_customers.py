@@ -34,8 +34,9 @@ def stripe_get_all_customers(handle, max_results: int = 25) -> List:
     result = []
     try:
         if max_results == 0:
-            output = handle.Customer.list()
-            result = output["data"]
+            output = handle.Customer.list(limit=100)
+            for customer in output.auto_paging_iter():
+                result.append(customer)
         else:
             output = handle.Customer.list(limit=max_results)
             result = output["data"]

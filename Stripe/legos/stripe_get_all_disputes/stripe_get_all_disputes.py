@@ -35,7 +35,8 @@ def stripe_get_all_disputes(handle, max_results: int = 25) -> List:
     try:
         if max_results == 0:
             output = handle.Dispute.list()
-            result = output["data"]
+            for dispute in output.auto_paging_iter():
+                result.append(dispute)
         else:
             output = handle.Dispute.list(limit=max_results)
             result = output["data"]
