@@ -1,5 +1,5 @@
 {
-  "action_title": "AWS Get Quotas for a Service v1",
+  "action_title": "AWS Get Quotas for a Service",
   "action_description": "Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_get_service_quotas",

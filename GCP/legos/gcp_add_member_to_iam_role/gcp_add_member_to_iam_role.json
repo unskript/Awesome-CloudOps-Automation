@@ -1,6 +1,6 @@
 {
     "action_title": "GCP Add Member to IAM Role",
-    "action_description": "Adding member to the IAM role which alredy available",
+    "action_description": "Adding member to the IAM role which already available",
     "action_type": "LEGO_TYPE_GCP",
     "action_entry_function": "gcp_add_member_to_iam_role",
     "action_needs_credential": true,

@@ -1,0 +1,11 @@
+{
+"action_title": "Opensearch Get Handle",
+"action_description": "Opensearch Get Handle",
+"action_type": "LEGO_TYPE_OPENSEARCH",
+"action_entry_function": "opensearch_get_handle",
+"action_needs_credential": true,
+"action_supports_poll": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_supports_iteration": true,
+"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_OPENSEARCH"]
+}
