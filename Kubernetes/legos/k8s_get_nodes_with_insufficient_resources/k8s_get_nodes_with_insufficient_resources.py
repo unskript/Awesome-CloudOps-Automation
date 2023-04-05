@@ -31,8 +31,8 @@ def k8s_get_nodes_with_insufficient_resources_printer(output):
     data = []
     for o in output[1]:
         if isinstance(o, dict) == True:
-            res_hdr = ["Name", "Resource"]
-            data.append([o.get('name'), pprint.pformat(o.get('resource'))])        
+            res_hdr = ["Name", "Allocatable", "Capacity"]
+            data.append([o.get('name'), pprint.pformat(o.get('allocatable')), pprint.pformat(o.get('capacity'))])        
     print(tabulate(data, headers=res_hdr, tablefmt='fancy_grid'))
 
 
@@ -68,7 +68,7 @@ def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tu
         if cpu_usage_percent >= threshold \
             or mem_usage_percent >= threshold \
             or storage_usage_percent >= threshold:
-            retval.append({'name': node.metadata.name, 'resource': node.status.allocatable})
+            retval.append({'name': node.metadata.name, 'allocatable': node.status.allocatable, 'capacity': node.status.capacity})
 
     if  retval:
         return(False, retval)
