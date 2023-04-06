@@ -201,8 +201,6 @@
 
 * **Azure**: [Get Azure Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Azure/legos/azure_get_handle/azure_get_handle.py): Get Azure Handle
 
-* **ChatGPT**: [ChatGPT Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ChatGPT/legos/chatgpt_get_handle/chatgpt_get_handle.py): Get ChatGPT Handle
-
 * **Datadog**: [Datadog delete incident](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_delete_incident/datadog_delete_incident.py): Delete an incident given its id
 
 * **Datadog**: [Datadog get event](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_event/datadog_get_event.py): Get an event given its id
@@ -431,6 +429,10 @@
 
 * **Kubernetes**: [Kubernetes Execute a command on a POD in a given namespace and filter](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_exec_command_on_pods_and_filter/k8s_exec_command_on_pods_and_filter.py): Execute a command on Kubernetes POD in a given namespace and filter output
 
+* **Kubernetes**: [Gather Data for POD Troubleshoot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_gather_data_for_pod_troubleshoot/k8s_gather_data_for_pod_troubleshoot.py): Gather Data for POD Troubleshoot
+
+* **Kubernetes**: [Gather Data for K8S Service Troubleshoot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_gather_data_for_service_troubleshoot/k8s_gather_data_for_service_troubleshoot.py): Gather Data for K8S Service Troubleshoot
+
 * **Kubernetes**: [Get All Evicted PODS From Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_evicted_pods_from_namespace/k8s_get_all_evicted_pods_from_namespace.py): This action get all evicted PODS from given namespace. If namespace not given it will get all the pods from all namespaces.
 
 * **Kubernetes**: [ Get All Kubernetes PODS with state in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_pods/k8s_get_all_pods.py):  Get All Kubernetes PODS with state in a given Namespace
@@ -445,11 +447,15 @@
 
 * **Kubernetes**: [Get Deployment Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_deployment_status/k8s_get_deployment_status.py): This action search for failed deployment status and returns list.
 
+* **Kubernetes**: [Get Kubernetes Failed Deployments](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_failed_deployments/k8s_get_failed_deployments.py): Get Kubernetes Failed Deployments
+
 * **Kubernetes**: [Get Kubernetes Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_handle/k8s_get_handle.py): Get Kubernetes Handle
 
 * **Kubernetes**: [Get All Kubernetes Healthy PODS in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_healthy_pods/k8s_get_healthy_pods.py): Get All Kubernetes Healthy PODS in a given Namespace
 
 * **Kubernetes**: [Get Kubernetes Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_nodes/k8s_get_nodes.py): Get Kubernetes Nodes
+
+* **Kubernetes**: [Get Kubernetes Nodes that have insufficient resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_nodes_with_insufficient_resources/k8s_get_nodes_with_insufficient_resources.py): Get Kubernetes Nodes that have insufficient resources
 
 * **Kubernetes**: [Get Kubernetes POD Configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pod_config/k8s_get_pod_config.py): Get Kubernetes POD Configuration
 
@@ -465,9 +471,17 @@
 
 * **Kubernetes**: [Get all K8s Pods in ImagePullBackOff State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_imagepullbackoff_state/k8s_get_pods_in_imagepullbackoff_state.py): Get all K8s pods in ImagePullBackOff State
 
+* **Kubernetes**: [Get Kubernetes PODs in not Running State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_not_running_state/k8s_get_pods_in_not_running_state.py): Get Kubernetes PODs in not Running State
+
 * **Kubernetes**: [Get all K8s Pods in Terminating State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_terminating_state/k8s_get_pods_in_terminating_state.py): Get all K8s pods in Terminating State
 
+* **Kubernetes**: [Get Kubernetes PODS with high restart](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_with_high_restart/k8s_get_pods_with_high_restart.py): Get Kubernetes PODS with high restart
+
+* **Kubernetes**: [Get K8S Service with no associated endpoints](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_service_with_no_associated_endpoints/k8s_get_service_with_no_associated_endpoints.py): Get K8S Service with no associated endpoints
+
 * **Kubernetes**: [Get Kubernetes Services for a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_services/k8s_get_services.py): Get Kubernetes Services for a given Namespace
+
+* **Kubernetes**: [Get Kubernetes Unbound PVCs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_unbound_pvcs/k8s_get_unbound_pvcs.py): Get Kubernetes Unbound PVCs
 
 * **Kubernetes**: [Kubectl command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_kubectl_command/k8s_kubectl_command.py): Execute kubectl command.
 
@@ -506,6 +520,8 @@
 * **Kubernetes**: [List matching name pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_list_all_matching_pods/k8s_list_all_matching_pods.py): List all pods matching a particular name string. The matching string can be a regular expression too
 
 * **Kubernetes**: [List pvcs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_list_pvcs/k8s_list_pvcs.py): List pvcs by namespace. By default, it will list all pvcs in all namespaces.
+
+* **Kubernetes**: [Remove POD from Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_remove_pod_from_deployment/k8s_remove_pod_from_deployment.py): Remove POD from Deployment
 
 * **Kubernetes**: [Update Commands in a Kubernetes POD in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_update_command_in_pod_spec/k8s_update_command_in_pod_spec.py): Update Commands in a Kubernetes POD in a given Namespace
 

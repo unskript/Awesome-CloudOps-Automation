@@ -37,6 +37,8 @@
 
 * **Kubernetes**: [List pvcs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_list_pvcs/k8s_list_pvcs.py): List pvcs by namespace. By default, it will list all pvcs in all namespaces.
 
+* **Kubernetes**: [Remove POD from Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_remove_pod_from_deployment/k8s_remove_pod_from_deployment.py): Remove POD from Deployment
+
 * **Kubernetes**: [Update Commands in a Kubernetes POD in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_update_command_in_pod_spec/k8s_update_command_in_pod_spec.py): Update Commands in a Kubernetes POD in a given Namespace
 
 * **Mantishub**: [Get Mantishub handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mantishub/legos/mantishub_get_handle/mantishub_get_handle.py): Get Mantishub handle

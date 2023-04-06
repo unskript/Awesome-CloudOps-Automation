@@ -3,3 +3,5 @@
 
 * **Kubernetes**: [List pvcs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_list_pvcs/k8s_list_pvcs.py): List pvcs by namespace. By default, it will list all pvcs in all namespaces.
 
+* **Kubernetes**: [Remove POD from Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_remove_pod_from_deployment/k8s_remove_pod_from_deployment.py): Remove POD from Deployment
+
