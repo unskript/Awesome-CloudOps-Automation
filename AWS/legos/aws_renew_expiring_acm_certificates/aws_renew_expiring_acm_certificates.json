@@ -10,5 +10,6 @@
     "action_verbs": ["renew"],
     "action_nouns": ["certificates","acm","aws"],
     "action_is_check": false,
-    "action_is_remediation": true
+    "action_is_remediation": true,
+    "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ACM"]
   }

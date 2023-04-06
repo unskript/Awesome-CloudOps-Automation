@@ -23,7 +23,7 @@ def aws_filter_target_groups_by_tags_printer(output):
 
 
 def aws_filter_target_groups_by_tags(handle, tag_key: str, region: str) -> List:
-    """aws_filter_target_groups_by_tags Returns a array of dict with taget group and tag value.
+    """aws_filter_target_groups_by_tags Returns a array of dict with target group and tag value.
 
         :type handle: object
         :param handle: Object containing global params for the notebook.
@@ -34,7 +34,7 @@ def aws_filter_target_groups_by_tags(handle, tag_key: str, region: str) -> List:
         :type region: string
         :param region: AWS Region.
 
-        :rtype: Returns a array of dict with taget group and tag value.
+        :rtype: Returns a array of dict with target group and tag value.
     """
     elbv2Client = handle.client('elbv2', region_name=region)
     tbs = aws_get_paginator(elbv2Client, "describe_target_groups", "TargetGroups")

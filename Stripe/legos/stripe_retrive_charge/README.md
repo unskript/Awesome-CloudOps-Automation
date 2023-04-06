@@ -1,10 +1,10 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h2>Retrive a Charge</h2>
+<h2>Retrieve a Charge</h2>
 
 <br>
 
 ## Description
-This Lego Retrive the Charge for given ID.
+This Lego Retrieve the Charge for given ID.
 
 
 ## Lego Details
