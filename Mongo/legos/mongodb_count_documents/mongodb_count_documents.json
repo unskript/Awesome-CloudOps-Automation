@@ -5,5 +5,6 @@
 "action_entry_function": "mongodb_count_documents",
 "action_needs_credential": true,
 "action_supports_poll": true,
-"action_supports_iteration": true
+"action_supports_iteration": true,
+"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_MONGODB", "CATEGORY_TYPE_MONGODB_COLLECTION","CATEGORY_TYPE_MONGODB_DOCUMENT"]
 }

@@ -1,0 +1,10 @@
+{
+    "action_title": "Gather Data for POD Troubleshoot",
+    "action_description": "Gather Data for POD Troubleshoot",
+    "action_type": "LEGO_TYPE_K8S",
+    "action_entry_function": "k8s_gather_data_for_pod_troubleshoot",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT"
+}

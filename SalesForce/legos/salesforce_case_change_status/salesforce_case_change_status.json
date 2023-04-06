@@ -14,5 +14,7 @@
 "salesforce",
 "case",
 "status"
-]
+],
+"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_SALESFORCE"]
+
 }

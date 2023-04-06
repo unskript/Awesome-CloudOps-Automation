@@ -1,9 +1,9 @@
 {
   "name": "Troubleshooting Your EC2 Configuration in a Private Subnet",
-  "description": "This runbook can be used to trobleshoot EC2 instance configuration in a private subnet by caputuring the VPC ID for a given instance ID. Using VPC ID to get Internet Gateway details then try to SSH and connect to internet.",
+  "description": "This runbook can be used to troubleshoot EC2 instance configuration in a private subnet by capturing the VPC ID for a given instance ID. Using VPC ID to get Internet Gateway details then try to SSH and connect to internet.",
   "uuid": "c123bb9eff909c27f2d330792689c63110889e0b7754041e2e24ade22ca16615",
   "icon": "CONNECTOR_TYPE_AWS",
-  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_TROUBLESHOOTNG" ],
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_TROUBLESHOOTING" ],
   "connector_types": [ "CONNECTOR_TYPE_AWS" ],
   "version": "1.0.0"
 }
