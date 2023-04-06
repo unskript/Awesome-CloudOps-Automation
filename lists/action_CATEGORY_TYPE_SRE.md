@@ -201,6 +201,8 @@
 
 * **Azure**: [Get Azure Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Azure/legos/azure_get_handle/azure_get_handle.py): Get Azure Handle
 
+* **ChatGPT**: [ChatGPT Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ChatGPT/legos/chatgpt_get_handle/chatgpt_get_handle.py): Get ChatGPT Handle
+
 * **Datadog**: [Datadog delete incident](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_delete_incident/datadog_delete_incident.py): Delete an incident given its id
 
 * **Datadog**: [Datadog get event](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_event/datadog_get_event.py): Get an event given its id
@@ -593,7 +595,11 @@
 
 * **Netbox**: [Netbox Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Netbox/legos/netbox_get_handle/netbox_get_handle.py): Get Netbox Handle
 
+* **Netbox**: [Nomad List Devices](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Netbox/legos/netbox_list_devices/netbox_list_devices.py): List all Netbox devices
+
 * **Nomad**: [Nomad Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Nomad/legos/nomad_get_handle/nomad_get_handle.py): Get Nomad Handle
+
+* **Nomad**: [Nomad List Jobs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Nomad/legos/nomad_list_jobs/nomad_list_jobs.py): List all Nomad jobs
 
 * **Pingdom**: [Create new maintenance window.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_create_new_maintenance_window/pingdom_create_new_maintenance_window.py): Create new maintenance window.
 

@@ -156,6 +156,9 @@
 # Azure
 * [Get Azure Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Azure/legos/azure_get_handle/azure_get_handle.py): Get Azure Handle
 
+# ChatGPT
+* [ChatGPT Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ChatGPT/legos/chatgpt_get_handle/chatgpt_get_handle.py): Get ChatGPT Handle
+
 # Datadog
 * [Datadog delete incident](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_delete_incident/datadog_delete_incident.py): Delete an incident given its id
 * [Datadog get event](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_event/datadog_get_event.py): Get an event given its id
@@ -338,3 +341,168 @@
 * [List pvcs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_list_pvcs/k8s_list_pvcs.py): List pvcs by namespace. By default, it will list all pvcs in all namespaces.
 * [Remove POD from Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_remove_pod_from_deployment/k8s_remove_pod_from_deployment.py): Remove POD from Deployment
 * [Update Commands in a Kubernetes POD in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_update_command_in_pod_spec/k8s_update_command_in_pod_spec.py): Update Commands in a Kubernetes POD in a given Namespace
+<<<<<<< HEAD
+=======
+
+# Mantishub
+* [Get Mantishub handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mantishub/legos/mantishub_get_handle/mantishub_get_handle.py): Get Mantishub handle
+
+# Mongo
+* [MongoDB add new field in all collections](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_add_new_field_in_collections/mongodb_add_new_field_in_collections.py): MongoDB add new field in all collections
+* [MongoDB Aggregate Command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_aggregate_command/mongodb_aggregate_command.py): MongoDB Aggregate Command
+* [MongoDB Atlas cluster cloud backup](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_atlas_cluster_backup/mongodb_atlas_cluster_backup.py): Trigger on-demand Atlas cloud backup
+* [MongoDB Count Documents](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_count_documents/mongodb_count_documents.py): MongoDB Count Documents
+* [MongoDB Create Collection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_create_collection/mongodb_create_collection.py): MongoDB Create Collection
+* [MongoDB Create Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_create_database/mongodb_create_database.py): MongoDB Create Database
+* [Delete collection from MongoDB database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_delete_collection/mongodb_delete_collection.py): Delete collection from MongoDB database
+* [MongoDB Delete Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_delete_database/mongodb_delete_database.py): MongoDB Delete Database
+* [MongoDB Delete Document](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_delete_document/mongodb_delete_document.py): MongoDB Delete Document
+* [MongoDB Distinct Command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_distinct_command/mongodb_distinct_command.py): MongoDB Distinct Command
+* [MongoDB Find Document](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_find_document/mongodb_find_document.py): MongoDB Find Document
+* [MongoDB Find One](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_find_one/mongodb_find_one.py): MongoDB Find One returns a single entry that matches the query.
+* [Get MongoDB Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_handle/mongodb_get_handle.py): Get MongoDB Handle
+* [Get Mongo Server Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_server_status/mongodb_get_server_status.py): Get Mongo Server Status
+* [MongoDB Insert Document](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_insert_document/mongodb_insert_document.py): MongoDB Insert Document
+* [MongoDB kill queries](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_kill_queries/mongodb_kill_queries.py): MongoDB kill queries
+* [Get list of collections in MongoDB Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_list_collections/mongodb_list_collections.py): Get list of collections in MongoDB Database
+* [Get list of MongoDB Databases](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_list_databases/mongodb_list_databases.py): Get list of MongoDB Databases
+* [MongoDB list queries](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_list_queries/mongodb_list_queries.py): MongoDB list queries
+* [MongoDB Read Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_read_query/mongodb_read_query.py): MongoDB Read Query
+* [MongoDB remove a field in all collections](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_remove_field_in_collections/mongodb_remove_field_in_collections.py): MongoDB remove a field in all collections
+* [MongoDB Rename Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_rename_database/mongodb_rename_database.py): MongoDB Rename Database
+* [MongoDB Update Document](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_update_document/mongodb_update_document.py): MongoDB Update Document
+* [MongoDB Upsert Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_write_query/mongodb_write_query.py): MongoDB Upsert Query
+
+# MsSQL
+* [Get MS-SQL Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MsSQL/legos/mssql_get_handle/mssql_get_handle.py): Get MS-SQL Handle
+* [MS-SQL Read Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MsSQL/legos/mssql_read_query/mssql_read_query.py): MS-SQL Read Query
+* [MS-SQL Write Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MsSQL/legos/mssql_write_query/mssql_write_query.py): MS-SQL Write Query
+
+# MySQL
+* [Get MySQL Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MySQL/legos/mysql_get_handle/mysql_get_handle.py): Get MySQL Handle
+* [MySQl Get Long Running Queries](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MySQL/legos/mysql_get_long_run_queries/mysql_get_long_run_queries.py): MySQl Get Long Running Queries
+* [MySQl Kill Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MySQL/legos/mysql_kill_query/mysql_kill_query.py): MySQl Kill Query
+* [Run MySQL Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MySQL/legos/mysql_read_query/mysql_read_query.py): Run MySQL Query
+* [Create a MySQL Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/MySQL/legos/mysql_write_query/mysql_write_query.py): Create a MySQL Query
+
+# Netbox
+* [Netbox Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Netbox/legos/netbox_get_handle/netbox_get_handle.py): Get Netbox Handle
+* [Nomad List Devices](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Netbox/legos/netbox_list_devices/netbox_list_devices.py): List all Netbox devices
+
+# Nomad
+* [Nomad Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Nomad/legos/nomad_get_handle/nomad_get_handle.py): Get Nomad Handle
+* [Nomad List Jobs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Nomad/legos/nomad_list_jobs/nomad_list_jobs.py): List all Nomad jobs
+
+# Pingdom
+* [Create new maintenance window.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_create_new_maintenance_window/pingdom_create_new_maintenance_window.py): Create new maintenance window.
+* [Perform Pingdom single check](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_do_single_check/pingdom_do_single_check.py): Perform Pingdom Single Check
+* [Get Pingdom Analysis Results for a specified Check](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_get_analysis/pingdom_get_analysis.py): Get Pingdom Analysis Results for a specified Check
+* [Get list of checkIDs given a hostname](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_get_checkids/pingdom_get_checkids.py): Get list of checkIDs given a hostname. If no hostname provided, it lists all checkIDs.
+* [Get list of checkIDs given a name](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_get_checkids_by_name/pingdom_get_checkids_by_name.py): Get list of checkIDS given a name. If name is not given, it gives all checkIDs. If transaction is set to true, it returns transaction checkIDs
+* [Get Pingdom Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_get_handle/pingdom_get_handle.py): Get Pingdom Handle
+* [Pingdom Get Maintenance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_get_maintenance/pingdom_get_maintenance.py): Pingdom Get Maintenance
+* [Get Pingdom Results](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_get_results/pingdom_get_results.py): Get Pingdom Results
+* [Get Pingdom TMS Check](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_get_tmscheck/pingdom_get_tmscheck.py): Get Pingdom TMS Check
+* [Pingdom lego to pause/unpause checkids](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_pause_or_unpause_checkids/pingdom_pause_or_unpause_checkids.py): Pingdom lego to pause/unpause checkids
+* [Perform Pingdom Traceroute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_traceroute/pingdom_traceroute.py): Perform Pingdom Traceroute
+
+# Postgresql
+* [PostgreSQL Calculate Bloat](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgres_calculate_bloat/postgres_calculate_bloat.py): This Lego calculates bloat for tables in Postgres
+* [Calling a PostgreSQL function](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_call_function/postgresql_call_function.py): Calling a PostgreSQL function
+* [PostgreSQL Check Unused Indexes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_check_unused_indexes/postgresql_check_unused_indexes.py): Find unused Indexes in a database in PostgreSQL
+* [Create Tables in PostgreSQL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_create_table/postgresql_create_table.py): Create Tables PostgreSQL
+* [Delete PostgreSQL Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_delete_query/postgresql_delete_query.py): Delete PostgreSQL Query
+* [PostgreSQL Get Cache Hit Ratio](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_cache_hit_ratio/postgresql_get_cache_hit_ratio.py): The result of the action will show the total number of blocks read from disk, the total number of blocks found in the buffer cache, and the cache hit ratio as a percentage. For example, if the cache hit ratio is 99%, it means that 99% of all data requests were served from the buffer cache, and only 1% required reading data from disk.
+* [Get PostgreSQL Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_handle/postgresql_get_handle.py): Get PostgreSQL Handle
+* [PostgreSQL Get Index Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_index_usage/postgresql_get_index_usage.py): The action result shows the data for table name, the percentage of times an index was used for that table, and the number of live rows in the table.
+* [Execute commands in a PostgreSQL transaction.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_handling_transaction/postgresql_handling_transaction.py): Given a set of PostgreSQL commands, this actions run them inside a transaction.
+* [Long Running PostgreSQL Queries](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_long_running_queries/postgresql_long_running_queries.py): Long Running PostgreSQL Queries
+* [Read PostgreSQL Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_read_query/postgresql_read_query.py): Read PostgreSQL Query
+* [Show tables in PostgreSQL Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_show_tables/postgresql_show_tables.py): Show the tables existing in a PostgreSQL Database. We execute the following query to fetch this information SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';
+* [Call PostgreSQL Stored Procedure](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_stored_procedures/postgresql_stored_procedures.py): Call PostgreSQL Stored Procedure
+* [Write PostgreSQL Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_write_query/postgresql_write_query.py): Write PostgreSQL Query
+
+# Prometheus
+* [Get Prometheus rules](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Prometheus/legos/prometheus_alerts_list/prometheus_alerts_list.py): Get Prometheus rules
+* [Get All Prometheus Metrics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Prometheus/legos/prometheus_get_all_metrics/prometheus_get_all_metrics.py): Get All Prometheus Metrics
+* [Get Prometheus handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Prometheus/legos/prometheus_get_handle/prometheus_get_handle.py): Get Prometheus handle
+* [Get Prometheus Metric Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Prometheus/legos/prometheus_get_metric_statistics/prometheus_get_metric_statistics.py): Get Prometheus Metric Statistics
+
+# Redis
+* [Delete All Redis Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_delete_all_keys/redis_delete_all_keys.py): Delete All Redis keys
+* [Delete Redis Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_delete_keys/redis_delete_keys.py): Delete Redis keys matching pattern
+* [Delete Redis Unused keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_delete_stale_keys/redis_delete_stale_keys.py): Delete Redis Unused keys given a time threshold in seconds
+* [Get Redis Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_get_handle/redis_get_handle.py): Get Redis Handle
+* [Get Redis keys count](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_get_keys_count/redis_get_keys_count.py): Get Redis keys count matching pattern (default: '*')
+* [ List Redis Large keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_list_large_keys/redis_list_large_keys.py): Find Redis Large keys given a size threshold in bytes
+
+# Rest
+* [Get REST handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Rest/legos/rest_get_handle/rest_get_handle.py): Get REST handle
+* [Call REST Methods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Rest/legos/rest_methods/rest_methods.py): Call REST Methods.
+
+# SSH
+* [SSH Execute Remote Command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SSH/legos/ssh_execute_remote_command/ssh_execute_remote_command.py): SSH Execute Remote Command
+* [SSH: Locate large files on host](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SSH/legos/ssh_find_large_files/ssh_find_large_files.py): This action scans the file system on a given host and returns a dict of large files. The command used to perform the scan is "find inspect_folder -type f -exec du -sk '{}' + | sort -rh | head -n count"
+* [Get SSH handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SSH/legos/ssh_get_handle/ssh_get_handle.py): Get SSH handle
+* [SSH Restart Service Using sysctl](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SSH/legos/ssh_restart_service_using_sysctl/ssh_restart_service_using_sysctl.py): SSH Restart Service Using sysctl
+* [SCP: Remote file transfer over SSH](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SSH/legos/ssh_scp/ssh_scp.py): Copy files from or to remote host. Files are copied over SCP. 
+
+# SalesForce
+* [Assign Salesforce Case](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_assign_case/salesforce_assign_case.py): Assign a Salesforce case
+* [Change Salesforce Case Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_case_change_status/salesforce_case_change_status.py): Change Salesforce Case Status
+* [Create Salesforce Case](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_create_case/salesforce_create_case.py): Create a Salesforce case
+* [Delete Salesforce Case](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_delete_case/salesforce_delete_case.py): Delete a Salesforce case
+* [Get Salesforce Case Info](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_get_case/salesforce_get_case.py): Get a Salesforce case info
+* [Get Salesforce Case Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_get_case_status/salesforce_get_case_status.py): Get a Salesforce case status
+* [Get Salesforce handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_get_handle/salesforce_get_handle.py): Get Salesforce handle
+* [Search Salesforce Case](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_search_case/salesforce_search_case.py): Search a Salesforce case
+* [Update Salesforce Case](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_update_case/salesforce_update_case.py): Update a Salesforce case
+
+# Slack
+* [Get Slack SDK Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_get_handle/slack_get_handle.py): Get Slack SDK Handle
+* [Post Slack Image](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_post_image/slack_post_image.py): Post Slack Image
+* [Post Slack Message](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_post_message/slack_post_message.py): Post Slack Message
+
+# Snowflake
+* [Snowflake Read Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Snowflake/legos/snowflake_read_query/snowflake_read_query.py): Snowflake Read Query
+* [Snowflake Write Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Snowflake/legos/snowflake_write_query/snowflake_write_query.py): Snowflake Write Query
+
+# Splunk
+* [Get Splunk SDK Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Splunk/legos/splunk_get_handle/splunk_get_handle.py): Get Splunk SDK Handle
+
+# Stripe
+* [ Capture a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_capture_charge/stripe_capture_charge.py):  Capture the payment of an existing, uncaptured, charge
+* [Close Dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_close_dispute/stripe_close_dispute.py): Close Dispute
+* [Create a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_create_charge/stripe_create_charge.py): Create a Charge
+* [Create a Refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_create_refund/stripe_create_refund.py): Create a Refund
+* [Get list of charges previously created](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_charges/stripe_get_all_charges.py): Get list of charges previously created
+* [Get list of disputes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_disputes/stripe_get_all_disputes.py): Get list of disputes
+* [ Get list of refunds](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_refunds/stripe_get_all_refunds.py):  Get list of refunds
+* [Get Stripe Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_handle/stripe_get_handle.py): Get Stripe Handle
+* [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/stripe_retrieve_charge.py): Retrieves a Charge
+* [Retrieve details of a dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_dispute/stripe_retrieve_dispute.py): Retrieve details of a dispute
+* [Retrieve a refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_refund/stripe_retrieve_refund.py): Retrieve a refund
+* [Update a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_charge/stripe_update_charge.py): Update a Charge
+* [Update Dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_dispute/stripe_update_dispute.py): Update Dispute
+* [Update Refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_refund/stripe_update_refund.py): Updates the specified refund by setting the values of the parameters passed.
+
+# Terraform
+* [Execute Terraform Command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Terraform/legos/terraform_exec_command/terraform_exec_command.py): Execute Terraform Command
+* [Get terraform handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Terraform/legos/terraform_get_handle/terraform_get_handle.py): Get terraform handle
+
+# Zabbix
+* [Get Zabbix Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Zabbix/legos/zabbix_get_handle/zabbix_get_handle.py): Get Zabbix Handle
+
+# infra
+* [Infra: Finish runbook execution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/infra_workflow_done/infra_workflow_done.py): Infra: use this action to finish the execution of a runbook. Once this is set, no more tasks will be executed
+* [Infra: Append values for a key in workflow state store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_append_keys/workflow_ss_append_keys.py): Infra: use this action to append values for a key in a state store provided by the workflow.
+* [Infra: Store keys in workflow state store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_create_keys/workflow_ss_create_keys.py): Infra: use this action to persist keys in a state store provided by the workflow.
+* [Infra: Delete keys from workflow state store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_delete_keys/workflow_ss_delete_keys.py): Infra: use this action to delete keys from a state store provided by the workflow.
+* [Infra: Fetch keys from workflow state store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_get_keys/workflow_ss_get_keys.py): Infra: use this action to retrieve keys in a state store provided by the workflow.
+* [Infra: Rename keys in workflow state store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_rename_keys/workflow_ss_rename_keys.py): Infra: use this action to rename keys in a state store provided by the workflow.
+* [Infra: Update keys in workflow state store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/workflow_ss_update_keys/workflow_ss_update_keys.py): Infra: use this action to update keys in a state store provided by the workflow.
+
+# opensearch
+* [Opensearch Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/opensearch/legos/opensearch_get_handle/opensearch_get_handle.py): Opensearch Get Handle
+* [Opensearch search](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/opensearch/legos/opensearch_search/opensearch_search.py): Opensearch Search
+>>>>>>> 0f61cce11855d2a8a2c82300c7df08b38fcac5ad
