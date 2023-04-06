@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -275,3 +276,6 @@ Unless required by applicable law or agreed to in writing, project distributed u
 [twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=for-the-badge&logo=twitter&colorB=555
 [twitter-url]: https://twitter.com/unskript
 [awesome-shield]: https://img.shields.io/badge/awesome-cloudops-orange?style=for-the-badge&logo=bookstack 
+=======
+{"schemaVersion": 1, "label": "Action Count", "message": 424, "color": "green"}
+>>>>>>> 7b5b3f548c3e84e48116b2bebc00d1d9c5e6d445
