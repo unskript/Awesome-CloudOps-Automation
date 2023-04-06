@@ -7,6 +7,8 @@
 
 * **Kubernetes**: [Kubernetes Execute a command on a POD in a given namespace and filter](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_exec_command_on_pods_and_filter/k8s_exec_command_on_pods_and_filter.py): Execute a command on Kubernetes POD in a given namespace and filter output
 
+* **Kubernetes**: [Gather Data for POD Troubleshoot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_gather_data_for_pod_troubleshoot/k8s_gather_data_for_pod_troubleshoot.py): Gather Data for POD Troubleshoot
+
 * **Kubernetes**: [Get All Evicted PODS From Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_evicted_pods_from_namespace/k8s_get_all_evicted_pods_from_namespace.py): This action get all evicted PODS from given namespace. If namespace not given it will get all the pods from all namespaces.
 
 * **Kubernetes**: [ Get All Kubernetes PODS with state in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_pods/k8s_get_all_pods.py):  Get All Kubernetes PODS with state in a given Namespace
