@@ -526,7 +526,7 @@ def update_check_run_trail(id: str, action_name: str, connector_type: str, resul
     upsert_pss_record('check_run_trail', content)
 
 def update_audit_trail(status_dict_list: list):
-    """update_audit_trail This function will update the satus of each run of the runbook
+    """update_audit_trail This function will update the status of each run of the runbook
 
        :type status_dict_list: list
        :param status_dict: List of Python Dictionary that has the status for all the checks that 
@@ -686,7 +686,10 @@ def show_audit_trail(filter: str = None):
                         break
                     elif filter.lower() == v1.get('connector'):
                         flag = 2
-                        connector_result_table += [[k, k1 + '\n' + '( ' + v1.get('check_name') + ' )', v1.get('status'), v.get('time_stamp')]]
+                        try:
+                            connector_result_table += [[k, k1 + '\n' + '( ' + v1.get('check_name') + ' )', v1.get('status'), v.get('time_stamp')]]
+                        except:
+                            pass
                         #pprint.pprint(f"{k} {k1} {v1}")
             
     if flag == 1:
