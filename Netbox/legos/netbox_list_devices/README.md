@@ -9,7 +9,7 @@ This Lego Lists all Netbox devices
 
 ## Lego Details
 
-    nomad_list_jobs(handle: object)
+    netbox_list_devices(handle: object)
 
         handle: Object of type unSkript Netbox Connector
 
