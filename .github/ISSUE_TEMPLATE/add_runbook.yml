@@ -1,5 +1,5 @@
-name: Create New Action
-description: File an Action Request
+name: Create New RunBook
+description: File an Runbook Request
 title: "[RunBook]: "
 labels: ["runbook", "triage"]
 body:
