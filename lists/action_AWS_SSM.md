@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the AWS SSM category
+* **AWS**: [ Run Command via SSM](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_execute_command_ssm/aws_execute_command_ssm.py):  Execute command on EC2 instance(s) using SSM
 
-
- 

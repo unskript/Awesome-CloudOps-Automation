@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the GRAFANA category
+* **Grafana**: [Grafana List Alerts](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Grafana/legos/grafana_list_alerts/grafana_list_alerts.py): List of Grafana alerts. Specifying the dashboard ID will show alerts in that dashboard
 
-
- 

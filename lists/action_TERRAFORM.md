@@ -15,6 +15,10 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the TERRAFORM category
+* **Terraform**: [Execute Terraform Command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Terraform/legos/terraform_exec_command/terraform_exec_command.py): Execute Terraform Command
 
+* **Terraform**: [Get terraform handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Terraform/legos/terraform_get_handle/terraform_get_handle.py): Get terraform handle
 
- 
+* **Zabbix**: [Get Zabbix Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Zabbix/legos/zabbix_get_handle/zabbix_get_handle.py): Get Zabbix Handle
+

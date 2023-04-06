@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the AWS CLI category
+* **AWS**: [Run Command via AWS CLI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_execute_cli_command/aws_execute_cli_command.py): Execute command using AWS CLI
 
-
- 

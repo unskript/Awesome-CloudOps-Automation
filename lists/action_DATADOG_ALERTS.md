@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the DATADOG ALERTS category
+* **Datadog**: [Datadog mute/unmute monitors](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_mute_or_unmute_alerts/datadog_mute_or_unmute_alerts.py): Mute/unmute monitors
 
-
- 

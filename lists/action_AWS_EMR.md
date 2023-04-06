@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the AWS EMR category
+* **AWS**: [Get AWS EMR Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_emr_get_instances/aws_emr_get_instances.py): Get a list of EC2 Instances for an EMR cluster. Filtered by node type (MASTER|CORE|TASK)
 
-
- 

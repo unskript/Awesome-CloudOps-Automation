@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the GCP VPC category
+* **GCP**: [Get list  compute instance by VPC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_vpc/gcp_list_compute_instances_by_vpc.py): Get list  compute instance by VPC
 
-
- 

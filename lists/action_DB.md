@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the DB category
+* **AWS**: [AWS Filter All Manual Database Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_all_manual_database_snapshots/aws_filter_all_manual_database_snapshots.py): Use This Action to AWS Filter All Manual Database Snapshots
 
-
- 

@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the K8S NAMESPACE category
+* **Kubernetes**: [Kubectl get services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_kubectl_get_service_namespace/k8s_kubectl_get_service_namespace.py): Kubectl get services in a given namespace
 
-
- 

@@ -15,6 +15,8 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the AWS POSTGRES category
+* **AWS**: [Get AWS Postgresql Max Configured Connections](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_postgresql_get_configured_max_connections/aws_postgresql_get_configured_max_connections.py): Get AWS Postgresql Max Configured Connections
 
+* **AWS**: [Plot AWS PostgreSQL Active Connections](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_postgresql_plot_active_connections/aws_postgresql_plot_active_connections.py): Plot AWS PostgreSQL Action Connections
 
- 

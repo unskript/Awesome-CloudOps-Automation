@@ -15,6 +15,8 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the DATADOG EVENT category
+* **Datadog**: [Datadog get event](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_event/datadog_get_event.py): Get an event given its id
 
+* **Datadog**: [Get Datadog Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_get_handle/datadog_get_handle.py): Get Datadog Handle
 
- 

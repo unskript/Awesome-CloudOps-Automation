@@ -15,6 +15,8 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the GCP FILE STORE category
+* **GCP**: [Create GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_filestore_instance/gcp_create_filestore_instance.py): Create a new GCP Filestore Instance in the given location
 
+* **GCP**: [Delete GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_filestore_instance/gcp_delete_filestore_instance.py): Delete a GCP Filestore Instance in the given location
 
- 

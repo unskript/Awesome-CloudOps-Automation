@@ -15,6 +15,6 @@
  | [IAM](lists/action_IAM.md) | [SECOPS](lists/action_SECOPS.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [COST_OPT](lists/action_COST_OPT.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [ES](lists/action_ES.md) | 
 
 
+ # Actions in the AWS CLOUDTRAIL category
+* **AWS**: [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/aws_finding_redundant_trails.py): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 
-
- 
