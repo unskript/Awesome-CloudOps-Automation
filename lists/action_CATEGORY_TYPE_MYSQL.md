@@ -9,5 +9,9 @@
 
 * **Netbox**: [Netbox Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Netbox/legos/netbox_get_handle/netbox_get_handle.py): Get Netbox Handle
 
+* **Netbox**: [Nomad List Devices](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Netbox/legos/netbox_list_devices/netbox_list_devices.py): List all Netbox devices
+
 * **Nomad**: [Nomad Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Nomad/legos/nomad_get_handle/nomad_get_handle.py): Get Nomad Handle
+
+* **Nomad**: [Nomad List Jobs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Nomad/legos/nomad_list_jobs/nomad_list_jobs.py): List all Nomad jobs
 
