@@ -13,15 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=314&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=44&color=orange>
-=======
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=432&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
->>>>>>> ca056465d9b5023ea75573888af19297c2f27f9e
-=======
     <img src=https://img.shields.io/static/v1?label=ActionCount&message=435&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
->>>>>>> 0f61cce11855d2a8a2c82300c7df08b38fcac5ad
   
   <p align="center">
     CloudOps automation made simple!
@@ -154,6 +146,7 @@ docker run -it -p 8888:8888 \
 |Kubernetes |[k8s: Resize List of PVCs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_List_of_PVCs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_List_of_PVCs.ipynb) | 
 |Kubernetes |[k8s: Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_PVC.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_PVC.ipynb) | 
 |Kubernetes |[Rollback Kubernetes Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | 
+|Postgresql |[Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Postgresql/Display_Postgresql_Long_Running.ipynb) | 
 
 </details>
 
