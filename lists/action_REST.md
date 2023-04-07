@@ -31,6 +31,6 @@
  | [TERRAFORM](lists/action_TERRAFORM.md) | [INFRA](lists/action_INFRA.md) | [OPENSEARCH](lists/action_OPENSEARCH.md) | 
 
 
+ # Actions in the REST category
+* **Rest**: [Call REST Methods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Rest/legos/rest_methods/rest_methods.py): Call REST Methods.
 
-
- 

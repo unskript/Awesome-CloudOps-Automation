@@ -31,6 +31,6 @@
  | [TERRAFORM](lists/action_TERRAFORM.md) | [INFRA](lists/action_INFRA.md) | [OPENSEARCH](lists/action_OPENSEARCH.md) | 
 
 
+ # Actions in the AWS CLI category
+* **AWS**: [Run Command via AWS CLI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_execute_cli_command/aws_execute_cli_command.py): Execute command using AWS CLI
 
-
- 
