@@ -22,7 +22,7 @@ This Lego take three inputs handle, runbook_id and params.
 
 ## Lego Output
 Here is a sample output.
-
+<img src="./1.png">
 
 ## See it in Action
 

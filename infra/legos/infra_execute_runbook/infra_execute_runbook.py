@@ -45,8 +45,7 @@ class InputSchema(BaseModel):
 
 def infra_execute_runbook_printer(output):
     if output is not None:
-        execution_status = output.lstrip('EXECUTION_STATUS')
-        pprint.pprint(f"xRunBook was executed, execution status {execution_status}")
+        pprint.pprint(f"Runbook execution status: {output}")
 
 def infra_execute_runbook(handle, runbook_id: str, params: str) -> str:
     """execute_runbook executes particular runbook annd return execution status
@@ -60,8 +59,7 @@ def infra_execute_runbook(handle, runbook_id: str, params: str) -> str:
         :rtype: str.
     """
     try:
-        handle.execute_runbook(runbook_id, params)
+        execution_status = handle.execute_runbook(runbook_id, params)
+        return execution_status
     except Exception as e:
         raise e
-
-    return True
