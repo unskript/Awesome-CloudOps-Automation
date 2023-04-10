@@ -1,0 +1,11 @@
+{
+  "action_title": "AWS Update TTL for Route53 Record",
+  "action_description": "Update TTL for an existing record in a hosted zone.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_update_ttl_for_route53_records",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true"
+}
