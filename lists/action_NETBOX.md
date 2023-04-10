@@ -31,22 +31,8 @@
  | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) | 
 
 
- # Actions in the IAM category
-* **AWS**: [AWS Attach New Policy to User](/AWS/legos/aws_attach_iam_policy/README.md): AWS Attach New Policy to User
+ # Actions in the NETBOX category
+* **Netbox**: [Netbox List Devices](/Netbox/legos/netbox_list_devices/README.md): List all Netbox devices
 
-* **AWS**: [AWS Create Access Key](/AWS/legos/aws_create_access_key/README.md): Create a new Access Key for the User
-
-* **AWS**: [Create New IAM User](/AWS/legos/aws_create_iam_user/README.md): Create New IAM User
-
-* **AWS**: [Create Login profile for IAM User](/AWS/legos/aws_create_user_login_profile/README.md): Create Login profile for IAM User
-
-* **AWS**: [AWS Delete Access Key](/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
-
-* **AWS**: [Filter AWS EBS Volume with Low IOPS](/AWS/legos/aws_filter_ebs_volumes_with_low_iops/README.md): IOPS (Input/Output Operations Per Second) is a metric used to measure the amount of input/output operations that an EBS volume can perform per second.
-
-* **AWS**: [Get AWS ALB Listeners Without HTTP Redirection](/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
-
-* **AWS**: [Get AWS EBS Volume Without GP3 Type](/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
-
-* **AWS**: [AWS Get Publicly Accessible RDS Instances](/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
+* **Nomad**: [Nomad Get Handle](/Nomad/legos/nomad_get_handle/README.md): Get Nomad Handle
 

@@ -23,12 +23,12 @@
  | [GCP_GKE](action_GCP_GKE.md) | [GCP_VM](action_GCP_VM.md) | [GCP_VPC](action_GCP_VPC.md) | [GCP_SECRET](action_GCP_SECRET.md) | [GCP_SHEETS](action_GCP_SHEETS.md) | [GITHUB](action_GITHUB.md) |
  | [GITHUB_ISSUE](action_GITHUB_ISSUE.md) | [GITHUB_PR](action_GITHUB_PR.md) | [GITHUB_REPO](action_GITHUB_REPO.md) | [GITHUB_TEAM](action_GITHUB_TEAM.md) | [GITHUB_USER](action_GITHUB_USER.md) | [GITHUB_ORG](action_GITHUB_ORG.md) |
  | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) | [JIRA](action_JIRA.md) | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) |
- | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) | [K8S_POD](action_K8S_POD.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
+ | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
  | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) |
- | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [PINGDOM](action_PINGDOM.md) | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) |
- | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) |
- | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) |
- | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) | 
+ | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) |
+ | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) | [REDIS](action_REDIS.md) | [REST](action_REST.md) |
+ | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) |
+ | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) | 
 
 
  # Actions in the SRE category
@@ -129,6 +129,8 @@
 * **AWS**: [Get Unhealthy instances from ASG](/AWS/legos/aws_filter_unhealthy_instances_from_asg/README.md): Get Unhealthy instances from Auto Scaling Group
 
 * **AWS**: [Filter AWS Unused Keypairs](/AWS/legos/aws_filter_unused_keypairs/README.md): Filter AWS Unused Keypairs
+
+* **AWS**: [Get EBS Volumes By Type](/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 
 * **AWS**: [AWS Get Private Address from NAT Gateways](/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 
@@ -628,7 +630,7 @@
 
 * **Netbox**: [Netbox Get Handle](/Netbox/legos/netbox_get_handle/README.md): Get Netbox Handle
 
-* **Netbox**: [Nomad List Devices](/Netbox/legos/netbox_list_devices/README.md): List all Netbox devices
+* **Netbox**: [Netbox List Devices](/Netbox/legos/netbox_list_devices/README.md): List all Netbox devices
 
 * **Nomad**: [Nomad Get Handle](/Nomad/legos/nomad_get_handle/README.md): Get Nomad Handle
 
@@ -782,13 +784,9 @@
 
 * **Zabbix**: [Get Zabbix Handle](/Zabbix/legos/zabbix_get_handle/README.md): Get Zabbix Handle
 
-<<<<<<< HEAD
-* **infra**: [Infra: Finish runbook execution](/infra/legos/infra_workflow_done/README.md): Infra: use this action to finish the execution of a runbook. Once this is set, no more tasks will be executed
-=======
-* **infra**: [Infra: Execute runbook](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/infra_execute_runbook/infra_execute_runbook.py): Infra: use this action to execute particular runbook with given input parameters.
+* **infra**: [Infra: Execute runbook](/infra/legos/infra_execute_runbook/README.md): Infra: use this action to execute particular runbook with given input parameters.
 
-* **infra**: [Infra: Finish runbook execution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/infra/legos/infra_workflow_done/infra_workflow_done.py): Infra: use this action to finish the execution of a runbook. Once this is set, no more tasks will be executed
->>>>>>> aec643cf5c8a04d0cc49b69f90668be18cab3967
+* **infra**: [Infra: Finish runbook execution](/infra/legos/infra_workflow_done/README.md): Infra: use this action to finish the execution of a runbook. Once this is set, no more tasks will be executed
 
 * **infra**: [Infra: Append values for a key in workflow state store](/infra/legos/workflow_ss_append_keys/README.md): Infra: use this action to append values for a key in a state store provided by the workflow.
 
