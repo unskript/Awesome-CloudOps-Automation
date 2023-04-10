@@ -1,0 +1,12 @@
+{
+    "action_title": "PostgreSQL Calculate Bloat",
+    "action_description": "This Lego calculates bloat for tables in Postgres",
+    "action_type": "LEGO_TYPE_POSTGRESQL",
+    "action_entry_function": "postgres_calculate_bloat",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_POSTGRESQL","CATEGORY_TYPE_TROUBLESHOOTING"]
+    }
+    

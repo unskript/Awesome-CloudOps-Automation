@@ -1,0 +1,12 @@
+{
+    "action_title": "PostgreSQL Get Index Usage",
+    "action_description": "The action result shows the data for table name, the percentage of times an index was used for that table, and the number of live rows in the table.",
+    "action_type": "LEGO_TYPE_POSTGRESQL",
+    "action_entry_function": "postgresql_get_index_usage",
+    "action_needs_credential": true,
+    "action_is_check": false,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_POSTGRESQL","CATEGORY_TYPE_TROUBLESHOOTING"]
+}

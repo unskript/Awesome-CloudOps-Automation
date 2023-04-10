@@ -17,14 +17,14 @@ class InputSchema(BaseModel):
         description='AWS S3 Bucket Name.')
 
 
-def aws_delete_bucket_encryption_printer(output):
+def aws_delete_s3_bucket_encryption_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_delete_bucket_encryption(handle, bucket_name: str, region: str) -> Dict:
-    """aws_put_bucket_encryption Puts default encryption configuration for bucket.
+def aws_delete_s3_bucket_encryption(handle, bucket_name: str, region: str) -> Dict:
+    """aws_delete_s3_bucket_encryption Puts default encryption configuration for bucket.
         :type handle: object
         :param handle: Object returned by the task.validate(...) method.
 

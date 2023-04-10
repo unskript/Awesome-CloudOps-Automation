@@ -1,0 +1,12 @@
+{
+  "action_title": "Get AWS S3 Buckets",
+  "action_description": "Get AWS S3 Buckets",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_get_s3_buckets",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_supports_poll": true,
+  "action_supports_iteration": true,
+  "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_S3"  ]
+}
+  

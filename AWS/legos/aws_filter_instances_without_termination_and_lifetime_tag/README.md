@@ -6,13 +6,15 @@ This Lego Filter Instances without Termination and Lifetime Tag and check of the
 
 ## Lego Details
 
-    aws_filter_instances_without_termination_and_lifetime_tag(handle: object,region: str)
+    aws_filter_instances_without_termination_and_lifetime_tag(handle: object,region: str, termination_tag_name:str,lifetime_tag_name:str )
 
         handle: Object of type unSkript AWS Connector.
         region: Optional, AWS region. Eg: "us-west-2"
+        termination_tag_name: Optional, Name of the Termination Date Tag given to an EC2 instance. By default "terminationDateTag" is considered 
+        lifetime_tag_name: Optional, Name of the Lifetime Date Tag given to an EC2 instance. By default "lifetimeTag" is considered 
 
 ## Lego Input
-This Lego take two inputs handle, region.
+This Lego take 4 inputs handle, region, termination_tag_name, lifetime_tag_name
 
 ## Lego Output
 Here is a sample output.

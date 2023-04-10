@@ -5,7 +5,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Tuple
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.aws.aws_get_s3_bucket_list.aws_get_s3_bucket_list import aws_get_s3_buckets
+from unskript.legos.aws.aws_get_s3_buckets.aws_get_s3_buckets import aws_get_s3_buckets
 from unskript.enums.aws_acl_permissions_enums import BucketACLPermissions
 import pprint
 
@@ -17,6 +17,7 @@ class InputSchema(BaseModel):
     description='Name of the AWS Region'
     )
     permission: Optional[BucketACLPermissions] = Field(
+        default=BucketACLPermissions.READ,
         title="S3 Bucket's ACL Permission",
         description="Set of permissions that AWS S3 supports in an ACL for buckets and objects"
     )
@@ -41,7 +42,7 @@ def check_publicly_accessible_buckets(s3Client,b,all_permissions):
         pass
     return public_buckets
 
-def aws_filter_public_s3_buckets_by_acl(handle, permission:BucketACLPermissions=None, region: str=None) -> Tuple:
+def aws_filter_public_s3_buckets_by_acl(handle, permission:BucketACLPermissions=BucketACLPermissions.READ, region: str=None) -> Tuple:
     """aws_filter_public_s3_buckets_by_acl get list of public buckets.
         
         Note- By default(if no permissions are given) READ and WRITE ACL Permissioned S3 buckets are checked for public access. Other ACL Permissions are - "READ_ACP"|"WRITE_ACP"|"FULL_CONTROL"
