@@ -28,7 +28,7 @@ def aws_list_unused_secrets_printer(output):
     pprint.pprint(output)
 
 
-def aws_list_unused_secrets(handle, max_age_days: int = 30, region: str = "") -> Tuple:
+def aws_list_unused_secrets(handle, region: str = "", max_age_days: int = 30) -> Tuple:
     """aws_list_unused_secrets Returns an array of unused secrets.
 
         :type region: string
@@ -69,4 +69,4 @@ def aws_list_unused_secrets(handle, max_age_days: int = 30, region: str = "") ->
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
