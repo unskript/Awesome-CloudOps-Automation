@@ -80,6 +80,8 @@
 
 * **AWS**: [Get AWS CloudWatch Metrics for AWS/AutoScaling](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_ec2autoscaling/aws_get_cloudwatch_metrics_ec2autoscaling.py): Get AWS CloudWatch Metrics for AWS EC2 AutoScaling groups
 
+* **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/aws_get_ebs_volumes_by_type.py): Get EBS Volumes By Type
+
 * **AWS**: [Get EC2 CPU Consumption For All Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_cpu_consumption/aws_get_ec2_cpu_consumption.py): Get EC2 CPU Consumption For All Instances
 
 * **AWS**: [Get EC2 Data Traffic In and Out For All Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_data_traffic/aws_get_ec2_data_traffic.py): Get EC2 Data Traffic In and Out For All Instances

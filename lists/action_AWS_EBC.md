@@ -34,3 +34,5 @@
  # Actions in the AWS EBC category
 * **AWS**: [Filter AWS Unattached EBS Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ebs_unattached_volumes/aws_filter_ebs_unattached_volumes.py): Filter AWS Unattached EBS Volume
 
+* **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/aws_get_ebs_volumes_by_type.py): Get EBS Volumes By Type
+

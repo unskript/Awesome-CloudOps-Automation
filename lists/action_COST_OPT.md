@@ -52,3 +52,5 @@
 
 * **AWS**: [AWS Get Untagged Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_untagged_resources/aws_get_all_untagged_resources.py): AWS Get Untagged Resources
 
+* **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/aws_get_ebs_volumes_by_type.py): Get EBS Volumes By Type
+

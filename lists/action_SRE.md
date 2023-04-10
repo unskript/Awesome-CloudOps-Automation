@@ -130,6 +130,8 @@
 
 * **AWS**: [Filter AWS Unused Keypairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_keypairs/aws_filter_unused_keypairs.py): Filter AWS Unused Keypairs
 
+* **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/aws_get_ebs_volumes_by_type.py): Get EBS Volumes By Type
+
 * **AWS**: [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/aws_get_private_address_from_nat_gateways.py): This action is used to get private address from NAT gateways.
 
 * **AWS**: [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/aws_get_schedule_to_retire_instances.py): Get Schedule To Retire AWS EC2 Instance
