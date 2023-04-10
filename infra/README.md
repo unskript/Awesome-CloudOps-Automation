@@ -1,5 +1,6 @@
 
 # infra Actions
+* [Infra: Execute runbook](/infra/legos/infra_execute_runbook/README.md): Infra: use this action to execute particular runbook with given input parameters.
 * [Infra: Finish runbook execution](/infra/legos/infra_workflow_done/README.md): Infra: use this action to finish the execution of a runbook. Once this is set, no more tasks will be executed
 * [Infra: Append values for a key in workflow state store](/infra/legos/workflow_ss_append_keys/README.md): Infra: use this action to append values for a key in a state store provided by the workflow.
 * [Infra: Store keys in workflow state store](/infra/legos/workflow_ss_create_keys/README.md): Infra: use this action to persist keys in a state store provided by the workflow.

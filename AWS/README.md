@@ -1,4 +1,4 @@
-w# AWS RunBooks
+# AWS RunBooks
 * [AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb): This runbook can be used to configure AWS Access Key rotation. Changing access keys (which consist of an access key ID and a secret access key) on a regular schedule is a well-known security best practice because it shortens the period an access key is active and therefore reduces the business impact if they are compromised. Having an established process that is run regularly also ensures the operational steps around key rotation are verified, so changing a key is never a scary step.
 * [Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb): AWS has an inbuilt identity and access management system known as AWS IAM. IAM supports the concept of users, group, roles and privileges. IAM user is an identity that can be created and assigned some privileges. This runbook can be used to create an AWS IAM User
 * [Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb): Configures the URL endpoint to the SNS associated with a CloudWatch alarm. This allows to external functions to be invoked within unSkript in response to an alert getting generated. Alarms can be attached to the handlers to perform data enrichment or remediation
@@ -115,6 +115,7 @@ w# AWS RunBooks
 * [Get AWS CloudWatch Metrics for AWS/Redshift](/AWS/legos/aws_get_cloudwatch_metrics_redshift/README.md): Get AWS CloudWatch Metrics for AWS/Redshift
 * [Get AWS CloudWatch Metrics for AWS/SQS](/AWS/legos/aws_get_cloudwatch_metrics_sqs/README.md): Get AWS CloudWatch Metrics for AWS/SQS
 * [Get AWS CloudWatch Statistics](/AWS/legos/aws_get_cloudwatch_statistics/README.md): Get AWS CloudWatch Statistics
+* [Get EBS Volumes By Type](/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 * [Get AWS EBS Volume Without GP3 Type](/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
 * [Get EC2 CPU Consumption For All Instances](/AWS/legos/aws_get_ec2_cpu_consumption/README.md): Get EC2 CPU Consumption For All Instances
 * [Get EC2 Data Traffic In and Out For All Instances](/AWS/legos/aws_get_ec2_data_traffic/README.md): Get EC2 Data Traffic In and Out For All Instances
