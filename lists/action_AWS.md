@@ -1,326 +1,338 @@
 # Actions By Connector:
-| | | | | | 
- | ---| ---| ---| ---| ---| 
- | [AWS](action_AWS.md) | [Airflow](action_Airflow.md) | [Azure](action_Azure.md) | [ChatGPT](action_ChatGPT.md) | [Datadog](action_Datadog.md) | [ElasticSearch](action_ElasticSearch.md) |
- | [GCP](action_GCP.md) | [Github](action_Github.md) | [Grafana](action_Grafana.md) | [Hadoop](action_Hadoop.md) | [Jenkins](action_Jenkins.md) | [Jira](action_Jira.md) |
- | [Kafka](action_Kafka.md) | [Kubernetes](action_Kubernetes.md) | [Mantishub](action_Mantishub.md) | [Mongo](action_Mongo.md) | [MsSQL](action_MsSQL.md) | [MySQL](action_MySQL.md) |
- | [Netbox](action_Netbox.md) | [Nomad](action_Nomad.md) | [Pingdom](action_Pingdom.md) | [Postgresql](action_Postgresql.md) | [Prometheus](action_Prometheus.md) | [Redis](action_Redis.md) |
- | [Rest](action_Rest.md) | [SSH](action_SSH.md) | [SalesForce](action_SalesForce.md) | [Slack](action_Slack.md) | [Snowflake](action_Snowflake.md) | [Splunk](action_Splunk.md) |
- | [Stripe](action_Stripe.md) | [Terraform](action_Terraform.md) | [Zabbix](action_Zabbix.md) | [infra](action_infra.md) | [opensearch](action_opensearch.md) | 
+| | | | 
+ | ---| ---| ---| 
+ | [AWS](action_AWS.md) | [Airflow](action_AIRFLOW.md) | [Azure](action_AZURE.md) | [ChatGPT](action_CHATGPT.md) |
+ | [Datadog](action_DATADOG.md) | [ElasticSearch](action_ELASTICSEARCH.md) | [GCP](action_GCP.md) | [Github](action_GITHUB.md) |
+ | [Grafana](action_GRAFANA.md) | [Hadoop](action_HADOOP.md) | [Jenkins](action_JENKINS.md) | [Jira](action_JIRA.md) |
+ | [Kafka](action_KAFKA.md) | [Kubernetes](action_KUBERNETES.md) | [Mantishub](action_MANTISHUB.md) | [Mongo](action_MONGO.md) |
+ | [MsSQL](action_MSSQL.md) | [MySQL](action_MYSQL.md) | [Netbox](action_NETBOX.md) | [Nomad](action_NOMAD.md) |
+ | [Pingdom](action_PINGDOM.md) | [Postgresql](action_POSTGRESQL.md) | [Prometheus](action_PROMETHEUS.md) | [Redis](action_REDIS.md) |
+ | [Rest](action_REST.md) | [SSH](action_SSH.md) | [SalesForce](action_SALESFORCE.md) | [Slack](action_SLACK.md) |
+ | [Snowflake](action_SNOWFLAKE.md) | [Splunk](action_SPLUNK.md) | [Stripe](action_STRIPE.md) | [Terraform](action_TERRAFORM.md) |
+ | [Zabbix](action_ZABBIX.md) | [infra](action_INFRA.md) | [opensearch](action_OPENSEARCH.md) | 
 
  
  # Actions By Category: 
-| | | | | | 
- | ---| ---| ---| ---| ---| 
- | [SECOPS](action_SECOPS.md) | [DEVOPS](action_DEVOPS.md) | [SRE](action_SRE.md) | [AWS](action_AWS.md) | [AWS_S3](action_AWS_S3.md) | [AWS_EC2](action_AWS_EC2.md) |
- | [IAM](action_IAM.md) | [AWS_IAM](action_AWS_IAM.md) | [COST_OPT](action_COST_OPT.md) | [AWS_ACM](action_AWS_ACM.md) | [AWS_CLOUDWATCH](action_AWS_CLOUDWATCH.md) | [AWS_REDSHIFT](action_AWS_REDSHIFT.md) |
- | [AWS_ELB](action_AWS_ELB.md) | [AWS_EBS](action_AWS_EBS.md) | [AWS_ECS](action_AWS_ECS.md) | [AWS_EKS](action_AWS_EKS.md) | [AWS_EMR](action_AWS_EMR.md) | [AWS_CLI](action_AWS_CLI.md) |
- | [AWS_SSM](action_AWS_SSM.md) | [DB](action_DB.md) | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) | [AWS_ASG](action_AWS_ASG.md) |
- | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_RDS](action_AWS_RDS.md) |
- | [AWS_SQS](action_AWS_SQS.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) | [AWS_POSTGRES](action_AWS_POSTGRES.md) | [AIRFLOW](action_AIRFLOW.md) |
- | [AZURE](action_AZURE.md) | [DATADOG](action_DATADOG.md) | [DATADOG_INCIDENT](action_DATADOG_INCIDENT.md) | [DATADOG_EVENT](action_DATADOG_EVENT.md) | [DATADOG_METRICS](action_DATADOG_METRICS.md) | [DATADOG_MONITOR](action_DATADOG_MONITOR.md) |
- | [DATADOG_ALERTS](action_DATADOG_ALERTS.md) | [ES](action_ES.md) | [GCP](action_GCP.md) | [GCP_IAM](action_GCP_IAM.md) | [GCP_BUCKET](action_GCP_BUCKET.md) | [GCP_FILE_STORE](action_GCP_FILE_STORE.md) |
- | [GCP_GKE](action_GCP_GKE.md) | [GCP_VM](action_GCP_VM.md) | [GCP_VPC](action_GCP_VPC.md) | [GCP_SECRET](action_GCP_SECRET.md) | [GCP_SHEETS](action_GCP_SHEETS.md) | [GITHUB](action_GITHUB.md) |
- | [GITHUB_ISSUE](action_GITHUB_ISSUE.md) | [GITHUB_PR](action_GITHUB_PR.md) | [GITHUB_REPO](action_GITHUB_REPO.md) | [GITHUB_TEAM](action_GITHUB_TEAM.md) | [GITHUB_USER](action_GITHUB_USER.md) | [GITHUB_ORG](action_GITHUB_ORG.md) |
- | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) | [JIRA](action_JIRA.md) | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) |
- | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
- | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) |
- | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) |
- | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) | [REDIS](action_REDIS.md) | [REST](action_REST.md) |
- | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) |
- | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) | 
+| | | | 
+ | ---| ---| ---| 
+ | [SECOPS](action_SECOPS.md) | [DEVOPS](action_DEVOPS.md) | [SRE](action_SRE.md) | [AWS](action_AWS.md) |
+ | [AWS_S3](action_AWS_S3.md) | [AWS_EC2](action_AWS_EC2.md) | [IAM](action_IAM.md) | [AWS_IAM](action_AWS_IAM.md) |
+ | [COST_OPT](action_COST_OPT.md) | [AWS_ACM](action_AWS_ACM.md) | [AWS_CLOUDWATCH](action_AWS_CLOUDWATCH.md) | [AWS_REDSHIFT](action_AWS_REDSHIFT.md) |
+ | [AWS_ELB](action_AWS_ELB.md) | [AWS_EBS](action_AWS_EBS.md) | [AWS_ECS](action_AWS_ECS.md) | [AWS_EKS](action_AWS_EKS.md) |
+ | [AWS_EMR](action_AWS_EMR.md) | [AWS_CLI](action_AWS_CLI.md) | [AWS_SSM](action_AWS_SSM.md) | [DB](action_DB.md) |
+ | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) | [AWS_ASG](action_AWS_ASG.md) |
+ | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) |
+ | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_RDS](action_AWS_RDS.md) | [AWS_SQS](action_AWS_SQS.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) |
+ | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) | [AWS_POSTGRES](action_AWS_POSTGRES.md) | [AIRFLOW](action_AIRFLOW.md) |
+ | [AZURE](action_AZURE.md) | [DATADOG](action_DATADOG.md) | [DATADOG_INCIDENT](action_DATADOG_INCIDENT.md) | [DATADOG_EVENT](action_DATADOG_EVENT.md) |
+ | [DATADOG_METRICS](action_DATADOG_METRICS.md) | [DATADOG_MONITOR](action_DATADOG_MONITOR.md) | [DATADOG_ALERTS](action_DATADOG_ALERTS.md) | [ES](action_ES.md) |
+ | [GCP](action_GCP.md) | [GCP_IAM](action_GCP_IAM.md) | [GCP_BUCKET](action_GCP_BUCKET.md) | [GCP_FILE_STORE](action_GCP_FILE_STORE.md) |
+ | [GCP_GKE](action_GCP_GKE.md) | [GCP_VM](action_GCP_VM.md) | [GCP_VPC](action_GCP_VPC.md) | [GCP_SECRET](action_GCP_SECRET.md) |
+ | [GCP_SHEETS](action_GCP_SHEETS.md) | [GITHUB](action_GITHUB.md) | [GITHUB_ISSUE](action_GITHUB_ISSUE.md) | [GITHUB_PR](action_GITHUB_PR.md) |
+ | [GITHUB_REPO](action_GITHUB_REPO.md) | [GITHUB_TEAM](action_GITHUB_TEAM.md) | [GITHUB_USER](action_GITHUB_USER.md) | [GITHUB_ORG](action_GITHUB_ORG.md) |
+ | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) | [JIRA](action_JIRA.md) |
+ | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) |
+ | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
+ | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) |
+ | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) |
+ | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) |
+ | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) |
+ | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) |
+ | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) |
+ | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) |
+ | [OPENSEARCH](action_OPENSEARCH.md) | 
 
 
  # Actions in the AWS category
-* **AWS**: [Apply AWS Default Encryption for S3 Bucket](/AWS/legos/aws_apply_default_encryption_for_s3_buckets/README.md): Apply AWS Default Encryption for S3 Bucket
+* **AWS**: [Apply AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_apply_default_encryption_for_s3_buckets/README.md): Apply AWS Default Encryption for S3 Bucket
 
-* **AWS**: [Attach an EBS volume to an AWS EC2 Instance](/AWS/legos/aws_attach_ebs_to_instances/README.md): Attach an EBS volume to an AWS EC2 Instance
+* **AWS**: [Attach an EBS volume to an AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_ebs_to_instances/README.md): Attach an EBS volume to an AWS EC2 Instance
 
-* **AWS**: [AWS Attach New Policy to User](/AWS/legos/aws_attach_iam_policy/README.md): AWS Attach New Policy to User
+* **AWS**: [AWS Attach New Policy to User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_iam_policy/README.md): AWS Attach New Policy to User
 
-* **AWS**: [AWS Attach Tags to Resources](/AWS/legos/aws_attach_tags_to_resources/README.md): AWS Attach Tags to Resources
+* **AWS**: [AWS Attach Tags to Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_tags_to_resources/README.md): AWS Attach Tags to Resources
 
-* **AWS**: [AWS Change ACL Permission of public S3 Bucket](/AWS/legos/aws_change_acl_permissions_of_buckets/README.md): AWS Change ACL Permission public S3 Bucket
+* **AWS**: [AWS Change ACL Permission of public S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_change_acl_permissions_of_buckets/README.md): AWS Change ACL Permission public S3 Bucket
 
-* **AWS**: [Check SSL Certificate Expiry](/AWS/legos/aws_check_ssl_certificate_expiry/README.md): Check ACM SSL Certificate expiry date
+* **AWS**: [Check SSL Certificate Expiry](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_check_ssl_certificate_expiry/README.md): Check ACM SSL Certificate expiry date
 
-* **AWS**: [Attach a webhook endpoint to AWS Cloudwatch alarm](/AWS/legos/aws_cloudwatch_attach_webhook_notification_to_alarm/README.md): Attach a webhook endpoint to one of the SNS attached to the AWS Cloudwatch alarm.
+* **AWS**: [Attach a webhook endpoint to AWS Cloudwatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_cloudwatch_attach_webhook_notification_to_alarm/README.md): Attach a webhook endpoint to one of the SNS attached to the AWS Cloudwatch alarm.
 
-* **AWS**: [AWS Create Access Key](/AWS/legos/aws_create_access_key/README.md): Create a new Access Key for the User
+* **AWS**: [AWS Create Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_access_key/README.md): Create a new Access Key for the User
 
-* **AWS**: [Create AWS Bucket](/AWS/legos/aws_create_bucket/README.md): Create a new AWS S3 Bucket
+* **AWS**: [Create AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_bucket/README.md): Create a new AWS S3 Bucket
 
-* **AWS**: [Create New IAM User](/AWS/legos/aws_create_iam_user/README.md): Create New IAM User
+* **AWS**: [Create New IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_iam_user/README.md): Create New IAM User
 
-* **AWS**: [AWS Redshift Query](/AWS/legos/aws_create_redshift_query/README.md): Make a SQL Query to the given AWS Redshift database
+* **AWS**: [AWS Redshift Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_redshift_query/README.md): Make a SQL Query to the given AWS Redshift database
 
-* **AWS**: [Create Login profile for IAM User](/AWS/legos/aws_create_user_login_profile/README.md): Create Login profile for IAM User
+* **AWS**: [Create Login profile for IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_user_login_profile/README.md): Create Login profile for IAM User
 
-* **AWS**: [AWS Create Snapshot For Volume](/AWS/legos/aws_create_volumes_snapshot/README.md): Create a snapshot for EBS volume of the EC2 Instance for backing up the data stored in EBS
+* **AWS**: [AWS Create Snapshot For Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_volumes_snapshot/README.md): Create a snapshot for EBS volume of the EC2 Instance for backing up the data stored in EBS
 
-* **AWS**: [AWS Delete Access Key](/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
+* **AWS**: [AWS Delete Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
 
-* **AWS**: [Delete AWS Bucket](/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
+* **AWS**: [Delete AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
 
-* **AWS**: [Delete AWS Default Encryption for S3 Bucket](/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
+* **AWS**: [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
 
-* **AWS**: [Delete AWS EBS Volume by Volume ID](/AWS/legos/aws_delete_volume_by_id/README.md): Delete AWS Volume by Volume ID
+* **AWS**: [Delete AWS EBS Volume by Volume ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_volume_by_id/README.md): Delete AWS Volume by Volume ID
 
-* **AWS**: [ Deregisters AWS Instances from a Load Balancer](/AWS/legos/aws_deregister_instances/README.md):  Deregisters AWS Instances from a Load Balancer
+* **AWS**: [ Deregisters AWS Instances from a Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_deregister_instances/README.md):  Deregisters AWS Instances from a Load Balancer
 
-* **AWS**: [ Detach as AWS Instance with a Elastic Block Store](/AWS/legos/aws_detach_ebs_to_instances/README.md):  Detach as AWS Instance with a Elastic Block Store.
+* **AWS**: [ Detach as AWS Instance with a Elastic Block Store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_detach_ebs_to_instances/README.md):  Detach as AWS Instance with a Elastic Block Store.
 
-* **AWS**: [AWS Detach Instances From AutoScaling Group](/AWS/legos/aws_detach_instances_from_autoscaling_group/README.md): Use This Action to AWS Detach Instances From AutoScaling Group
+* **AWS**: [AWS Detach Instances From AutoScaling Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_detach_instances_from_autoscaling_group/README.md): Use This Action to AWS Detach Instances From AutoScaling Group
 
-* **AWS**: [EBS Modify Volume](/AWS/legos/aws_ebs_modify_volume/README.md): Modify/Resize volume for Elastic Block Storage (EBS).
+* **AWS**: [EBS Modify Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_ebs_modify_volume/README.md): Modify/Resize volume for Elastic Block Storage (EBS).
 
-* **AWS**: [AWS ECS Describe Task Definition.](/AWS/legos/aws_ecs_describe_task_definition/README.md): Describe AWS ECS Task Definition.
+* **AWS**: [AWS ECS Describe Task Definition.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_ecs_describe_task_definition/README.md): Describe AWS ECS Task Definition.
 
-* **AWS**: [ECS detect failed deployment ](/AWS/legos/aws_ecs_detect_failed_deployment/README.md): List of stopped tasks, associated with a deployment, along with their stopped reason
+* **AWS**: [ECS detect failed deployment ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_ecs_detect_failed_deployment/README.md): List of stopped tasks, associated with a deployment, along with their stopped reason
 
-* **AWS**: [Restart AWS ECS Service](/AWS/legos/aws_ecs_service_restart/README.md): Restart an AWS ECS Service
+* **AWS**: [Restart AWS ECS Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_ecs_service_restart/README.md): Restart an AWS ECS Service
 
-* **AWS**: [Update AWS ECS Service](/AWS/legos/aws_ecs_update_service/README.md): Update AWS ECS Service
+* **AWS**: [Update AWS ECS Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_ecs_update_service/README.md): Update AWS ECS Service
 
-* **AWS**: [ Copy EKS Pod logs to bucket.](/AWS/legos/aws_eks_copy_pod_logs_to_bucket/README.md):  Copy given EKS pod logs to given S3 Bucket.
+* **AWS**: [ Copy EKS Pod logs to bucket.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_copy_pod_logs_to_bucket/README.md):  Copy given EKS pod logs to given S3 Bucket.
 
-* **AWS**: [ Delete EKS POD in a given Namespace](/AWS/legos/aws_eks_delete_pod/README.md):  Delete a EKS POD in a given Namespace
+* **AWS**: [ Delete EKS POD in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_delete_pod/README.md):  Delete a EKS POD in a given Namespace
 
-* **AWS**: [List of EKS dead pods](/AWS/legos/aws_eks_get_all_dead_pods/README.md): Get list of all dead pods in a given EKS cluster
+* **AWS**: [List of EKS dead pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_all_dead_pods/README.md): Get list of all dead pods in a given EKS cluster
 
-* **AWS**: [List of EKS Namespaces](/AWS/legos/aws_eks_get_all_namespaces/README.md): Get list of all Namespaces in a given EKS cluster
+* **AWS**: [List of EKS Namespaces](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_all_namespaces/README.md): Get list of all Namespaces in a given EKS cluster
 
-* **AWS**: [List of EKS pods](/AWS/legos/aws_eks_get_all_pods/README.md): Get list of all pods in a given EKS cluster
+* **AWS**: [List of EKS pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_all_pods/README.md): Get list of all pods in a given EKS cluster
 
-* **AWS**: [ List of EKS deployment for given Namespace](/AWS/legos/aws_eks_get_deployments_name/README.md):  Get list of EKS deployment names for given Namespace
+* **AWS**: [ List of EKS deployment for given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_deployments_name/README.md):  Get list of EKS deployment names for given Namespace
 
-* **AWS**: [Get CPU and memory utilization of node.](/AWS/legos/aws_eks_get_node_cpu_memory/README.md):  Get CPU and memory utilization of given node.
+* **AWS**: [Get CPU and memory utilization of node.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_node_cpu_memory/README.md):  Get CPU and memory utilization of given node.
 
-* **AWS**: [ Get EKS Nodes](/AWS/legos/aws_eks_get_nodes/README.md):  Get EKS Nodes
+* **AWS**: [ Get EKS Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_nodes/README.md):  Get EKS Nodes
 
-* **AWS**: [ List of EKS pods not in RUNNING State](/AWS/legos/aws_eks_get_not_running_pods/README.md):  Get list of all pods in a given EKS cluster that are not running.
+* **AWS**: [ List of EKS pods not in RUNNING State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_not_running_pods/README.md):  Get list of all pods in a given EKS cluster that are not running.
 
-* **AWS**: [Get pod CPU and Memory usage from given namespace](/AWS/legos/aws_eks_get_pod_cpu_memory/README.md): Get all pod CPU and Memory usage from given namespace
+* **AWS**: [Get pod CPU and Memory usage from given namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_pod_cpu_memory/README.md): Get all pod CPU and Memory usage from given namespace
 
-* **AWS**: [ EKS Get pod status](/AWS/legos/aws_eks_get_pod_status/README.md):  Get a Status of given POD in a given Namespace and EKS cluster name
+* **AWS**: [ EKS Get pod status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_pod_status/README.md):  Get a Status of given POD in a given Namespace and EKS cluster name
 
-* **AWS**: [ EKS Get Running Pods](/AWS/legos/aws_eks_get_running_pods/README.md):  Get a list of running pods from given namespace and EKS cluster name
+* **AWS**: [ EKS Get Running Pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_get_running_pods/README.md):  Get a list of running pods from given namespace and EKS cluster name
 
-* **AWS**: [ Run Kubectl commands on EKS Cluster](/AWS/legos/aws_eks_run_kubectl_cmd/README.md): This action runs a kubectl command on an AWS EKS Cluster
+* **AWS**: [ Run Kubectl commands on EKS Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_eks_run_kubectl_cmd/README.md): This action runs a kubectl command on an AWS EKS Cluster
 
-* **AWS**: [Get AWS EMR Instances](/AWS/legos/aws_emr_get_instances/README.md): Get a list of EC2 Instances for an EMR cluster. Filtered by node type (MASTER|CORE|TASK)
+* **AWS**: [Get AWS EMR Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_emr_get_instances/README.md): Get a list of EC2 Instances for an EMR cluster. Filtered by node type (MASTER|CORE|TASK)
 
-* **AWS**: [Run Command via AWS CLI](/AWS/legos/aws_execute_cli_command/README.md): Execute command using AWS CLI
+* **AWS**: [Run Command via AWS CLI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_execute_cli_command/README.md): Execute command using AWS CLI
 
-* **AWS**: [ Run Command via SSM](/AWS/legos/aws_execute_command_ssm/README.md):  Execute command on EC2 instance(s) using SSM
+* **AWS**: [ Run Command via SSM](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_execute_command_ssm/README.md):  Execute command on EC2 instance(s) using SSM
 
-* **AWS**: [AWS Filter All Manual Database Snapshots](/AWS/legos/aws_filter_all_manual_database_snapshots/README.md): Use This Action to AWS Filter All Manual Database Snapshots
+* **AWS**: [AWS Filter All Manual Database Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_all_manual_database_snapshots/README.md): Use This Action to AWS Filter All Manual Database Snapshots
 
-* **AWS**: [Filter AWS Unattached EBS Volume](/AWS/legos/aws_filter_ebs_unattached_volumes/README.md): Filter AWS Unattached EBS Volume
+* **AWS**: [Filter AWS Unattached EBS Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ebs_unattached_volumes/README.md): Filter AWS Unattached EBS Volume
 
-* **AWS**: [Filter AWS EC2 Instance](/AWS/legos/aws_filter_ec2_by_tags/README.md): Filter AWS EC2 Instance
+* **AWS**: [Filter AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_by_tags/README.md): Filter AWS EC2 Instance
 
-* **AWS**: [Filter AWS EC2 instance by VPC Ids](/AWS/legos/aws_filter_ec2_by_vpc/README.md): Use this Action to Filter AWS EC2 Instance by VPC Ids
+* **AWS**: [Filter AWS EC2 instance by VPC Ids](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_by_vpc/README.md): Use this Action to Filter AWS EC2 Instance by VPC Ids
 
-* **AWS**: [Filter All AWS EC2 Instance](/AWS/legos/aws_filter_ec2_instances/README.md): Filter All AWS EC2 Instance
+* **AWS**: [Filter All AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_instances/README.md): Filter All AWS EC2 Instance
 
-* **AWS**: [Filter AWS EC2 Instances Without Lifetime Tag](/AWS/legos/aws_filter_ec2_without_lifetime_tag/README.md): Filter AWS EC2 Instances Without Lifetime Tag
+* **AWS**: [Filter AWS EC2 Instances Without Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_without_lifetime_tag/README.md): Filter AWS EC2 Instances Without Lifetime Tag
 
-* **AWS**: [Filter AWS EC2 Instances Without Termination and Lifetime Tag](/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag/README.md): Filter AWS EC2 Instances Without Termination and Lifetime Tag and Check of they are valid
+* **AWS**: [Filter AWS EC2 Instances Without Termination and Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag/README.md): Filter AWS EC2 Instances Without Termination and Lifetime Tag and Check of they are valid
 
-* **AWS**: [AWS Filter Large EC2 Instances](/AWS/legos/aws_filter_large_ec2_instances/README.md): This Action to filter all instances whose instanceType contains Large or xLarge, and that DO NOT have the largetag key/value.
+* **AWS**: [AWS Filter Large EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_large_ec2_instances/README.md): This Action to filter all instances whose instanceType contains Large or xLarge, and that DO NOT have the largetag key/value.
 
-* **AWS**: [AWS Find Long Running EC2 Instances](/AWS/legos/aws_filter_long_running_instances/README.md): This action list a all instances that are older than the threshold
+* **AWS**: [AWS Find Long Running EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_long_running_instances/README.md): This action list a all instances that are older than the threshold
 
-* **AWS**: [AWS Filter Old EBS Snapshots](/AWS/legos/aws_filter_old_ebs_snapshots/README.md): This action list a all snapshots details that are older than the threshold
+* **AWS**: [AWS Filter Old EBS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_old_ebs_snapshots/README.md): This action list a all snapshots details that are older than the threshold
 
-* **AWS**: [Get AWS public S3 Buckets using ACL](/AWS/legos/aws_filter_public_s3_buckets_by_acl/README.md): Get AWS public S3 Buckets using ACL
+* **AWS**: [Get AWS public S3 Buckets using ACL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_public_s3_buckets_by_acl/README.md): Get AWS public S3 Buckets using ACL
 
-* **AWS**: [Filter AWS Target groups by tag name](/AWS/legos/aws_filter_target_groups_by_tags/README.md): Filter AWS Target groups which have the provided tag attached to it. It also returns the value of that tag for each target group
+* **AWS**: [Filter AWS Target groups by tag name](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_target_groups_by_tags/README.md): Filter AWS Target groups which have the provided tag attached to it. It also returns the value of that tag for each target group
 
-* **AWS**: [Filter AWS Unencrypted S3 Buckets](/AWS/legos/aws_filter_unencrypted_s3_buckets/README.md): Filter AWS Unencrypted S3 Buckets
+* **AWS**: [Filter AWS Unencrypted S3 Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unencrypted_s3_buckets/README.md): Filter AWS Unencrypted S3 Buckets
 
-* **AWS**: [Get Unhealthy instances from ASG](/AWS/legos/aws_filter_unhealthy_instances_from_asg/README.md): Get Unhealthy instances from Auto Scaling Group
+* **AWS**: [Get Unhealthy instances from ASG](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unhealthy_instances_from_asg/README.md): Get Unhealthy instances from Auto Scaling Group
 
-* **AWS**: [Filter AWS Untagged EC2 Instances](/AWS/legos/aws_filter_untagged_ec2_instances/README.md): Filter AWS Untagged EC2 Instances
+* **AWS**: [Filter AWS Untagged EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_untagged_ec2_instances/README.md): Filter AWS Untagged EC2 Instances
 
-* **AWS**: [Filter AWS Unused Keypairs](/AWS/legos/aws_filter_unused_keypairs/README.md): Filter AWS Unused Keypairs
+* **AWS**: [Filter AWS Unused Keypairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_keypairs/README.md): Filter AWS Unused Keypairs
 
-* **AWS**: [AWS Filter Unused Log Stream](/AWS/legos/aws_filter_unused_log_streams/README.md): This action lists all log streams that are unused for all the log groups by the given threshold.
+* **AWS**: [AWS Filter Unused Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_log_streams/README.md): This action lists all log streams that are unused for all the log groups by the given threshold.
 
-* **AWS**: [AWS Find Unused NAT Gateways](/AWS/legos/aws_filter_unused_nat_gateway/README.md): This action to get all of the Nat gateways that have zero traffic over those
+* **AWS**: [AWS Find Unused NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_nat_gateway/README.md): This action to get all of the Nat gateways that have zero traffic over those
 
-* **AWS**: [Finding Redundant Trails in AWS](/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
+* **AWS**: [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 
-* **AWS**: [Get AWS CloudWatch Alarms List](/AWS/legos/aws_get_alarms_list/README.md): Get AWS CloudWatch Alarms List
+* **AWS**: [Get AWS CloudWatch Alarms List](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alarms_list/README.md): Get AWS CloudWatch Alarms List
 
-* **AWS**: [Get AWS ALB Listeners Without HTTP Redirection](/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
+* **AWS**: [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
 
-* **AWS**: [Get AWS EC2 Instances All ](/AWS/legos/aws_get_all_ec2_instances/README.md): Use This Action to Get All AWS EC2 Instances
+* **AWS**: [Get AWS EC2 Instances All ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_ec2_instances/README.md): Use This Action to Get All AWS EC2 Instances
 
-* **AWS**: [AWS Get All Service Names v3](/AWS/legos/aws_get_all_service_names/README.md): Get a list of all service names in a region
+* **AWS**: [AWS Get All Service Names v3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_service_names/README.md): Get a list of all service names in a region
 
-* **AWS**: [AWS Get Untagged Resources](/AWS/legos/aws_get_all_untagged_resources/README.md): AWS Get Untagged Resources
+* **AWS**: [AWS Get Untagged Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_untagged_resources/README.md): AWS Get Untagged Resources
 
-* **AWS**: [Get AWS AutoScaling Group Instances](/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances
+* **AWS**: [Get AWS AutoScaling Group Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances
 
-* **AWS**: [Get AWS Bucket Size](/AWS/legos/aws_get_bucket_size/README.md): Get an AWS Bucket Size
+* **AWS**: [Get AWS Bucket Size](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_bucket_size/README.md): Get an AWS Bucket Size
 
-* **AWS**: [Get AWS EBS Metrics from Cloudwatch](/AWS/legos/aws_get_cloudwatch_ebs/README.md): Get AWS CloudWatch Statistics for EBS volumes
+* **AWS**: [Get AWS EBS Metrics from Cloudwatch](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_ebs/README.md): Get AWS CloudWatch Statistics for EBS volumes
 
-* **AWS**: [Get AWS EC2 Metrics from Cloudwatch](/AWS/legos/aws_get_cloudwatch_ec2/README.md): Get AWS CloudWatch Metrics for EC2 instances. These could be CPU, Network, Disk based measurements
+* **AWS**: [Get AWS EC2 Metrics from Cloudwatch](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_ec2/README.md): Get AWS CloudWatch Metrics for EC2 instances. These could be CPU, Network, Disk based measurements
 
-* **AWS**: [Get AWS EC2 CPU Utilization Statistics from Cloudwatch](/AWS/legos/aws_get_cloudwatch_ec2_cpuutil/README.md): Get AWS CloudWatch Statistics for cpu utilization for EC2 instances
+* **AWS**: [Get AWS EC2 CPU Utilization Statistics from Cloudwatch](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_ec2_cpuutil/README.md): Get AWS CloudWatch Statistics for cpu utilization for EC2 instances
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/ApplicationELB](/AWS/legos/aws_get_cloudwatch_metrics_applicationelb/README.md): Get AWS CloudWatch Metrics for AWS/ApplicationELB
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/ApplicationELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_applicationelb/README.md): Get AWS CloudWatch Metrics for AWS/ApplicationELB
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/ELB](/AWS/legos/aws_get_cloudwatch_metrics_classic_elb/README.md): Get AWS CloudWatch Metrics for Classic Loadbalancer
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_classic_elb/README.md): Get AWS CloudWatch Metrics for Classic Loadbalancer
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/DynamoDB](/AWS/legos/aws_get_cloudwatch_metrics_dynamodb/README.md): Get AWS CloudWatch Metrics for AWS DynamoDB
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/DynamoDB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_dynamodb/README.md): Get AWS CloudWatch Metrics for AWS DynamoDB
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/AutoScaling](/AWS/legos/aws_get_cloudwatch_metrics_ec2autoscaling/README.md): Get AWS CloudWatch Metrics for AWS EC2 AutoScaling groups
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/AutoScaling](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_ec2autoscaling/README.md): Get AWS CloudWatch Metrics for AWS EC2 AutoScaling groups
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/GatewayELB](/AWS/legos/aws_get_cloudwatch_metrics_gatewayelb/README.md): Get AWS CloudWatch Metrics for AWS/GatewayELB
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/GatewayELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_gatewayelb/README.md): Get AWS CloudWatch Metrics for AWS/GatewayELB
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/Lambda](/AWS/legos/aws_get_cloudwatch_metrics_lambda/README.md): Get AWS CloudWatch Metrics for AWS/Lambda
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/Lambda](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_lambda/README.md): Get AWS CloudWatch Metrics for AWS/Lambda
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/NetworkELB](/AWS/legos/aws_get_cloudwatch_metrics_network_elb/README.md): Get AWS CloudWatch Metrics for Network Loadbalancer
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/NetworkELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_network_elb/README.md): Get AWS CloudWatch Metrics for Network Loadbalancer
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/RDS](/AWS/legos/aws_get_cloudwatch_metrics_rds/README.md): Get AWS CloudWatch Metrics for AWS/RDS
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/RDS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_rds/README.md): Get AWS CloudWatch Metrics for AWS/RDS
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/Redshift](/AWS/legos/aws_get_cloudwatch_metrics_redshift/README.md): Get AWS CloudWatch Metrics for AWS/Redshift
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/Redshift](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_redshift/README.md): Get AWS CloudWatch Metrics for AWS/Redshift
 
-* **AWS**: [Get AWS CloudWatch Metrics for AWS/SQS](/AWS/legos/aws_get_cloudwatch_metrics_sqs/README.md): Get AWS CloudWatch Metrics for AWS/SQS
+* **AWS**: [Get AWS CloudWatch Metrics for AWS/SQS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_sqs/README.md): Get AWS CloudWatch Metrics for AWS/SQS
 
-* **AWS**: [Get AWS CloudWatch Statistics](/AWS/legos/aws_get_cloudwatch_statistics/README.md): Get AWS CloudWatch Statistics
+* **AWS**: [Get AWS CloudWatch Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_statistics/README.md): Get AWS CloudWatch Statistics
 
-* **AWS**: [Get EBS Volumes By Type](/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
+* **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 
-* **AWS**: [Get EC2 CPU Consumption For All Instances](/AWS/legos/aws_get_ec2_cpu_consumption/README.md): Get EC2 CPU Consumption For All Instances
+* **AWS**: [Get EC2 CPU Consumption For All Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_cpu_consumption/README.md): Get EC2 CPU Consumption For All Instances
 
-* **AWS**: [Get EC2 Data Traffic In and Out For All Instances](/AWS/legos/aws_get_ec2_data_traffic/README.md): Get EC2 Data Traffic In and Out For All Instances
+* **AWS**: [Get EC2 Data Traffic In and Out For All Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_data_traffic/README.md): Get EC2 Data Traffic In and Out For All Instances
 
-* **AWS**: [Get Age of all EC2 Instances in Days](/AWS/legos/aws_get_ec2_instance_age/README.md): Get Age of all EC2 Instances in Days
+* **AWS**: [Get Age of all EC2 Instances in Days](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_instance_age/README.md): Get Age of all EC2 Instances in Days
 
-* **AWS**: [Get AWS ECS Service Status](/AWS/legos/aws_get_ecs_services_status/README.md): Get the Status of an AWS ECS Service
+* **AWS**: [Get AWS ECS Service Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ecs_services_status/README.md): Get the Status of an AWS ECS Service
 
-* **AWS**: [Get AWS boto3 handle](/AWS/legos/aws_get_handle/README.md): Get AWS boto3 handle
+* **AWS**: [Get AWS boto3 handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_handle/README.md): Get AWS boto3 handle
 
-* **AWS**: [Get AWS Instance Details with Matching Private DNS Name](/AWS/legos/aws_get_instance_detail_with_private_dns_name/README.md): Use this action to get details of an AWS EC2 Instance that matches a Private DNS Name
+* **AWS**: [Get AWS Instance Details with Matching Private DNS Name](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_detail_with_private_dns_name/README.md): Use this action to get details of an AWS EC2 Instance that matches a Private DNS Name
 
-* **AWS**: [Get AWS Instances Details](/AWS/legos/aws_get_instance_details/README.md): Get AWS Instances Details
+* **AWS**: [Get AWS Instances Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_details/README.md): Get AWS Instances Details
 
-* **AWS**: [List All AWS EC2 Instances Under the ELB](/AWS/legos/aws_get_instances/README.md):  Get a list of all AWS EC2 Instances from given ELB
+* **AWS**: [List All AWS EC2 Instances Under the ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instances/README.md):  Get a list of all AWS EC2 Instances from given ELB
 
-* **AWS**: [AWS Get Internet Gateway by VPC ID](/AWS/legos/aws_get_internet_gateway_by_vpc/README.md): AWS Get Internet Gateway by VPC ID
+* **AWS**: [AWS Get Internet Gateway by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc/README.md): AWS Get Internet Gateway by VPC ID
 
-* **AWS**: [AWS Get NAT Gateway Info by VPC ID](/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
+* **AWS**: [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
 
-* **AWS**: [AWS Get Private Address from NAT Gateways](/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
+* **AWS**: [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 
-* **AWS**: [Get AWS EC2 Instances with a public IP](/AWS/legos/aws_get_public_ec2_instances/README.md): lists all EC2 instances with a public IP
+* **AWS**: [Get AWS EC2 Instances with a public IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_public_ec2_instances/README.md): lists all EC2 instances with a public IP
 
-* **AWS**: [AWS Get Publicly Accessible RDS Instances](/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
+* **AWS**: [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
 
-* **AWS**: [AWS Get Publicly Accessible DB Snapshots in RDS](/AWS/legos/aws_get_publicly_accessible_db_snapshots/README.md): AWS Get Publicly Accessible DB Snapshots in RDS
+* **AWS**: [AWS Get Publicly Accessible DB Snapshots in RDS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_snapshots/README.md): AWS Get Publicly Accessible DB Snapshots in RDS
 
-* **AWS**: [AWS Get Redshift Query Details](/AWS/legos/aws_get_redshift_query_details/README.md): Given an QueryId, this Action will give you the status of the Query, along with other data like  the number of lines/
+* **AWS**: [AWS Get Redshift Query Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_query_details/README.md): Given an QueryId, this Action will give you the status of the Query, along with other data like  the number of lines/
 
-* **AWS**: [AWS Get Redshift Result](/AWS/legos/aws_get_redshift_result/README.md): Given a QueryId, Get the Query Result, and format into a List
+* **AWS**: [AWS Get Redshift Result](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_result/README.md): Given a QueryId, Get the Query Result, and format into a List
 
-* **AWS**: [Get AWS S3 Buckets](/AWS/legos/aws_get_s3_buckets/README.md): Get AWS S3 Buckets
+* **AWS**: [Get AWS S3 Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_s3_buckets/README.md): Get AWS S3 Buckets
 
-* **AWS**: [Get Schedule To Retire AWS EC2 Instance](/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
+* **AWS**: [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
 
-* **AWS**: [ Get secrets from secretsmanager](/AWS/legos/aws_get_secret_from_secretmanager/README.md):  Get secrets from AWS secretsmanager
+* **AWS**: [ Get secrets from secretsmanager](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secret_from_secretmanager/README.md):  Get secrets from AWS secretsmanager
 
-* **AWS**: [AWS Get Secrets Manager Secret](/AWS/legos/aws_get_secrets_manager_secret/README.md): Get string (of JSON) containing Secret details
+* **AWS**: [AWS Get Secrets Manager Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secrets_manager_secret/README.md): Get string (of JSON) containing Secret details
 
-* **AWS**: [AWS Get Secrets Manager SecretARN](/AWS/legos/aws_get_secrets_manager_secretARN/README.md): Given a Secret Name - this Action returns the Secret ARN
+* **AWS**: [AWS Get Secrets Manager SecretARN](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secrets_manager_secretARN/README.md): Given a Secret Name - this Action returns the Secret ARN
 
-* **AWS**: [Get AWS Security Group Details](/AWS/legos/aws_get_security_group_details/README.md): Get details about a security group, given its ID.
+* **AWS**: [Get AWS Security Group Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_security_group_details/README.md): Get details about a security group, given its ID.
 
-* **AWS**: [AWS Get Service Quota for a Specific ServiceName](/AWS/legos/aws_get_service_quota_details/README.md): Given an AWS Region, Service Code and Quota Code, this Action will output the quota information for the specified service.
+* **AWS**: [AWS Get Service Quota for a Specific ServiceName](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quota_details/README.md): Given an AWS Region, Service Code and Quota Code, this Action will output the quota information for the specified service.
 
-* **AWS**: [AWS Get Quotas for a Service](/AWS/legos/aws_get_service_quotas/README.md): Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.
+* **AWS**: [AWS Get Quotas for a Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quotas/README.md): Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.
 
-* **AWS**: [Get STS Caller Identity](/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
+* **AWS**: [Get STS Caller Identity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
 
-* **AWS**: [AWS Get Tags of All Resources](/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
+* **AWS**: [AWS Get Tags of All Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
 
-* **AWS**: [Get UnHealthy EC2 Instances for Classic ELB](/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
+* **AWS**: [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 
-* **AWS**: [Get Unhealthy instances from ELB](/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
+* **AWS**: [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
 
-* **AWS**: [AWS Get IAM Users with Old Access Keys](/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
+* **AWS**: [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
 
-* **AWS**: [Launch AWS EC2 Instance From an AMI](/AWS/legos/aws_launch_instance_from_ami/README.md): Use this instance to Launch an AWS EC2 instance from an AMI
+* **AWS**: [Launch AWS EC2 Instance From an AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_launch_instance_from_ami/README.md): Use this instance to Launch an AWS EC2 instance from an AMI
 
-* **AWS**: [AWS List Access Key](/AWS/legos/aws_list_access_keys/README.md): List all Access Keys for the User
+* **AWS**: [AWS List Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_access_keys/README.md): List all Access Keys for the User
 
-* **AWS**: [AWS List All IAM Users](/AWS/legos/aws_list_all_iam_users/README.md): List all AWS IAM Users
+* **AWS**: [AWS List All IAM Users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_all_iam_users/README.md): List all AWS IAM Users
 
-* **AWS**: [AWS List All Regions](/AWS/legos/aws_list_all_regions/README.md): List all available AWS Regions
+* **AWS**: [AWS List All Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_all_regions/README.md): List all available AWS Regions
 
-* **AWS**: [AWS List Application LoadBalancers ARNs](/AWS/legos/aws_list_application_loadbalancers/README.md): AWS List Application LoadBalancers ARNs
+* **AWS**: [AWS List Application LoadBalancers ARNs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_application_loadbalancers/README.md): AWS List Application LoadBalancers ARNs
 
-* **AWS**: [AWS List Attached User Policies](/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
+* **AWS**: [AWS List Attached User Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
 
-* **AWS**: [AWS List Expiring Access Keys](/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
+* **AWS**: [AWS List Expiring Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
 
-* **AWS**: [List Expiring ACM Certificates](/AWS/legos/aws_list_expiring_acm_certificates/README.md): List All Expiring ACM Certificates
+* **AWS**: [List Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates/README.md): List All Expiring ACM Certificates
 
-* **AWS**: [AWS List Unattached Elastic IPs](/AWS/legos/aws_list_unattached_elastic_ips/README.md): This action lists Elastic IP address and check if it is associated with an instance or network interface.
+* **AWS**: [AWS List Unattached Elastic IPs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unattached_elastic_ips/README.md): This action lists Elastic IP address and check if it is associated with an instance or network interface.
 
-* **AWS**: [AWS List Unhealthy Instances in a Target Group](/AWS/legos/aws_list_unhealthy_instances_in_target_group/README.md): List Unhealthy Instances in a target group
+* **AWS**: [AWS List Unhealthy Instances in a Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unhealthy_instances_in_target_group/README.md): List Unhealthy Instances in a target group
 
-* **AWS**: [AWS List IAM Users With Old Passwords](/AWS/legos/aws_list_users_with_old_passwords/README.md): This Lego filter gets all the IAM users' login profiles, and if the login profile is available, checks for the last password change if the password is greater than the given threshold, and lists those users.
+* **AWS**: [AWS List IAM Users With Old Passwords](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_users_with_old_passwords/README.md): This Lego filter gets all the IAM users' login profiles, and if the login profile is available, checks for the last password change if the password is greater than the given threshold, and lists those users.
 
-* **AWS**: [AWS List Instances behind a Load Balancer.](/AWS/legos/aws_loadbalancer_list_instances/README.md): List AWS Instances behind a Load Balancer
+* **AWS**: [AWS List Instances behind a Load Balancer.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_loadbalancer_list_instances/README.md): List AWS Instances behind a Load Balancer
 
-* **AWS**: [Make AWS Bucket Public](/AWS/legos/aws_make_bucket_public/README.md): Make an AWS Bucket Public!
+* **AWS**: [Make AWS Bucket Public](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_make_bucket_public/README.md): Make an AWS Bucket Public!
 
-* **AWS**: [AWS Modify EBS Volume to GP3](/AWS/legos/aws_modify_ebs_volume_to_gp3/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
+* **AWS**: [AWS Modify EBS Volume to GP3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_modify_ebs_volume_to_gp3/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
 
-* **AWS**: [AWS Modify ALB Listeners HTTP Redirection](/AWS/legos/aws_modify_listener_for_http_redirection/README.md): AWS Modify ALB Listeners HTTP Redirection
+* **AWS**: [AWS Modify ALB Listeners HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_modify_listener_for_http_redirection/README.md): AWS Modify ALB Listeners HTTP Redirection
 
-* **AWS**: [AWS Modify Publicly Accessible RDS Snapshots](/AWS/legos/aws_modify_public_db_snapshots/README.md): AWS Modify Publicly Accessible RDS Snapshots
+* **AWS**: [AWS Modify Publicly Accessible RDS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_modify_public_db_snapshots/README.md): AWS Modify Publicly Accessible RDS Snapshots
 
-* **AWS**: [Get AWS Postgresql Max Configured Connections](/AWS/legos/aws_postgresql_get_configured_max_connections/README.md): Get AWS Postgresql Max Configured Connections
+* **AWS**: [Get AWS Postgresql Max Configured Connections](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_postgresql_get_configured_max_connections/README.md): Get AWS Postgresql Max Configured Connections
 
-* **AWS**: [Plot AWS PostgreSQL Active Connections](/AWS/legos/aws_postgresql_plot_active_connections/README.md): Plot AWS PostgreSQL Action Connections
+* **AWS**: [Plot AWS PostgreSQL Active Connections](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_postgresql_plot_active_connections/README.md): Plot AWS PostgreSQL Action Connections
 
-* **AWS**: [ Apply CORS Policy for S3 Bucket](/AWS/legos/aws_put_bucket_cors/README.md):  Apply CORS Policy for S3 Bucket
+* **AWS**: [ Apply CORS Policy for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_put_bucket_cors/README.md):  Apply CORS Policy for S3 Bucket
 
-* **AWS**: [Apply AWS New Policy for S3 Bucket](/AWS/legos/aws_put_bucket_policy/README.md): Apply a New AWS Policy for S3 Bucket
+* **AWS**: [Apply AWS New Policy for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_put_bucket_policy/README.md): Apply a New AWS Policy for S3 Bucket
 
-* **AWS**: [Read AWS S3 Object](/AWS/legos/aws_read_object/README.md): Read an AWS S3 Object
+* **AWS**: [Read AWS S3 Object](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_read_object/README.md): Read an AWS S3 Object
 
-* **AWS**: [ Register AWS Instances with a Load Balancer](/AWS/legos/aws_register_instances/README.md):  Register AWS Instances with a Load Balancer
+* **AWS**: [ Register AWS Instances with a Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_register_instances/README.md):  Register AWS Instances with a Load Balancer
 
-* **AWS**: [Renew Expiring ACM Certificates](/AWS/legos/aws_renew_expiring_acm_certificates/README.md): Renew Expiring ACM Certificates
+* **AWS**: [Renew Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_renew_expiring_acm_certificates/README.md): Renew Expiring ACM Certificates
 
-* **AWS**: [AWS_Request_Service_Quota_Increase](/AWS/legos/aws_request_service_quota_increase/README.md): Given an AWS Region, Service Code, quota code and a new value for the quota, this Action sends a request to AWS for a new value. Your Connector must have servicequotas:RequestServiceQuotaIncrease enabled for this to work.
+* **AWS**: [AWS_Request_Service_Quota_Increase](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_request_service_quota_increase/README.md): Given an AWS Region, Service Code, quota code and a new value for the quota, this Action sends a request to AWS for a new value. Your Connector must have servicequotas:RequestServiceQuotaIncrease enabled for this to work.
 
-* **AWS**: [Restart AWS EC2 Instances](/AWS/legos/aws_restart_ec2_instances/README.md): Restart AWS EC2 Instances
+* **AWS**: [Restart AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_restart_ec2_instances/README.md): Restart AWS EC2 Instances
 
-* **AWS**: [Start AWS Instances](/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
+* **AWS**: [Start AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
 
-* **AWS**: [Stop AWS Instances](/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
+* **AWS**: [Stop AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
 
-* **AWS**: [AWS List Instances in a ELBV2 Target Group](/AWS/legos/aws_target_group_list_instances/README.md): List AWS Instance in a ELBv2 Target Group
+* **AWS**: [AWS List Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_instances/README.md): List AWS Instance in a ELBv2 Target Group
 
-* **AWS**: [ AWS List Unhealthy Instances in a ELBV2 Target Group](/AWS/legos/aws_target_group_list_unhealthy_instances/README.md):  List AWS Unhealthy Instance in a ELBv2 Target Group
+* **AWS**: [ AWS List Unhealthy Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_unhealthy_instances/README.md):  List AWS Unhealthy Instance in a ELBv2 Target Group
 
-* **AWS**: [AWS Register/Unregister Instances from a Target Group.](/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group
+* **AWS**: [AWS Register/Unregister Instances from a Target Group.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group
 
-* **AWS**: [Terminate AWS Instances](/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
+* **AWS**: [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
 
-* **AWS**: [AWS Update Access Key](/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
+* **AWS**: [AWS Update Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
 
-* **AWS**: [Upload file to S3](/AWS/legos/aws_upload_file_to_s3/README.md): Upload a local file to S3
+* **AWS**: [Upload file to S3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_upload_file_to_s3/README.md): Upload a local file to S3
 
-* **AWS**: [AWS_VPC_service_quota_warning](/AWS/legos/aws_vpc_service_quota_warning/README.md): Given an AWS Region and a warning percentage, this Action queries all VPC quota limits, and returns any of Quotas that are over the alert value.
+* **AWS**: [AWS_VPC_service_quota_warning](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_vpc_service_quota_warning/README.md): Given an AWS Region and a warning percentage, this Action queries all VPC quota limits, and returns any of Quotas that are over the alert value.
 
-* **Datadog**: [Datadog delete incident](/Datadog/legos/datadog_delete_incident/README.md): Delete an incident given its id
+* **Datadog**: [Datadog delete incident](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_delete_incident/README.md): Delete an incident given its id
 
