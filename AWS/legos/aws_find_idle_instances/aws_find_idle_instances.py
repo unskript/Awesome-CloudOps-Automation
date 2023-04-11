@@ -17,17 +17,17 @@ class InputSchema(BaseModel):
     idle_cpu_threshold: int = Field(
         5, 
         description='Idle CPU threshold (in percent)', 
-        title='idle_cpu_threshold'
+        title='Idle CPU Threshold'
     )
     idle_duration: int = Field(
        6, 
        description='Idle duration (in hours)', 
-       title='idle_duration'
+       title='Idle Duration'
     )
     region: Optional[str] = Field(
         '',
         description='AWS Region to get the instances from. Eg: "us-west-2"',
-        title='region',
+        title='Region',
     )
 
 
