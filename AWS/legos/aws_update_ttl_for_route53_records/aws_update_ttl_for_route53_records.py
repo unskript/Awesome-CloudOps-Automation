@@ -23,7 +23,7 @@ class InputSchema(BaseModel):
         title='Record Name',
     )
     record_type: Route53RecordType = Field(
-        ..., description='Record Type of the record.', title='record_type'
+        ..., description='Record Type of the record.', title='Record Type'
     )
 
 
