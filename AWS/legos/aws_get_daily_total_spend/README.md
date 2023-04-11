@@ -14,11 +14,9 @@ AWS get daily total spend from Cost Explorer
 		end_date: Optional, End date till which daily costs are to be fetched. Note: It should be given in YYYY-MM-DD format. Eg: 2023-04-11
 		region: AWS Region.
 
-	Please refer to README.md file of any existing lego and similarly add the description for your input parameters.
-
 
 ## Lego Input
-This Lego takes inputs handle,
+This Lego takes 5 inputs handle, number_of_months, start_date, end_date, region
 
 ## Lego Output
 Here is a sample output.
