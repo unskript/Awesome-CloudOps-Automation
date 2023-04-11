@@ -15,7 +15,7 @@ This Lego takes one input: handle.
 
 ## Lego Output
 Here is a sample output.
-<img src="./1.png">
+<img src="./1.jpeg">
 
 ## See it in Action
 
