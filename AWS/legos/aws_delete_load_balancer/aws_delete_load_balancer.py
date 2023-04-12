@@ -5,7 +5,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict
 import pprint
-from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 
 
 class InputSchema(BaseModel):
@@ -14,7 +13,7 @@ class InputSchema(BaseModel):
         description='load balancer ARNs.')
     region: str = Field(
         title='Region',
-        description='AWS Region of the bucket.')
+        description='AWS Region.')
 
 
 def aws_delete_load_balancer_printer(output):
