@@ -93,6 +93,7 @@
 * [Filter AWS Unused Keypairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_keypairs/README.md): Filter AWS Unused Keypairs
 * [AWS Filter Unused Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_log_streams/README.md): This action lists all log streams that are unused for all the log groups by the given threshold.
 * [AWS Find Unused NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_nat_gateway/README.md): This action to get all of the Nat gateways that have zero traffic over those
+* [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
 * [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 * [Get AWS CloudWatch Alarms List](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alarms_list/README.md): Get AWS CloudWatch Alarms List
 * [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
@@ -154,6 +155,7 @@
 * [AWS List Attached User Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
 * [AWS List Expiring Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
 * [List Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates/README.md): List All Expiring ACM Certificates
+* [AWS List Hosted Zones](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_hosted_zones/README.md): List all AWS Hosted zones
 * [AWS List Unattached Elastic IPs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unattached_elastic_ips/README.md): This action lists Elastic IP address and check if it is associated with an instance or network interface.
 * [AWS List Unhealthy Instances in a Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unhealthy_instances_in_target_group/README.md): List Unhealthy Instances in a target group
 * [AWS List Unused Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unused_secrets/README.md): This action lists all the unused secrets from AWS by comparing the last used date with the given threshold.

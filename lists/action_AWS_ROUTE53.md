@@ -1,13 +1,5 @@
-# Actions in the KAFKA category
-* **Kafka**: [Kafka Check In-Sync Replicas](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_check_in_sync_replicas/README.md): Checks number of actual min-isr for each topic-partition with configuration for that topic.
-
-* **Kafka**: [Kafka Check Replicas Available](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_check_replicas_available/README.md): Checks if the number of replicas not available for communication is equal to zero.
-
-* **Kafka**: [Get Kafka Producer Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_get_handle/README.md): Get Kafka Producer Handle
-
-* **Kafka**: [Kafka Publish Message](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_publish_message/README.md): Publish Kafka Message
-
-* **Kafka**: [Run a Kafka command using kafka CLI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_run_command/README.md): Run a Kafka command using kafka CLI. Eg kafka-topics.sh --list --exclude-internal
+# Actions in the AWS ROUTE53 category
+* **AWS**: [AWS List Hosted Zones](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_hosted_zones/README.md): List all AWS Hosted zones
 
 
 # Actions By Connector:
