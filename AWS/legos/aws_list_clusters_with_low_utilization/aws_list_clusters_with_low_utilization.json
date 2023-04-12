@@ -1,0 +1,15 @@
+{
+    "action_title": "AWS List ECS Clusters with Low CPU Utilization",
+    "action_description": "This action searches for clusters that have low CPU utilization.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_list_clusters_with_low_utilization",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_is_check":true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {},
+    "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_AWS_EBC" ]
+}
+  
