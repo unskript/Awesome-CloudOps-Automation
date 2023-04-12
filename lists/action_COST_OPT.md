@@ -1,15 +1,41 @@
+# Actions in the COST OPT category
+* **AWS**: [AWS Attach Tags to Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_tags_to_resources/README.md): AWS Attach Tags to Resources
+
+* **AWS**: [Filter AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_by_tags/README.md): Filter AWS EC2 Instance
+
+* **AWS**: [Filter AWS EC2 Instances Without Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_without_lifetime_tag/README.md): Filter AWS EC2 Instances Without Lifetime Tag
+
+* **AWS**: [Filter AWS EC2 Instances Without Termination and Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag/README.md): Filter AWS EC2 Instances Without Termination and Lifetime Tag and Check of they are valid
+
+* **AWS**: [AWS Filter Large EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_large_ec2_instances/README.md): This Action to filter all instances whose instanceType contains Large or xLarge, and that DO NOT have the largetag key/value.
+
+* **AWS**: [AWS Find Long Running EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_long_running_instances/README.md): This action list a all instances that are older than the threshold
+
+* **AWS**: [AWS Filter Old EBS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_old_ebs_snapshots/README.md): This action list a all snapshots details that are older than the threshold
+
+* **AWS**: [Filter AWS Untagged EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_untagged_ec2_instances/README.md): Filter AWS Untagged EC2 Instances
+
+* **AWS**: [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
+
+* **AWS**: [AWS Get Untagged Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_untagged_resources/README.md): AWS Get Untagged Resources
+
+* **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
+
+* **AWS**: [AWS List Unused Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unused_secrets/README.md): This action lists all the unused secrets from AWS by comparing the last used date with the given threshold.
+
+
 # Actions By Connector:
 | | | | 
  | ---| ---| ---| 
- | [AWS](action_AWS.md) | [Airflow](action_AIRFLOW.md) | [Azure](action_AZURE.md) | [ChatGPT](action_CHATGPT.md) |
- | [Datadog](action_DATADOG.md) | [ElasticSearch](action_ELASTICSEARCH.md) | [GCP](action_GCP.md) | [Github](action_GITHUB.md) |
- | [Grafana](action_GRAFANA.md) | [Hadoop](action_HADOOP.md) | [Jenkins](action_JENKINS.md) | [Jira](action_JIRA.md) |
- | [Kafka](action_KAFKA.md) | [Kubernetes](action_KUBERNETES.md) | [Mantishub](action_MANTISHUB.md) | [Mongo](action_MONGO.md) |
- | [MsSQL](action_MSSQL.md) | [MySQL](action_MYSQL.md) | [Netbox](action_NETBOX.md) | [Nomad](action_NOMAD.md) |
- | [Pingdom](action_PINGDOM.md) | [Postgresql](action_POSTGRESQL.md) | [Prometheus](action_PROMETHEUS.md) | [Redis](action_REDIS.md) |
- | [Rest](action_REST.md) | [SSH](action_SSH.md) | [SalesForce](action_SALESFORCE.md) | [Slack](action_SLACK.md) |
- | [Snowflake](action_SNOWFLAKE.md) | [Splunk](action_SPLUNK.md) | [Stripe](action_STRIPE.md) | [Terraform](action_TERRAFORM.md) |
- | [Zabbix](action_ZABBIX.md) | [infra](action_INFRA.md) | [opensearch](action_OPENSEARCH.md) | 
+ | [AWS](lists/action_AWS.md) | [Airflow](lists/action_AIRFLOW.md) | [Azure](lists/action_AZURE.md) | [ChatGPT](lists/action_CHATGPT.md) |
+ | [Datadog](lists/action_DATADOG.md) | [ElasticSearch](lists/action_ES.md) | [GCP](lists/action_GCP.md) | [Github](lists/action_GITHUB.md) |
+ | [Grafana](lists/action_GRAFANA.md) | [Hadoop](lists/action_HADOOP.md) | [Jenkins](lists/action_JENKINS.md) | [Jira](lists/action_JIRA.md) |
+ | [Kafka](lists/action_KAFKA.md) | [Kubernetes](lists/action_K8S.md) | [Mantishub](lists/action_MANTISHUB.md) | [Mongo](lists/action_MONGO.md) |
+ | [MsSQL](lists/action_MSSQL.md) | [MySQL](lists/action_MYSQL.md) | [Netbox](lists/action_NETBOX.md) | [Nomad](lists/action_NOMAD.md) |
+ | [Pingdom](lists/action_PINGDOM.md) | [Postgresql](lists/action_POSTGRESQL.md) | [Prometheus](lists/action_PROMETHEUS.md) | [Redis](lists/action_REDIS.md) |
+ | [Rest](lists/action_REST.md) | [SSH](lists/action_SSH.md) | [SalesForce](lists/action_SALESFORCE.md) | [Slack](lists/action_SLACK.md) |
+ | [Snowflake](lists/action_SNOWFLAKE.md) | [Splunk](lists/action_SPLUNK.md) | [Stripe](lists/action_STRIPE.md) | [Terraform](lists/action_TERRAFORM.md) |
+ | [Zabbix](lists/action_ZABBIX.md) | [infra](lists/action_INFRA.md) | [opensearch](lists/action_OPENSEARCH.md) | 
 
  
  # Actions By Category: 
@@ -33,36 +59,14 @@
  | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) | [JIRA](action_JIRA.md) |
  | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) |
  | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
- | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) |
- | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) |
- | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) |
- | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) |
- | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) |
- | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) |
- | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) |
- | [OPENSEARCH](action_OPENSEARCH.md) | 
-
-
- # Actions in the COST OPT category
-* **AWS**: [AWS Attach Tags to Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_tags_to_resources/README.md): AWS Attach Tags to Resources
-
-* **AWS**: [Filter AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_by_tags/README.md): Filter AWS EC2 Instance
-
-* **AWS**: [Filter AWS EC2 Instances Without Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ec2_without_lifetime_tag/README.md): Filter AWS EC2 Instances Without Lifetime Tag
-
-* **AWS**: [Filter AWS EC2 Instances Without Termination and Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag/README.md): Filter AWS EC2 Instances Without Termination and Lifetime Tag and Check of they are valid
-
-* **AWS**: [AWS Filter Large EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_large_ec2_instances/README.md): This Action to filter all instances whose instanceType contains Large or xLarge, and that DO NOT have the largetag key/value.
-
-* **AWS**: [AWS Find Long Running EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_long_running_instances/README.md): This action list a all instances that are older than the threshold
-
-* **AWS**: [AWS Filter Old EBS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_old_ebs_snapshots/README.md): This action list a all snapshots details that are older than the threshold
-
-* **AWS**: [Filter AWS Untagged EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_untagged_ec2_instances/README.md): Filter AWS Untagged EC2 Instances
-
-* **AWS**: [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
-
-* **AWS**: [AWS Get Untagged Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_untagged_resources/README.md): AWS Get Untagged Resources
-
-* **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
+ | [MANTISHUB](action_MANTISHUB.md) | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) |
+ | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) |
+ | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) |
+ | [PINGDOM](action_PINGDOM.md) | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) |
+ | [PROMETHEUS](action_PROMETHEUS.md) | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) |
+ | [SALESFORCE](action_SALESFORCE.md) | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [SPLUNK](action_SPLUNK.md) |
+ | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) |
+ | [TERRAFORM](action_TERRAFORM.md) | [ZABBIX](action_ZABBIX.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) |
+ | 
+ 
 

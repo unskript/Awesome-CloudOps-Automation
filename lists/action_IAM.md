@@ -1,15 +1,37 @@
+# Actions in the IAM category
+* **AWS**: [AWS Attach New Policy to User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_iam_policy/README.md): AWS Attach New Policy to User
+
+* **AWS**: [AWS Create Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_access_key/README.md): Create a new Access Key for the User
+
+* **AWS**: [Create New IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_iam_user/README.md): Create New IAM User
+
+* **AWS**: [Create Login profile for IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_user_login_profile/README.md): Create Login profile for IAM User
+
+* **AWS**: [AWS Delete Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
+
+* **AWS**: [Filter AWS EBS Volume with Low IOPS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ebs_volumes_with_low_iops/README.md): IOPS (Input/Output Operations Per Second) is a metric used to measure the amount of input/output operations that an EBS volume can perform per second.
+
+* **AWS**: [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
+
+* **AWS**: [Get AWS EBS Volume Without GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
+
+* **AWS**: [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
+
+* **AWS**: [AWS List Unused Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unused_secrets/README.md): This action lists all the unused secrets from AWS by comparing the last used date with the given threshold.
+
+
 # Actions By Connector:
 | | | | 
  | ---| ---| ---| 
- | [AWS](action_AWS.md) | [Airflow](action_AIRFLOW.md) | [Azure](action_AZURE.md) | [ChatGPT](action_CHATGPT.md) |
- | [Datadog](action_DATADOG.md) | [ElasticSearch](action_ELASTICSEARCH.md) | [GCP](action_GCP.md) | [Github](action_GITHUB.md) |
- | [Grafana](action_GRAFANA.md) | [Hadoop](action_HADOOP.md) | [Jenkins](action_JENKINS.md) | [Jira](action_JIRA.md) |
- | [Kafka](action_KAFKA.md) | [Kubernetes](action_KUBERNETES.md) | [Mantishub](action_MANTISHUB.md) | [Mongo](action_MONGO.md) |
- | [MsSQL](action_MSSQL.md) | [MySQL](action_MYSQL.md) | [Netbox](action_NETBOX.md) | [Nomad](action_NOMAD.md) |
- | [Pingdom](action_PINGDOM.md) | [Postgresql](action_POSTGRESQL.md) | [Prometheus](action_PROMETHEUS.md) | [Redis](action_REDIS.md) |
- | [Rest](action_REST.md) | [SSH](action_SSH.md) | [SalesForce](action_SALESFORCE.md) | [Slack](action_SLACK.md) |
- | [Snowflake](action_SNOWFLAKE.md) | [Splunk](action_SPLUNK.md) | [Stripe](action_STRIPE.md) | [Terraform](action_TERRAFORM.md) |
- | [Zabbix](action_ZABBIX.md) | [infra](action_INFRA.md) | [opensearch](action_OPENSEARCH.md) | 
+ | [AWS](lists/action_AWS.md) | [Airflow](lists/action_AIRFLOW.md) | [Azure](lists/action_AZURE.md) | [ChatGPT](lists/action_CHATGPT.md) |
+ | [Datadog](lists/action_DATADOG.md) | [ElasticSearch](lists/action_ES.md) | [GCP](lists/action_GCP.md) | [Github](lists/action_GITHUB.md) |
+ | [Grafana](lists/action_GRAFANA.md) | [Hadoop](lists/action_HADOOP.md) | [Jenkins](lists/action_JENKINS.md) | [Jira](lists/action_JIRA.md) |
+ | [Kafka](lists/action_KAFKA.md) | [Kubernetes](lists/action_K8S.md) | [Mantishub](lists/action_MANTISHUB.md) | [Mongo](lists/action_MONGO.md) |
+ | [MsSQL](lists/action_MSSQL.md) | [MySQL](lists/action_MYSQL.md) | [Netbox](lists/action_NETBOX.md) | [Nomad](lists/action_NOMAD.md) |
+ | [Pingdom](lists/action_PINGDOM.md) | [Postgresql](lists/action_POSTGRESQL.md) | [Prometheus](lists/action_PROMETHEUS.md) | [Redis](lists/action_REDIS.md) |
+ | [Rest](lists/action_REST.md) | [SSH](lists/action_SSH.md) | [SalesForce](lists/action_SALESFORCE.md) | [Slack](lists/action_SLACK.md) |
+ | [Snowflake](lists/action_SNOWFLAKE.md) | [Splunk](lists/action_SPLUNK.md) | [Stripe](lists/action_STRIPE.md) | [Terraform](lists/action_TERRAFORM.md) |
+ | [Zabbix](lists/action_ZABBIX.md) | [infra](lists/action_INFRA.md) | [opensearch](lists/action_OPENSEARCH.md) | 
 
  
  # Actions By Category: 
@@ -33,32 +55,14 @@
  | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) | [JIRA](action_JIRA.md) |
  | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) |
  | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
- | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) |
- | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) |
- | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) |
- | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) |
- | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) |
- | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) |
- | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) |
- | [OPENSEARCH](action_OPENSEARCH.md) | 
-
-
- # Actions in the IAM category
-* **AWS**: [AWS Attach New Policy to User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_iam_policy/README.md): AWS Attach New Policy to User
-
-* **AWS**: [AWS Create Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_access_key/README.md): Create a new Access Key for the User
-
-* **AWS**: [Create New IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_iam_user/README.md): Create New IAM User
-
-* **AWS**: [Create Login profile for IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_user_login_profile/README.md): Create Login profile for IAM User
-
-* **AWS**: [AWS Delete Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
-
-* **AWS**: [Filter AWS EBS Volume with Low IOPS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ebs_volumes_with_low_iops/README.md): IOPS (Input/Output Operations Per Second) is a metric used to measure the amount of input/output operations that an EBS volume can perform per second.
-
-* **AWS**: [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
-
-* **AWS**: [Get AWS EBS Volume Without GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
-
-* **AWS**: [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
+ | [MANTISHUB](action_MANTISHUB.md) | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) |
+ | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) |
+ | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) |
+ | [PINGDOM](action_PINGDOM.md) | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) |
+ | [PROMETHEUS](action_PROMETHEUS.md) | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) |
+ | [SALESFORCE](action_SALESFORCE.md) | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [SPLUNK](action_SPLUNK.md) |
+ | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) |
+ | [TERRAFORM](action_TERRAFORM.md) | [ZABBIX](action_ZABBIX.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) |
+ | 
+ 
 
