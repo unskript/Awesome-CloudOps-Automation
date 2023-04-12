@@ -25,19 +25,13 @@ def aws_filter_untagged_ec2_instances_printer(output):
 def check_untagged_instance(res, r):
     instance_list = []
     for reservation in res:
-            for instance in reservation['Instances']:
-                instances_dict = {}
-                try:
-                    tagged_instance = instance['Tags']
-                    if len(tagged_instance) == 0:
-                        instances_dict['region']= r
-                        instances_dict['instances']= instance['InstanceId']
-                        instance_list.append(instances_dict)
-                except Exception as e:
-                    if len(tagged_instance) == 0:
-                        instances_dict['region']= r
-                        instances_dict['instances']= instance['InstanceId']
-                        instance_list.append(instances_dict)
+        for instance in reservation['Instances']:
+            instances_dict = {}
+            tags = instance.get('Tags', None)
+            if tags is None:
+                instances_dict['region']= r
+                instances_dict['instanceID']= instance['InstanceId']
+                instance_list.append(instances_dict)
     return instance_list
 
 

@@ -47,7 +47,7 @@ def infra_execute_runbook_printer(output):
     if output is not None:
         pprint.pprint(f"Runbook execution status: {output}")
 
-def infra_execute_runbook(handle, runbook_id: str, params: str) -> str:
+def infra_execute_runbook(handle, runbook_id: str, params: str = None) -> str:
     """execute_runbook executes particular runbook annd return execution status
 
         :type runbook_id: str.
