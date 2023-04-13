@@ -8,7 +8,6 @@
 # FOR A PARTICULAR PURPOSE
 #
 #
-import argparse
 import os
 import nbformat
 import sys
@@ -25,6 +24,7 @@ from datetime import datetime
 from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
+from argparse import ArgumentParser, REMAINDER
 from db_utils import *
 
 import ZODB, ZODB.FileStorage
@@ -98,7 +98,14 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
     # get_code_cell_action_uuids
 
     #FIXME: NEED TO CREATE FIRST CELL VARIABLES BASED ON ENV VARIABLE SET IN THE CONFIG FILE
+    runbook_params = {}
+    if os.environ.get('ACA_RUNBOOK_PARAMS') != None:
+        runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
+    runbook_variables = ''
     
+    if runbook_params:
+        for k,v in runbook_params.items():
+            runbook_variables = runbook_variables + f"{k} = nbParamsObj.get('{k}')" + '\n'
     first_cell_content = f'''\
 import json
 from unskript import nbparams
@@ -108,9 +115,10 @@ from unskript.secrets import ENV_MODE, ENV_MODE_LOCAL
 env = {{"ENV_MODE": "ENV_MODE_LOCAL"}}
 secret_store_cfg = {{"SECRET_STORE_TYPE": "SECRET_STORE_TYPE_LOCAL"}}
 
-paramDict = {{}}
+paramDict = {runbook_params}
 paramsJson = json.dumps(paramDict)
 nbParamsObj = nbparams.NBParams(paramsJson)
+{runbook_variables}
 w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={ids})'''
 
 
@@ -816,7 +824,8 @@ def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
         return retval
     for cell in content.get('cells'):
         if cell.get('metadata').get('action_uuid') == action_uuid:
-            retval = cell.get('metadata').get('action_type').replace('LEGO_TYPE_', '').lower()
+            if cell.get('metadata').get('action_type') != None:
+                retval = cell.get('metadata').get('action_type').replace('LEGO_TYPE_', '').lower()
     
     return retval
 
@@ -839,6 +848,186 @@ def create_creds_mapping():
             d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), "id": c_data.get('metadata').get('id')}
     upsert_pss_record('default_credential_id', d, False)
 
+def print_runbook_params(properties: dict, required: dict):
+    if not properties:
+        return 
+
+    print("\033[1m Expected Parameters to run the Runbook \033[0m")
+    param_data = [['\033[1m Name \033[0m', 
+                    '\033[1m Type \033[0m', 
+                    '\033[1m Description \033[0m', 
+                    '\033[1m Default \033[0m']]
+    for k,v in properties.items():
+        param_data.append([k,
+                            v.get('type'), 
+                            v.get('description'),
+                            v.get('default') or 'No Default Value'
+                            ])
+    print(tabulate(param_data, headers='firstrow', tablefmt='fancy_grid'))
+    if len(required) > 0:
+        req_data = [['\033[1m Required Parameters \033[0m']]
+        for l in required:
+            req_data.append([l])
+        print(tabulate(req_data, headers='firstrow', tablefmt='fancy_grid'))
+
+def get_runbook_contents(_runbook) -> dict:
+    if not _runbook:
+        return {}
+
+    _runbook_contents = {}
+    file_name_to_read = ''
+    if not _runbook.endswith('.ipynb'):
+        _runbook = _runbook + '.ipynb'
+
+    if os.environ.get('RUNBOOK_PATH'): 
+        if os.path.exists(os.environ.get('RUNBOOK_PATH') + '/' + _runbook):
+            file_name_to_read = os.environ.get('RUNBOOK_PATH') + '/' + _runbook 
+    else:
+        l = glob.glob(os.environ.get('HOME') + '/runbooks/*/'  + _runbook)
+        if not l:
+            # If runbook was not found in $HOME/runbooks/*/ then search in $HOME/runbooks
+            l = glob.glob(os.environ.get('HOME') + '/runbooks/'  + _runbook)
+        if l:
+            if os.path.exists(l[0]):
+                file_name_to_read = l[0] 
+        else:
+            if os.path.exists(os.environ.get('PWD') + '/' + _runbook):
+                file_name_to_read = os.environ.get('PWD') + '/' + _runbook 
+
+    if not file_name_to_read:
+        raise Exception(f"Runbook Not found {file_name_to_read}")
+    
+    if file_name_to_read:
+        with open(file_name_to_read, 'r') as f:
+            _runbook_contents = json.loads(f.read())
+    
+    _runbook_contents['runbook_name'] = file_name_to_read 
+
+    return _runbook_contents
+
+
+def non_interactive_parse_runbook_param(args) -> dict: 
+    # The syntax for running runbook would be
+    # unskript-ctl.sh -rr <RUNBOOK_NAME> [-runbook_param1 value1] [-runbook_param2 value2] 
+
+    if not len(args):
+        return {} 
+
+    retval = {}
+    retval['params'] = {}
+    _runbook_contents = get_runbook_contents(args[0])
+    retval['runbook_name'] = _runbook_contents.get('runbook_name')
+
+    mdata = _runbook_contents.get('metadata')
+    if mdata:
+        if not mdata.get('parameterSchema'):
+            # This means there is no Runbook parameter defined, return empty dictionary
+            print("\033[1m No Runbook Parameters required \033[0m")
+            return {}
+        properties = mdata.get('parameterSchema').get('properties')
+        required = mdata.get('parameterSchema').get('required')
+        arg_list = args[1:]
+        if len(properties.keys()):
+            # FIXME: If properties.type is secretstring or password, how do we take that input from user? 
+            if len(arg_list) < len(required) * 2:
+                print_runbook_params(properties=properties, required=required)
+                return {}
+        else:
+            raise Exception("Error Occurred parsing Runbook. The Properties value ")
+        values = []
+        keys = []
+        for idx,k in enumerate(arg_list):
+            if k == '-h' or k == '--h':
+                print_runbook_params(properties=properties, required=required)
+                return {}
+
+            if (idx+1)%2 == 0:
+                values.append(k)
+                continue 
+            k = k.strip('--')
+            if k not in properties.keys():
+                print_runbook_params(properties=properties, required=required)
+                print(f"\033[1m Runbook Parameter name does not match: '{k}' Does not match any parameter name. Available Values are {[ x for x in properties.keys()]} \033[0m")
+                return {}
+            keys.append(k)
+        if len(values) != len(keys):
+            print_runbook_params(properties=properties, required=required)
+            return {}
+
+        for i in range(len(values)):
+            retval['params'][keys[i]] = values[i]
+        
+        
+        return retval
+    else:
+        raise Exception("Unable to Parse Runbook file, No Metadata present in the given runbook")
+
+    return retval
+
+def interactive_parse_runbook_param(args) -> dict:
+    # The syntax for interactive running would be like this -
+    # unskript-ctl.sh --rr <RUNBOOK> 
+    if not len(args):
+        return {} 
+
+    retval = {}
+    retval['params'] = {}
+    _runbook_contents = get_runbook_contents(args[0])
+    retval['runbook_name'] = _runbook_contents.get('runbook_name')
+
+    mdata = _runbook_contents.get('metadata')
+    if mdata:
+        if not mdata.get('parameterSchema'):
+            # This means there is no Runbook parameter defined, return empty dictionary
+            print("\033[1m No Runbook Parameters required \033[0m")
+            retval['runbook_name'] = _runbook_contents.get('runbook_name')
+            return retval
+        properties = mdata.get('parameterSchema').get('properties')
+        required = mdata.get('parameterSchema').get('required')
+        all_param_names = [x for x in properties.keys()]
+        optional_params = []
+        try:
+            optional_params = set(all_param_names.sort()) - set(required.sort())
+        except:
+            if not required:
+                optional_params = all_param_names
+            
+        for param in required:
+            retval['params'][param] = input(f"Input the Value or \033[1m  {param} \033[0m (Required): ")
+        for o_param in optional_params:
+            temp = input(f" Input the Value for \033[1m {o_param}  \033[0m  (OPTIONAL, Hit enter to skip): ")
+            if not temp.strip():
+                if properties.get(o_param).get('default') != None:
+                    retval['params'][o_param] = properties.get(o_param).get('default')
+                continue
+            retval['params'][o_param] = temp
+        
+        return retval
+    else:
+        raise Exception("Unable to Parse Runbook, No Metadata present in the given runbook")
+    return {}
+    
+
+def parse_runbook_param(args):
+    if not args:
+        return {}
+    
+    if args[0] in ('-h', '--h'):
+        parser.print_help()
+        sys.exit(0)
+
+    if len(args) == 1:
+        retval = interactive_parse_runbook_param(args)
+    elif len(args) >= 2:
+        retval = non_interactive_parse_runbook_param(args)
+    
+    if retval:
+        if retval.get('params') != None:
+            os.environ['ACA_RUNBOOK_PARAMS'] = json.dumps(retval.get('params'))
+        if retval.get('runbook_name') != None:
+            run_ipynb(retval.get('runbook_name'))
+    return
+
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') == None:
@@ -849,7 +1038,7 @@ if __name__ == "__main__":
     except Exception as e:
         raise e 
     
-    parser = argparse.ArgumentParser(prog='unskript-ctl')
+    parser = ArgumentParser(prog='unskript-ctl')
     version_number = "0.1.0"
     description=""
     description = description + str("\n")
@@ -857,7 +1046,7 @@ if __name__ == "__main__":
     description = description + str(f"\t\t   VERSION: {version_number} \n")
     parser.description = description
     parser.add_argument('-lr', '--list-runbooks', help='List Available Runbooks', action='store_true')
-    parser.add_argument('-rr', '--run-runbook', type=str, help='Run the given runbook')
+    parser.add_argument('-rr', '--run-runbook', type=str, nargs=REMAINDER, help='Run the given runbook RUNBOOK_NAME [-RUNBOOK_PARM1 VALUE1] etc..')
     parser.add_argument('-rc', '--run-checks', type=str, help='Run all available checks [all | connector | failed]')
     parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks [all | connector]')
     parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, [all | connector]')
@@ -872,7 +1061,11 @@ if __name__ == "__main__":
     if args.list_runbooks == True: 
         list_runbooks()
     elif args.run_runbook not in  ('', None):
-        run_ipynb(args.run_runbook)
+        if len(args.run_runbook) == 0:
+            parser.print_help()
+            sys.exit(0)
+        else: 
+            parse_runbook_param(args.run_runbook)
     elif args.run_checks not in ('', None):
         run_checks(args.run_checks)
     elif args.display_failed_checks not in ('', None):
