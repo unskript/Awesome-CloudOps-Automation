@@ -895,7 +895,7 @@ def get_runbook_contents(_runbook) -> dict:
                 file_name_to_read = os.environ.get('PWD') + '/' + _runbook 
 
     if not file_name_to_read:
-        raise Exception(f"Runbook Not found {file_name_to_read}")
+        raise Exception(f"Runbook Not found {_runbook}")
     
     if file_name_to_read:
         with open(file_name_to_read, 'r') as f:
@@ -915,6 +915,10 @@ def non_interactive_parse_runbook_param(args) -> dict:
 
     retval = {}
     retval['params'] = {}
+    if args[0] in ('-h', '--h'):
+        parser.print_help()
+        sys.exit(0)
+
     _runbook_contents = get_runbook_contents(args[0])
     retval['runbook_name'] = _runbook_contents.get('runbook_name')
 
@@ -923,7 +927,12 @@ def non_interactive_parse_runbook_param(args) -> dict:
         if not mdata.get('parameterSchema'):
             # This means there is no Runbook parameter defined, return empty dictionary
             print("\033[1m No Runbook Parameters required \033[0m")
+            s = [x for x in args if x in ('-h', '--h')]
+            if s:
+                parser.print_help()
+                sys.exit(0)
             return {}
+
         properties = mdata.get('parameterSchema').get('properties')
         required = mdata.get('parameterSchema').get('required')
         arg_list = args[1:]
@@ -933,7 +942,11 @@ def non_interactive_parse_runbook_param(args) -> dict:
                 print_runbook_params(properties=properties, required=required)
                 return {}
         else:
-            print("\033[1m No Runbook Parameters required \033[0m")
+            print("\033[1m No Runbook Parameters required  \033[0m")
+            s = [x for x in args if x in ('-h', '--h')]
+            if s:
+                parser.print_help()
+                sys.exit(0)
             return retval
         values = []
         keys = []
@@ -973,6 +986,10 @@ def interactive_parse_runbook_param(args) -> dict:
 
     retval = {}
     retval['params'] = {}
+    if args[0] in ('-h', '--h'):
+        parser.print_help()
+        sys.exit(0)
+        
     _runbook_contents = get_runbook_contents(args[0])
     retval['runbook_name'] = _runbook_contents.get('runbook_name')
 
@@ -982,8 +999,11 @@ def interactive_parse_runbook_param(args) -> dict:
             # This means there is no Runbook parameter defined, return empty dictionary
             print("\033[1m No Runbook Parameters required \033[0m")
             return retval
+
         properties = mdata.get('parameterSchema').get('properties')
         required = mdata.get('parameterSchema').get('required')
+
+
         all_param_names = [x for x in properties.keys()]
         optional_params = []
         try:
@@ -995,7 +1015,10 @@ def interactive_parse_runbook_param(args) -> dict:
         for param in required:
             retval['params'][param] = input(f"Input the Value or \033[1m  {param} \033[0m (Required): ")
         for o_param in optional_params:
-            temp = input(f" Input the Value for \033[1m {o_param}  \033[0m  (OPTIONAL, Hit enter to skip): ")
+            default_string = ""
+            if properties.get(o_param).get('default') != None:
+                default_string = f"Defualt value: \033[1m {properties.get(o_param).get('default')} \033[0m"
+            temp = input(f" Input the Value for \033[1m {o_param}  \033[0m  (OPTIONAL, {default_string} Hit enter to use default): ")
             if not temp.strip():
                 if properties.get(o_param).get('default') != None:
                     retval['params'][o_param] = properties.get(o_param).get('default')
@@ -1011,10 +1034,6 @@ def interactive_parse_runbook_param(args) -> dict:
 def parse_runbook_param(args):
     if not args:
         return {}
-    
-    if args[0] in ('-h', '--h'):
-        parser.print_help()
-        sys.exit(0)
 
     if len(args) == 1:
         retval = interactive_parse_runbook_param(args)
@@ -1025,7 +1044,9 @@ def parse_runbook_param(args):
         if retval.get('params') != None:
             os.environ['ACA_RUNBOOK_PARAMS'] = json.dumps(retval.get('params'))
         if retval.get('runbook_name') != None:
-            run_ipynb(retval.get('runbook_name'))
+            status_of_run = []
+            run_ipynb(retval.get('runbook_name'), status_of_run)
+            update_audit_trail(status_of_run)
     return
 
 if __name__ == "__main__":
