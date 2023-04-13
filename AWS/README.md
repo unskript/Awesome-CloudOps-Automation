@@ -116,6 +116,8 @@
 * [Get AWS CloudWatch Metrics for AWS/Redshift](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_redshift/README.md): Get AWS CloudWatch Metrics for AWS/Redshift
 * [Get AWS CloudWatch Metrics for AWS/SQS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_sqs/README.md): Get AWS CloudWatch Metrics for AWS/SQS
 * [Get AWS CloudWatch Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_statistics/README.md): Get AWS CloudWatch Statistics
+* [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
+* [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer
 * [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 * [Get AWS EBS Volume Without GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
 * [Get EC2 CPU Consumption For All Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_cpu_consumption/README.md): Get EC2 CPU Consumption For All Instances
@@ -127,6 +129,7 @@
 * [Get AWS Instances Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_details/README.md): Get AWS Instances Details
 * [List All AWS EC2 Instances Under the ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instances/README.md):  Get a list of all AWS EC2 Instances from given ELB
 * [AWS Get Internet Gateway by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc/README.md): AWS Get Internet Gateway by VPC ID
+* [Get AWS Lambdas With High Error Rate](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_with_high_error_rate/README.md): Get AWS Lambda Functions that exceed a given threshold error rate.
 * [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
 * [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 * [Get AWS EC2 Instances with a public IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_public_ec2_instances/README.md): lists all EC2 instances with a public IP
@@ -144,6 +147,7 @@
 * [AWS Get Quotas for a Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quotas/README.md): Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.
 * [Get STS Caller Identity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
 * [AWS Get Tags of All Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
+* [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 * [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 * [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
 * [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
@@ -181,5 +185,6 @@
 * [AWS Register/Unregister Instances from a Target Group.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group
 * [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
 * [AWS Update Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
+* [AWS Update TTL for Route53 Record](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_ttl_for_route53_records/README.md): Update TTL for an existing record in a hosted zone.
 * [Upload file to S3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_upload_file_to_s3/README.md): Upload a local file to S3
 * [AWS_VPC_service_quota_warning](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_vpc_service_quota_warning/README.md): Given an AWS Region and a warning percentage, this Action queries all VPC quota limits, and returns any of Quotas that are over the alert value.

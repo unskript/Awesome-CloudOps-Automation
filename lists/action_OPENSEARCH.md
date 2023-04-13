@@ -28,6 +28,7 @@
  | [AWS_EMR](action_AWS_EMR.md) | [AWS_CLI](action_AWS_CLI.md) | [AWS_SSM](action_AWS_SSM.md) | [DB](action_DB.md) |
  | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) | [AWS_ASG](action_AWS_ASG.md) |
  | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) |
+
  | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_RDS](action_AWS_RDS.md) | [AWS_SQS](action_AWS_SQS.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) |
 
  | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) | [AWS_POSTGRES](action_AWS_POSTGRES.md) | [AIRFLOW](action_AIRFLOW.md) |
