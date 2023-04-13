@@ -29,7 +29,11 @@
 
 * **AWS**: [Delete AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
 
+* **AWS**: [AWS Delete Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_load_balancer/README.md): AWS Delete Load Balancer
+
 * **AWS**: [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
+
+* **AWS**: [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
 
 * **AWS**: [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
 
