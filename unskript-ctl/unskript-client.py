@@ -980,7 +980,6 @@ def interactive_parse_runbook_param(args) -> dict:
         if not mdata.get('parameterSchema'):
             # This means there is no Runbook parameter defined, return empty dictionary
             print("\033[1m No Runbook Parameters required \033[0m")
-            retval['runbook_name'] = _runbook_contents.get('runbook_name')
             return retval
         properties = mdata.get('parameterSchema').get('properties')
         required = mdata.get('parameterSchema').get('required')
