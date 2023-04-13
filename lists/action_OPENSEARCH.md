@@ -29,6 +29,7 @@
  | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) | [AWS_ASG](action_AWS_ASG.md) |
  | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) |
  | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_RDS](action_AWS_RDS.md) | [AWS_SQS](action_AWS_SQS.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) |
+
  | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) | [AWS_POSTGRES](action_AWS_POSTGRES.md) | [AIRFLOW](action_AIRFLOW.md) |
  | [AZURE](action_AZURE.md) | [DATADOG](action_DATADOG.md) | [DATADOG_INCIDENT](action_DATADOG_INCIDENT.md) | [DATADOG_EVENT](action_DATADOG_EVENT.md) |
  | [DATADOG_METRICS](action_DATADOG_METRICS.md) | [DATADOG_MONITOR](action_DATADOG_MONITOR.md) | [DATADOG_ALERTS](action_DATADOG_ALERTS.md) | [ES](action_ES.md) |
@@ -39,16 +40,7 @@
  | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) | [JIRA](action_JIRA.md) |
  | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) |
  | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
-<<<<<<< HEAD
- | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) |
- | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) |
- | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) |
- | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) |
- | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) |
- | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) |
- | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [INFRA](action_INFRA.md) |
- | [OPENSEARCH](action_OPENSEARCH.md) | 
-=======
+
  | [MANTISHUB](action_MANTISHUB.md) | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) |
  | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) |
  | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) |
@@ -58,6 +50,6 @@
  | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) |
  | [TERRAFORM](action_TERRAFORM.md) | [ZABBIX](action_ZABBIX.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) |
  | 
->>>>>>> 0ff6a38811dd735f472163eb1e63effdb7aa4ba2
- 
+
+
 
