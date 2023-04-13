@@ -73,4 +73,4 @@ def aws_list_expiring_acm_certificates(handle, threshold_days: int = 90, region:
     if len(result_list)!=0:
         return (False, result_list)
     else:
-        return (True, [])
+        return (True, None)
