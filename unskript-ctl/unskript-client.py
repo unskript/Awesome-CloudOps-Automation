@@ -933,7 +933,8 @@ def non_interactive_parse_runbook_param(args) -> dict:
                 print_runbook_params(properties=properties, required=required)
                 return {}
         else:
-            raise Exception("Error Occurred parsing Runbook. The Properties value ")
+            print("\033[1m No Runbook Parameters required \033[0m")
+            return retval
         values = []
         keys = []
         for idx,k in enumerate(arg_list):
