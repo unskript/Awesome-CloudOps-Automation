@@ -60,4 +60,4 @@ def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)

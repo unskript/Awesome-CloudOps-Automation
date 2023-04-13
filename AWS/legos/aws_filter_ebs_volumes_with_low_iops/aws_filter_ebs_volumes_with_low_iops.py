@@ -62,4 +62,4 @@ def aws_filter_ebs_volumes_with_low_iops(handle, region: str = "", iops_threshol
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
