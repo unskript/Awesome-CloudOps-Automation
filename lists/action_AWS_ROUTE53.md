@@ -1,5 +1,9 @@
 # Actions in the AWS ROUTE53 category
+* **AWS**: [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
+
 * **AWS**: [AWS List Hosted Zones](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_hosted_zones/README.md): List all AWS Hosted zones
+
+* **AWS**: [AWS Update TTL for Route53 Record](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_ttl_for_route53_records/README.md): Update TTL for an existing record in a hosted zone.
 
 
 # Actions By Connector:

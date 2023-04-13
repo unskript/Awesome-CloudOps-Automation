@@ -144,6 +144,7 @@
 * [AWS Get Quotas for a Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quotas/README.md): Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.
 * [Get STS Caller Identity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
 * [AWS Get Tags of All Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
+* [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 * [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 * [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
 * [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
@@ -181,5 +182,6 @@
 * [AWS Register/Unregister Instances from a Target Group.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group
 * [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
 * [AWS Update Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
+* [AWS Update TTL for Route53 Record](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_ttl_for_route53_records/README.md): Update TTL for an existing record in a hosted zone.
 * [Upload file to S3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_upload_file_to_s3/README.md): Upload a local file to S3
 * [AWS_VPC_service_quota_warning](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_vpc_service_quota_warning/README.md): Given an AWS Region and a warning percentage, this Action queries all VPC quota limits, and returns any of Quotas that are over the alert value.
