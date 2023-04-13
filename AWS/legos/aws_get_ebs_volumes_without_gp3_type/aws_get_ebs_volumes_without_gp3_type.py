@@ -55,4 +55,4 @@ def aws_get_ebs_volumes_without_gp3_type(handle, region: str = "") -> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)

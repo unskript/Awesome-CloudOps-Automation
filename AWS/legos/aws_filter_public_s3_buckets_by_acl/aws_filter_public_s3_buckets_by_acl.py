@@ -86,4 +86,4 @@ def aws_filter_public_s3_buckets_by_acl(handle, permission:BucketACLPermissions=
     if len(result)!=0:
         return (False, result)
     else:
-        return (True, result)
+        return (True, None)

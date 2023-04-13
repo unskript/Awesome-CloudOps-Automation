@@ -69,4 +69,4 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
     if len(output) != 0:
         return (False, output)
     else:
-        return (True, output)
+        return (True, None)
