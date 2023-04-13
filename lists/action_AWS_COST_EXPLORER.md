@@ -1,31 +1,7 @@
-# Actions in the STRIPE category
-* **Stripe**: [ Capture a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_capture_charge/README.md):  Capture the payment of an existing, uncaptured, charge
+# Actions in the AWS COST EXPLORER category
+* **AWS**: [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
 
-* **Stripe**: [Close Dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_close_dispute/README.md): Close Dispute
-
-* **Stripe**: [Create a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_create_charge/README.md): Create a Charge
-
-* **Stripe**: [Create a Refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_create_refund/README.md): Create a Refund
-
-* **Stripe**: [Get list of charges previously created](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_charges/README.md): Get list of charges previously created
-
-* **Stripe**: [Get list of disputes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_disputes/README.md): Get list of disputes
-
-* **Stripe**: [ Get list of refunds](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_refunds/README.md):  Get list of refunds
-
-* **Stripe**: [Get Stripe Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_handle/README.md): Get Stripe Handle
-
-* **Stripe**: [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/README.md): Retrieves a Charge
-
-* **Stripe**: [Retrieve details of a dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_dispute/README.md): Retrieve details of a dispute
-
-* **Stripe**: [Retrieve a refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_refund/README.md): Retrieve a refund
-
-* **Stripe**: [Update a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_charge/README.md): Update a Charge
-
-* **Stripe**: [Update Dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_dispute/README.md): Update Dispute
-
-* **Stripe**: [Update Refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_refund/README.md): Updates the specified refund by setting the values of the parameters passed.
+* **AWS**: [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer
 
 
 # Actions By Connector:
