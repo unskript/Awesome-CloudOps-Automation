@@ -17,17 +17,17 @@ class InputSchema(BaseModel):
     number_of_months: Optional[float] = Field(
         '',
         description='Number of months to fetch the daily costs for. Eg: 1 (This will fetch all the costs for the last 30 days)',
-        title='number_of_months',
+        title='Number of Months',
     )
     start_date: Optional[str] = Field(
         '',
         description='Start date to get the daily costs from. Note: It should be given in YYYY-MM-DD format. Eg: 2023-04-11',
-        title='start_date',
+        title='Start Date',
     )
     end_date: Optional[str] = Field(
         '',
         description='End date till which daily costs are to be fetched. Note: It should be given in YYYY-MM-DD format. Eg: 2023-04-11',
-        title='end_date',
+        title='End Date',
     )
     region: str = Field(..., description='AWS region.', title='region')
 
