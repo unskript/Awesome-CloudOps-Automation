@@ -1,0 +1,10 @@
+{
+    "name": "Change AWS EBS Volume To GP3 Type",
+    "description": "This runbook can be used to change the type of an EBS volume to GP3(General Purpose 3). GP3 type volume has a number of advantages over it's predecessors. gp3 volumes are ideal for a wide variety of applications that require high performance at low cost",
+    "uuid": "",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
+  
