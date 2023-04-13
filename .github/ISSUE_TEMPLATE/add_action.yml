@@ -15,7 +15,13 @@ body:
       placeholder: ex. email@example.com
     validations:
       required: false
-  - type: textarea
+  - type: checkboxes
+    id: healthcheck
+    attributes:
+      label: HealthCheck
+      description: Check Actions can be used in the Healthcheck flow
+      options:
+        - label: Is this Action a Check Action?
     id: Actionname
     attributes:
       label: Action Name
