@@ -48,6 +48,7 @@
 * [AWS Create Snapshot For Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_volumes_snapshot/README.md): Create a snapshot for EBS volume of the EC2 Instance for backing up the data stored in EBS
 * [AWS Delete Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
 * [Delete AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
+* [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
 * [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
 * [Delete AWS EBS Volume by Volume ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_volume_by_id/README.md): Delete AWS Volume by Volume ID
 * [ Deregisters AWS Instances from a Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_deregister_instances/README.md):  Deregisters AWS Instances from a Load Balancer
