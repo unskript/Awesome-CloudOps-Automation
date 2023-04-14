@@ -54,7 +54,7 @@ def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
 
 
     
