@@ -1,0 +1,12 @@
+{
+  "action_title": "AWS Create IAM Policy",
+  "action_description": "Given an AWS policy (as a string), and the name for the policy, this will create an IAM policy.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_create_IAMpolicy",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+  "action_categories": [  "CATEGORY_TYPE_SECOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_IAM" ,"CATEGORY_TYPE_IAM"  ]
+}
