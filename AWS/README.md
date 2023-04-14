@@ -123,6 +123,7 @@
 * [Get AWS CloudWatch Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_statistics/README.md): Get AWS CloudWatch Statistics
 * [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
 * [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer
+* [AWS Get EBS Volumes for Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volume_for_low_usage/README.md): This action list low use volumes from AWS which used <10% capacity from the given threshold days.
 * [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 * [Get AWS EBS Volume Without GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
 * [Get EC2 CPU Consumption For All Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_cpu_consumption/README.md): Get EC2 CPU Consumption For All Instances

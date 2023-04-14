@@ -39,6 +39,8 @@
 
 * **AWS**: [AWS Get All Service Names v3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_service_names/README.md): Get a list of all service names in a region
 
+* **AWS**: [AWS Get EBS Volumes for Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volume_for_low_usage/README.md): This action list low use volumes from AWS which used <10% capacity from the given threshold days.
+
 * **AWS**: [Get AWS EBS Volume Without GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
 
 * **AWS**: [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
