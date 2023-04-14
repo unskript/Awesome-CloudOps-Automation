@@ -6,6 +6,7 @@ import pprint
 
 from pydantic import BaseModel, Field
 from typing import Optional
+import json
 
 
 class unSkriptCustomType(str):
@@ -38,28 +39,28 @@ class InputSchema(BaseModel):
         title='Runbook ID',
         description='ID of the runbook'
     )
-    params: Optional[str] = Field(
+    params: Optional[dict] = Field(
         title='Runbook parameters',
-        description='Parameters to the runbook as json string.'
+        description='Parameters to the runbook as a dictionary.'
     )
 
 def infra_execute_runbook_printer(output):
     if output is not None:
         pprint.pprint(f"Runbook execution status: {output}")
 
-def infra_execute_runbook(handle, runbook_id: str, params: str = None) -> str:
+def infra_execute_runbook(handle, runbook_id: str, params: dict = None) -> str:
     """execute_runbook executes particular runbook annd return execution status
 
         :type runbook_id: str.
         :param runbook_id: ID of the runbook to execute.
 
-        :type params: str.
-        :param params: JSON string of runbook input parameters.
+        :type params: dict.
+        :param params: dictionary of runbook input parameters.
 
         :rtype: str.
     """
     try:
-        execution_status = handle.execute_runbook(runbook_id, params)
+        execution_status = handle.execute_runbook(runbook_id, json.dumps(params))
         return execution_status
     except Exception as e:
         raise e
