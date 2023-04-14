@@ -17,7 +17,8 @@ import nbformat
 import pprint
 import yaml
 import re
-import uuid 
+import uuid
+import subprocess 
 
 from tabulate import tabulate
 from datetime import datetime 
@@ -25,6 +26,7 @@ from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from argparse import ArgumentParser, REMAINDER
+from enum import Enum, EnumMeta
 from db_utils import *
 
 import ZODB, ZODB.FileStorage
@@ -177,7 +179,7 @@ def list_runbooks():
     runbooks += glob.glob(os.environ.get('HOME') + '/runbooks/*/*.ipynb')
 
     runbooks.sort()
-    table = [["Runbook Name",  "File Name"]]
+    table = [["File Name",  "Runbook Name"]]
     for runbook in runbooks:
         contents = {}
         with open(runbook, 'r') as f:
@@ -186,7 +188,7 @@ def list_runbooks():
             contents = json.loads(contents)
             name = contents.get('metadata').get('execution_data').get('runbook_name')
             filename = os.path.basename(runbook)
-            table.append([name,  filename])
+            table.append([filename, name])
         except Exception as e:
             pass
 
@@ -848,7 +850,7 @@ def create_creds_mapping():
             d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), "id": c_data.get('metadata').get('id')}
     upsert_pss_record('default_credential_id', d, False)
 
-def print_runbook_params(properties: dict, required: dict):
+def print_runbook_params(properties: dict, required: list):
     if not properties:
         return 
 
@@ -858,19 +860,25 @@ def print_runbook_params(properties: dict, required: dict):
                     '\033[1m Description \033[0m', 
                     '\033[1m Default \033[0m']]
     for k,v in properties.items():
+        if k in required:
+            k = '\033[1m' + k + '*' + '\033[0m'
+        param_type = v.get('type')
+        if v.get('enum') != None: 
+            param_type = "enum"
+            param_type = param_type + "\n" + str(v.get('enum'))
+        # Some beautification, if description has 4 or 
+        # more continuous whitespace lets replace it with a newline
+        # If not below command just copies the content of description to text
+        text = re.sub(r"\s{4,}", "\n", v.get('description'))
         param_data.append([k,
-                            v.get('type'), 
-                            v.get('description'),
+                            param_type, 
+                            text,
                             v.get('default') or 'No Default Value'
                             ])
     print(tabulate(param_data, headers='firstrow', tablefmt='fancy_grid'))
-    if len(required) > 0:
-        req_data = [['\033[1m Required Parameters \033[0m']]
-        for l in required:
-            req_data.append([l])
-        print(tabulate(req_data, headers='firstrow', tablefmt='fancy_grid'))
+    print("* Required")
 
-def get_runbook_contents(_runbook) -> dict:
+def get_runbook_metadata_contents(_runbook) -> dict:
     if not _runbook:
         return {}
 
@@ -900,8 +908,13 @@ def get_runbook_contents(_runbook) -> dict:
     if file_name_to_read:
         with open(file_name_to_read, 'r') as f:
             _runbook_contents = json.loads(f.read())
+        # p = subprocess.run([f"cat {file_name_to_read} | jq '.metadata.parameterSchema' > /tmp/pschema.json"], shell=True, capture_output=True, text=True)
+        # if os.path.exists('/tmp/pschema.json'):
+        #     with open('/tmp/pschema.json', 'r') as f:
+        #         _runbook_contents['parameterSchema'] = json.loads(f.read())
     
     _runbook_contents['runbook_name'] = file_name_to_read 
+    # pprint.pprint(_runbook_contents['parameterSchema'])
 
     return _runbook_contents
 
@@ -919,7 +932,7 @@ def non_interactive_parse_runbook_param(args) -> dict:
         parser.print_help()
         sys.exit(0)
 
-    _runbook_contents = get_runbook_contents(args[0])
+    _runbook_contents = get_runbook_metadata_contents(args[0])
     retval['runbook_name'] = _runbook_contents.get('runbook_name')
 
     mdata = _runbook_contents.get('metadata')
@@ -990,7 +1003,7 @@ def interactive_parse_runbook_param(args) -> dict:
         parser.print_help()
         sys.exit(0)
         
-    _runbook_contents = get_runbook_contents(args[0])
+    _runbook_contents = get_runbook_metadata_contents(args[0])
     retval['runbook_name'] = _runbook_contents.get('runbook_name')
 
     mdata = _runbook_contents.get('metadata')
