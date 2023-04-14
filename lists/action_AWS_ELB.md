@@ -5,6 +5,8 @@
 
 * **AWS**: [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
 
+* **AWS**: [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
+
 * **AWS**: [Get AWS CloudWatch Metrics for AWS/ApplicationELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_applicationelb/README.md): Get AWS CloudWatch Metrics for AWS/ApplicationELB
 
 * **AWS**: [Get AWS CloudWatch Metrics for AWS/ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_classic_elb/README.md): Get AWS CloudWatch Metrics for Classic Loadbalancer

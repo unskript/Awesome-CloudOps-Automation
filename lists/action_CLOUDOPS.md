@@ -23,6 +23,8 @@
 
 * **AWS**: [Get AWS EC2 Instances All ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_ec2_instances/README.md): Use This Action to Get All AWS EC2 Instances
 
+* **AWS**: [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
+
 * **AWS**: [AWS Get All Service Names v3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_service_names/README.md): Get a list of all service names in a region
 
 * **AWS**: [AWS Get Untagged Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_untagged_resources/README.md): AWS Get Untagged Resources

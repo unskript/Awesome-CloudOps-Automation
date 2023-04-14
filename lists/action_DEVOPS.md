@@ -85,6 +85,8 @@
 
 * **AWS**: [Filter AWS Unused Keypairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_keypairs/README.md): Filter AWS Unused Keypairs
 
+* **AWS**: [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
+
 * **AWS**: [Get AWS AutoScaling Group Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances
 
 * **AWS**: [Get AWS Bucket Size](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_bucket_size/README.md): Get an AWS Bucket Size

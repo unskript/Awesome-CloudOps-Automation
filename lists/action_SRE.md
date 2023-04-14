@@ -107,6 +107,8 @@
 
 * **AWS**: [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
 
+* **AWS**: [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
+
 * **AWS**: [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
 
 * **AWS**: [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer

@@ -102,6 +102,7 @@
 * [Get AWS CloudWatch Alarms List](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alarms_list/README.md): Get AWS CloudWatch Alarms List
 * [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
 * [Get AWS EC2 Instances All ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_ec2_instances/README.md): Use This Action to Get All AWS EC2 Instances
+* [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
 * [AWS Get All Service Names v3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_service_names/README.md): Get a list of all service names in a region
 * [AWS Get Untagged Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_untagged_resources/README.md): AWS Get Untagged Resources
 * [Get AWS AutoScaling Group Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances
