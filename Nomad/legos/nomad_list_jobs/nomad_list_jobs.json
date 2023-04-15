@@ -1,0 +1,11 @@
+{
+    "action_title": "Nomad List Jobs",
+    "action_description": "List all Nomad jobs",
+    "action_type": "LEGO_TYPE_NOMAD",
+    "action_entry_function": "nomad_list_jobs",
+    "action_needs_credential": true,
+    "action_supports_poll": false,
+    "action_supports_iteration": false,
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_NOMAD"]
+}
+    

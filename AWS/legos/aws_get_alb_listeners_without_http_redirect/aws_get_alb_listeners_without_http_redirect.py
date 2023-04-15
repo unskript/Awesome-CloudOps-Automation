@@ -16,15 +16,15 @@ class InputSchema(BaseModel):
         description='AWS Region of the ALB listeners.')
 
 
-def aws_listeners_without_http_redirect_printer(output):
+def aws_get_alb_listeners_without_http_redirect_printer(output):
     if output is None:
         return
         
     pprint.pprint(output)
 
 
-def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
-    """aws_listeners_without_http_redirect List of ALB listeners without HTTP redirection.
+def aws_get_alb_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
+    """aws_get_alb_listeners_without_http_redirect List of ALB listeners without HTTP redirection.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -73,5 +73,5 @@ def aws_listeners_without_http_redirect(handle, region: str = "") -> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
     

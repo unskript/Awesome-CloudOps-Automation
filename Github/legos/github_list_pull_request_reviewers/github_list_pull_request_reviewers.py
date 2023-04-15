@@ -25,11 +25,11 @@ class InputSchema(BaseModel):
 
 
 def github_get_pull_request_reviewers_printer(output):
-    if not output:
+    if output is None:
         return
     pprint.pprint(output)
 
-def github_get_pull_request_reviewers(handle, owner:str, repository:str, pull_request_number: int) -> List:
+def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_request_number: int) -> List:
     """github_get_pull_request_reviewers returns reviewers of a pull request
 
         :type handle: object

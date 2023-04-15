@@ -6,9 +6,9 @@
 "action_needs_credential": true,
 "action_is_check": true,
 "action_supports_poll": true,
-"action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
 "action_supports_iteration": true,
-"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_POSTGRESQL","CATEGORY_TYPE_POSTGRESQL_QUERY"],
 "action_next_hop": ["adcf88e8035c594e599fc9a33c28c9099187211f6daccb9d3ab4e5d17993086f"],
 "action_next_hop_parameter_mapping": {}
 }

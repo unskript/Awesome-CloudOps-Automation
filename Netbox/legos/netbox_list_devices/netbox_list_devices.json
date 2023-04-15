@@ -1,0 +1,13 @@
+{
+    "action_title": "Netbox List Devices",
+    "action_description": "List all Netbox devices",
+    "action_type": "LEGO_TYPE_NETBOX",
+    "action_entry_function": "netbox_list_devices",
+    "action_needs_credential": true,
+    "action_supports_poll": false,
+    "action_supports_iteration": false,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_NETBOX"]
+
+}
+    

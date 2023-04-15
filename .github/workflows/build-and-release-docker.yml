@@ -1,6 +1,46 @@
 name: Build and Release Docker
 
 on:
+  workflow_call:
+    inputs:
+      enabled: 
+        required: true
+        type: boolean
+      release_tag:
+        required: true 
+        type: string
+      elyra_branch:
+        required: false
+        default: "master"
+        type: string
+      unskript_branch:
+        required: false
+        default: "master"
+        type: string
+      celltoolbar_branch:
+        required: false
+        default: "master"
+        type: string
+      snippet_branch:
+        required: false
+        default: "master"
+        type: string 
+      awesome_branch:
+        required: false
+        default: "master"
+        type: string
+      devops_branch:
+        required: false
+        default: "master"
+        type: string 
+      build_number:
+        required: true
+        type: string
+      latest:
+        required: false
+        default: true 
+        type: boolean 
+      
   workflow_dispatch: 
     inputs:
       enabled:
@@ -56,7 +96,7 @@ env:
   DOCKER_IMAGE: unskript/awesome-runbooks
   DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  USERNAME: "jayasimha-raghavan-unskript"
+  USERNAME: ${{ secrets.BUILD_USER }}
   DOCKER_TARGET: linux/amd64, linux/arm64
    
 jobs:
@@ -345,7 +385,9 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/Awesome-CloudOps-Automation.git Awesome-CloudOps-Automation
           cd $HOME/Awesome-CloudOps-Automation
           git checkout ${{ inputs.awesome_branch }}
-          cp $HOME/Awesome-CloudOps-Automation/.github/scripts/unskript* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/Awesome-CloudOps-Automation/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/Awesome-CloudOps-Automation/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/template.ipynb
+          cp $HOME/Awesome-CloudOps-Automation/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/Welcome.ipynb
           cd $HOME/devops/dockers/jupyterlab/oss_docker
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}

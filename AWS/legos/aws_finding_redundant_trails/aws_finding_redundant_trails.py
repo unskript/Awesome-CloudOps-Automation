@@ -8,6 +8,10 @@ from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_lis
 import pprint
 
 
+class InputSchema(BaseModel):
+    pass
+
+
 def aws_finding_redundant_trails_printer(output):
     if output is None:
         return

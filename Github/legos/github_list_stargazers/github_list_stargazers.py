@@ -27,7 +27,7 @@ def github_list_stargazers_printer(output):
     pprint.pprint(output)
 
 def github_list_stargazers(handle, owner:str, repository:str) -> List:
-    """github_list_stargazers returns first 100 stargazers for a Github Repository
+    """github_list_stargazers returns last 100 stargazers for a Github Repository
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -38,15 +38,21 @@ def github_list_stargazers(handle, owner:str, repository:str) -> List:
         :type repository: string
         :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
-        :rtype: List of first 100 stargazers for a Github Repository
+        :rtype: List of last 100 stargazers for a Github Repository
     """
     result = []
     try:
         owner = handle.get_user(owner)
         repo_name = owner.login +'/'+ repository
         repo = handle.get_repo(repo_name)
-        stars = repo.get_stargazers()
-        [result.append(star.login) for star in stars[:100]]
+        stars = repo.get_stargazers_with_dates()
+        for star in stars[len(list(stars))-100:]:
+            stargazer_details = {}
+            stargazer_details["name"] = star.user.login
+            dummy_date = star.starred_at
+            formatted_date = dummy_date.strftime("%d-%m-%Y")
+            stargazer_details["date"] = formatted_date
+            result.append(stargazer_details)
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")

@@ -8,7 +8,7 @@ Given a region, this will query all instances, and give you MB in and out for th
 
 ## Lego Details
 
-    aws_get_ec2_instance_age(handle, region: str) 
+    aws_get_ec2_data_traffic(handle, region: str) 
 
         handle: Object of type unSkript AWS Connector
         region: Location of the EC2 instances.
