@@ -10,7 +10,7 @@ This Lego filter AWS reserved instance is scheduled to end within the threshold.
     aws_get_reserved_instances_about_to_retired(handle, region: str, threshold: int = 7)
 
         handle: Object of type unSkript AWS Connector.
-        region: AWS region. Eg: “us-west-2”,
+        region: Optional, AWS region. Eg: “us-west-2”,
         threshold: The threshold for the reserved instance is scheduled to end within the threshold.
 
 ## Lego Input
