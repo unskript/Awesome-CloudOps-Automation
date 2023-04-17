@@ -5,6 +5,8 @@
 
 * **AWS**: [Get AWS EBS Metrics from Cloudwatch](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_ebs/README.md): Get AWS CloudWatch Statistics for EBS volumes
 
+* **AWS**: [Get Stopped Instance Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_stopped_instance_volumes/README.md): This action helps to list the volumes that are attached to stopped instances.
+
 
 # Actions By Connector:
 | | | 

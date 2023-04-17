@@ -71,6 +71,8 @@
 
 * **AWS**: [Get AWS Security Group Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_security_group_details/README.md): Get details about a security group, given its ID.
 
+* **AWS**: [Get Stopped Instance Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_stopped_instance_volumes/README.md): This action helps to list the volumes that are attached to stopped instances.
+
 * **AWS**: [Launch AWS EC2 Instance From an AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_launch_instance_from_ami/README.md): Use this instance to Launch an AWS EC2 instance from an AMI
 
 * **AWS**: [AWS List ECS Clusters with Low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_clusters_with_low_utilization/README.md): This action searches for clusters that have low CPU utilization.
