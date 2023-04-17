@@ -9,15 +9,14 @@ This Lego get all of the Nat gateways that have zero traffic over those.
     aws_filter_unused_nat_gateway(handle, number_of_days: int, region: str)
 
         handle: Object of type unSkript AWS Connector
-        region: Region to filter instances.
-        number_of_days: Number of days to check the Datapoints.
+        region: Optional, Region to filter instances.
+        number_of_days: Optional, Number of days to check the Datapoints.
 
 ## Lego Input
 This Lego take three inputs handle, number_of_days and region.
 
 ## Lego Output
 Here is a sample output.
-
 <img src="./1.png">
 
 

@@ -59,4 +59,4 @@ def aws_get_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)

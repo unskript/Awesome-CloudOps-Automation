@@ -1,96 +1,122 @@
+# Actions in the GCP category
+* **GCP**: [GCP Add Member to IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_member_to_iam_role/README.md): Adding member to the IAM role which already available
+
+* **GCP**: [GCP Add Role to Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_role_to_service_account/README.md): Adding role and member to the service account
+
+* **GCP**: [Create GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_bucket/README.md): Create a new GCP bucket in the given location
+
+* **GCP**: [Create GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_filestore_instance/README.md): Create a new GCP Filestore Instance in the given location
+
+* **GCP**: [Create GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_gke_cluster/README.md): Create GKE Cluster
+
+* **GCP**: [GCP Create Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_service_account/README.md): GCP Create Service Account
+
+* **GCP**: [Delete GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_bucket/README.md): Delete a GCP bucket
+
+* **GCP**: [Delete GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_filestore_instance/README.md): Delete a GCP Filestore Instance in the given location
+
+* **GCP**: [Delete an Object from GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_object_from_bucket/README.md): Delete an Object/Blob from a GCP Bucket
+
+* **GCP**: [GCP Delete Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_service_account/README.md): GCP Delete Service Account
+
+* **GCP**: [GCP Describe a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_describe_gke_cluster/README.md): GCP Describe a GKE cluster
+
+* **GCP**: [Fetch Objects from GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_fetch_objects_from_bucket/README.md): List all Objects in a GCP bucket
+
+* **GCP**: [Get GCP Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_handle/README.md): Get GCP Handle
+
+* **GCP**: [Get List of GCP compute instance without label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_instances_without_label/README.md): Get List of GCP compute instance without label
+
+* **GCP**: [List all GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_buckets/README.md): List all GCP buckets
+
+* **GCP**: [Get list  compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances/README.md): Get list compute instance
+
+* **GCP**: [Get List of GCP compute instance by label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_label/README.md): Get List of GCP compute instance by label
+
+* **GCP**: [Get list  compute instance by VPC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_vpc/README.md): Get list  compute instance by VPC
+
+* **GCP**: [GCP List GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_gke_cluster/README.md): GCP List GKE Cluster
+
+* **GCP**: [GCP List Nodes in GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_nodes_in_gke_cluster/README.md): GCP List Nodes of GKE Cluster
+
+* **GCP**: [List all Public GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets/README.md): List all publicly available GCP buckets
+
+* **GCP**: [List GCP Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_secrets/README.md): List of your GCP Secrets
+
+* **GCP**: [GCP List Service Accounts](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts/README.md): GCP List Service Accounts
+
+* **GCP**: [GCP Remove Member from IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role/README.md): Remove member from the chosen IAM role.
+
+* **GCP**: [GCP Remove Role from Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_role_from_service_account/README.md): Remove role and member from the service account
+
+* **GCP**: [Remove role from user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role/README.md): GCP lego for removing a role from a user (default: 'viewer')
+
+* **GCP**: [GCP Resize a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_resize_gke_cluster/README.md): GCP Resize a GKE cluster by modifying nodes
+
+* **GCP**: [GCP Restart compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_restart_compute_instances/README.md): GCP Restart compute instance
+
+* **GCP**: [Save CSV to Google Sheets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_save_csv_to_google_sheets_v1/README.md): Saves your CSV (see notes) into a prepared Google Sheet.
+
+* **GCP**: [GCP Stop compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_stop_compute_instances/README.md): GCP Stop compute instance
+
+* **GCP**: [Upload an Object to GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_upload_file_to_bucket/README.md): Upload an Object/Blob in a GCP bucket
+
+
 # Actions By Connector:
-| | | | | | 
- | ---| ---| ---| ---| ---| 
- | [AWS](lists/action_AWS.md) | [Airflow](lists/action_Airflow.md) | [Azure](lists/action_Azure.md) | [ChatGPT](lists/action_ChatGPT.md) | [Datadog](lists/action_Datadog.md) | [ElasticSearch](lists/action_ElasticSearch.md) |
- | [GCP](lists/action_GCP.md) | [Github](lists/action_Github.md) | [Grafana](lists/action_Grafana.md) | [Hadoop](lists/action_Hadoop.md) | [Jenkins](lists/action_Jenkins.md) | [Jira](lists/action_Jira.md) |
- | [Kafka](lists/action_Kafka.md) | [Kubernetes](lists/action_Kubernetes.md) | [Mantishub](lists/action_Mantishub.md) | [Mongo](lists/action_Mongo.md) | [MsSQL](lists/action_MsSQL.md) | [MySQL](lists/action_MySQL.md) |
- | [Netbox](lists/action_Netbox.md) | [Nomad](lists/action_Nomad.md) | [Pingdom](lists/action_Pingdom.md) | [Postgresql](lists/action_Postgresql.md) | [Prometheus](lists/action_Prometheus.md) | [Redis](lists/action_Redis.md) |
- | [Rest](lists/action_Rest.md) | [SSH](lists/action_SSH.md) | [SalesForce](lists/action_SalesForce.md) | [Slack](lists/action_Slack.md) | [Snowflake](lists/action_Snowflake.md) | [Splunk](lists/action_Splunk.md) |
- | [Stripe](lists/action_Stripe.md) | [Terraform](lists/action_Terraform.md) | [Zabbix](lists/action_Zabbix.md) | [infra](lists/action_infra.md) | [opensearch](lists/action_opensearch.md) | 
+| | | 
+ | ---| ---| 
+ | [AWS](action_AWS.md) | [Airflow](action_AIRFLOW.md) | [Azure](action_AZURE.md) |
+ | [ChatGPT](action_CHATGPT.md) | [Datadog](action_DATADOG.md) | [ElasticSearch](action_ES.md) |
+ | [GCP](action_GCP.md) | [Github](action_GITHUB.md) | [Grafana](action_GRAFANA.md) |
+ | [Hadoop](action_HADOOP.md) | [Jenkins](action_JENKINS.md) | [Jira](action_JIRA.md) |
+ | [Kafka](action_KAFKA.md) | [Kubernetes](action_K8S.md) | [Mantishub](action_MANTISHUB.md) |
+ | [Mongo](action_MONGODB.md) | [MsSQL](action_MSSQL.md) | [MySQL](action_MYSQL.md) |
+ | [Netbox](action_NETBOX.md) | [Nomad](action_NOMAD.md) | [Pingdom](action_PINGDOM.md) |
+ | [Postgresql](action_POSTGRESQL.md) | [Prometheus](action_PROMETHEUS.md) | [Redis](action_REDIS.md) |
+ | [Rest](action_REST.md) | [SSH](action_SSH.md) | [SalesForce](action_SALESFORCE.md) |
+ | [Slack](action_SLACK.md) | [Snowflake](action_SNOWFLAKE.md) | [Splunk](action_SPLUNK.md) |
+ | [Stripe](action_STRIPE.md) | [Terraform](action_TERRAFORM.md) | [Zabbix](action_ZABBIX.md) |
+ | [infra](action_INFRA.md) | [opensearch](action_OPENSEARCH.md) | 
 
  
  # Actions By Category: 
-| | | | | | 
- | ---| ---| ---| ---| ---| 
- | [SECOPS](lists/action_SECOPS.md) | [DEVOPS](lists/action_DEVOPS.md) | [SRE](lists/action_SRE.md) | [AWS](lists/action_AWS.md) | [AWS_S3](lists/action_AWS_S3.md) | [AWS_EC2](lists/action_AWS_EC2.md) |
- | [IAM](lists/action_IAM.md) | [AWS_IAM](lists/action_AWS_IAM.md) | [COST_OPT](lists/action_COST_OPT.md) | [AWS_ACM](lists/action_AWS_ACM.md) | [AWS_CLOUDWATCH](lists/action_AWS_CLOUDWATCH.md) | [AWS_REDSHIFT](lists/action_AWS_REDSHIFT.md) |
- | [AWS_ELB](lists/action_AWS_ELB.md) | [AWS_EBS](lists/action_AWS_EBS.md) | [AWS_ECS](lists/action_AWS_ECS.md) | [AWS_EKS](lists/action_AWS_EKS.md) | [AWS_EMR](lists/action_AWS_EMR.md) | [AWS_CLI](lists/action_AWS_CLI.md) |
- | [AWS_SSM](lists/action_AWS_SSM.md) | [DB](lists/action_DB.md) | [AWS_EBC](lists/action_AWS_EBC.md) | [AWS_VPC](lists/action_AWS_VPC.md) | [CLOUDOPS](lists/action_CLOUDOPS.md) | [AWS_ASG](lists/action_AWS_ASG.md) |
- | [AWS_LOGS](lists/action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](lists/action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](lists/action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](lists/action_AWS_DYNAMODB.md) | [AWS_LAMBDA](lists/action_AWS_LAMBDA.md) | [AWS_RDS](lists/action_AWS_RDS.md) |
- | [AWS_SQS](lists/action_AWS_SQS.md) | [TROUBLESHOOTING](lists/action_TROUBLESHOOTING.md) | [AWS_SECRET_MANAGER](lists/action_AWS_SECRET_MANAGER.md) | [AWS_STS](lists/action_AWS_STS.md) | [AWS_POSTGRES](lists/action_AWS_POSTGRES.md) | [AIRFLOW](lists/action_AIRFLOW.md) |
- | [AZURE](lists/action_AZURE.md) | [DATADOG](lists/action_DATADOG.md) | [DATADOG_INCIDENT](lists/action_DATADOG_INCIDENT.md) | [DATADOG_EVENT](lists/action_DATADOG_EVENT.md) | [DATADOG_METRICS](lists/action_DATADOG_METRICS.md) | [DATADOG_MONITOR](lists/action_DATADOG_MONITOR.md) |
- | [DATADOG_ALERTS](lists/action_DATADOG_ALERTS.md) | [ES](lists/action_ES.md) | [GCP](lists/action_GCP.md) | [GCP_IAM](lists/action_GCP_IAM.md) | [GCP_BUCKET](lists/action_GCP_BUCKET.md) | [GCP_FILE_STORE](lists/action_GCP_FILE_STORE.md) |
- | [GCP_GKE](lists/action_GCP_GKE.md) | [GCP_VM](lists/action_GCP_VM.md) | [GCP_VPC](lists/action_GCP_VPC.md) | [GCP_SECRET](lists/action_GCP_SECRET.md) | [GCP_SHEETS](lists/action_GCP_SHEETS.md) | [GITHUB](lists/action_GITHUB.md) |
- | [GITHUB_ISSUE](lists/action_GITHUB_ISSUE.md) | [GITHUB_PR](lists/action_GITHUB_PR.md) | [GITHUB_REPO](lists/action_GITHUB_REPO.md) | [GITHUB_TEAM](lists/action_GITHUB_TEAM.md) | [GITHUB_USER](lists/action_GITHUB_USER.md) | [GITHUB_ORG](lists/action_GITHUB_ORG.md) |
- | [GRAFANA](lists/action_GRAFANA.md) | [HADOOP](lists/action_HADOOP.md) | [JENKINS](lists/action_JENKINS.md) | [JIRA](lists/action_JIRA.md) | [KAFKA](lists/action_KAFKA.md) | [K8S](lists/action_K8S.md) |
- | [K8S_CLUSTER](lists/action_K8S_CLUSTER.md) | [K8S_NODE](lists/action_K8S_NODE.md) | [K8S_POD](lists/action_K8S_POD.md) | [K8S_PVC](lists/action_K8S_PVC.md) | [K8S_KUBECTL](lists/action_K8S_KUBECTL.md) | [K8S_NAMESPACE](lists/action_K8S_NAMESPACE.md) |
- | [MONGODB](lists/action_MONGODB.md) | [MONGODB_COLLECTION](lists/action_MONGODB_COLLECTION.md) | [MONGODB_CLUSTER](lists/action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](lists/action_MONGODB_DOCUMENT.md) | [MONGODB_QUERY](lists/action_MONGODB_QUERY.md) | [MSSQL](lists/action_MSSQL.md) |
- | [MSSQL_QUERY](lists/action_MSSQL_QUERY.md) | [MYSQL](lists/action_MYSQL.md) | [MYSQL_QUERY](lists/action_MYSQL_QUERY.md) | [PINGDOM](lists/action_PINGDOM.md) | [POSTGRESQL](lists/action_POSTGRESQL.md) | [POSTGRESQL_QUERY](lists/action_POSTGRESQL_QUERY.md) |
- | [POSTGRESQL_TABLE](lists/action_POSTGRESQL_TABLE.md) | [PROMETHEUS](lists/action_PROMETHEUS.md) | [REDIS](lists/action_REDIS.md) | [REST](lists/action_REST.md) | [SSH](lists/action_SSH.md) | [SALESFORCE](lists/action_SALESFORCE.md) |
- | [SLACK](lists/action_SLACK.md) | [SNOWFLAKE](lists/action_SNOWFLAKE.md) | [STRIPE](lists/action_STRIPE.md) | [STRIPE_CHARGE](lists/action_STRIPE_CHARGE.md) | [STRIPE_DISPUTE](lists/action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](lists/action_STRIPE_REFUND.md) |
- | [TERRAFORM](lists/action_TERRAFORM.md) | [INFRA](lists/action_INFRA.md) | [OPENSEARCH](lists/action_OPENSEARCH.md) | 
-
-
- # Actions in the GCP category
-* **GCP**: [GCP Add Member to IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_member_to_iam_role/gcp_add_member_to_iam_role.py): Adding member to the IAM role which already available
-
-* **GCP**: [GCP Add Role to Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_role_to_service_account/gcp_add_role_to_service_account.py): Adding role and member to the service account
-
-* **GCP**: [Create GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_bucket/gcp_create_bucket.py): Create a new GCP bucket in the given location
-
-* **GCP**: [Create GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_filestore_instance/gcp_create_filestore_instance.py): Create a new GCP Filestore Instance in the given location
-
-* **GCP**: [Create GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_gke_cluster/gcp_create_gke_cluster.py): Create GKE Cluster
-
-* **GCP**: [GCP Create Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_service_account/gcp_create_service_account.py): GCP Create Service Account
-
-* **GCP**: [Delete GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_bucket/gcp_delete_bucket.py): Delete a GCP bucket
-
-* **GCP**: [Delete GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_filestore_instance/gcp_delete_filestore_instance.py): Delete a GCP Filestore Instance in the given location
-
-* **GCP**: [Delete an Object from GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_object_from_bucket/gcp_delete_object_from_bucket.py): Delete an Object/Blob from a GCP Bucket
-
-* **GCP**: [GCP Delete Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_service_account/gcp_delete_service_account.py): GCP Delete Service Account
-
-* **GCP**: [GCP Describe a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_describe_gke_cluster/gcp_describe_gke_cluster.py): GCP Describe a GKE cluster
-
-* **GCP**: [Fetch Objects from GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_fetch_objects_from_bucket/gcp_fetch_objects_from_bucket.py): List all Objects in a GCP bucket
-
-* **GCP**: [Get GCP Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_handle/gcp_get_handle.py): Get GCP Handle
-
-* **GCP**: [Get List of GCP compute instance without label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_instances_without_label/gcp_get_instances_without_label.py): Get List of GCP compute instance without label
-
-* **GCP**: [List all GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_buckets/gcp_list_buckets.py): List all GCP buckets
-
-* **GCP**: [Get list  compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances/gcp_list_compute_instances.py): Get list compute instance
-
-* **GCP**: [Get List of GCP compute instance by label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_label/gcp_list_compute_instances_by_label.py): Get List of GCP compute instance by label
-
-* **GCP**: [Get list  compute instance by VPC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_vpc/gcp_list_compute_instances_by_vpc.py): Get list  compute instance by VPC
-
-* **GCP**: [GCP List GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_gke_cluster/gcp_list_gke_cluster.py): GCP List GKE Cluster
-
-* **GCP**: [GCP List Nodes in GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_nodes_in_gke_cluster/gcp_list_nodes_in_gke_cluster.py): GCP List Nodes of GKE Cluster
-
-* **GCP**: [List all Public GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets/gcp_list_public_buckets.py): List all publicly available GCP buckets
-
-* **GCP**: [List GCP Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_secrets/gcp_list_secrets.py): List of your GCP Secrets
-
-* **GCP**: [GCP List Service Accounts](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts/gcp_list_service_accounts.py): GCP List Service Accounts
-
-* **GCP**: [GCP Remove Member from IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role/gcp_remove_member_from_iam_role.py): Remove member from the chosen IAM role.
-
-* **GCP**: [GCP Remove Role from Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_role_from_service_account/gcp_remove_role_from_service_account.py): Remove role and member from the service account
-
-* **GCP**: [Remove role from user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role/gcp_remove_user_role.py): GCP lego for removing a role from a user (default: 'viewer')
-
-* **GCP**: [GCP Resize a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_resize_gke_cluster/gcp_resize_gke_cluster.py): GCP Resize a GKE cluster by modifying nodes
-
-* **GCP**: [GCP Restart compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_restart_compute_instances/gcp_restart_compute_instances.py): GCP Restart compute instance
-
-* **GCP**: [Save CSV to Google Sheets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_save_csv_to_google_sheets_v1/gcp_save_csv_to_google_sheets_v1.py): Saves your CSV (see notes) into a prepared Google Sheet.
-
-* **GCP**: [GCP Stop compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_stop_compute_instances/gcp_stop_compute_instances.py): GCP Stop compute instance
-
-* **GCP**: [Upload an Object to GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_upload_file_to_bucket/gcp_upload_file_to_bucket.py): Upload an Object/Blob in a GCP bucket
+| | | 
+ | ---| ---| 
+ | [SECOPS](action_SECOPS.md) | [DEVOPS](action_DEVOPS.md) | [SRE](action_SRE.md) |
+ | [AWS](action_AWS.md) | [AWS_S3](action_AWS_S3.md) | [AWS_EC2](action_AWS_EC2.md) |
+ | [IAM](action_IAM.md) | [AWS_IAM](action_AWS_IAM.md) | [COST_OPT](action_COST_OPT.md) |
+ | [AWS_ACM](action_AWS_ACM.md) | [AWS_CLOUDWATCH](action_AWS_CLOUDWATCH.md) | [AWS_REDSHIFT](action_AWS_REDSHIFT.md) |
+ | [AWS_ELB](action_AWS_ELB.md) | [AWS_EBS](action_AWS_EBS.md) | [AWS_ECS](action_AWS_ECS.md) |
+ | [AWS_EKS](action_AWS_EKS.md) | [AWS_EMR](action_AWS_EMR.md) | [AWS_CLI](action_AWS_CLI.md) |
+ | [AWS_SSM](action_AWS_SSM.md) | [DB](action_DB.md) | [AWS_EBC](action_AWS_EBC.md) |
+ | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) | [AWS_ASG](action_AWS_ASG.md) |
+ | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) |
+ | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_RDS](action_AWS_RDS.md) |
+ | [AWS_SQS](action_AWS_SQS.md) | [AWS_COST_EXPLORER](action_AWS_COST_EXPLORER.md) | [COST_OPT,CATEGORY_TYPE_SRE](action_COST_OPT,CATEGORY_TYPE_SRE.md) |
+ | [AWS_ROUTE53](action_AWS_ROUTE53.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) |
+ | [AWS_STS](action_AWS_STS.md) | [AWS_POSTGRES](action_AWS_POSTGRESQL.md) | [AIRFLOW](action_AIRFLOW.md) |
+ | [AZURE](action_AZURE.md) | [DATADOG](action_DATADOG.md) | [DATADOG_INCIDENT](action_DATADOG_INCIDENT.md) |
+ | [DATADOG_EVENT](action_DATADOG_EVENT.md) | [DATADOG_METRICS](action_DATADOG_METRICS.md) | [DATADOG_MONITOR](action_DATADOG_MONITOR.md) |
+ | [DATADOG_ALERTS](action_DATADOG_ALERTS.md) | [ES](action_ES.md) | [GCP](action_GCP.md) |
+ | [GCP_IAM](action_GCP_IAM.md) | [GCP_BUCKET](action_GCP_BUCKET.md) | [GCP_FILE_STORE](action_GCP_FILE_STORE.md) |
+ | [GCP_GKE](action_GCP_GKE.md) | [GCP_VM](action_GCP_VM.md) | [GCP_VPC](action_GCP_VPC.md) |
+ | [GCP_SECRET](action_GCP_SECRET.md) | [GCP_SHEETS](action_GCP_SHEETS.md) | [GITHUB](action_GITHUB.md) |
+ | [GITHUB_ISSUE](action_GITHUB_ISSUE.md) | [GITHUB_PR](action_GITHUB_PR.md) | [GITHUB_REPO](action_GITHUB_REPO.md) |
+ | [GITHUB_TEAM](action_GITHUB_TEAM.md) | [GITHUB_USER](action_GITHUB_USER.md) | [GITHUB_ORG](action_GITHUB_ORG.md) |
+ | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) |
+ | [JIRA](action_JIRA.md) | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) |
+ | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) | [K8S_POD](action_K8S_POD.md) |
+ | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) |
+ | [MANTISHUB](action_MANTISHUB.md) | [MONGODB](action_MONGODBDB.md) | [MONGODB_COLLECTION](action_MONGODBDB_COLLECTION.md) |
+ | [MONGODB_CLUSTER](action_MONGODBDB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODBDB_DOCUMENT.md) | [MONGODB_QUERY](action_MONGODBDB_QUERY.md) |
+ | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) |
+ | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) | [NOMAD](action_NOMAD.md) |
+ | [PINGDOM](action_PINGDOM.md) | [POSTGRESQL](action_POSTGRESQLQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQLQL_QUERY.md) |
+ | [POSTGRESQL_TABLE](action_POSTGRESQLQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) | [REDIS](action_REDIS.md) |
+ | [REST](action_REST.md) | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) |
+ | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) | [SPLUNK](action_SPLUNK.md) |
+ | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) |
+ | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [ZABBIX](action_ZABBIX.md) |
+ | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) | 
+ 
 

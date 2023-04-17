@@ -103,5 +103,5 @@ def k8s_get_deployment_rollout_status(handle, deployment: str = "", namespace: s
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
     
