@@ -7,10 +7,9 @@ This action finds older generation EC2 instances, which are ['t2', 'm1', 'm2', '
 
 ## Lego Details
 
-    aws_find_older_generation_ec2_instances(handle, region: str)
-
+    aws_find_older_generation_ec2_instances(handle, region: str = "")
         handle: Object of type unSkript AWS Connector.
-        region: AWS region. Eg: “us-west-2”
+        region: Optional, AWS region. Eg: “us-west-2”.
 
 ## Lego Input
 This Lego take two inputs handle and region.
