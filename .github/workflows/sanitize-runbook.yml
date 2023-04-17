@@ -26,6 +26,7 @@ jobs:
           
       - name: Run Sanitize
         run: |
+          echo "Running Sanitize Script"
           /usr/bin/env python ./sanitize.py 
       
       - name: Committing back changes
