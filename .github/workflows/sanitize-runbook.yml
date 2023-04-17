@@ -18,8 +18,9 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-          pip install GitPython
-          pip install PyGithub
+          /usr/bin/env python -m pip install GitPython 
+          /usr/bin/env python -m pip install gitpython 
+          /usr/bin/env python -m pip install PyGithub
       
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
