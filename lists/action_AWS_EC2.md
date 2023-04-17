@@ -73,6 +73,8 @@
 
 * **AWS**: [Launch AWS EC2 Instance From an AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_launch_instance_from_ami/README.md): Use this instance to Launch an AWS EC2 instance from an AMI
 
+* **AWS**: [AWS List ECS Clusters with Low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_clusters_with_low_utilization/README.md): This action searches for clusters that have low CPU utilization.
+
 * **AWS**: [AWS List Unattached Elastic IPs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unattached_elastic_ips/README.md): This action lists Elastic IP address and check if it is associated with an instance or network interface.
 
 * **AWS**: [AWS Modify EBS Volume to GP3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_modify_ebs_volume_to_gp3/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.

@@ -164,6 +164,7 @@
 * [AWS List All Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_all_regions/README.md): List all available AWS Regions
 * [AWS List Application LoadBalancers ARNs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_application_loadbalancers/README.md): AWS List Application LoadBalancers ARNs
 * [AWS List Attached User Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
+* [AWS List ECS Clusters with Low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_clusters_with_low_utilization/README.md): This action searches for clusters that have low CPU utilization.
 * [AWS List Expiring Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
 * [List Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates/README.md): List All Expiring ACM Certificates
 * [AWS List Hosted Zones](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_hosted_zones/README.md): List all AWS Hosted zones

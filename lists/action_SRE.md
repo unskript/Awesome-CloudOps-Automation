@@ -155,6 +155,8 @@
 
 * **AWS**: [AWS List Attached User Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
 
+* **AWS**: [AWS List ECS Clusters with Low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_clusters_with_low_utilization/README.md): This action searches for clusters that have low CPU utilization.
+
 * **AWS**: [AWS List Expiring Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
 
 * **AWS**: [List Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates/README.md): List All Expiring ACM Certificates
