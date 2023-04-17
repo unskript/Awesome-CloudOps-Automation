@@ -2,7 +2,7 @@
 <h1>AWS Get EC2 Instances About To Retired</h1>
 
 ## Description
-This Lego filter AWS reserved instance is scheduled to end within the threshold.
+This healthcheck Lego filter AWS reserved instance is scheduled to end within the threshold.
 
 
 ## Lego Details
