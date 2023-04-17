@@ -16,14 +16,14 @@ class InputSchema(BaseModel):
         description='EBS snapshot ID. Eg: "snap-34bt4bfjed9d"')
 
 
-def aws_delete_ebs_snapshots_printer(output):
+def aws_delete_ebs_snapshot_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def aws_delete_ebs_snapshots(handle, region: str, snapshot_id: str) -> Dict:
-    """aws_delete_ebs_snapshots Returns a dict of deleted snapshot details
+def aws_delete_ebs_snapshot(handle, region: str, snapshot_id: str) -> Dict:
+    """aws_delete_ebs_snapshot Returns a dict of deleted snapshot details
 
         :type region: string
         :param region: AWS Region.
