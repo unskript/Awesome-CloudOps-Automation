@@ -1,13 +1,16 @@
 # RunBook Connectors:
- | | | | | | 
- | ---| ---| ---| ---| ---| 
- | [AWS](#AWS) | [ElasticSearch](#ElasticSearch) | [Jenkins](#Jenkins) | [Kubernetes](#Kubernetes) | [Postgresql](#Postgresql) | 
+ | | | 
+ | ---| ---| 
+ | [AWS](xRunBook_List.md#AWS) | [ElasticSearch](xRunBook_List.md#ElasticSearch) | [Jenkins](xRunBook_List.md#Jenkins) |
+ | [Kubernetes](xRunBook_List.md#Kubernetes) | [Postgresql](xRunBook_List.md#Postgresql) | 
 
  
 # RunBook Categories:
- | | | | | | | | | 
- | ---| ---| ---| ---| ---| ---| ---| ---| 
- | [IAM](lists/runbook_IAM.md) | [SECOPS](lists/runbook_SECOPS.md) | [CLOUDOPS](lists/runbook_CLOUDOPS.md) | [DEVOPS](lists/runbook_DEVOPS.md) | [SRE](lists/runbook_SRE.md) | [COST_OPT](lists/runbook_COST_OPT.md) | [TROUBLESHOOTING](lists/runbook_TROUBLESHOOTING.md) | [ES](lists/runbook_ES.md) | 
+ | | | 
+ | ---| ---| 
+ | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
+ | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [COST_OPT](runbook_COST_OPT.md) |
+ | [TROUBLESHOOTING](runbook_TROUBLESHOOTING.md) | [ES](runbook_ES.md) | 
 
  # Runbooks in SRE
 * AWS [Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb): This runbook can be used to copy AMI from one region to multiple AWS regions using unSkript legos with AWS CLI commands.We can get all the available regions by using AWS CLI Commands.

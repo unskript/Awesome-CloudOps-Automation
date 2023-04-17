@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=436&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=452&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -38,6 +38,8 @@ Simplify CloudOps automation for developers and DevOps engineers.
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our *Actions* that build automated *RunBooks*. 
 
+With hundreds of Actions and RunBooks included in the repository, you can get started quickly with minimal toil.
+
 >**Better. Faster. Smarter SRE.**
 
 ___
@@ -49,8 +51,10 @@ ___
 
 ## Open Source Docker
 
-* Open Source version with all of the Actions and RunBooks runs in a local Docker instance. 
-* Clone this `Awesome-CloudOps-Automation` repository. In the snippet below, we are cloning the Awesome repo under $HOME directory. Please modify the command below to clone it into any other directory.
+Our Docker install is and will always be open source. It includes a Jupyter runtime and all of the prebuilt Actions and RunBooks. Build your own Actions and RunBooks
+
+### Get Started
+1.  Clone this repository to your local machine to your $HOME directory. 
 
 ```
 cd $HOME
@@ -58,7 +62,7 @@ git clone https://github.com/unskript/Awesome-CloudOps-Automation
 cd Awesome-CloudOps-Automation
 ```
 
-* Launch the docker with the path to our CUSTOM DIRECTORY
+2.  Launch Docker. (if you used a different directory in #1, update that in the first ```-v``` line.)
 
 ```
 docker run -it -p 8888:8888 \
@@ -68,13 +72,13 @@ docker run -it -p 8888:8888 \
  docker.io/unskript/awesome-runbooks:latest
 ```
 
-* [YouTube Playlist to get Started in Docker](https://www.youtube.com/watch?v=QT0sghAo_t0&list=PLG7TPzTSJYkfCAtWKpdTjlRcyS21mXsE2)
+* [YouTube Playlist with step by step guides](https://www.youtube.com/watch?v=QT0sghAo_t0&list=PLG7TPzTSJYkfCAtWKpdTjlRcyS21mXsE2)
 
 ---
 ## Cloud Free Trial
-* Includes all of the features of the Open Source, plus some basic enterprise features like [scheduling](https://docs.unskript.com/unskript-product-documentation/guides/xrunbooks/schedules) and [environments](https://docs.unskript.com/unskript-product-documentation/guides/proxies/connect-your-environment). 
+* Our Cloud Free Trial features everything found in Open Source, plus some basic enterprise features like [scheduling](https://docs.unskript.com/unskript-product-documentation/guides/xrunbooks/schedules) and [environments](https://docs.unskript.com/unskript-product-documentation/guides/proxies/connect-your-environment). 
 * [Free Trial: Cloud](https://us.app.unskript.io/) 
-* [YouTube Playlist using Free Trial](https://www.youtube.com/watch?v=QjqAcJEiQNo&list=PLG7TPzTSJYkeOIAOj9iaxCaczKHX_qwZ_)
+* [YouTube Tutorials using Free Trial](https://www.youtube.com/watch?v=QjqAcJEiQNo&list=PLG7TPzTSJYkeOIAOj9iaxCaczKHX_qwZ_)
 
 ---
 <br/>
@@ -83,14 +87,14 @@ docker run -it -p 8888:8888 \
 
 |**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
 | :---: | :---: |
-| Once your Docker image is up and running, unSkript will be running locally on your computer at http://127.0.0.1:8888/lab/tree/Welcome.ipynb. | Once you have completed the Onboarding Flow, All the RunBooks can be found in the xRunBoks link, under the *unSkript xRunBooks* tab |
-| A table lists the xRunBooks that are available, with a link to the description and a link to the local version of the xRunBook. Click on the URL of the xRunBook you would like to explore. | You can Search, or select a category or RunBook. To open a xRUnBook, Click the 3 dot menu and import into your workspace. |
+| Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb. | Once you have completed the Onboarding Flow, every RunBook can be found in the xRunBooks link, under the *unSkript xRunBooks* tab |
+| A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. | You can Search, or select a category or RunBook. To open a xRunBook, Click the 3 dot menu and import into your workspace. |
 
 
 
 
-1. Check the `Parameters` button at the top of the page. This lists all of the input parameters, and the default values.  Change them if needed.
-2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and which inputs are used for each action. [How to Add Credentials](https://docs.unskript.com/unskript-product-documentation/guides/connectors).
+1. Check the `Parameters` button at the top of the page. This lists all of the input parameters, and the default values.  Change them as needed.
+2. Click on each Action in the xRunBook.  The `Configurations` button will show if Credentials are needed, and the inputs required for the Action to be run. [How to Add Credentials](https://docs.unskript.com/unskript-product-documentation/guides/connectors).
 3. Once each Action has been assigned Credentials and inputs, run each Action (in order) to run your xRunBook.
 
 
@@ -156,7 +160,7 @@ docker run -it -p 8888:8888 \
 
 # Contribute to Awesome-CloudOps-Automation
 
-Any contributions you make are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
+All contributions are **greatly appreciated**. Check out our [Contribution Guidelines](https://github.com/unskript/Awesome-CloudOps-Automation/blob/master/.github/CONTRIBUTING.md) for more details. 
 
 ## How to Contribute?
 
@@ -179,14 +183,10 @@ Any contributions you make are **greatly appreciated**. Check out our [Contribut
 | Your saved xRunBook can be found at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` | Once you save your xRunBook, navigate to the xRunBooks listing.  The 3 dot menu next to your RunBook has a "Download" option. | 
 
 
-  1. Submit Your xRunBook to the repository. Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
+  1. All created RunBooks have a ipynb file. You'll need to create a .json file with metadata about your RunBook.  Copy from another RunBook un the repository.
   2. Copy the saved RunBook from the Custom folder into the folder of the Connector used, and submit a PR!
-
-
-
-## Import a xRunBook
-  1. xRunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` . Place your existing RunBook in this directory.
-  2. Point your browser to `http://127.0.0.1:8888/doc/tree/<YOUR_RUNBOOK_NAME.ipynb>` to begin using your xRunBook.
+  3. Submit Your xRunBook to the repository. Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
+  
 
 ## Create a new Action:
 

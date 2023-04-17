@@ -103,7 +103,7 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
 
 
 
