@@ -4,12 +4,12 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_get_stopped_instance_volumes",
     "action_needs_credential": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_is_check":true,
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_next_hop": [],
     "action_next_hop_parameter_mapping": {},
-    "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_AWS_EBC" ]
+    "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_AWS_EBS" ]
 }
   
