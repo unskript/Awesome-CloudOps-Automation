@@ -18,14 +18,9 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-          /usr/bin/env python -m pip install GitPython 
-          /usr/bin/env python -m pip install gitpython 
+          /usr/bin/env python -m pip install GitPython
+          /usr/bin/env python -m pip install gitpython
           /usr/bin/env python -m pip install PyGithub
-      
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
           
       - name: Run Sanitize
         run: |
