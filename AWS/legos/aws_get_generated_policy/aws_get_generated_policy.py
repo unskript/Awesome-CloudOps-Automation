@@ -29,5 +29,8 @@ def aws_get_generated_policy(handle, region:str,jobId:str) -> Dict:
         includeResourcePlaceholders=True,
         includeServiceLevelTemplate=True
     )
-    return response
+    result = {}
+    result['generatedPolicyResult'] = response['generatedPolicyResult']
+    result['generationStatus'] = response['jobDetails']['status']
+    return result
 
