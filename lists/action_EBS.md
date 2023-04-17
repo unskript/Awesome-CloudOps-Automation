@@ -1,7 +1,5 @@
-# Actions in the TERRAFORM category
-* **Terraform**: [Execute Terraform Command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Terraform/legos/terraform_exec_command/README.md): Execute Terraform Command
-
-* **Terraform**: [Get terraform handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Terraform/legos/terraform_get_handle/README.md): Get terraform handle
+# Actions in the EBS category
+* **AWS**: [AWS Delete EBS Snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_ebs_snapshot/README.md): Delete EBS Snapshot for an EC2 instance
 
 
 # Actions By Connector:
