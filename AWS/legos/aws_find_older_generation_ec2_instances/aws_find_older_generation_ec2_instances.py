@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
 def aws_find_older_generation_ec2_instances_printer(output):
     if output is None:
         return
-    pprint.pprint({"Instances": output})
+    pprint.pprint(output)
 
 
 def aws_find_older_generation_ec2_instances(handle, region: str = "") -> Tuple:
