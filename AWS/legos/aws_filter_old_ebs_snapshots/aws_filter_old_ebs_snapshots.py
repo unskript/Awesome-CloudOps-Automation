@@ -3,59 +3,60 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional, Tuple
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 from datetime import datetime, timedelta
 import pytz
 
 
 class InputSchema(BaseModel):
-    region: str = Field(
+    region: Optional[str] = Field(
         title='Region',
         description='AWS Region.')
-    threshold: int = Field(
+    threshold: Optional[int] = Field(
         default=30,
-        title="Threshold (in day's)",
+        title="Threshold (in days)",
         description="(in day's) The threshold to check the snapshots older than the threshold.")
 
 
 def aws_filter_old_ebs_snapshots_printer(output):
     if output is None:
         return
-
     pprint.pprint(output)
 
 
-def aws_filter_old_ebs_snapshots(handle, region: str, threshold: int = 30) -> List:
+def aws_filter_old_ebs_snapshots(handle, region: str="", threshold: int = 30) -> List:
     """aws_filter_old_ebs_snapshots Returns an array of EBS snapshots details.
 
         :type region: string
         :param region: AWS Region.
         
         :type threshold: int
-        :param threshold: (in days) The threshold to check the snapshots older than the threshold.
+        :param threshold: (in days) The threshold to check the snapshots older than the threshold.
 
         :rtype: List of EBS snapshots details.
     """
     result = []
-    try:
-        # Filtering the volume by region
-        current_time = datetime.now(pytz.UTC)
-        ec2Client = handle.resource('ec2', region_name=region)
-        response = ec2Client.snapshots.filter(OwnerIds=['self'])
-        for snapshot in response:
-            snap_data = {}
-            running_time = current_time - snapshot.start_time
-            if running_time > timedelta(days=int(threshold)):
-                snap_data["snapshot_id"] = snapshot.id
-                snap_data["start_time"] = snapshot.start_time
-                snap_data["volume_size"] = snapshot.volume_size
-                snap_data["description"] = snapshot.description
-                snap_data["volume_id"] = snapshot.volume_id
-                snap_data["age"] = running_time
-                result.append(snap_data)
-            
-    except Exception as e:
-        raise e
-
-    return  result
+    all_regions = [region]
+    if not region:
+        all_regions = aws_list_all_regions(handle)
+    for reg in all_regions:
+        try:
+            # Filtering the volume by region
+            current_time = datetime.now(pytz.UTC)
+            ec2Client = handle.resource('ec2', region_name=reg)
+            response = ec2Client.snapshots.filter(OwnerIds=['self'])
+            for snapshot in response:
+                snap_data = {}
+                running_time = current_time - snapshot.start_time
+                if running_time > timedelta(days=int(threshold)):
+                    snap_data["region"] = reg
+                    snap_data["snapshot_id"] = snapshot.id
+                    result.append(snap_data)
+        except Exception as e:
+            pass
+    if len(result)!=0:
+        return (False, result)
+    else:
+        return (True, None)

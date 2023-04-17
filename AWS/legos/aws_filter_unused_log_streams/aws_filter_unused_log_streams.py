@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from datetime import datetime, timedelta
 import botocore.config
 from unskript.connectors.aws import aws_get_paginator
@@ -28,7 +28,7 @@ def aws_filter_unused_log_streams_printer(output):
     pprint.pprint(output)
 
 
-def aws_filter_unused_log_streams(handle, region: str = "", time_period_in_days: int = 30) -> List:
+def aws_filter_unused_log_streams(handle, region: str = "", time_period_in_days: int = 30) -> Tuple:
     """aws_filter_unused_log_streams Returns an array of unused log strams for all log groups.
 
         :type region: string
@@ -65,11 +65,13 @@ def aws_filter_unused_log_streams(handle, region: str = "", time_period_in_days:
                         # The log stream has never logged an event
                         unused_log_streams["log_group_name"] = log_group_name
                         unused_log_streams["log_stream_name"] = log_stream['logStreamName']
+                        unused_log_streams["region"] = reg
                         result.append(unused_log_streams)
                     elif datetime.fromtimestamp(last_event_time/1000.0) < start_time:
                         # The log stream has not logged an event in the past given days
                         unused_log_streams["log_group_name"] = log_group_name
                         unused_log_streams["log_stream_name"] = log_stream['logStreamName']
+                        unused_log_streams["region"] = reg
                         result.append(unused_log_streams)
         except Exception as e:
             pass

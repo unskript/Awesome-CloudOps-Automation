@@ -48,6 +48,7 @@
 * [AWS Create Snapshot For Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_volumes_snapshot/README.md): Create a snapshot for EBS volume of the EC2 Instance for backing up the data stored in EBS
 * [AWS Delete Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
 * [Delete AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
+* [AWS Delete EBS Snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_ebs_snapshot/README.md): Delete EBS Snapshot for an EC2 instance
 * [AWS Delete Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_load_balancer/README.md): AWS Delete Load Balancer
 * [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
 * [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
@@ -152,6 +153,7 @@
 * [Get AWS Security Group Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_security_group_details/README.md): Get details about a security group, given its ID.
 * [AWS Get Service Quota for a Specific ServiceName](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quota_details/README.md): Given an AWS Region, Service Code and Quota Code, this Action will output the quota information for the specified service.
 * [AWS Get Quotas for a Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quotas/README.md): Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.
+* [Get Stopped Instance Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_stopped_instance_volumes/README.md): This action helps to list the volumes that are attached to stopped instances.
 * [Get STS Caller Identity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
 * [AWS Get Tags of All Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
 * [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
@@ -164,6 +166,7 @@
 * [AWS List All Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_all_regions/README.md): List all available AWS Regions
 * [AWS List Application LoadBalancers ARNs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_application_loadbalancers/README.md): AWS List Application LoadBalancers ARNs
 * [AWS List Attached User Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
+* [AWS List ECS Clusters with Low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_clusters_with_low_utilization/README.md): This action searches for clusters that have low CPU utilization.
 * [AWS List Expiring Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
 * [List Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates/README.md): List All Expiring ACM Certificates
 * [AWS List Hosted Zones](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_hosted_zones/README.md): List all AWS Hosted zones
