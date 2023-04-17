@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import Tuple, Optional
 from datetime import datetime, timezone, timedelta
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
@@ -25,7 +25,7 @@ def aws_get_reserved_instances_about_to_retired_printer(output):
     pprint.pprint({"Instances": output})
 
 
-def aws_get_reserved_instances_about_to_retired(handle, region: str = "", threshold: int = 7) -> List:
+def aws_get_reserved_instances_about_to_retired(handle, region: str = "", threshold: int = 7) -> Tuple:
     """aws_get_reserved_instances_about_to_retired Returns an array of reserved instances.
 
         :type handle: object
