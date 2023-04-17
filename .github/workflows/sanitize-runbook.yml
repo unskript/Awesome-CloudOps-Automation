@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, reopened, edited, ready_for_review]
   push:
-  
+
 jobs:
   sanitize-runbooks: 
     runs-on: ubuntu-latest 
@@ -18,7 +18,8 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-          pip install gitpython
+          pip install GitPython
+          pip install PyGithub
       
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
