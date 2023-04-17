@@ -48,4 +48,7 @@ def aws_list_users_with_old_passwords(handle, threshold_days: int = 120) -> List
         except Exception as e:
             pass
         
-    return users_list
+    if len(users_list) != 0:
+        return (False, users_list)
+    else:
+        return (True, None)

@@ -103,4 +103,4 @@ def k8s_get_deployment_status(handle, deployment: str = "", namespace: str = "")
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])    
+        return (True, None)    

@@ -48,7 +48,11 @@
 * [AWS Create Snapshot For Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_volumes_snapshot/README.md): Create a snapshot for EBS volume of the EC2 Instance for backing up the data stored in EBS
 * [AWS Delete Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
 * [Delete AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
+* [AWS Delete Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_load_balancer/README.md): AWS Delete Load Balancer
+* [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
+* [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
 * [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
+* [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret
 * [Delete AWS EBS Volume by Volume ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_volume_by_id/README.md): Delete AWS Volume by Volume ID
 * [ Deregisters AWS Instances from a Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_deregister_instances/README.md):  Deregisters AWS Instances from a Load Balancer
 * [ Detach as AWS Instance with a Elastic Block Store](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_detach_ebs_to_instances/README.md):  Detach as AWS Instance with a Elastic Block Store.
@@ -93,10 +97,12 @@
 * [Filter AWS Unused Keypairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_keypairs/README.md): Filter AWS Unused Keypairs
 * [AWS Filter Unused Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_log_streams/README.md): This action lists all log streams that are unused for all the log groups by the given threshold.
 * [AWS Find Unused NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_nat_gateway/README.md): This action to get all of the Nat gateways that have zero traffic over those
+* [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
 * [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 * [Get AWS CloudWatch Alarms List](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alarms_list/README.md): Get AWS CloudWatch Alarms List
 * [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
 * [Get AWS EC2 Instances All ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_ec2_instances/README.md): Use This Action to Get All AWS EC2 Instances
+* [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
 * [AWS Get All Service Names v3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_service_names/README.md): Get a list of all service names in a region
 * [AWS Get Untagged Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_untagged_resources/README.md): AWS Get Untagged Resources
 * [Get AWS AutoScaling Group Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances
@@ -115,6 +121,9 @@
 * [Get AWS CloudWatch Metrics for AWS/Redshift](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_redshift/README.md): Get AWS CloudWatch Metrics for AWS/Redshift
 * [Get AWS CloudWatch Metrics for AWS/SQS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_sqs/README.md): Get AWS CloudWatch Metrics for AWS/SQS
 * [Get AWS CloudWatch Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_statistics/README.md): Get AWS CloudWatch Statistics
+* [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
+* [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer
+* [AWS Get EBS Volumes for Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volume_for_low_usage/README.md): This action list low use volumes from AWS which used <10% capacity from the given threshold days.
 * [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 * [Get AWS EBS Volume Without GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
 * [Get EC2 CPU Consumption For All Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ec2_cpu_consumption/README.md): Get EC2 CPU Consumption For All Instances
@@ -126,7 +135,9 @@
 * [Get AWS Instances Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_details/README.md): Get AWS Instances Details
 * [List All AWS EC2 Instances Under the ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instances/README.md):  Get a list of all AWS EC2 Instances from given ELB
 * [AWS Get Internet Gateway by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc/README.md): AWS Get Internet Gateway by VPC ID
+* [Get AWS Lambdas With High Error Rate](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_with_high_error_rate/README.md): Get AWS Lambda Functions that exceed a given threshold error rate.
 * [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
+* [Get all Targets for Network Load Balancer (NLB)](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlb_targets/README.md): Use this action to get all targets for Network Load Balancer (NLB)
 * [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 * [Get AWS EC2 Instances with a public IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_public_ec2_instances/README.md): lists all EC2 instances with a public IP
 * [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
@@ -143,6 +154,7 @@
 * [AWS Get Quotas for a Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quotas/README.md): Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.
 * [Get STS Caller Identity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
 * [AWS Get Tags of All Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
+* [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 * [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 * [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
 * [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
@@ -154,8 +166,10 @@
 * [AWS List Attached User Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
 * [AWS List Expiring Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
 * [List Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_acm_certificates/README.md): List All Expiring ACM Certificates
+* [AWS List Hosted Zones](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_hosted_zones/README.md): List all AWS Hosted zones
 * [AWS List Unattached Elastic IPs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unattached_elastic_ips/README.md): This action lists Elastic IP address and check if it is associated with an instance or network interface.
 * [AWS List Unhealthy Instances in a Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unhealthy_instances_in_target_group/README.md): List Unhealthy Instances in a target group
+* [AWS List Unused Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unused_secrets/README.md): This action lists all the unused secrets from AWS by comparing the last used date with the given threshold.
 * [AWS List IAM Users With Old Passwords](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_users_with_old_passwords/README.md): This Lego filter gets all the IAM users' login profiles, and if the login profile is available, checks for the last password change if the password is greater than the given threshold, and lists those users.
 * [AWS List Instances behind a Load Balancer.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_loadbalancer_list_instances/README.md): List AWS Instances behind a Load Balancer
 * [Make AWS Bucket Public](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_make_bucket_public/README.md): Make an AWS Bucket Public!
@@ -178,5 +192,6 @@
 * [AWS Register/Unregister Instances from a Target Group.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group
 * [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
 * [AWS Update Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
+* [AWS Update TTL for Route53 Record](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_ttl_for_route53_records/README.md): Update TTL for an existing record in a hosted zone.
 * [Upload file to S3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_upload_file_to_s3/README.md): Upload a local file to S3
 * [AWS_VPC_service_quota_warning](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_vpc_service_quota_warning/README.md): Given an AWS Region and a warning percentage, this Action queries all VPC quota limits, and returns any of Quotas that are over the alert value.

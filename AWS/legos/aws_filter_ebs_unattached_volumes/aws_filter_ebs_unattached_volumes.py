@@ -54,4 +54,4 @@ def aws_filter_ebs_unattached_volumes(handle, region: str = "") -> Tuple:
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)

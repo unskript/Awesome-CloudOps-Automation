@@ -10,8 +10,8 @@ This Lego lists all log streams that are unused for all the log groups by the gi
     aws_filter_unused_log_streams(handle, region: str, time_period_in_days: int = 30)
 
         handle: Object of type unSkript AWS Connector.
-        time_period_in_days: (in days) The threshold to filter the unused log strams.
-        region: AWS Region.
+        time_period_in_days: Optional, (in days) The threshold to filter the unused log strams.
+        region: Optional, AWS Region.
 ## Lego Input
 
 This Lego take three inputs handle, time_period_in_days and region.
