@@ -10,12 +10,11 @@ This Lego release AWS elastic IP for both VPC and Standard.
     aws_release_elastic_ip(handle, region: str, public_ip: str, allocation_id: str)
 
         handle: Object of type unSkript AWS Connector.
-        public_ip: Public IP address of the Elastic IP to release.
         allocation_id: Allocation ID of the Elastic IP to release.
         region: AWS Region.
 
 ## Lego Input
-This Lego take three inputs handle, public_ip, allocation_id and region.
+This Lego take three inputs handle, allocation_id and region.
 
 ## Lego Output
 Here is a sample output.

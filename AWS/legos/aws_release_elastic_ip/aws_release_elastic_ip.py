@@ -8,9 +8,6 @@ import pprint
 
 
 class InputSchema(BaseModel):
-    public_ip: str = Field(
-        title='Public IP',
-        description='Public IP address of the Elastic IP to release.')
     allocation_id: str = Field(
         title='Allocation ID',
         description='Allocation ID of the Elastic IP to release.')
@@ -25,12 +22,9 @@ def aws_release_elastic_ip_printer(output):
     pprint.pprint(output)
 
 
-def aws_release_elastic_ip(handle, region: str, public_ip: str, allocation_id: str) -> Dict:
+def aws_release_elastic_ip(handle, region: str, allocation_id: str) -> Dict:
     """aws_release_elastic_ip release elastic ip.
     
-        :type public_ip: string
-        :param public_ip: Public IP address of the Elastic IP to release.
-        
         :type allocation_id: string
         :param allocation_id: Allocation ID of the Elastic IP to release.
 
@@ -41,12 +35,7 @@ def aws_release_elastic_ip(handle, region: str, public_ip: str, allocation_id: s
     """
     try:
         ec2_Client = handle.client('ec2', region_name=region)
-        response = ec2_Client.release_address(PublicIp=public_ip)
+        response = ec2_Client.release_address(AllocationId=allocation_id)
         return response
-    except Exception:
-        try:
-            ec2_Client = handle.client('ec2', region_name=region)
-            response = ec2_Client.release_address(AllocationId=allocation_id)
-            return response
-        except Exception as e:
-            raise Exception(e)
+    except Exception as e:
+        raise Exception(e)
