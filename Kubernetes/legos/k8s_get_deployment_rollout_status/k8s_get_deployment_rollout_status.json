@@ -7,7 +7,7 @@
     "action_needs_credential": true,
     "action_supports_poll": true,
     "action_supports_iteration": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ,"CATEGORY_TYPE_K8S"],
     "action_next_hop": ["65afc892db3d7ef487fe2353282bf94351e4674a34f56cd0349a2ad920897ddd"],
     "action_next_hop_parameter_mapping": {}

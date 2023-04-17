@@ -1,0 +1,55 @@
+name: Create New RunBook
+description: File an Runbook Request
+title: "[RunBook]: "
+labels: ["runbook", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new runbook!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: runbookname
+    attributes:
+      label: RunBook Name
+      description: What is the Name for your runbook?
+      placeholder: List all Open GitHub Pull Requests
+    validations:
+      required: true
+  - type: textarea
+    id: runbookinputs
+    attributes:
+      label: runbook Inputs
+      description: What variables (and variable types) do you expect for this runbook
+      placeholder: region instance_id
+    validations:
+      required: true
+  - type: textarea
+    id: runbookActions
+    attributes:
+      label: runBook Actions
+      description: What actions should be in this runbook?  Do oututs from actions tie into other actions?
+    validations:
+      required: true
+  - type: textarea
+    id: comments
+    attributes:
+      label: Comments
+      description: Do you have any additional information for this Runbook?
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
