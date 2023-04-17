@@ -26,7 +26,6 @@ jobs:
           
       - name: Run Sanitize
         run: |
-          cd $HOME/Awesome-CloudOps-Automation
           /usr/bin/env python ./sanitize.py 
       
       - name: Committing back changes
