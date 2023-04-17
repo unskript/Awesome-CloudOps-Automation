@@ -43,11 +43,3 @@ def gcp_list_VMs(handle, project:str, zone:str) -> List:
         vm_list.append(vm_info)
 
     return(vm_list)
-
-
-task = Task(Workflow())
-
-task.configure(printOutput=True)
-(err, hdl, args) = task.validate(vars=vars())
-if err is None:
-    task.execute(gcp_list_VMs, lego_printer=gcp_list_VMs_printer, hdl=hdl, args=args)

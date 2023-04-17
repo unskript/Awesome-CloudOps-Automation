@@ -1,6 +1,6 @@
 {
     "action_title": "List all GCP VMs and if Publicly Accessible",
-    "action_description": "List all GCP buckets",
+    "action_description": "Lists all GCP buckets, and identifies those tha are public.",
     "action_type": "LEGO_TYPE_GCP",
     "action_entry_function": "gcp_list_VMs",
     "action_needs_credential": true,

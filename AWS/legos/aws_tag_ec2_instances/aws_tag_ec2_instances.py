@@ -44,16 +44,3 @@ def aws_tag_ec2_instance(handle, instance: str, tag_key: str, tag_value: str, re
 
 
     return(res)
-
-task = Task(Workflow())
-
-task.configure(inputParamsJson='''{
-  
-    "tag_key": "\\"CostCenter1\\"",
-    "tag_value": "\\"Marketing1\\"",
-    "region": "\\"us-west-2\\""
-    }''')
-task.configure(printOutput=True)
-(err, hdl, args) = task.validate(vars=vars())
-if err is None:
-    task.execute(aws_tag_ec2_instance, lego_printer=aws_tag_ec2_instance_printer, hdl=hdl, args=args)
