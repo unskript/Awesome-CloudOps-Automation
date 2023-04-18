@@ -5,7 +5,7 @@
 
 * **Stripe**: [Get list of charges previously created](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_charges/README.md): Get list of charges previously created
 
-* **Stripe**: [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/README.md): Retrieves a Charge
+* **Stripe**: [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/README.md):  Retrieve a Charge
 
 * **Stripe**: [Update a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_charge/README.md): Update a Charge
 

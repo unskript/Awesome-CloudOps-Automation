@@ -1,10 +1,6 @@
 # Actions in the STRIPE REFUND category
 * **Stripe**: [Create a Refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_create_refund/README.md): Create a Refund
 
-* **Stripe**: [ Get list of refunds](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_refunds/README.md):  Get list of refunds
-
-* **Stripe**: [Get Stripe Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_handle/README.md): Get Stripe Handle
-
 * **Stripe**: [Retrieve a refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_refund/README.md): Retrieve a refund
 
 * **Stripe**: [Update Refund](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_update_refund/README.md): Updates the specified refund by setting the values of the parameters passed.

@@ -11,11 +11,11 @@
 
 * **Stripe**: [Get list of disputes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_disputes/README.md): Get list of disputes
 
-* **Stripe**: [ Get list of refunds](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_refunds/README.md):  Get list of refunds
+* **Stripe**: [Get list of refunds](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_refunds/README.md):  Get list of refunds for the given threshold.
 
 * **Stripe**: [Get Stripe Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_handle/README.md): Get Stripe Handle
 
-* **Stripe**: [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/README.md): Retrieves a Charge
+* **Stripe**: [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/README.md):  Retrieve a Charge
 
 * **Stripe**: [Retrieve details of a dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_dispute/README.md): Retrieve details of a dispute
 
