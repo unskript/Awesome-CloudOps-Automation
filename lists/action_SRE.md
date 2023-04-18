@@ -119,6 +119,8 @@
 
 * **AWS**: [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 
+* **AWS**: [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
+
 * **AWS**: [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
 
 * **AWS**: [ Get secrets from secretsmanager](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secret_from_secretmanager/README.md):  Get secrets from AWS secretsmanager

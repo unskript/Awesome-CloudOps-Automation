@@ -145,6 +145,7 @@
 * [AWS Get Publicly Accessible DB Snapshots in RDS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_snapshots/README.md): AWS Get Publicly Accessible DB Snapshots in RDS
 * [AWS Get Redshift Query Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_query_details/README.md): Given an QueryId, this Action will give you the status of the Query, along with other data like  the number of lines/
 * [AWS Get Redshift Result](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_result/README.md): Given a QueryId, Get the Query Result, and format into a List
+* [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
 * [Get AWS S3 Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_s3_buckets/README.md): Get AWS S3 Buckets
 * [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
 * [ Get secrets from secretsmanager](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_secret_from_secretmanager/README.md):  Get secrets from AWS secretsmanager

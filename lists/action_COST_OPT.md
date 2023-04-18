@@ -29,6 +29,8 @@
 
 * **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 
+* **AWS**: [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
+
 * **AWS**: [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 
 * **AWS**: [AWS List Unused Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unused_secrets/README.md): This action lists all the unused secrets from AWS by comparing the last used date with the given threshold.

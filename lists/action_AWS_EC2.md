@@ -67,6 +67,8 @@
 
 * **AWS**: [Get AWS EC2 Instances with a public IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_public_ec2_instances/README.md): lists all EC2 instances with a public IP
 
+* **AWS**: [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
+
 * **AWS**: [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
 
 * **AWS**: [Get AWS Security Group Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_security_group_details/README.md): Get details about a security group, given its ID.

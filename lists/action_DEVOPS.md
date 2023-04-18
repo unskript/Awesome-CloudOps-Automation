@@ -147,6 +147,8 @@
 
 * **AWS**: [AWS Get Redshift Result](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_result/README.md): Given a QueryId, Get the Query Result, and format into a List
 
+* **AWS**: [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
+
 * **AWS**: [Get AWS S3 Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_s3_buckets/README.md): Get AWS S3 Buckets
 
 * **AWS**: [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
