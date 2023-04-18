@@ -5,6 +5,8 @@
 
 * **Kubernetes**: [Get candidate k8s nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_candidate_nodes_for_pods/README.md): Get candidate k8s nodes for given configuration
 
+* **Kubernetes**: [Get K8S Cluster Health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_cluster_health/README.md): Get K8S Cluster Health
+
 * **Kubernetes**: [Get Kubernetes Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_nodes/README.md): Get Kubernetes Nodes
 
 * **Kubernetes**: [Kubectl describe a node](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_kubectl_describe_node/README.md): Kubectl describe a node

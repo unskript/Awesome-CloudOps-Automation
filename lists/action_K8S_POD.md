@@ -15,6 +15,8 @@
 
 * **Kubernetes**: [Get candidate k8s nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_candidate_nodes_for_pods/README.md): Get candidate k8s nodes for given configuration
 
+* **Kubernetes**: [Get K8S Cluster Health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_cluster_health/README.md): Get K8S Cluster Health
+
 * **Kubernetes**: [Get All Kubernetes Healthy PODS in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_healthy_pods/README.md): Get All Kubernetes Healthy PODS in a given Namespace
 
 * **Kubernetes**: [Get Kubernetes POD Configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pod_config/README.md): Get Kubernetes POD Configuration
