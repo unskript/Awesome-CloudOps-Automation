@@ -6,6 +6,7 @@ import pprint
 from pydantic import BaseModel, Field
 from typing import Dict
 
+
 class InputSchema(BaseModel):
     charge_id: str = Field(
         title='Charge Id',
@@ -13,28 +14,23 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_retrieve_charge_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        retrieve_charge = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(retrieve_charge)
-        return retrieve_charge
-    return Printer
-
-
-@legoPrinter
 def stripe_retrieve_charge(handle, charge_id:str) -> Dict:
-    """stripe_retrieve_charge Retrieve the Charge for given ID
+    """stripe_retrive_charge Retrive the Charge for given ID
 
         :type charge_id: string
         :param charge_id: Charge ID.
 
-        :rtype: String with response from the describe command.
+        :rtype: Dict with response from the describe API.
     """
     # Input param validation
-
     charge = handle.Charge.retrieve(charge_id)
     return charge

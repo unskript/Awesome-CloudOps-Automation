@@ -3,9 +3,10 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
-
+from typing import List
 from pydantic import BaseModel, Field
+
+
 class InputSchema(BaseModel):
     dispute_id: str = Field(
         title='Dispute Id',
@@ -13,32 +14,28 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_retrieve_dispute_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        retrieve_dispute = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(retrieve_dispute)
-        return retrieve_dispute
-    return Printer
-
-
-@legoPrinter
-def stripe_retrieve_dispute(handle, dispute_id:str) -> Any:
+def stripe_retrieve_dispute(handle, dispute_id:str) -> List:
     """stripe_retrieve_dispute Get Dispute data
 
         :type dispute_id: string
         :param dispute_id: Retrieve details of a dispute.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
-    # Input param validation
-
+    result = []
     try:
         resp = handle.Dispute.retrieve(dispute_id)
-        return resp
+        result.append(resp)
+        return result
     except Exception as e:
         pp.pprint(e)
 

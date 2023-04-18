@@ -3,6 +3,7 @@
     "action_description": "Get list of disputes",
     "action_type": "LEGO_TYPE_STRIPE",
     "action_entry_function": "stripe_get_all_disputes",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_needs_credential": true,
     "action_supports_poll": true,
     "action_supports_iteration": true,

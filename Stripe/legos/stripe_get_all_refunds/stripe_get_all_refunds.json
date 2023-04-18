@@ -1,11 +1,11 @@
 {
-    "action_title": " Get list of refunds",
-    "action_description": " Get list of refunds",
+    "action_title": "Get list of refunds",
+    "action_description": " Get list of refunds for the given threshold.",
     "action_type": "LEGO_TYPE_STRIPE",
     "action_entry_function": "stripe_get_all_refunds",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_needs_credential": true,
     "action_supports_poll": true,
-    "action_supports_iteration": true,
-    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_STRIPE","CATEGORY_TYPE_STRIPE_REFUND"]
+    "action_supports_iteration": true
 }
     
