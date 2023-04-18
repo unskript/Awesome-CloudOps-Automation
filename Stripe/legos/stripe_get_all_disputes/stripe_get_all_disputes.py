@@ -4,32 +4,43 @@
 ##
 import pprint
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, List
 
 
 class InputSchema(BaseModel):
-    pass
+     max_results: int = Field(
+        title='Maximum Results',
+        description='Threshold to get maximum result.'
+    )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_get_all_disputes_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        output = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(output)
-        return output
-    return Printer
+def stripe_get_all_disputes(handle, max_results: int = 25) -> List:
+    """stripe_get_all_disputes Returns a list of disputes that was perviously created.
 
+        :type max_results: int
+        :param max_results: Threshold to get maximum result.
 
-@legoPrinter
-def stripe_get_all_disputes(handle) -> Dict:
-    """stripe_get_all_disputes Returns a list of disputes that was perviously created. The
-        charges are returned in sorted order, with the most recent charges appearing first.
-        
         rtype: Returns a list of disputes that was perviously created.
     """
+    result = []
+    try:
+        if max_results == 0:
+            output = handle.Dispute.list()
+            for dispute in output.auto_paging_iter():
+                result.append(dispute)
+        else:
+            output = handle.Dispute.list(limit=max_results)
+            result = output["data"]
+    except Exception as e:
+        print(e)
 
-    output = handle.Dispute.list()
-    return output
+    return result

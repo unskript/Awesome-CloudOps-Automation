@@ -3,8 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
-
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -21,39 +20,36 @@ class InputSchema(BaseModel):
                     '''
     )
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_update_refund_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        update_refund = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(update_refund)
-        return update_refund
-    return Printer
-
-
-@legoPrinter
-def stripe_update_refund(handle, refund_id:str, metadata:dict) -> Any:
+def stripe_update_refund(handle, refund_id:str, metadata:dict) -> List:
     """stripe_update_refund Updates the specified refund by setting the values of the parameters passed.
-        
+
         :type metadata: dict
         :param metadata: Updates the specified refund by setting the values of the parameters passed.
-        
+
         :type refund_id: string
         :param refund_id: Refund Id
-        :rtype: String with response from the describe command.
+        
+        :rtype: List with response from the describe API.
     """
     # Input param validation
-
-
+    result = []
     try:
         refund = handle.Refund.modify(
             refund_id,
             metadata=metadata,
         )
-        return refund
+        result.append(refund)
+        return result
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

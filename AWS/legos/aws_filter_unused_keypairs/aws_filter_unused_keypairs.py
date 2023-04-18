@@ -69,11 +69,8 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
                 result.append(final_dict)
         except Exception as e:
             pass
-    if len(result)!=0:
-        return CheckOutput(status=CheckOutputStatus.FAILED,
-                   objects=result,
-                   error=str(""))
+        
+    if len(result) != 0:
+        return (False, result)
     else:
-        return CheckOutput(status=CheckOutputStatus.SUCCESS,
-                   objects=result,
-                   error=str(""))
+        return (True, None)

@@ -3,9 +3,10 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
-
+from typing import List
 from pydantic import BaseModel, Field
+
+
 class InputSchema(BaseModel):
     dispute_id: str = Field(
         title='Dispute Id',
@@ -29,24 +30,20 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_update_dispute_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        update_dispute = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(update_dispute)
-        return update_dispute
-    return Printer
-
-
-@legoPrinter
 def stripe_update_dispute(handle,
-                          dispute_id:str,
-                          submit:bool=False,
+                          dispute_id: str,
+                          submit: bool = False,
                           metadata=None,
-                          evidence=None) -> Any:
+                          evidence=None) -> List:
     """stripe_update_dispute Update a Dispute.
 
         :type dispute_id: string
@@ -61,10 +58,10 @@ def stripe_update_dispute(handle,
         :type evidence: dict
         :param evidence: Evidence to upload, to respond to a dispute.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
-
+    result = []
     if evidence is None:
         evidence = {}
     if metadata is None:
@@ -72,12 +69,13 @@ def stripe_update_dispute(handle,
     try:
         dispute = handle.Dispute.modify(
              dispute_id,
-             submit = submit if submit else None,
-             metadata = metadata if metadata else {},
-             evidence = evidence if evidence else {},
+             submit=submit if submit else None,
+             metadata=metadata if metadata else {},
+             evidence=evidence if evidence else {},
         )
-        return dispute
+        result.append(dispute)
+        return result
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

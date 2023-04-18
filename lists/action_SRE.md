@@ -23,7 +23,17 @@
 
 * **AWS**: [Delete AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
 
+* **AWS**: [AWS Delete EBS Snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_ebs_snapshot/README.md): Delete EBS Snapshot for an EC2 instance
+
+* **AWS**: [AWS Delete Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_load_balancer/README.md): AWS Delete Load Balancer
+
+* **AWS**: [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
+
+* **AWS**: [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
+
 * **AWS**: [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
+
+* **AWS**: [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret
 
 * **AWS**: [Delete AWS EBS Volume by Volume ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_volume_by_id/README.md): Delete AWS Volume by Volume ID
 
@@ -99,9 +109,17 @@
 
 * **AWS**: [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
 
+* **AWS**: [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
+
+* **AWS**: [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
+
+* **AWS**: [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer
+
 * **AWS**: [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 
 * **AWS**: [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
+
+* **AWS**: [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
 
 * **AWS**: [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
 
@@ -117,9 +135,13 @@
 
 * **AWS**: [AWS Get Quotas for a Service](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_service_quotas/README.md): Given inputs of the AWS Region, and the Service_Code for a service, this Action will output all of the Service Quotas and limits.
 
+* **AWS**: [Get Stopped Instance Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_stopped_instance_volumes/README.md): This action helps to list the volumes that are attached to stopped instances.
+
 * **AWS**: [Get STS Caller Identity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
 
 * **AWS**: [AWS Get Tags of All Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
+
+* **AWS**: [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 
 * **AWS**: [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 
@@ -138,6 +160,8 @@
 * **AWS**: [AWS List Application LoadBalancers ARNs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_application_loadbalancers/README.md): AWS List Application LoadBalancers ARNs
 
 * **AWS**: [AWS List Attached User Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_attached_user_policies/README.md): AWS List Attached User Policies
+
+* **AWS**: [AWS List ECS Clusters with Low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_clusters_with_low_utilization/README.md): This action searches for clusters that have low CPU utilization.
 
 * **AWS**: [AWS List Expiring Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_expiring_access_keys/README.md): List Expiring IAM User Access Keys
 
@@ -192,6 +216,8 @@
 * **AWS**: [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
 
 * **AWS**: [AWS Update Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
+
+* **AWS**: [AWS Update TTL for Route53 Record](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_ttl_for_route53_records/README.md): Update TTL for an existing record in a hosted zone.
 
 * **AWS**: [Upload file to S3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_upload_file_to_s3/README.md): Upload a local file to S3
 
@@ -446,6 +472,8 @@
 * **Kubernetes**: [ Get All Kubernetes PODS with state in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_pods/README.md):  Get All Kubernetes PODS with state in a given Namespace
 
 * **Kubernetes**: [Get candidate k8s nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_candidate_nodes_for_pods/README.md): Get candidate k8s nodes for given configuration
+
+* **Kubernetes**: [Get K8S Cluster Health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_cluster_health/README.md): Get K8S Cluster Health
 
 * **Kubernetes**: [Get k8s kube system config map](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_config_map_kube_system/README.md): Get k8s kube system config map
 
@@ -733,11 +761,11 @@
 
 * **Stripe**: [Get list of disputes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_disputes/README.md): Get list of disputes
 
-* **Stripe**: [ Get list of refunds](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_refunds/README.md):  Get list of refunds
+* **Stripe**: [Get list of refunds](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_all_refunds/README.md):  Get list of refunds for the given threshold.
 
 * **Stripe**: [Get Stripe Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_get_handle/README.md): Get Stripe Handle
 
-* **Stripe**: [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/README.md): Retrieves a Charge
+* **Stripe**: [Retrieve a Charge](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_charge/README.md):  Retrieve a Charge
 
 * **Stripe**: [Retrieve details of a dispute](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Stripe/legos/stripe_retrieve_dispute/README.md): Retrieve details of a dispute
 
@@ -777,48 +805,61 @@
 
 
 # Actions By Connector:
-| | | | 
- | ---| ---| ---| 
- | [AWS](lists/action_AWS.md) | [Airflow](lists/action_AIRFLOW.md) | [Azure](lists/action_AZURE.md) | [ChatGPT](lists/action_CHATGPT.md) |
- | [Datadog](lists/action_DATADOG.md) | [ElasticSearch](lists/action_ES.md) | [GCP](lists/action_GCP.md) | [Github](lists/action_GITHUB.md) |
- | [Grafana](lists/action_GRAFANA.md) | [Hadoop](lists/action_HADOOP.md) | [Jenkins](lists/action_JENKINS.md) | [Jira](lists/action_JIRA.md) |
- | [Kafka](lists/action_KAFKA.md) | [Kubernetes](lists/action_K8S.md) | [Mantishub](lists/action_MANTISHUB.md) | [Mongo](lists/action_MONGO.md) |
- | [MsSQL](lists/action_MSSQL.md) | [MySQL](lists/action_MYSQL.md) | [Netbox](lists/action_NETBOX.md) | [Nomad](lists/action_NOMAD.md) |
- | [Pingdom](lists/action_PINGDOM.md) | [Postgresql](lists/action_POSTGRESQL.md) | [Prometheus](lists/action_PROMETHEUS.md) | [Redis](lists/action_REDIS.md) |
- | [Rest](lists/action_REST.md) | [SSH](lists/action_SSH.md) | [SalesForce](lists/action_SALESFORCE.md) | [Slack](lists/action_SLACK.md) |
- | [Snowflake](lists/action_SNOWFLAKE.md) | [Splunk](lists/action_SPLUNK.md) | [Stripe](lists/action_STRIPE.md) | [Terraform](lists/action_TERRAFORM.md) |
- | [Zabbix](lists/action_ZABBIX.md) | [infra](lists/action_INFRA.md) | [opensearch](lists/action_OPENSEARCH.md) | 
+| | | 
+ | ---| ---| 
+ | [AWS](action_AWS.md) | [Airflow](action_AIRFLOW.md) | [Azure](action_AZURE.md) |
+ | [ChatGPT](action_CHATGPT.md) | [Datadog](action_DATADOG.md) | [ElasticSearch](action_ES.md) |
+ | [GCP](action_GCP.md) | [Github](action_GITHUB.md) | [Grafana](action_GRAFANA.md) |
+ | [Hadoop](action_HADOOP.md) | [Jenkins](action_JENKINS.md) | [Jira](action_JIRA.md) |
+ | [Kafka](action_KAFKA.md) | [Kubernetes](action_K8S.md) | [Mantishub](action_MANTISHUB.md) |
+ | [Mongo](action_MONGODB.md) | [MsSQL](action_MSSQL.md) | [MySQL](action_MYSQL.md) |
+ | [Netbox](action_NETBOX.md) | [Nomad](action_NOMAD.md) | [Pingdom](action_PINGDOM.md) |
+ | [Postgresql](action_POSTGRESQL.md) | [Prometheus](action_PROMETHEUS.md) | [Redis](action_REDIS.md) |
+ | [Rest](action_REST.md) | [SSH](action_SSH.md) | [SalesForce](action_SALESFORCE.md) |
+ | [Slack](action_SLACK.md) | [Snowflake](action_SNOWFLAKE.md) | [Splunk](action_SPLUNK.md) |
+ | [Stripe](action_STRIPE.md) | [Terraform](action_TERRAFORM.md) | [Zabbix](action_ZABBIX.md) |
+ | [infra](action_INFRA.md) | [opensearch](action_OPENSEARCH.md) | 
 
  
  # Actions By Category: 
-| | | | 
- | ---| ---| ---| 
- | [SECOPS](action_SECOPS.md) | [DEVOPS](action_DEVOPS.md) | [SRE](action_SRE.md) | [AWS](action_AWS.md) |
- | [AWS_S3](action_AWS_S3.md) | [AWS_EC2](action_AWS_EC2.md) | [IAM](action_IAM.md) | [AWS_IAM](action_AWS_IAM.md) |
- | [COST_OPT](action_COST_OPT.md) | [AWS_ACM](action_AWS_ACM.md) | [AWS_CLOUDWATCH](action_AWS_CLOUDWATCH.md) | [AWS_REDSHIFT](action_AWS_REDSHIFT.md) |
- | [AWS_ELB](action_AWS_ELB.md) | [AWS_EBS](action_AWS_EBS.md) | [AWS_ECS](action_AWS_ECS.md) | [AWS_EKS](action_AWS_EKS.md) |
- | [AWS_EMR](action_AWS_EMR.md) | [AWS_CLI](action_AWS_CLI.md) | [AWS_SSM](action_AWS_SSM.md) | [DB](action_DB.md) |
- | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) | [AWS_ASG](action_AWS_ASG.md) |
- | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) |
- | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_RDS](action_AWS_RDS.md) | [AWS_SQS](action_AWS_SQS.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) |
- | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) | [AWS_ROUTE53](action_AWS_ROUTE53.md) | [AWS_POSTGRES](action_AWS_POSTGRES.md) |
- | [AIRFLOW](action_AIRFLOW.md) | [AZURE](action_AZURE.md) | [DATADOG](action_DATADOG.md) | [DATADOG_INCIDENT](action_DATADOG_INCIDENT.md) |
- | [DATADOG_EVENT](action_DATADOG_EVENT.md) | [DATADOG_METRICS](action_DATADOG_METRICS.md) | [DATADOG_MONITOR](action_DATADOG_MONITOR.md) | [DATADOG_ALERTS](action_DATADOG_ALERTS.md) |
- | [ES](action_ES.md) | [GCP](action_GCP.md) | [GCP_IAM](action_GCP_IAM.md) | [GCP_BUCKET](action_GCP_BUCKET.md) |
- | [GCP_FILE_STORE](action_GCP_FILE_STORE.md) | [GCP_GKE](action_GCP_GKE.md) | [GCP_VM](action_GCP_VM.md) | [GCP_VPC](action_GCP_VPC.md) |
- | [GCP_SECRET](action_GCP_SECRET.md) | [GCP_SHEETS](action_GCP_SHEETS.md) | [GITHUB](action_GITHUB.md) | [GITHUB_ISSUE](action_GITHUB_ISSUE.md) |
- | [GITHUB_PR](action_GITHUB_PR.md) | [GITHUB_REPO](action_GITHUB_REPO.md) | [GITHUB_TEAM](action_GITHUB_TEAM.md) | [GITHUB_USER](action_GITHUB_USER.md) |
- | [GITHUB_ORG](action_GITHUB_ORG.md) | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) | [JENKINS](action_JENKINS.md) |
- | [JIRA](action_JIRA.md) | [KAFKA](action_KAFKA.md) | [K8S](action_K8S.md) | [K8S_CLUSTER](action_K8S_CLUSTER.md) |
- | [K8S_NODE](action_K8S_NODE.md) | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) |
- | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) | [MANTISHUB](action_MANTISHUB.md) | [MONGODB](action_MONGODB.md) | [MONGODB_COLLECTION](action_MONGODB_COLLECTION.md) |
- | [MONGODB_CLUSTER](action_MONGODB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODB_DOCUMENT.md) | [MONGODB_QUERY](action_MONGODB_QUERY.md) | [MSSQL](action_MSSQL.md) |
- | [MSSQL_QUERY](action_MSSQL_QUERY.md) | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) |
- | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) | [POSTGRESQL](action_POSTGRESQL.md) | [POSTGRESQL_QUERY](action_POSTGRESQL_QUERY.md) |
- | [POSTGRESQL_TABLE](action_POSTGRESQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) | [REDIS](action_REDIS.md) | [REST](action_REST.md) |
- | [SSH](action_SSH.md) | [SALESFORCE](action_SALESFORCE.md) | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) |
- | [SPLUNK](action_SPLUNK.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) |
- | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) | [ZABBIX](action_ZABBIX.md) | [INFRA](action_INFRA.md) |
- | [OPENSEARCH](action_OPENSEARCH.md) | 
+| | | 
+ | ---| ---| 
+ | [SECOPS](action_SECOPS.md) | [DEVOPS](action_DEVOPS.md) | [SRE](action_SRE.md) |
+ | [AWS](action_AWS.md) | [AWS_S3](action_AWS_S3.md) | [AWS_EC2](action_AWS_EC2.md) |
+ | [IAM](action_IAM.md) | [AWS_IAM](action_AWS_IAM.md) | [COST_OPT](action_COST_OPT.md) |
+ | [AWS_ACM](action_AWS_ACM.md) | [AWS_CLOUDWATCH](action_AWS_CLOUDWATCH.md) | [AWS_REDSHIFT](action_AWS_REDSHIFT.md) |
+ | [EBS](action_EBS.md) | [AWS_ELB](action_AWS_ELB.md) | [AWS_EBS](action_AWS_EBS.md) |
+ | [AWS_ECS](action_AWS_ECS.md) | [AWS_EKS](action_AWS_EKS.md) | [AWS_EMR](action_AWS_EMR.md) |
+ | [AWS_CLI](action_AWS_CLI.md) | [AWS_SSM](action_AWS_SSM.md) | [DB](action_DB.md) |
+ | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) |
+ | [AWS_ASG](action_AWS_ASG.md) | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) |
+ | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) | [AWS_LAMBDA](action_AWS_LAMBDA.md) |
+ | [AWS_RDS](action_AWS_RDS.md) | [AWS_SQS](action_AWS_SQS.md) | [AWS_COST_EXPLORER](action_AWS_COST_EXPLORER.md) |
+ | [COST_OPT,CATEGORY_TYPE_SRE](action_COST_OPT,CATEGORY_TYPE_SRE.md) | [AWS_ROUTE53](action_AWS_ROUTE53.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) |
+ | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) | [AWS_POSTGRES](action_AWS_POSTGRESQL.md) |
+ | [AIRFLOW](action_AIRFLOW.md) | [AZURE](action_AZURE.md) | [DATADOG](action_DATADOG.md) |
+ | [DATADOG_INCIDENT](action_DATADOG_INCIDENT.md) | [DATADOG_EVENT](action_DATADOG_EVENT.md) | [DATADOG_METRICS](action_DATADOG_METRICS.md) |
+ | [DATADOG_MONITOR](action_DATADOG_MONITOR.md) | [DATADOG_ALERTS](action_DATADOG_ALERTS.md) | [ES](action_ES.md) |
+ | [GCP](action_GCP.md) | [GCP_IAM](action_GCP_IAM.md) | [GCP_BUCKET](action_GCP_BUCKET.md) |
+ | [GCP_FILE_STORE](action_GCP_FILE_STORE.md) | [GCP_GKE](action_GCP_GKE.md) | [GCP_VM](action_GCP_VM.md) |
+ | [GCP_VPC](action_GCP_VPC.md) | [GCP_SECRET](action_GCP_SECRET.md) | [GCP_SHEETS](action_GCP_SHEETS.md) |
+ | [GITHUB](action_GITHUB.md) | [GITHUB_ISSUE](action_GITHUB_ISSUE.md) | [GITHUB_PR](action_GITHUB_PR.md) |
+ | [GITHUB_REPO](action_GITHUB_REPO.md) | [GITHUB_TEAM](action_GITHUB_TEAM.md) | [GITHUB_USER](action_GITHUB_USER.md) |
+ | [GITHUB_ORG](action_GITHUB_ORG.md) | [GRAFANA](action_GRAFANA.md) | [HADOOP](action_HADOOP.md) |
+ | [JENKINS](action_JENKINS.md) | [JIRA](action_JIRA.md) | [KAFKA](action_KAFKA.md) |
+ | [K8S](action_K8S.md) | [K8S_CLUSTER](action_K8S_CLUSTER.md) | [K8S_NODE](action_K8S_NODE.md) |
+ | [K8S_POD](action_K8S_POD.md) | [K8S_KUBECTL](action_K8S_KUBECTL.md) | [K8S_PVC](action_K8S_PVC.md) |
+ | [K8S_NAMESPACE](action_K8S_NAMESPACE.md) | [MANTISHUB](action_MANTISHUB.md) | [MONGODB](action_MONGODBDB.md) |
+ | [MONGODB_COLLECTION](action_MONGODBDB_COLLECTION.md) | [MONGODB_CLUSTER](action_MONGODBDB_CLUSTER.md) | [MONGODB_DOCUMENT](action_MONGODBDB_DOCUMENT.md) |
+ | [MONGODB_QUERY](action_MONGODBDB_QUERY.md) | [MSSQL](action_MSSQL.md) | [MSSQL_QUERY](action_MSSQL_QUERY.md) |
+ | [MYSQL](action_MYSQL.md) | [MYSQL_QUERY](action_MYSQL_QUERY.md) | [NETBOX](action_NETBOX.md) |
+ | [NOMAD](action_NOMAD.md) | [PINGDOM](action_PINGDOM.md) | [POSTGRESQL](action_POSTGRESQLQL.md) |
+ | [POSTGRESQL_QUERY](action_POSTGRESQLQL_QUERY.md) | [POSTGRESQL_TABLE](action_POSTGRESQLQL_TABLE.md) | [PROMETHEUS](action_PROMETHEUS.md) |
+ | [REDIS](action_REDIS.md) | [REST](action_REST.md) | [SSH](action_SSH.md) |
+ | [SALESFORCE](action_SALESFORCE.md) | [SLACK](action_SLACK.md) | [SNOWFLAKE](action_SNOWFLAKE.md) |
+ | [SPLUNK](action_SPLUNK.md) | [STRIPE](action_STRIPE.md) | [STRIPE_CHARGE](action_STRIPE_CHARGE.md) |
+ | [STRIPE_DISPUTE](action_STRIPE_DISPUTE.md) | [STRIPE_REFUND](action_STRIPE_REFUND.md) | [TERRAFORM](action_TERRAFORM.md) |
+ | [ZABBIX](action_ZABBIX.md) | [INFRA](action_INFRA.md) | [OPENSEARCH](action_OPENSEARCH.md) |
+ | 
  
 

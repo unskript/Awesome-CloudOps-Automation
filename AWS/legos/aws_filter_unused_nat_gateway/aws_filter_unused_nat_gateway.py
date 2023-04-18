@@ -2,17 +2,18 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 
 class InputSchema(BaseModel):
-    region: str = Field(
+    region: Optional[str] = Field(
         title='Region',
         description='AWS Region.')
-    number_of_days: int = Field(
-        title="Number of Day's",
+    number_of_days: Optional[int] = Field(
+        title="Number of Days",
         description='Number of days to check the Datapoints.')
     
 
@@ -22,34 +23,32 @@ def aws_filter_unused_nat_gateway_printer(output):
     pprint.pprint(output)
 
 
-def is_nat_gateway_used(handle, nat_gateway_id, start_time, end_time):
+def is_nat_gateway_used(handle, nat_gateway, start_time, end_time):
     datapoints = []
-    while start_time < end_time:
-        response = handle.get_metric_statistics(
+    if nat_gateway['State'] != 'deleted':
+        # Get the metrics data for the specified NAT Gateway over the last 7 days
+        metrics_data = handle.get_metric_statistics(
             Namespace='AWS/NATGateway',
-            MetricName='BytesOutFromEndpoint',
+            MetricName='BytesIn',
             Dimensions=[
                 {
                     'Name': 'NatGatewayId',
-                    'Value': nat_gateway_id
-                }
+                    'Value': nat_gateway['NatGatewayId']
+                },
             ],
             StartTime=start_time,
-            EndTime=min(start_time + timedelta(days=14), end_time),
-            Period=900,
-            Statistics=[
-                'Sum'
-            ]
+            EndTime=end_time,
+            Period=3600,
+            Statistics=['Sum']
         )
-        datapoints += response['Datapoints']
-        start_time += timedelta(days=14)
-    if len(datapoints) == 0:
+        datapoints += metrics_data['Datapoints']
+    if len(datapoints) == 0 or metrics_data['Datapoints'][0]['Sum']:
         return False
-    sum_bytes_out = sum([dp['Sum'] for dp in datapoints])
-    return sum_bytes_out > 0
+    else: 
+        return True
 
 
-def aws_filter_unused_nat_gateway(handle, number_of_days: int, region: str) -> List:
+def aws_filter_unused_nat_gateway(handle, number_of_days: int = 7, region: str = "") -> Tuple:
     """aws_get_natgateway_by_vpc Returns an array of NAT gateways.
 
         :type region: string
@@ -63,14 +62,25 @@ def aws_filter_unused_nat_gateway(handle, number_of_days: int, region: str) -> L
     result = []
     end_time = datetime.utcnow()
     start_time = end_time - timedelta(days=number_of_days)
-    try:
-        ec2Client = handle.client('ec2', region_name=region)
-        cloudwatch = handle.client('cloudwatch', region_name=region)
-        response = ec2Client.describe_nat_gateways()
-        for nat_gateway in response['NatGateways']:
-            if not is_nat_gateway_used(cloudwatch, nat_gateway['NatGatewayId'], start_time, end_time):
-                result.append(nat_gateway['NatGatewayId'])
-    except Exception as e:
-        pass
+    all_regions = [region]
+    if not region:
+        all_regions = aws_list_all_regions(handle)
 
-    return result
+    for reg in all_regions:
+        try:
+            ec2Client = handle.client('ec2', region_name=reg)
+            cloudwatch = handle.client('cloudwatch', region_name=reg)
+            response = ec2Client.describe_nat_gateways()
+            for nat_gateway in response['NatGateways']:
+                nat_gateway_info = {}
+                if not is_nat_gateway_used(cloudwatch, nat_gateway, start_time, end_time):
+                    nat_gateway_info["nat_gateway_id"] = nat_gateway['NatGatewayId']
+                    nat_gateway_info["reg"] = reg
+                    result.append(nat_gateway_info)
+        except Exception as e:
+            pass
+
+    if len(result) != 0:
+        return (False, result)
+    else:
+        return (True, None)
