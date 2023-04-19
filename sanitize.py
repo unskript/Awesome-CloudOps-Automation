@@ -73,5 +73,7 @@ if __name__ == '__main__':
         if f.endswith('.ipynb'):
             if sanitize(f):
                 print(u'\u2713', f"Updated Notebook {f}")
+        else:
+            print(f"Skipping {f} as it is not a ipynb file")
 
     sys.exit(0)
