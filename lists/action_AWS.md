@@ -247,6 +247,8 @@
 
 * **AWS**: [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 
+* **AWS**: [AWS: Check for short Route 53 TTL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_under_given_hours/README.md): AWS: Check for short Route 53 TTL
+
 * **AWS**: [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 
 * **AWS**: [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer

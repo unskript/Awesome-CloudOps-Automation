@@ -3,6 +3,8 @@
 
 * **AWS**: [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 
+* **AWS**: [AWS: Check for short Route 53 TTL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_under_given_hours/README.md): AWS: Check for short Route 53 TTL
+
 * **AWS**: [AWS get Unused Route53 Health Checks](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unused_route53_health_checks/README.md): AWS get Unused Route53 Health Checks
 
 * **AWS**: [AWS List Hosted Zones](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_hosted_zones/README.md): List all AWS Hosted zones
