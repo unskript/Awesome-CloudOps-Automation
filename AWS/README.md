@@ -39,6 +39,7 @@
 * [AWS Attach New Policy to User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_iam_policy/README.md): AWS Attach New Policy to User
 * [AWS Attach Tags to Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_tags_to_resources/README.md): AWS Attach Tags to Resources
 * [AWS Change ACL Permission of public S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_change_acl_permissions_of_buckets/README.md): AWS Change ACL Permission public S3 Bucket
+* [AWS Check if RDS instances are not M5 or T3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_check_rds_non_m5_t3_instances/README.md): AWS Check if RDS instances are not M5 or T3
 * [Check SSL Certificate Expiry](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_check_ssl_certificate_expiry/README.md): Check ACM SSL Certificate expiry date
 * [Attach a webhook endpoint to AWS Cloudwatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_cloudwatch_attach_webhook_notification_to_alarm/README.md): Attach a webhook endpoint to one of the SNS attached to the AWS Cloudwatch alarm.
 * [AWS Create Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_create_access_key/README.md): Create a new Access Key for the User
