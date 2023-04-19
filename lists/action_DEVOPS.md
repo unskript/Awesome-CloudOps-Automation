@@ -215,6 +215,10 @@
 
 * **AWS**: [Start AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
 
+* **AWS**: [AWS Service Quota Limits](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits/README.md): Input a List of Service Quotas, and get back which of your instances are above the warning percentage of the quota
+
+* **AWS**: [AWS VPC service quota limit](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits_vpc/README.md): This Action queries all VPC Storage quotas, and returns all usage over warning_percentage.
+
 * **AWS**: [Stop AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
 
 * **AWS**: [Tag AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_tag_ec2_instances/README.md): Tag AWS Instances

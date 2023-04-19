@@ -190,6 +190,8 @@
 * [AWS_Request_Service_Quota_Increase](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_request_service_quota_increase/README.md): Given an AWS Region, Service Code, quota code and a new value for the quota, this Action sends a request to AWS for a new value. Your Connector must have servicequotas:RequestServiceQuotaIncrease enabled for this to work.
 * [Restart AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_restart_ec2_instances/README.md): Restart AWS EC2 Instances
 * [Start AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
+* [AWS Service Quota Limits](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits/README.md): Input a List of Service Quotas, and get back which of your instances are above the warning percentage of the quota
+* [AWS VPC service quota limit](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits_vpc/README.md): This Action queries all VPC Storage quotas, and returns all usage over warning_percentage.
 * [Stop AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
 * [Tag AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_tag_ec2_instances/README.md): Tag AWS Instances
 * [AWS List Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_instances/README.md): List AWS Instance in a ELBv2 Target Group
