@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=465&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=48&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=465&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=51&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -140,6 +140,9 @@ docker run -it -p 8888:8888 \
 |AWS |[Terminate EC2 Instances Without Valid Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Terminate_EC2_Instances_Without_Valid_Lifetime_Tag.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Terminate_EC2_Instances_Without_Valid_Lifetime_Tag.ipynb) | 
 |AWS |[Troubleshooting Your EC2 Configuration in a Private Subnet](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Troubleshooting_Your_EC2_Configuration_in_Private_Subnet.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Troubleshooting_Your_EC2_Configuration_in_Private_Subnet.ipynb) | 
 |AWS |[Update and Manage AWS User permission](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | 
+|AWS |[AWS Redshift Get Daily Costs from AWS Products](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_get_daily_product_costs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/aws_redshift_get_daily_product_costs.ipynb) | 
+|AWS |[AWS Redshift Get Daily Costs from EC2 Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_get_ec2_daily_costs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/aws_redshift_get_ec2_daily_costs.ipynb) | 
+|AWS |[AWS Redshift Update Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_update_database.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/aws_redshift_update_database.ipynb) | 
 |ElasticSearch |[Elasticsearch Rolling restart](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | 
 |Jenkins |[Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | 
 |Jira |[Jira Visualize Issue Time to Resolution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/jira_visualize_time_to_resolution.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Jira/jira_visualize_time_to_resolution.ipynb) | 
