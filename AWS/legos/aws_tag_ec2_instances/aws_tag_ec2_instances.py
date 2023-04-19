@@ -29,14 +29,14 @@ class InputSchema(BaseModel):
 
 
 @beartype
-def aws_tag_ec2_instance_printer(output):
+def aws_tag_ec2_instances_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
 @beartype
-def aws_tag_ec2_instance(handle, instance: str, tag_key: str, tag_value: str, region:str) -> Dict:
+def aws_tag_ec2_instances(handle, instance: str, tag_key: str, tag_value: str, region:str) -> Dict:
 
 
     ec2 = handle.client('ec2', region_name=region)
