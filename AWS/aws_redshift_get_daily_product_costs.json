@@ -1,0 +1,10 @@
+{
+  "name": "AWS Redshift Get Daily Costs from AWS Products",
+  "description": "This runbook can be used to create charts and alerts around Your AWS product usage. It requires a Cost and USage report to be live in RedShift.",  
+  "uuid": "a79201f221993367e23dd9603ed7ef5123324353d717c566f902f7ca6e471f5c",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_CLOUDOPS" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
+
