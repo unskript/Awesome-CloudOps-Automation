@@ -175,7 +175,7 @@ jobs:
           git checkout ${{ inputs.awesome_branch }}
           cd ..
           make legoschema
-          if [ -f ./setup-full.py ]; then cp ./setup-full.py ./setup.py; fi
+          if [ -f './setup-full.py' ]; then cp ./setup-full.py ./setup.py; fi
           /usr/bin/env python ./setup.py bdist_wheel 
           mv dist/code*tar /tmp
           mv dist/unskript-0.1.0-py2.py3-none-any.whl /tmp
