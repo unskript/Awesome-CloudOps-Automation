@@ -202,7 +202,8 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
-     
+      - name: apt system update
+        run: sudo apt-get update
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
