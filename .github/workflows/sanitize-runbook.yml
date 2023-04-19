@@ -21,11 +21,18 @@ jobs:
           /usr/bin/env python -m pip install GitPython
           /usr/bin/env python -m pip install gitpython
           /usr/bin/env python -m pip install PyGithub
-          
+      
+      - name: PR File List
+        uses: jitterbit/get-changed-files@v1
+        id: files
+
+  
       - name: Run Sanitize
         run: |
           echo "Running Sanitize Script"
-          /usr/bin/env python ./sanitize.py 
+          for changed_file in ${{ steps.files.outputs.all }}; do
+            /usr/bin/env python ./sanitize.py ${changed_file}
+          done
       
       - name: Committing back changes
         uses: stefanzweifel/git-auto-commit-action@v4
