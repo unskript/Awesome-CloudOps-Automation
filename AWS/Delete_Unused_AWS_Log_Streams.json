@@ -1,0 +1,11 @@
+{
+    "name": "Delete Unused AWS Log Streams",
+    "description": "Cloudwatch will retain empty Log Streams after the data retention time period. Those log streams should be deleted inorder to save costs. This runbook can find unused log streams over a thregold number of days and help you delete them.",
+    "uuid": "64b6e7809ddfb1094901da74924ca3386510a1cd",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
+  
+  
