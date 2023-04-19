@@ -5,5 +5,7 @@
     "action_entry_function": "aws_get_handle",
     "action_needs_credential": true,
     "action_supports_poll": false,
-    "action_supports_iteration": false
+    "action_supports_iteration": false,
+    "action_categories": [  "CATEGORY_TYPE_AWS" ]
+
   }

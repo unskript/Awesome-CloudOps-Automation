@@ -63,5 +63,5 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
     

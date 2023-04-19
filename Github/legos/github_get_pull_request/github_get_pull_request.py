@@ -2,7 +2,7 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pydantic import BaseModel, Field
 from github import GithubException
 import pprint
@@ -28,7 +28,7 @@ def github_get_pull_request_printer(output):
         return
     pprint.pprint(output)
 
-def github_get_pull_request(handle, owner:str, repository:str, pull_request_number: int) -> List:
+def github_get_pull_request(handle, owner:str, repository:str, pull_request_number: int) -> Dict:
     """github_get_pull_request returns details of pull requests for a user
 
         :type handle: object
@@ -43,7 +43,7 @@ def github_get_pull_request(handle, owner:str, repository:str, pull_request_numb
         :type pull_request_number: int
         :param pull_request_number: Pull request number. Eg: 167
 
-        :rtype: List of details of pull request for a user
+        :rtype: Dict of details of pull request for a user
     """
     result = []
     prs_dict = {}
@@ -58,7 +58,6 @@ def github_get_pull_request(handle, owner:str, repository:str, pull_request_numb
         prs_dict["pull_changed_files"] = pr.changed_files
         prs_dict["pull_review_comments"] = pr.review_comments
         prs_dict["pull_commits"] = pr.commits
-        result.append(prs_dict)
     except GithubException as e:
         if e.status == 403:
             raise Exception("You need admin access")
@@ -67,6 +66,6 @@ def github_get_pull_request(handle, owner:str, repository:str, pull_request_numb
         raise e.data
     except Exception as e:
         raise e
-    return result
+    return prs_dict
 
 

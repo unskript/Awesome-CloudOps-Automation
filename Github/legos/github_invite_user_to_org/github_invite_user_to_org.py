@@ -36,7 +36,7 @@ def github_invite_user_to_org_printer(output):
     pprint.pprint(output)
 
 
-def github_invite_user_to_org(handle, organization_name:str, email:str, list_of_teams:list, role:GithubUserRole=None)-> str:
+def github_invite_user_to_org(handle, organization_name:str, email:str, list_of_teams:list, role:GithubUserRole=GithubUserRole.direct_member)-> str:
     """github_invite_user_to_org returns status of the invite
 
         :type handle: object

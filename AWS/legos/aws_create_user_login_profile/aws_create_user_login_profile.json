@@ -1,0 +1,13 @@
+{
+    "action_title": "Create Login profile for IAM User",
+    "action_description": "Create Login profile for IAM User",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_create_user_login_profile",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_categories": [  "CATEGORY_TYPE_SECOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_IAM" ,"CATEGORY_TYPE_IAM"  ]
+
+  }
+  

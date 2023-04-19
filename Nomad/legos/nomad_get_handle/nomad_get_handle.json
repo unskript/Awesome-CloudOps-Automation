@@ -1,0 +1,10 @@
+{
+    "action_title": "Nomad Get Handle",
+    "action_description": "Get Nomad Handle",
+    "action_type": "LEGO_TYPE_NOMAD",
+    "action_entry_function": "nomad_get_handle",
+    "action_needs_credential": true,
+    "action_supports_poll": false,
+    "action_supports_iteration": false
+}
+    

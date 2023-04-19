@@ -1,0 +1,11 @@
+{
+    "action_title": "Gather Data for POD Troubleshoot",
+    "action_description": "Gather Data for POD Troubleshoot",
+    "action_type": "LEGO_TYPE_K8S",
+    "action_entry_function": "k8s_gather_data_for_pod_troubleshoot",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+    "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_K8S","CATEGORY_TYPE_K8S_KUBECTL","CATEGORY_TYPE_K8S_POD"]
+}

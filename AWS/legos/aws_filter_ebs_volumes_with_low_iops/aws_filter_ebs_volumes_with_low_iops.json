@@ -1,0 +1,15 @@
+{
+    "action_title": "Filter AWS EBS Volume with Low IOPS",
+    "action_description": "IOPS (Input/Output Operations Per Second) is a metric used to measure the amount of input/output operations that an EBS volume can perform per second.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_filter_ebs_volumes_with_low_iops",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_is_check":true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {}
+}
+  
