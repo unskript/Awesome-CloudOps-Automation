@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Dict, List
 
 
@@ -41,5 +41,5 @@ def stripe_get_all_refunds(handle, max_results: int = 25) -> List:
         output = handle.Refund.list(limit=max_results)
         for refunds in output:
             result.append(refunds)
-            
+
     return result
