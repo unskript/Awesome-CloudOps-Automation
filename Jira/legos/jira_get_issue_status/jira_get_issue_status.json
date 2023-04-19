@@ -3,8 +3,9 @@
     "action_description": "Get Issue Status from Jira API",
     "action_type": "LEGO_TYPE_JIRA",
     "action_entry_function": "jira_get_issue_status",
+    "action_output_type": "ACTION_OUTPUT_TYPE_STR",
     "action_needs_credential": true,
     "action_supports_poll": true,
-    "action_supports_iteration": true
+    "action_supports_iteration": true,
+    "action_categories":[ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_JIRA"]
 }
-    

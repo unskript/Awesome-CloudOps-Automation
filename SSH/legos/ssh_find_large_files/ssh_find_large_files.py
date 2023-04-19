@@ -13,6 +13,10 @@ class InputSchema(BaseModel):
         title='Host',
         description='Host to connect to. Eg 10.10.10.10'
     )
+    proxy_host: Optional[str] = Field(
+        title='Proxy host',
+        description='Override the proxy host provided in the credentials. It still uses the proxy_user and port from the credentials.'
+    )
     inspect_folder: str = Field(
         title='Inspect Folder',
         description='''Folder to inspect on the remote host. Folders are scanned using "find inspect_folder -type f -exec du -sk '{}' + | sort -rh | head -n count"'''
@@ -44,17 +48,21 @@ def ssh_find_large_files(
     sshClient,
     host: str,
     inspect_folder: str,
+    proxy_host: str = None,
     threshold: int = 0,
     sudo: bool = False,
     count: int = 10) -> dict:
 
     """ssh_find_large_files scans the file system on a given host
 
-        :type hosts: List[str]
-        :param hosts: Host to connect to. Eg 10.10.10.10.
+        :type host: str
+        :param host: Host to connect to. Eg 10.10.10.10.
 
         :type inspect_folder: str
         :param inspect_folder: Folder to inspect on the remote host.
+
+        :type proxy_host: str
+        :param proxy_host: Proxy Host to connect host via. Eg 10.10.10.10.
 
         :type sudo: bool
         :param sudo: Run the scan with sudo.
@@ -68,7 +76,7 @@ def ssh_find_large_files(
         :rtype:
     """
 
-    client = sshClient([host])
+    client = sshClient([host], proxy_host)
 
     # find size in Kb
     command = "find " + inspect_folder + \

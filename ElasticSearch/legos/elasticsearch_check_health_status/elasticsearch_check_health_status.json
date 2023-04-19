@@ -8,6 +8,6 @@
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_iteration": true,
     "action_is_check":true,
-    "action_categories":[ "CATEGORY_TYPE_ES"],
+    "action_categories":[ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_ES"],
     "action_next_hop":["7b308783a38a72461839e7bd1d13fbb4e8559d4b291a1454be39c40a2f026ce2"]
 }

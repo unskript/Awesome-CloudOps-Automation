@@ -4,8 +4,9 @@
 ##
 
 from pydantic import BaseModel, Field
-from typing import Optional, Tuple
+from typing import Optional, List
 from tabulate import tabulate
+import pprint
 
 class InputSchema(BaseModel):
     amount: int = Field(
@@ -23,20 +24,18 @@ class InputSchema(BaseModel):
         description='Reason for the Charge. Small Description about charge.')
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        od, data = func(*args, **kwargs)
-        print('\n')
-        print(od)
-        print('\n\n', "* More details can be found in data variable", type(data))
-        return od, data
-    return Printer
+def stripe_create_charge_printer(output):
+    if output is None:
+        return
+    od = tabulate(output, headers=['Amount', 'ID', 'Description'])
+    print(od)
 
 
-@legoPrinter
-def stripe_create_charge(handle, amount: int, source: str = "", description: str = "", currency: str = "usd") -> Tuple:
+
+def stripe_create_charge(handle, amount: int, source: str = "", description: str = "", currency: str = "usd") -> List:
     """stripe_create_charge Charges a credit card or other payment source to the given amount
         in the given currency.
+        
         :type amount: int
         :param amount: Amount intended to be collected by this payment.
 
@@ -52,18 +51,17 @@ def stripe_create_charge(handle, amount: int, source: str = "", description: str
         :rtype: Returns the results of all recent charges.
     """
     # Input param validation.
-
+    result = []
     try:
         data = handle.Charge.create(
             amount=amount,
             currency=currency,
             source=source,
             description=description)
+        result.append([str(data['amount']), data['id'], data['description']])
     except Exception as e:
         od = e
         data = 'Error occurred when Creating a charge'
-    else:
-        od = tabulate([[str(data['amount']), data['id'], data['description']]], headers=[
-            'Amount', 'ID', 'Description'])
+        print(data)
 
-    return od, data
+    return result

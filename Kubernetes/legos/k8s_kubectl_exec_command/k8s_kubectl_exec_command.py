@@ -49,7 +49,7 @@ def k8s_kubectl_exec_command(handle, k8s_cli_string: str, pod_name:str, command:
     """
     k8s_cli_string = k8s_cli_string.format(pod_name=pod_name, command=command, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
-    if result is None or hasattr(result, "stderr") is False or result.stderr is None:
-        return None
+    if result.stderr not in ('', None):
+        raise result.stderr
 
     return result.stdout

@@ -42,9 +42,7 @@ def k8s_get_deployment_status(handle, deployment: str = "", namespace: str = "")
     result = []
     if handle.client_side_validation != True:
         print(f"K8S Connector is invalid: {handle}")
-        return CheckOutput(status=CheckOutputStatus.RUN_EXCEPTION,
-                               objects=[],
-                               error=str())
+        raise Exception("K8S Connector is invalid")
 
     status_details = ""
     if namespace and deployment:
@@ -105,4 +103,4 @@ def k8s_get_deployment_status(handle, deployment: str = "", namespace: str = "")
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])    
+        return (True, None)    

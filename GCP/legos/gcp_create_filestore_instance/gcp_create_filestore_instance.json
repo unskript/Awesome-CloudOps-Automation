@@ -7,5 +7,6 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_verbs": ["create"],
-    "action_nouns": ["filestore","instance","gcp"]
+    "action_nouns": ["filestore","instance","gcp"],
+    "action_categories":[ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_GCP","CATEGORY_TYPE_GCP_FILE_STORE" ]
 }

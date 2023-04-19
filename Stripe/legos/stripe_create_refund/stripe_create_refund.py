@@ -3,9 +3,10 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
-
+from typing import List
 from pydantic import BaseModel, Field
+
+
 class InputSchema(BaseModel):
     charge_id: str = Field(
         title='Charge Id',
@@ -13,37 +14,30 @@ class InputSchema(BaseModel):
     )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_create_refund_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        refund_obj = func(*args, **kwargs)
-        if refund_obj:
-            print('\n\n')
-            pp.pprint(refund_obj)
-            return refund_obj
-        else:
-            return None
-    return Printer
-
-
-@legoPrinter
-def stripe_create_refund(handle, charge_id:str) -> Any:
+def stripe_create_refund(handle, charge_id:str) -> List:
     """stripe_create_refund Create a Refund
 
         :type charge_id: string
         :param charge_id: The identifier of the charge to refund.
 
-        :rtype: String with response from the describe command.
+        :rtype: List with response from the describe API.
     """
     # Input param validation
-
+    result = []
     try:
         refund_obj = handle.Refund.create(charge=charge_id)
-        return refund_obj
+        result.append(refund_obj)
+        return result
     except Exception as e:
-        print('\n\n')
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

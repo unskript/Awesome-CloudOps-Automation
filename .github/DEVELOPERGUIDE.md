@@ -4,13 +4,15 @@
     <img src="https://unskript.com/assets/favicon.png" alt="Logo" width="80" height="80">
   </a>
 <p align="center">
-  <h3 align="center">Lego Development Guide</h3>
+  <h3 align="center">Action Development Guide</h3>
   <p align="center">
-    CloudOps automation made simpler!
+    CloudOps automation made simple!
     <br />
     <br />
-    <a href="https://medium.com/unskript">Visit our blog</a>
+    <a href="https://unskript.com/blog">Visit our blog</a>
     ·
+    <a href="https://www.youtube.com/channel/UCvtSYNHVvuogq2u-F7UDMkw">YouTube Tutorials</a>
+    .
     <a href="https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&template=bug_report.md&title=">Report Bug</a>
     ·
     <a href="https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&template=feature_request.md&title=">Request Feature</a>
@@ -31,7 +33,7 @@ In this document, we'll walk through the anatomy of a Lego/Action, how they are 
 The Directory structure followed on Awesome-CloudOps-Automation is:
 
 1. CONNECTOR is a directory of xRunBooks and Lego/Actions that are run for a particular service/API/etc. (for example: Redis, AWS or Slack)
-2. Inside the CONNECTOR Directory will be Jupyter files for each xRunBook, and the Lego subDirectory will hold all of the Actions.
+2. Inside the CONNECTOR Directory will be two files for each xRunBook (a JSON file and the actual rRunBook in the .ipynb file), and the Lego subdirectory will hold all of the Actions.
 
 In this document, we'll walk through the steps in creating a Lego/Action.
 
@@ -130,7 +132,9 @@ This Lego take three inputs handle, volume_id and region. All three are required
 
 ## Lego JSON file
 
-The JSON file lists 
+If you created your Action with the Docker build of unSkript, the JSON file is generated for you. It can be found in the $USER/.unskript/custom/contrib/unskript/legos/{Action name} directory.
+
+Here is an example JSON file:
 Example:
 
 ```json
@@ -161,5 +165,11 @@ All of these fields are Mandatory.
 
 This is the Python file that is run in the xRunBook.  Examples can be found in the various Lego directories in this repository.
 
+The fastest way to create the Python file is to create your Action in the Docker build of unSkript. WHen you save your Action (from the three dot menu next to the "Run Action" button), it will be saved locally on your computer in the $USER/.unskript/custom/contrib/unskript/legos/{Action name} directory.
 
-##
+## __init__.py
+
+This can be copied from any other Action directory and pasted in.
+
+
+

@@ -7,7 +7,7 @@ This Lego delete AWS default encryption for S3 bucket.
 
 ## Lego Details
 
-    aws_delete_bucket_encryption(handle: object, name: str, region: str)
+    aws_delete_s3_bucket_encryption(handle: object, name: str, region: str)
 
         handle: Object of type unSkript AWS Connector
         name: NAme of the S3 bucket.
@@ -18,6 +18,7 @@ This Lego take three inputs handle, name and region.
 
 ## Lego Output
 Here is a sample output.
+<img src="./1.png">
 
 ## See it in Action
 

@@ -1,0 +1,15 @@
+{
+    "action_title": "AWS Get EBS Volumes for Low Usage",
+    "action_description": "This action list low use volumes from AWS which used <10% capacity from the given threshold days.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_get_ebs_volume_for_low_usage",
+    "action_needs_credential": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_is_check":true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {}
+}
+  

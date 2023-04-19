@@ -1,0 +1,12 @@
+{
+  "action_title": "Github Comment on an Issue",
+  "action_description": "Add a comment to the selected GitHub Issue",
+  "action_type": "LEGO_TYPE_GITHUB",
+  "action_entry_function": "github_issue_comment",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+  "action_categories":[ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_GITHUB","CATEGORY_TYPE_GITHUB_ISSUE" ]
+}
