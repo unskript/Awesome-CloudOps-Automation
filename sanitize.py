@@ -64,7 +64,11 @@ if __name__ == '__main__':
     except Exception as e:
         raise e
     
-    filelist = [item.a_path for item in repo.index.diff(None)]
+    if len(sys.argv) > 1:
+        filelist = sys.argv[1:]
+    else:
+        filelist = [item.a_path for item in repo.index.diff(None)]
+
     if not filelist:
         print("No update needed")
         sys.exit(0)
@@ -73,5 +77,7 @@ if __name__ == '__main__':
         if f.endswith('.ipynb'):
             if sanitize(f):
                 print(u'\u2713', f"Updated Notebook {f}")
+        else:
+            print(f"Skipping {f} as it is not a ipynb file")
 
     sys.exit(0)
