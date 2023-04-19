@@ -32,13 +32,13 @@ class InputSchema(BaseModel):
     region: str = Field(..., description='AWS region.', title='region')
 
 
-def aws_get_cost_for_data_trasfer_printer(output):
+def aws_get_cost_for_data_transfer_printer(output):
     if output is None:
         return
     rows = [x.values() for x in output]
     print(tabulate.tabulate(rows, tablefmt="fancy_grid", headers=['Date','Usage Type','Total Usage Qty','Total Usage Cost']))
 
-def aws_get_cost_for_data_trasfer(handle, region:str,number_of_months: int="", start_date: str="", end_date:str="") -> List:
+def aws_get_cost_for_data_transfer(handle, region:str,number_of_months: int="", start_date: str="", end_date:str="") -> List:
     """aws_get_cost_for_data_trasfer returns daily cost spendings on data transfer
 
         :type handle: object

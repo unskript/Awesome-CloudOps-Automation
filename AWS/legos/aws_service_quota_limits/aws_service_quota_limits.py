@@ -41,7 +41,7 @@ from beartype import beartype
 
 from beartype import beartype
 @beartype
-def aws_service_quota_limits_vpc_printer(output):
+def aws_service_quota_limits_printer(output):
     if output is None:
         return
     pprint.pprint({"Instances": output})
@@ -49,7 +49,7 @@ def aws_service_quota_limits_vpc_printer(output):
 
 @beartype
 @beartype
-def aws_service_quota_limits_vpc(handle, region: str, warning_percentage: float, quota_input: List) -> List:
+def aws_service_quota_limits(handle, region: str, warning_percentage: float, quota_input: List) -> List:
 
     sqClient = handle.client('service-quotas',region_name=region)
     ec2Client = handle.client('ec2', region_name=region)
