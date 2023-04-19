@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=462&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=46&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=462&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=47&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -111,6 +111,7 @@ docker run -it -p 8888:8888 \
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
 |AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
 |AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 
+|AWS |[Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Secrets.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_Secrets.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_Instance_from_ASG.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG and Load balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_ec2_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_ec2_Instance_from_ASG.ipynb) | 
 |AWS |[Detect ECS failed deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detect_ECS_failed_deployment.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detect_ECS_failed_deployment.ipynb) | 

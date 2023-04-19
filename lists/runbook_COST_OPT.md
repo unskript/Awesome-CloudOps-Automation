@@ -14,6 +14,7 @@
  | [TROUBLESHOOTING](runbook_TROUBLESHOOTING.md) | [ES](runbook_ES.md) | 
 
  # Runbooks in COST OPT
+* AWS [Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Secrets.ipynb): This runbook can be used to delete unused secrets in AWS.
 * AWS [Lowering AWS CloudTrail Costs by Removing Redundant Trails](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Lowering_AWS_CloudTrail_Costs_by_Removing_Redundant_Trails.ipynb): The AWS CloudTrail service allows developers to enable policies managing compliance, governance, and auditing of their AWS account. In addition, AWS CloudTrail offers logging, monitoring, and storage of any activity around actions related to your AWS structures. The service activates from the moment you set up your AWS account and while it provides real-time activity visibility, it also means higher AWS costs. Here Finding Redundant Trails in AWS
 * AWS [Stop Untagged AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Stop_Untagged_EC2_Instances.ipynb): This runbook can be used to Stop all EC2 Instances that are Untagged
 * AWS [Terminate EC2 Instances Without Valid Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Terminate_EC2_Instances_Without_Valid_Lifetime_Tag.ipynb): This runbook can be used to list all the EC2 instances which don't have a lifetime tag and then terminate them.
