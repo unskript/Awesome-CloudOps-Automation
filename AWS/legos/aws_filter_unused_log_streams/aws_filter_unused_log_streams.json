@@ -8,7 +8,7 @@
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_iteration": true,
     "action_is_check": true,
-    "action_next_hop":[],
+    "action_next_hop":["64b6e7809ddfb1094901da74924ca3386510a1cd"],
     "action_next_hop_parameter_mapping":{},
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SECOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_LOGS"  ]
 }
