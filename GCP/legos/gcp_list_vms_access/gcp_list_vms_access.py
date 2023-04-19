@@ -29,7 +29,7 @@ def gcp_list_VMs_access_printer(output):
 
 
 @beartype
-def gcp_list_access_VMs(handle, project:str, zone:str) -> List:
+def gcp_list_VMs_access(handle, project:str, zone:str) -> List:
 
 
     compute_client = compute.InstancesClient(credentials=handle)
