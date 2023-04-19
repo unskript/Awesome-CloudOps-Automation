@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=462&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=46&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=466&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=54&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -98,6 +98,7 @@ docker run -it -p 8888:8888 \
 3. Once each Action has been assigned Credentials and inputs, run each Action (in order) to run your xRunBook.
 
 
+
 ## Included xRunBooks
 <details>
   <summary><b>See Full List</b></summary>
@@ -107,10 +108,14 @@ docker run -it -p 8888:8888 \
   | **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
   | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
   |AWS |[AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Access_Key_Rotation.ipynb) | 
+|AWS |[AWS Add Mandatory tags to EC2](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Add_Mandatory_tags_to EC2.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Add_Mandatory_tags_to EC2.ipynb) | 
 |AWS |[Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Add_new_IAM_user.ipynb) | 
+|AWS |[Change AWS EBS Volume To GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | 
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
 |AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
+|AWS |[Create IAM User with policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Create_IAM_User_with_policy.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Create_IAM_User_with_policy.ipynb) | 
 |AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 
+|AWS |[Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Secrets.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_Secrets.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_Instance_from_ASG.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG and Load balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_ec2_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_ec2_Instance_from_ASG.ipynb) | 
 |AWS |[Detect ECS failed deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detect_ECS_failed_deployment.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detect_ECS_failed_deployment.ipynb) | 
@@ -138,6 +143,10 @@ docker run -it -p 8888:8888 \
 |AWS |[Terminate EC2 Instances Without Valid Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Terminate_EC2_Instances_Without_Valid_Lifetime_Tag.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Terminate_EC2_Instances_Without_Valid_Lifetime_Tag.ipynb) | 
 |AWS |[Troubleshooting Your EC2 Configuration in a Private Subnet](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Troubleshooting_Your_EC2_Configuration_in_Private_Subnet.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Troubleshooting_Your_EC2_Configuration_in_Private_Subnet.ipynb) | 
 |AWS |[Update and Manage AWS User permission](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | 
+|AWS |[AWS Redshift Get Daily Costs from AWS Products](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_get_daily_product_costs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/aws_redshift_get_daily_product_costs.ipynb) | 
+|AWS |[AWS Redshift Get Daily Costs from EC2 Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_get_ec2_daily_costs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/aws_redshift_get_ec2_daily_costs.ipynb) | 
+|AWS |[AWS Redshift Update Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_update_database.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/aws_redshift_update_database.ipynb) | 
+|AWS |[Delete IAM profile](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/delete_iam_user.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/delete_iam_user.ipynb) | 
 |ElasticSearch |[Elasticsearch Rolling restart](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | 
 |Jenkins |[Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | 
 |Jira |[Jira Visualize Issue Time to Resolution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/jira_visualize_time_to_resolution.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Jira/jira_visualize_time_to_resolution.ipynb) | 

@@ -9,6 +9,8 @@
 
 * **AWS**: [AWS Change ACL Permission of public S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_change_acl_permissions_of_buckets/README.md): AWS Change ACL Permission public S3 Bucket
 
+* **AWS**: [AWS Check if RDS instances are not M5 or T3](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_check_rds_non_m5_t3_instances/README.md): AWS Check if RDS instances are not M5 or T3
+
 * **AWS**: [Check SSL Certificate Expiry](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_check_ssl_certificate_expiry/README.md): Check ACM SSL Certificate expiry date
 
 * **AWS**: [Attach a webhook endpoint to AWS Cloudwatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_cloudwatch_attach_webhook_notification_to_alarm/README.md): Attach a webhook endpoint to one of the SNS attached to the AWS Cloudwatch alarm.
@@ -177,7 +179,7 @@
 
 * **AWS**: [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
 
-* **AWS**: [AWS Get Costs For Data Transfer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_data_trasfer/README.md): Get daily cost for Data Transfer in AWS
+* **AWS**: [AWS Get Costs For Data Transfer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_data_transfer/README.md): Get daily cost for Data Transfer in AWS
 
 * **AWS**: [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer
 
@@ -245,9 +247,13 @@
 
 * **AWS**: [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 
+* **AWS**: [AWS: Check for short Route 53 TTL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_under_given_hours/README.md): AWS: Check for short Route 53 TTL
+
 * **AWS**: [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 
 * **AWS**: [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
+
+* **AWS**: [AWS get Unused Route53 Health Checks](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unused_route53_health_checks/README.md): AWS get Unused Route53 Health Checks
 
 * **AWS**: [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
 
@@ -298,6 +304,8 @@
 * **AWS**: [Read AWS S3 Object](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_read_object/README.md): Read an AWS S3 Object
 
 * **AWS**: [ Register AWS Instances with a Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_register_instances/README.md):  Register AWS Instances with a Load Balancer
+
+* **AWS**: [AWS Release Elastic IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_release_elastic_ip/README.md): AWS Release Elastic IP for both VPC and Standard
 
 * **AWS**: [Renew Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_renew_expiring_acm_certificates/README.md): Renew Expiring ACM Certificates
 
@@ -357,14 +365,14 @@
  | [SECOPS](action_SECOPS.md) | [DEVOPS](action_DEVOPS.md) | [SRE](action_SRE.md) |
  | [AWS](action_AWS.md) | [AWS_S3](action_AWS_S3.md) | [AWS_EC2](action_AWS_EC2.md) |
  | [IAM](action_IAM.md) | [AWS_IAM](action_AWS_IAM.md) | [COST_OPT](action_COST_OPT.md) |
- | [AWS_ACM](action_AWS_ACM.md) | [AWS_CLOUDWATCH](action_AWS_CLOUDWATCH.md) | [AWS_REDSHIFT](action_AWS_REDSHIFT.md) |
- | [EBS](action_EBS.md) | [AWS_ELB](action_AWS_ELB.md) | [AWS_EBS](action_AWS_EBS.md) |
- | [AWS_ECS](action_AWS_ECS.md) | [AWS_EKS](action_AWS_EKS.md) | [AWS_EMR](action_AWS_EMR.md) |
- | [AWS_CLI](action_AWS_CLI.md) | [AWS_SSM](action_AWS_SSM.md) | [DB](action_DB.md) |
- | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) | [CLOUDOPS](action_CLOUDOPS.md) |
- | [AWS_ASG](action_AWS_ASG.md) | [AWS_LOGS](action_AWS_LOGS.md) | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) |
- | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) | [AWS_LAMBDA](action_AWS_LAMBDA.md) |
- | [AWS_RDS](action_AWS_RDS.md) | [AWS_SQS](action_AWS_SQS.md) | [AWS_COST_EXPLORER](action_AWS_COST_EXPLORER.md) |
+ | [AWS_RDS](action_AWS_RDS.md) | [AWS_ACM](action_AWS_ACM.md) | [AWS_CLOUDWATCH](action_AWS_CLOUDWATCH.md) |
+ | [AWS_REDSHIFT](action_AWS_REDSHIFT.md) | [EBS](action_EBS.md) | [AWS_ELB](action_AWS_ELB.md) |
+ | [AWS_EBS](action_AWS_EBS.md) | [AWS_ECS](action_AWS_ECS.md) | [AWS_EKS](action_AWS_EKS.md) |
+ | [AWS_EMR](action_AWS_EMR.md) | [AWS_CLI](action_AWS_CLI.md) | [AWS_SSM](action_AWS_SSM.md) |
+ | [DB](action_DB.md) | [AWS_EBC](action_AWS_EBC.md) | [AWS_VPC](action_AWS_VPC.md) |
+ | [CLOUDOPS](action_CLOUDOPS.md) | [AWS_ASG](action_AWS_ASG.md) | [AWS_LOGS](action_AWS_LOGS.md) |
+ | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) |
+ | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_SQS](action_AWS_SQS.md) | [AWS_COST_EXPLORER](action_AWS_COST_EXPLORER.md) |
  | [COST_OPT,CATEGORY_TYPE_SRE](action_COST_OPT,CATEGORY_TYPE_SRE.md) | [AWS_ROUTE53](action_AWS_ROUTE53.md) | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) |
  | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) | [AWS_POSTGRES](action_AWS_POSTGRESQL.md) |
  | [AIRFLOW](action_AIRFLOW.md) | [AZURE](action_AZURE.md) | [DATADOG](action_DATADOG.md) |

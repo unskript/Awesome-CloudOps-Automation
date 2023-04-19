@@ -1,0 +1,9 @@
+{
+  "name": "Delete IAM profile",
+  "description": "This runbook is the inverse of Create IAM user with profile - removes the profile, the login and themn the IAM user itself..",
+  "uuid": "3aa8d4f8869b00c3bd57b9676d6c267ec93c7291eeffa1e281d29aa689b73ff4",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
