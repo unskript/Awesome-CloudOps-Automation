@@ -45,6 +45,8 @@
 
 * **GCP**: [GCP List Service Accounts](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts/README.md): GCP List Service Accounts
 
+* **GCP**: [List all GCP VMs and if Publicly Accessible](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_vms_access/README.md): Lists all GCP buckets, and identifies those tha are public.
+
 * **GCP**: [GCP Remove Member from IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role/README.md): Remove member from the chosen IAM role.
 
 * **GCP**: [GCP Remove Role from Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_role_from_service_account/README.md): Remove role and member from the service account

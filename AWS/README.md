@@ -191,6 +191,7 @@
 * [Restart AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_restart_ec2_instances/README.md): Restart AWS EC2 Instances
 * [Start AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
 * [Stop AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
+* [Tag AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_tag_ec2_instances/README.md): Tag AWS Instances
 * [AWS List Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_instances/README.md): List AWS Instance in a ELBv2 Target Group
 * [ AWS List Unhealthy Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_unhealthy_instances/README.md):  List AWS Unhealthy Instance in a ELBv2 Target Group
 * [AWS Register/Unregister Instances from a Target Group.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group

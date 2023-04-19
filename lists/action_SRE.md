@@ -207,6 +207,8 @@
 
 * **AWS**: [Stop AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
 
+* **AWS**: [Tag AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_tag_ec2_instances/README.md): Tag AWS Instances
+
 * **AWS**: [AWS List Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_instances/README.md): List AWS Instance in a ELBv2 Target Group
 
 * **AWS**: [ AWS List Unhealthy Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_unhealthy_instances/README.md):  List AWS Unhealthy Instance in a ELBv2 Target Group
@@ -326,6 +328,8 @@
 * **GCP**: [List GCP Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_secrets/README.md): List of your GCP Secrets
 
 * **GCP**: [GCP List Service Accounts](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts/README.md): GCP List Service Accounts
+
+* **GCP**: [List all GCP VMs and if Publicly Accessible](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_vms_access/README.md): Lists all GCP buckets, and identifies those tha are public.
 
 * **GCP**: [GCP Remove Member from IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role/README.md): Remove member from the chosen IAM role.
 

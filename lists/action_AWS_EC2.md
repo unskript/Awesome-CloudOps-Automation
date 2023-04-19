@@ -97,6 +97,8 @@
 
 * **AWS**: [Stop AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
 
+* **AWS**: [Tag AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_tag_ec2_instances/README.md): Tag AWS Instances
+
 * **AWS**: [AWS List Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_instances/README.md): List AWS Instance in a ELBv2 Target Group
 
 * **AWS**: [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
