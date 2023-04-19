@@ -9,11 +9,12 @@
 # RunBook Categories:
  | | | 
  | ---| ---| 
- | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
- | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [COST_OPT](runbook_COST_OPT.md) |
+ | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [COST_OPT](runbook_COST_OPT.md) |
+ | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
  | [TROUBLESHOOTING](runbook_TROUBLESHOOTING.md) | [ES](runbook_ES.md) | 
 
  # Runbooks in COST OPT
+* AWS [Change AWS EBS Volume To GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb): This runbook can be used to change the type of an EBS volume to GP3(General Purpose 3). GP3 type volume has a number of advantages over it's predecessors. gp3 volumes are ideal for a wide variety of applications that require high performance at low cost
 * AWS [Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Secrets.ipynb): This runbook can be used to delete unused secrets in AWS.
 * AWS [Lowering AWS CloudTrail Costs by Removing Redundant Trails](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Lowering_AWS_CloudTrail_Costs_by_Removing_Redundant_Trails.ipynb): The AWS CloudTrail service allows developers to enable policies managing compliance, governance, and auditing of their AWS account. In addition, AWS CloudTrail offers logging, monitoring, and storage of any activity around actions related to your AWS structures. The service activates from the moment you set up your AWS account and while it provides real-time activity visibility, it also means higher AWS costs. Here Finding Redundant Trails in AWS
 * AWS [Stop Untagged AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Stop_Untagged_EC2_Instances.ipynb): This runbook can be used to Stop all EC2 Instances that are Untagged

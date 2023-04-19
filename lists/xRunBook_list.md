@@ -9,8 +9,8 @@
 # RunBook Categories:
  | | | 
  | ---| ---| 
- | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
- | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [COST_OPT](runbook_COST_OPT.md) |
+ | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [COST_OPT](runbook_COST_OPT.md) |
+ | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
  | [TROUBLESHOOTING](runbook_TROUBLESHOOTING.md) | [ES](runbook_ES.md) | 
  
 
@@ -18,6 +18,7 @@
 # AWS
 * [AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb): This runbook can be used to configure AWS Access Key rotation. Changing access keys (which consist of an access key ID and a secret access key) on a regular schedule is a well-known security best practice because it shortens the period an access key is active and therefore reduces the business impact if they are compromised. Having an established process that is run regularly also ensures the operational steps around key rotation are verified, so changing a key is never a scary step.
 * [Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb): AWS has an inbuilt identity and access management system known as AWS IAM. IAM supports the concept of users, group, roles and privileges. IAM user is an identity that can be created and assigned some privileges. This runbook can be used to create an AWS IAM User
+* [Change AWS EBS Volume To GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb): This runbook can be used to change the type of an EBS volume to GP3(General Purpose 3). GP3 type volume has a number of advantages over it's predecessors. gp3 volumes are ideal for a wide variety of applications that require high performance at low cost
 * [Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb): Configures the URL endpoint to the SNS associated with a CloudWatch alarm. This allows to external functions to be invoked within unSkript in response to an alert getting generated. Alarms can be attached to the handlers to perform data enrichment or remediation
 * [Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb): This runbook can be used to copy AMI from one region to multiple AWS regions using unSkript legos with AWS CLI commands.We can get all the available regions by using AWS CLI Commands.
 * [Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb): This runbook can be used to delete all unattached EBS Volumes within an AWS region. You can delete an Amazon EBS volume that you no longer need. After deletion, its data is gone and the volume can't be attached to any instance. So before deletion, you can store a snapshot of the volume, which you can use to re-create the volume later.

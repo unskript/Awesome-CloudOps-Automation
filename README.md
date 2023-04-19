@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=464&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=47&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=464&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=48&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -108,6 +108,7 @@ docker run -it -p 8888:8888 \
   | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
   |AWS |[AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Access_Key_Rotation.ipynb) | 
 |AWS |[Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Add_new_IAM_user.ipynb) | 
+|AWS |[Change AWS EBS Volume To GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | 
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
 |AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
 |AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 

@@ -9,11 +9,12 @@
 # RunBook Categories:
  | | | 
  | ---| ---| 
- | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
- | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [COST_OPT](runbook_COST_OPT.md) |
+ | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [COST_OPT](runbook_COST_OPT.md) |
+ | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
  | [TROUBLESHOOTING](runbook_TROUBLESHOOTING.md) | [ES](runbook_ES.md) | 
 
  # Runbooks in DEVOPS
+* AWS [Change AWS EBS Volume To GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb): This runbook can be used to change the type of an EBS volume to GP3(General Purpose 3). GP3 type volume has a number of advantages over it's predecessors. gp3 volumes are ideal for a wide variety of applications that require high performance at low cost
 * AWS [Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb): This runbook can be used to copy AMI from one region to multiple AWS regions using unSkript legos with AWS CLI commands.We can get all the available regions by using AWS CLI Commands.
 * AWS [Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb): This runbook can be used to delete all unattached EBS Volumes within an AWS region. You can delete an Amazon EBS volume that you no longer need. After deletion, its data is gone and the volume can't be attached to any instance. So before deletion, you can store a snapshot of the volume, which you can use to re-create the volume later.
 * AWS [Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Secrets.ipynb): This runbook can be used to delete unused secrets in AWS.
