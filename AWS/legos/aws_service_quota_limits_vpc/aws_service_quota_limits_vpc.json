@@ -1,0 +1,11 @@
+{
+  "action_title": "AWS VPC service quota limit",
+  "action_description": "This Action queries all VPC Storage quotas, and returns all usage over warning_percentage.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_service_quota_limits_vpc",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true"
+}

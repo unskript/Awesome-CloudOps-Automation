@@ -3,29 +3,27 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Any
-
+from typing import List
 from pydantic import BaseModel, Field
+
+
 class InputSchema(BaseModel):
     customer_id: str = Field(
         title='Customer Id',
         description='Retrive details of a customer'
     )
 
-pp = pprint.PrettyPrinter(indent=2)
+
+def stripe_retrieve_customer_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        retrieve_customer = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(retrieve_customer)
-        return retrieve_customer
-    return Printer
-
-
-@legoPrinter
-def stripe_retrieve_customer(handle, customer_id:str) -> Any:
+def stripe_retrieve_customer(handle, customer_id:str) -> List:
     """stripe_retrieve_customer Get customer data
 
         :type customer_id: string
@@ -34,11 +32,12 @@ def stripe_retrieve_customer(handle, customer_id:str) -> Any:
         :rtype: String with response from the describe command.
     """
     # Input param validation
-
+    result = []
     try:
         customer = handle.Customer.retrieve(customer_id)
-        return customer
+        result.append(customer)
+        return result
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

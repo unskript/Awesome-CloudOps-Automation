@@ -23,6 +23,7 @@
 * [List all Public GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets/README.md): List all publicly available GCP buckets
 * [List GCP Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_secrets/README.md): List of your GCP Secrets
 * [GCP List Service Accounts](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_service_accounts/README.md): GCP List Service Accounts
+* [List all GCP VMs and if Publicly Accessible](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_vms_access/README.md): Lists all GCP buckets, and identifies those tha are public.
 * [GCP Remove Member from IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_member_from_iam_role/README.md): Remove member from the chosen IAM role.
 * [GCP Remove Role from Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_role_from_service_account/README.md): Remove role and member from the service account
 * [Remove role from user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role/README.md): GCP lego for removing a role from a user (default: 'viewer')

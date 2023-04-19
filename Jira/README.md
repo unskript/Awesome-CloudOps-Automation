@@ -1,3 +1,5 @@
+# Jira RunBooks
+* [Jira Visualize Issue Time to Resolution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/jira_visualize_time_to_resolution.ipynb): Using the Panel Library - visualize the time it takes for issues to close over a specifict timeframe
 
 # Jira Actions
 * [Jira Add Comment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/legos/jira_add_comment/README.md): Add a Jira Comment
