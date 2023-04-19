@@ -29,7 +29,7 @@ def aws_revoke_policy_from_iam_user(handle, user_name: str, policy_arn: str) -> 
         :param handle: Object returned from Task Validate
 
         :type policy_arn: str
-        :param policy_arn: The Amazon Resource Name (ARN) of the policy
+        :param policy_arn: The Amazon Resource Name (ARN) of the policy.
 
         :type user_name: str
         :param user_name: The name of the IAM user from whom to revoke the policy.
