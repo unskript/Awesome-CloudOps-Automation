@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=461&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=45&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=461&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=46&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -140,6 +140,7 @@ docker run -it -p 8888:8888 \
 |AWS |[Update and Manage AWS User permission](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Update_and_Manage_AWS_User_Permission.ipynb) | 
 |ElasticSearch |[Elasticsearch Rolling restart](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/ElasticSearch/Elasticsearch_Rolling_Restart.ipynb) | 
 |Jenkins |[Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Jenkins/Fetch_Jenkins_Build_Logs.ipynb) | 
+|Jira |[Jira Visualize Issue Time to Resolution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/jira_visualize_time_to_resolution.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Jira/jira_visualize_time_to_resolution.ipynb) | 
 |Kubernetes |[k8s: Delete Evicted Pods From All Namespaces](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Delete_Evicted_Pods_From_Namespaces.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Delete_Evicted_Pods_From_Namespaces.ipynb) | 
 |Kubernetes |[k8s: Get kube system config map](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Get_Kube_System_Config_Map.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Get_Kube_System_Config_Map.ipynb) | 
 |Kubernetes |[k8s: Get candidate nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Get_Candidate_Nodes_Given_Config.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/K8S_Get_Candidate_Nodes_Given_Config.ipynb) | 

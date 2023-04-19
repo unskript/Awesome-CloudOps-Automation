@@ -2,7 +2,8 @@
  | | | 
  | ---| ---| 
  | [AWS](xRunBook_List.md#AWS) | [ElasticSearch](xRunBook_List.md#ElasticSearch) | [Jenkins](xRunBook_List.md#Jenkins) |
- | [Kubernetes](xRunBook_List.md#Kubernetes) | [Postgresql](xRunBook_List.md#Postgresql) | 
+ | [Jira](xRunBook_List.md#Jira) | [Kubernetes](xRunBook_List.md#Kubernetes) | [Postgresql](xRunBook_List.md#Postgresql) |
+ | 
 
  
 # RunBook Categories:
@@ -33,6 +34,7 @@
 * AWS [Launch AWS EC2 from AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Run_EC2_from_AMI.ipynb): This lego can be used to launch an AWS EC2 instance from AMI in the given region.
 * AWS [Troubleshooting Your EC2 Configuration in a Private Subnet](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Troubleshooting_Your_EC2_Configuration_in_Private_Subnet.ipynb): This runbook can be used to troubleshoot EC2 instance configuration in a private subnet by capturing the VPC ID for a given instance ID. Using VPC ID to get Internet Gateway details then try to SSH and connect to internet.
 * Jenkins [Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jenkins/Fetch_Jenkins_Build_Logs.ipynb): This runbook fetches the logs for a given Jenkins job and posts to a slack channel
+* Jira [Jira Visualize Issue Time to Resolution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/jira_visualize_time_to_resolution.ipynb): Using the Panel Library - visualize the time it takes for issues to close over a specifict timeframe
 * Kubernetes [k8s: Delete Evicted Pods From All Namespaces](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Delete_Evicted_Pods_From_Namespaces.ipynb): This runbook shows and deletes the evicted pods for given namespace. If the user provides the namespace input, then it only collects pods for the given namespace; otherwise, it will select all pods from all the namespaces.
 * Kubernetes [k8s: Get kube system config map](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Get_Kube_System_Config_Map.ipynb): This runbook fetches the kube system config map for a k8s cluster and publishes the information on a Slack channel.
 * Kubernetes [k8s: Get candidate nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/K8S_Get_Candidate_Nodes_Given_Config.ipynb): This runbook get the matching nodes for a given configuration (storage, cpu, memory, pod_limit) from a k8s cluster
