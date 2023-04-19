@@ -149,6 +149,8 @@
 
 * **AWS**: [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
 
+* **AWS**: [AWS get Unused Route53 Health Checks](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unused_route53_health_checks/README.md): AWS get Unused Route53 Health Checks
+
 * **AWS**: [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
 
 * **AWS**: [Launch AWS EC2 Instance From an AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_launch_instance_from_ami/README.md): Use this instance to Launch an AWS EC2 instance from an AMI

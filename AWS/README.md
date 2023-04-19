@@ -162,6 +162,7 @@
 * [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 * [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 * [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer
+* [AWS get Unused Route53 Health Checks](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unused_route53_health_checks/README.md): AWS get Unused Route53 Health Checks
 * [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
 * [Launch AWS EC2 Instance From an AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_launch_instance_from_ami/README.md): Use this instance to Launch an AWS EC2 instance from an AMI
 * [AWS List Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_access_keys/README.md): List all Access Keys for the User

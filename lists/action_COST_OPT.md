@@ -35,6 +35,8 @@
 
 * **AWS**: [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 
+* **AWS**: [AWS get Unused Route53 Health Checks](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unused_route53_health_checks/README.md): AWS get Unused Route53 Health Checks
+
 * **AWS**: [AWS List Unused Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unused_secrets/README.md): This action lists all the unused secrets from AWS by comparing the last used date with the given threshold.
 
 * **AWS**: [AWS Update TTL for Route53 Record](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_ttl_for_route53_records/README.md): Update TTL for an existing record in a hosted zone.
