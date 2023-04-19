@@ -1,20 +1,20 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>AWS Delete NAT Gateway</h1>
+<h1>AWS Release Elastic IP</h1>
 
 ## Description
-This Lego delete AWS NAT Gateway.
+This Lego release AWS elastic IP for both VPC and Standard.
 
 
 ## Lego Details
 
-    aws_delete_nat_gateway(handle, nat_gateway_id: str, region: str)
+    aws_release_elastic_ip(handle, region: str, public_ip: str, allocation_id: str)
 
         handle: Object of type unSkript AWS Connector.
-        nat_gateway_id: ID of the NAT Gateway.
+        allocation_id: Allocation ID of the Elastic IP to release.
         region: AWS Region.
 
 ## Lego Input
-This Lego take three inputs handle, nat_gateway_id and region.
+This Lego take three inputs handle, allocation_id and region.
 
 ## Lego Output
 Here is a sample output.
