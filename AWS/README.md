@@ -129,7 +129,7 @@
 * [Get AWS CloudWatch Metrics for AWS/SQS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_sqs/README.md): Get AWS CloudWatch Metrics for AWS/SQS
 * [Get AWS CloudWatch Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_statistics/README.md): Get AWS CloudWatch Statistics
 * [AWS Get Costs For All Services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_all_services/README.md): Get Costs for all AWS services in a given time period.
-* [AWS Get Costs For Data Transfer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_data_trasfer/README.md): Get daily cost for Data Transfer in AWS
+* [AWS Get Costs For Data Transfer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cost_for_data_transfer/README.md): Get daily cost for Data Transfer in AWS
 * [AWS Get Daily Total Spend](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_daily_total_spend/README.md): AWS get daily total spend from Cost Explorer
 * [AWS Get EBS Volumes for Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volume_for_low_usage/README.md): This action list low use volumes from AWS which used <10% capacity from the given threshold days.
 * [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type

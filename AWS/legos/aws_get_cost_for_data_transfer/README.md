@@ -6,7 +6,7 @@
 Get daily cost for Data Transfer in AWS
 
 ## Lego Details
-	aws_get_cost_for_data_trasfer(handle, region:str,number_of_months: int="", start_date: str="", end_date:str="")
+	aws_get_cost_for_data_transfer(handle, region:str,number_of_months: int="", start_date: str="", end_date:str="")
 		handle: Object of type unSkript AWS Connector.
 		number_of_months: Optional, Number of months to fetch the daily costs for. Eg: 1 (This will fetch all the costs for the last 30 days)
 		start_date: Optional,,Start date to get the daily costs from. Note: It should be given in YYYY-MM-DD format. Eg: 2023-03-11
