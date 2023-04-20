@@ -7,8 +7,6 @@ from typing import Dict, List
 import pprint
 
 
-from __future__ import annotations
-
 from pydantic import BaseModel
 
 
