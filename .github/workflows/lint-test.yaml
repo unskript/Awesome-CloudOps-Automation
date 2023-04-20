@@ -25,11 +25,10 @@ jobs:
           python-version: 3.9
 
       - name: Install Python dependencies
-        run: pip install black flake8
+        run: pip install pylint
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
-          black: true
-          flake8: true
+          pylint: true
           
