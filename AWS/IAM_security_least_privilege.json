@@ -1,0 +1,10 @@
+{
+  "name": "Create an IAM user using Principle of Least Privilege",
+  "description": "Extract usage details from Cloudtrail of an existing user. Apply the usage to a new IAM Policy, and connect it to a new IAM profile.",
+  "uuid": "65d8f7ea1d41ccf49b4a624b70cdbde0d16ad9ba348829e4ddbd59a83ce644bc",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SECOPS" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}
+

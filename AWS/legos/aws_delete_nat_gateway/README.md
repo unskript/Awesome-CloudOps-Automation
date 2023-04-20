@@ -11,7 +11,7 @@ This Lego delete AWS NAT Gateway.
 
         handle: Object of type unSkript AWS Connector.
         nat_gateway_id: ID of the NAT Gateway.
-        region: AWS Region of the bucket.
+        region: AWS Region.
 
 ## Lego Input
 This Lego take three inputs handle, nat_gateway_id and region.
