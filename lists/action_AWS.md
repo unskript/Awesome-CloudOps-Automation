@@ -305,6 +305,8 @@
 
 * **AWS**: [ Register AWS Instances with a Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_register_instances/README.md):  Register AWS Instances with a Load Balancer
 
+* **AWS**: [AWS Release Elastic IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_release_elastic_ip/README.md): AWS Release Elastic IP for both VPC and Standard
+
 * **AWS**: [Renew Expiring ACM Certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_renew_expiring_acm_certificates/README.md): Renew Expiring ACM Certificates
 
 * **AWS**: [AWS_Request_Service_Quota_Increase](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_request_service_quota_increase/README.md): Given an AWS Region, Service Code, quota code and a new value for the quota, this Action sends a request to AWS for a new value. Your Connector must have servicequotas:RequestServiceQuotaIncrease enabled for this to work.

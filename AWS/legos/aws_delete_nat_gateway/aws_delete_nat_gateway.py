@@ -13,7 +13,7 @@ class InputSchema(BaseModel):
         description='ID of the NAT Gateway.')
     region: str = Field(
         title='Region',
-        description='AWS Region of the bucket.')
+        description='AWS Region.')
 
 
 def aws_delete_nat_gateway_printer(output):
@@ -26,7 +26,7 @@ def aws_delete_nat_gateway(handle, nat_gateway_id: str, region: str) -> Dict:
     """aws_delete_nat_gateway Returns an dict of NAT gateways information.
 
         :type region: string
-        :param region: Region to filter instances.
+        :param region: AWS Region.
 
         :type nat_gateway_id: string
         :param nat_gateway_id: ID of the NAT Gateway.
