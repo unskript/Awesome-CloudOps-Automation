@@ -33,7 +33,7 @@
 
 
 ## Mission
-Simplify CloudOps automation for developers and DevOps engineers. 
+Simplify CloudOps automation for DevOps and SRE teams
 
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our *Actions* that build automated *RunBooks*. 
@@ -85,12 +85,8 @@ docker run -it -p 8888:8888 \
 
 # Open and Use a xRunBook
 
-|**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
-| :---: | :---: |
-| Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb. | Once you have completed the Onboarding Flow, every RunBook can be found in the xRunBooks link, under the *unSkript xRunBooks* tab |
-| A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. | You can Search, or select a category or RunBook. To open a xRunBook, Click the 3 dot menu and import into your workspace. |
-
-
+Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
+A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. 
 
 
 1. Check the `Parameters` button at the top of the page. This lists all of the input parameters, and the default values.  Change them as needed.
@@ -133,11 +129,8 @@ All contributions are **greatly appreciated**. Check out our [Contribution Guide
 
 
 ## Create a new xRunBook:
-  |**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
-| :---: | :---: |
-| Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open. | From the xRunBooks Page, Click the **Create New** button. Name you xRunBook, Give it a description, and choose your proxy.  |
-| Your saved xRunBook can be found at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` | Once you save your xRunBook, navigate to the xRunBooks listing.  The 3 dot menu next to your RunBook has a "Download" option. | 
-
+Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open.
+Your saved xRunBook can be found at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks```
 
   1. All created RunBooks have a ipynb file. You'll need to create a .json file with metadata about your RunBook.  Copy from another RunBook un the repository.
   2. Copy the saved RunBook from the Custom folder into the folder of the Connector used, and submit a PR!
@@ -156,11 +149,8 @@ All contributions are **greatly appreciated**. Check out our [Contribution Guide
 1. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
 2.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
 
-
-
-
 ## Extending Docker
-You can use our base docker to extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create you own custom docker.
+You can use our base docker and extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create and build your own custom docker.
 
 <br/>
 
