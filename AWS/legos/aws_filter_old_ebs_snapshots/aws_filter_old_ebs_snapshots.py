@@ -26,7 +26,7 @@ def aws_filter_old_ebs_snapshots_printer(output):
     pprint.pprint(output)
 
 
-def aws_filter_old_ebs_snapshots(handle, region: str="", threshold: int = 30) -> List:
+def aws_filter_old_ebs_snapshots(handle, region: str="", threshold: int = 30) -> Tuple:
     """aws_filter_old_ebs_snapshots Returns an array of EBS snapshots details.
 
         :type region: string
