@@ -1,15 +1,7 @@
-# Actions in the GITHUB ISSUE category
-* **Github**: [Github Assign Issue](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_assign_issue/README.md): Assign a github issue to a user
+# Actions in the ECS category
+* **AWS**: [AWS ECS Instances without AutoScaling policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ecs_instances_without_autoscaling/README.md): AWS ECS Instances without AutoScaling policy.
 
-* **Github**: [Github Create Issue](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_create_issue/README.md): Create a new Github Issue for a repository
-
-* **Github**: [Github Get Issue](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_get_issue/README.md): Get Github Issue from a repository
-
-* **Github**: [Github Comment on an Issue](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_issue_comment/README.md): Add a comment to the selected GitHub Issue
-
-* **Github**: [Github List Open Issues](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_open_issues/README.md): List open Issues in a Github Repository
-
-* **Github**: [Github List Stale Issues](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Github/legos/github_list_stale_issues/README.md): List Stale Github Issues that have crossed a certain age limit.
+* **AWS**: [AWS ECS Services without AutoScaling policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ecs_services_without_autoscaling/README.md): AWS ECS Services without AutoScaling policy.
 
 
 # Actions By Connector:
