@@ -27,6 +27,11 @@ def sanitize(ipynbFile: str = '') -> bool:
     new_cells = []
     cells = nb.get("cells")
     for cell in cells:
+        # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
+        if cell.get('metadata').get('tags') and 'unSkript.nbParam' in cell.get('metadata').get('tags'):
+            print("SKIPPING FIRST CELL")
+            continue
+
         cell_type = cell.get('cell_type')
         if cell_type == 'code':
             # Reset CredntialsJson
@@ -74,6 +79,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     for f in filelist:
+        print(f"Processing {f}")
         if f.endswith('.ipynb'):
             if sanitize(f):
                 print(u'\u2713', f"Updated Notebook {f}")

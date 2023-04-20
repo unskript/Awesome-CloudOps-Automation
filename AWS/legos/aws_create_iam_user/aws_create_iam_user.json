@@ -8,6 +8,5 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_categories": [  "CATEGORY_TYPE_SECOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_IAM" ,"CATEGORY_TYPE_IAM"  ]
-
   }
   

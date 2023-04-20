@@ -10,11 +10,16 @@ jobs:
       GITHUB_ONLY_TAG: ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
       GITHUB_CHANGELOG: ${{ steps.tag_version.outputs.changelog }}
     steps:
-      - uses: actions/checkout@v3 
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0 
       - run: git fetch --prune --unshallow
       - name: Bump version and push 
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
+        uses: mathieudutour/github-tag-action@fcfbdceb3093f6d85a3b194740f8c6cec632f4e2 # v6.1
         with:
           github_token: ${{ secrets.BUILDER_PAT }}
           dry_run: true
@@ -45,7 +50,7 @@ jobs:
           cat /tmp/docker_rn.md
 
       - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e # v1.12.0
         with:
           tag: ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
           name: Release ${{ steps.sanitize_tag.outputs.GITHUB_ONLY_TAG }}
