@@ -14,7 +14,7 @@ This Lego revoke policy from IAM User.
         user_name: The name of the IAM user from whom to revoke the policy.
 
 ## Lego Input
-This Lego take four inputs handle, log_group_name, log_stream_name and region.
+This Lego takes 3 inputs, handle, policy_arn and user_name.
 
 ## Lego Output
 Here is a sample output.
