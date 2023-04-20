@@ -27,8 +27,8 @@ def sanitize(ipynbFile: str = '') -> bool:
     new_cells = []
     cells = nb.get("cells")
     for cell in cells:
-        # Lets make sure Cell Metadata exists, then check if tags exists only then check if it matches the first cell
-        if cell.get('metadata') and cell.get('metadata').get('tags') and 'unSkript.nbParam' in cell.get('metadata').get('tags'):
+        # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
+        if cell.get('metadata').get('tags') and 'unSkript.nbParam' in cell.get('metadata').get('tags'):
             print("SKIPPING FIRST CELL")
             continue
 
