@@ -35,11 +35,11 @@ def aws_get_ttl_for_route53_records(handle, hosted_zone_id:str) -> List:
     route53Client = handle.client('route53')
     response = aws_get_paginator(route53Client, "list_resource_record_sets", "ResourceRecordSets", HostedZoneId=hosted_zone_id)
     result = []
-    for record_set in response['ResourceRecordSets']:
+    for record in response:
         records = {}
-        record_name = record_set['Name']
-        record_type = record_set['Type']
-        record_ttl = record_set.get('TTL', 'N/A')
+        record_name = record.get('Name')
+        record_type = record.get('Type')
+        record_ttl = record.get('TTL', 'N/A')
         records["record_name"] = record_name
         records["record_type"] = record_type
         records["record_ttl"] = record_ttl

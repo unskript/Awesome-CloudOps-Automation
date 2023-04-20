@@ -214,7 +214,7 @@ All contributions are **greatly appreciated**. Check out our [Contribution Guide
 
 
 ## Extending Docker
-You can use our base docker to extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create you own custom docker.
+You can use our base docker and extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create and build you own custom docker.
 
 <br/>
 

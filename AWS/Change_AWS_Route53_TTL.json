@@ -1,0 +1,10 @@
+{
+    "name": "Change AWS Route53 TTL",
+    "description": "For a record in a hosted zone, lower TTL means that more queries arrive at the name servers because the cached values expire sooner. If you configure a higher TTL for your records, then the intermediate resolvers cache the records for longer time. As a result, there are fewer queries received by the name servers. This configuration reduces the charges corresponding to the DNS queries answered. However, higher TTL slows the propagation of record changes because the previous values are cached for longer periods. This Runbook can be used to configure a higher value of a TTL .",
+    "uuid": "a0773e52a3a3a8688e47a9e10eba1c680913d28a9a8c4466113181534bd1f972",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
+  
