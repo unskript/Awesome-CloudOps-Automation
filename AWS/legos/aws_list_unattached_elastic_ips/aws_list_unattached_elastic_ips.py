@@ -4,7 +4,6 @@
 ##
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
-from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 
@@ -39,13 +38,15 @@ def aws_list_unattached_elastic_ips(handle, region: str = "") -> Tuple:
     for reg in all_regions:
         try:
             # Filtering the public_ip by region
-            ec2Client = handle.resource('ec2', region_name=reg)
-            all_eips = ec2Client.vpc_addresses.all()
-            for eip in all_eips:
+            ec2Client = handle.client('ec2', region_name=reg)
+            all_eips = ec2Client.describe_addresses()
+            for eip in all_eips["Addresses"]:
                 vpc_data = {}
-                if not eip.instance_id and not eip.network_interface_id:
-                    vpc_data["public_ip"] = eip.public_ip
+                if 'AssociationId' not in eip:
+                    vpc_data["public_ip"] = eip['PublicIp']
+                    vpc_data["allocation_id"] = eip['AllocationId']
                     vpc_data["region"] = reg
+                    result.append(vpc_data)
         except Exception as e:
             pass
 

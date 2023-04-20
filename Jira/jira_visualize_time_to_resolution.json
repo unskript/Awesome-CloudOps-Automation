@@ -1,0 +1,9 @@
+{
+  "name": "Jira Visualize Issue Time to Resolution",
+  "description": "Using the Panel Library - visualize the time it takes for issues to close over a specifict timeframe",
+  "uuid": "1d6f5420dc07075e60bb98018e5447658679ab5b50d7247b4385395a0b6e2989",
+  "icon": "CONNECTOR_TYPE_JIRA",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SRE" ],
+  "connector_types": [ "CONNECTOR_TYPE_JIRA" ],
+  "version": "1.0.0"
+}

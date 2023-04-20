@@ -1,0 +1,12 @@
+{
+  "action_title": "AWS Start IAM Policy Generation ",
+  "action_description": "Given a region, a CloudTrail ARN (where the logs are being recorded), a reference IAM ARN (whose usage we will parse), and a Service role, this will begin the generation of a IAM policy.  The output is a String of the generation Id.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "AWS_Start_IAM_Policy_Generation",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_STR",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+  "action_categories": ["CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_IAM"]
+}

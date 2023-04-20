@@ -73,5 +73,5 @@ def aws_get_alb_listeners_without_http_redirect(handle, region: str = "") -> Tup
     if len(result) != 0:
         return (False, result)
     else:
-        return (True, [])
+        return (True, None)
     

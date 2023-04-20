@@ -3,34 +3,44 @@
 ##  All rights reserved.
 ##
 import pprint
-
-from pydantic import BaseModel
-from typing import Dict
+from pydantic import BaseModel, Field
+from typing import List
 
 class InputSchema(BaseModel):
-    pass
+    max_results: int = Field(
+        title='Maximum Results',
+        description='Threshold to get maximum result.'
+    )
 
 
-pp = pprint.PrettyPrinter(indent=2)
+def stripe_get_all_customers_printer(output):
+    if isinstance(output, (list, tuple)):
+        pprint.pprint(output)
+    elif isinstance(output, dict):
+        pprint.pprint(output)
+    else:
+        pprint.pprint(output)
 
 
-def legoPrinter(func):
-    def Printer(*args, **kwargs):
-        output = func(*args, **kwargs)
-        print('\n\n')
-        pp.pprint(output)
-        return output
-    return Printer
+def stripe_get_all_customers(handle, max_results: int = 25) -> List:
+    """stripe_get_all_customers Returns a list of customers that was perviously created.
 
+        :type max_results: int
+        :param max_results: Threshold to get maximum result.
 
-@legoPrinter
-def stripe_get_all_customers(handle) -> Dict:
-    """stripe_get_all_customers Returns a list of customers that was perviously created. The
-        charges are returned in sorted order, with the most recent charges appearing first.
-        
-        :rtype: Returns the results of all recent charges.
+        :rtype: Returns the results of all customers.
     """
     # Input param validation.
+    result = []
+    try:
+        if max_results == 0:
+            output = handle.Customer.list(limit=100)
+            for customer in output.auto_paging_iter():
+                result.append(customer)
+        else:
+            output = handle.Customer.list(limit=max_results)
+            result = output["data"]
+    except Exception as e:
+        print(e)
 
-    output = handle.Customer.list()
-    return output
+    return result

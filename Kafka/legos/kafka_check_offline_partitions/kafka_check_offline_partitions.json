@@ -1,0 +1,17 @@
+{
+    "action_title": "Kafka Check Offline Partitions",
+    "action_description": "Checks the number of offline partitions.",
+    "action_type": "LEGO_TYPE_KAFKA",
+    "action_entry_function": "kafka_check_offline_partitions",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true,
+    "action_verbs": ["filter"],
+    "action_nouns": ["aws","instances","untagged"],
+    "action_is_check": true,
+    "action_categories": [],
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {}
+}
+    

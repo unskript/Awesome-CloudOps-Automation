@@ -8,8 +8,7 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_is_check":true,
-    "action_categories": ["CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT"],
+    "action_categories": ["CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_CLOUDTRAIL"],
     "action_next_hop": ["c4d55f5dd5bb964460f4ad7335daa8bb094792b0d64149dbddca019513f05598"],
     "action_next_hop_parameter_mapping": {}
 }
-  

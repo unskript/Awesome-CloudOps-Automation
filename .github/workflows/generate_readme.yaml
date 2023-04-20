@@ -20,8 +20,7 @@ jobs:
     - run: "pip install notebook"
     - run: "pip install papermill"
     - run: "pip install Markdown==3.3.7"
-    - run: "jupyter nbconvert --execute generate_readme.ipynb --inplace"
-    - run: "jupyter nbconvert --clear-output --inplace generate_readme.ipynb"
+    - run: "jupyter nbconvert --execute generate_readme.ipynb"
     - uses: EndBug/add-and-commit@61a88be553afe4206585b31aa72387c64295d08b # v9.1.1
       with:
         message: 'generateReadme: Refresh'
@@ -63,7 +62,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: '${{ secrets.GENERATE_README }}'
       with:
-        source_file: 'lists/xRunBook_list.md'
+        source_file: 'lists/.'
         destination_repo: 'unskript/docs'
         destination_folder: 'lists'
         user_email: 'doug.sillars@gmail.com'

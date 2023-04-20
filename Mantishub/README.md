@@ -1,5 +1,3 @@
 
-
- # Mantishub Actions 
-
-* [Mantishub get handle.py](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mantishub/legos/mantishub_get_handle) 
+# Mantishub Actions
+* [Get Mantishub handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mantishub/legos/mantishub_get_handle/README.md): Get Mantishub handle

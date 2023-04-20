@@ -25,10 +25,8 @@ def jira_get_issue_status_printer(output):
 
 def jira_get_issue_status(hdl: JIRA, issue_id: str):
     """jira_get_issue_status get issue status
-
         :type issue_id: str
         :param issue_id: Issue ID.
-
         :rtype:
     """
     # Input param validation.

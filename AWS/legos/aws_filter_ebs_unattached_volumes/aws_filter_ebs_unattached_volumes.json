@@ -4,12 +4,12 @@
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_filter_ebs_unattached_volumes",
     "action_needs_credential": true,
-    "action_output_type": "ACTION_OUTPUT_TYPE_OBJECT",
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_is_check":true,
     "action_supports_poll": true,
     "action_supports_iteration": true,
-    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
     "action_next_hop": ["da23633be34037f023e1c1f56220ec75eb2729d7d8eb2bca9badec15ed0fd2ca"],
-    "action_next_hop_parameter_mapping": {}
+    "action_next_hop_parameter_mapping": {},
+    "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_AWS_EBC" ]
 }
   

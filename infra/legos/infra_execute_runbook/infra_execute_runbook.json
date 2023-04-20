@@ -1,0 +1,11 @@
+{
+    "action_title": "Infra: Execute runbook",
+    "action_description": "Infra: use this action to execute particular runbook with given input parameters.",
+    "action_type": "LEGO_TYPE_INFRA",
+    "action_entry_function": "infra_execute_runbook",
+    "action_needs_credential": false,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_STR",
+    "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_INFRA" ]
+}
