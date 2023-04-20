@@ -48,13 +48,16 @@ def aws_list_clusters_with_low_utilization(handle, region: str = "", threshold: 
             ecs_Client = handle.client('ecs', region_name=reg)
             response = aws_get_paginator(ecs_Client, "list_clusters", "clusterArns")
             for cluster in response:
+                cluster_dict = {}
                 cluster_name = cluster.split('/')[1]
                 stats = ecs_Client.describe_clusters(clusters=[cluster])['clusters'][0]['statistics']
                 for stat in stats:
                     if stat['name'] == 'CPUUtilization':
                         cpu_utilization = int(stat['value'])
                         if cpu_utilization < threshold:
-                            result.append(cluster_name)
+                            cluster_dict["cluster_name"] = cluster_name
+                            cluster_dict["region"] = reg
+                            result.append(cluster_dict)
         except Exception as e:
             pass
 
