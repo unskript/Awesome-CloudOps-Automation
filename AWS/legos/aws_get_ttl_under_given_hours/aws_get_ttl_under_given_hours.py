@@ -45,7 +45,12 @@ def aws_get_ttl_under_given_hours(handle, threshold: int = 1) -> Tuple:
                 if isinstance(record_ttl['record_ttl'], str):
                     continue
                 elif record_ttl['record_ttl'] < seconds:
-                    result.append(record_ttl)
+                    records = {}
+                    records["hosted_zone_id"] = zone['Id']
+                    records["record_name"] = record_ttl['record_name']
+                    records["record_type"] = record_ttl['record_type']
+                    records["record_ttl"] = record_ttl['record_ttl']
+                    result.append(records)
     except Exception as e:
         pass
     
