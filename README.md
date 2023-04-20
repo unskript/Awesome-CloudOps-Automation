@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=466&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=54&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=474&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=61&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -33,7 +33,7 @@
 
 
 ## Mission
-Simplify CloudOps automation for developers and DevOps engineers. 
+Simplify CloudOps automation for DevOps and SRE teams
 
 ## Vision 
 A single repository to satisfy all your day-to-day CloudOps automation needs. Automate your workflows with our *Actions* that build automated *RunBooks*. 
@@ -85,12 +85,8 @@ docker run -it -p 8888:8888 \
 
 # Open and Use a xRunBook
 
-|**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
-| :---: | :---: |
-| Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb. | Once you have completed the Onboarding Flow, every RunBook can be found in the xRunBooks link, under the *unSkript xRunBooks* tab |
-| A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. | You can Search, or select a category or RunBook. To open a xRunBook, Click the 3 dot menu and import into your workspace. |
-
-
+Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
+A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. 
 
 
 1. Check the `Parameters` button at the top of the page. This lists all of the input parameters, and the default values.  Change them as needed.
@@ -108,13 +104,18 @@ docker run -it -p 8888:8888 \
   | **Category**                                                                                               | **Runbooks**                                                                                                                                                                 | **URL**                                                                                                    |
   | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
   |AWS |[AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Access_Key_Rotation.ipynb) | 
-|AWS |[AWS Add Mandatory tags to EC2](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Add_Mandatory_tags_to EC2.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Add_Mandatory_tags_to EC2.ipynb) | 
+|AWS |[AWS Add Mandatory tags to EC2](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Add_Mandatory_tags_to_EC2.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Add_Mandatory_tags_to_EC2.ipynb) | 
 |AWS |[Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Add_new_IAM_user.ipynb) | 
 |AWS |[Change AWS EBS Volume To GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | 
+|AWS |[Change AWS Route53 TTL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_Route53_TTL.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Change_AWS_Route53_TTL.ipynb) | 
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
 |AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
 |AWS |[Create IAM User with policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Create_IAM_User_with_policy.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Create_IAM_User_with_policy.ipynb) | 
+|AWS |[Delete EBS Volume With Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | 
+|AWS |[Delete Old EBS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Old_EBS_Snapshots.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Old_EBS_Snapshots.ipynb) | 
 |AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 
+|AWS |[Delete Unused AWS Log Streams](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Log_Streams.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_Log_Streams.ipynb) | 
+|AWS |[Delete Unused AWS NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_NAT_Gateways.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_NAT_Gateways.ipynb) | 
 |AWS |[Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Secrets.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_Secrets.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_Instance_from_ASG.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG and Load balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_ec2_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_ec2_Instance_from_ASG.ipynb) | 
@@ -124,10 +125,12 @@ docker run -it -p 8888:8888 \
 |AWS |[Enforce Mandatory Tags Across All AWS Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Enforce_Mandatory_Tags_Across_All_AWS_Resources.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Enforce_Mandatory_Tags_Across_All_AWS_Resources.ipynb) | 
 |AWS |[Handle AWS EC2 Instance Scheduled to retire](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Find_EC2_Instances_Scheduled_to_retire.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Find_EC2_Instances_Scheduled_to_retire.ipynb) | 
 |AWS |[Get unhealthy EC2 instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Get_Aws_Elb_Unhealthy_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Get_Aws_Elb_Unhealthy_Instances.ipynb) | 
+|AWS |[Create an IAM user using Principle of Least Privilege](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/IAM_security_least_privilege.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/IAM_security_least_privilege.ipynb) | 
 |AWS |[Lowering AWS CloudTrail Costs by Removing Redundant Trails](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Lowering_AWS_CloudTrail_Costs_by_Removing_Redundant_Trails.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Lowering_AWS_CloudTrail_Costs_by_Removing_Redundant_Trails.ipynb) | 
 |AWS |[Monitor AWS DynamoDB provision capacity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Monitor_AWS_DynamoDB_provision_capacity.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Monitor_AWS_DynamoDB_provision_capacity.ipynb) | 
 |AWS |[List unused Amazon EC2 key pairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Notify_about_unused_keypairs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Notify_about_unused_keypairs.ipynb) | 
 |AWS |[Publicly Accessible Amazon RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Publicly_Accessible_Amazon_RDS_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Publicly_Accessible_Amazon_RDS_Instances.ipynb) | 
+|AWS |[Release Unattached AWS Elastic IPs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Release_Unattached_AWS_Elastic_IPs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Release_Unattached_AWS_Elastic_IPs.ipynb) | 
 |AWS |[Remediate unencrypted S3 buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Remediate_unencrypted_S3_buckets.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Remediate_unencrypted_S3_buckets.ipynb) | 
 |AWS |[Renew AWS SSL Certificates that are close to expiration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Renew_SSL_Certificate.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Renew_SSL_Certificate.ipynb) | 
 |AWS |[Resize EBS Volume](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Resize_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Resize_EBS_Volume.ipynb) | 
@@ -187,11 +190,8 @@ All contributions are **greatly appreciated**. Check out our [Contribution Guide
 
 
 ## Create a new xRunBook:
-  |**`Open Source Docker`**    | **`             Free Trial: Cloud             `** |
-| :---: | :---: |
-| Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open. | From the xRunBooks Page, Click the **Create New** button. Name you xRunBook, Give it a description, and choose your proxy.  |
-| Your saved xRunBook can be found at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` | Once you save your xRunBook, navigate to the xRunBooks listing.  The 3 dot menu next to your RunBook has a "Download" option. | 
-
+Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open.
+Your saved xRunBook can be found at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks```
 
   1. All created RunBooks have a ipynb file. You'll need to create a .json file with metadata about your RunBook.  Copy from another RunBook un the repository.
   2. Copy the saved RunBook from the Custom folder into the folder of the Connector used, and submit a PR!
@@ -210,11 +210,8 @@ All contributions are **greatly appreciated**. Check out our [Contribution Guide
 1. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
 2.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
 
-
-
-
 ## Extending Docker
-You can use our base docker and extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create and build you own custom docker.
+You can use our base docker and extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create and build your own custom docker.
 
 <br/>
 
