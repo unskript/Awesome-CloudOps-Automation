@@ -1,0 +1,11 @@
+{
+    "name": "Delete Unused AWS NAT Gateways",
+    "description": "This runbook can be used to identify and remove any unused NAT Gateways. This allows us to adhere to best practices and avoid unnecessary costs. NAT gateways are used to connect a private instance with outside networks. When a NAT gateway is provisioned, AWS charges you based on the number of hours it was available and the data (GB) it processes.",
+    "uuid": "26da5206a0a18b30a83f9a72e0dc61408237920bf84831165974610c79875bfb",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
+  
+  
