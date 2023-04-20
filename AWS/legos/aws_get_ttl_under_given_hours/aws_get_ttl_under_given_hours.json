@@ -8,7 +8,7 @@
   "action_supports_iteration": "true",
   "action_supports_poll": "true",
   "action_is_check": "true",
-  "action_next_hop": [],
+  "action_next_hop": ["a0773e52a3a3a8688e47a9e10eba1c680913d28a9a8c4466113181534bd1f972"],
   "action_next_hop_parameter_mapping": {},
   "action_categories": ["CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ROUTE53"]
 }
