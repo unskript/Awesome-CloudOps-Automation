@@ -1,0 +1,9 @@
+{
+    "name": "Release Unattached AWS Elastic IPs",
+    "description": "A disassociated Elastic IP address remains allocated to your account until you explicitly release it. AWS imposes a small hourly charge for Elastic IP addresses that are not associated with a running instance. This runbook can be used to deleted those unattached AWS Elastic IP addresses.",
+    "uuid": "a9d7ea5f3d31745f1de9fb8616ab6fbc20ff11e665808bdde6a9ba9b8b32e28a",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
