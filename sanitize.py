@@ -27,6 +27,10 @@ def sanitize(ipynbFile: str = '') -> bool:
     new_cells = []
     cells = nb.get("cells")
     for cell in cells:
+        if 'unSkript.nbParam' in cell.get('metadata').get('tags'):
+            print("SKIPPING FIRST CELL")
+            continue
+
         cell_type = cell.get('cell_type')
         if cell_type == 'code':
             # Reset CredntialsJson
