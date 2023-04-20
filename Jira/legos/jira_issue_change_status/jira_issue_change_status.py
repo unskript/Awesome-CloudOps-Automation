@@ -47,9 +47,15 @@ def jira_issue_change_status(hdl: JIRA, issue_id: str, status: str, transition: 
 
     # Input param validation.
     issue = hdl.issue(issue_id)
-    if transition:
+    if transition == "":
         transitions = hdl.transitions(issue)
-        t = [t for t in transitions if t.get('name') == status]
+        # Transitions look like this
+        # {'id': '11', 'name': 'Backlog', 'to': {'self': 'https://unskript.atlassian.net/rest/api/2/status/10000', 'description': '', 'iconUrl': 'https://unskript.atlassian.net/', 'name': 'Backlog', 'id': '10000', 'statusCategory': {'self': 'https://unskript.atlassian.net/rest/api/2/statuscategory/2', 'id': 2, 'key': 'new', 'colorName': 'blue-gray', 'name': 'To Do'}}, 'hasScreen': False, 'isGlobal': True, 'isInitial': False, 'isAvailable': True, 'isConditional': False, 'isLooped': False}
+        t = [t for t in transitions if t.get('to').get('name') == status]
+        if len(t) == 0:
+            print("No transition found")
+            return
+
         if len(t) > 1:
             print("Multiple transitions possible for JIRA issue. Please select transition number to use", [
                 t.get('id') for t in transitions if t.get('name') == status])
