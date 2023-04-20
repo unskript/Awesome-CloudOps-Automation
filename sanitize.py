@@ -79,6 +79,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     for f in filelist:
+        print(f"Processing {f}")
         if f.endswith('.ipynb'):
             if sanitize(f):
                 print(u'\u2713', f"Updated Notebook {f}")
