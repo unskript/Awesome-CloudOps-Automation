@@ -8,6 +8,9 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   run-validator: 
     runs-on: ubuntu-latest 
@@ -15,7 +18,12 @@ jobs:
       fail-fast: false 
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
@@ -24,7 +32,7 @@ jobs:
           pip install shyaml
       
       - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.9'
           
