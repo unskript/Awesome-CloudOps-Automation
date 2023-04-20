@@ -32,7 +32,7 @@ jobs:
           pip install shyaml
       
       - name: Set up Python 3.x
-        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
+        uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435 # v4.5.0
         with:
           python-version: '3.9'
           
