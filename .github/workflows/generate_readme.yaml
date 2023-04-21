@@ -20,7 +20,7 @@ jobs:
     - run: "pip install notebook"
     - run: "pip install papermill"
     - run: "pip install Markdown==3.3.7"
-    - run: "jupyter nbconvert --execute generate_readme.ipynb"
+    - run: "jupyter nbconvert --to notebook --execute generate_readme.ipynb"
     - uses: EndBug/add-and-commit@61a88be553afe4206585b31aa72387c64295d08b # v9.1.1
       with:
         message: 'generateReadme: Refresh'

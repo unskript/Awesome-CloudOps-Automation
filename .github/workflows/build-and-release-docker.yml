@@ -426,6 +426,7 @@ jobs:
           git checkout ${{ inputs.unskript_branch }}
           make syncrunbooks
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp $HOME/devops/dockers/jupyterlab/common/install_utils.sh .
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
 
