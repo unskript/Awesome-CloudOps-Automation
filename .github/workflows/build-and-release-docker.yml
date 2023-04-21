@@ -187,6 +187,7 @@ jobs:
           cd awesome
           git checkout ${{ inputs.awesome_branch }}
           cd ..
+          make syncrunbooks
           make legoschema
           [ -f "setup-full.py" ] &&  cp "setup-full.py" ./setup.py
           /usr/bin/env python ./setup.py bdist_wheel 
