@@ -87,6 +87,8 @@
 
 * **AWS**: [Get all Targets for Network Load Balancer (NLB)](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlb_targets/README.md): Use this action to get all targets for Network Load Balancer (NLB)
 
+* **AWS**: [AWS Get Network Load Balancer (NLB) without Targets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlbs_without_targets/README.md): Use this action to get AWS Network Load Balancer (NLB) without Targets
+
 * **AWS**: [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 
 * **AWS**: [Get AWS EC2 Instances with a public IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_public_ec2_instances/README.md): lists all EC2 instances with a public IP

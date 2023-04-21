@@ -19,6 +19,8 @@
 
 * **AWS**: [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
 
+* **AWS**: [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
+
 * **AWS**: [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret
 
 * **AWS**: [Delete AWS EBS Volume by Volume ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_volume_by_id/README.md): Delete AWS Volume by Volume ID

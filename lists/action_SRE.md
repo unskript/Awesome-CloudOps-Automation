@@ -33,6 +33,8 @@
 
 * **AWS**: [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
 
+* **AWS**: [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
+
 * **AWS**: [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
 
 * **AWS**: [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret

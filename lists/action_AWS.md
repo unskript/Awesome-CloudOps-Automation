@@ -43,6 +43,8 @@
 
 * **AWS**: [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
 
+* **AWS**: [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
+
 * **AWS**: [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
 
 * **AWS**: [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret
@@ -218,6 +220,8 @@
 * **AWS**: [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
 
 * **AWS**: [Get all Targets for Network Load Balancer (NLB)](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlb_targets/README.md): Use this action to get all targets for Network Load Balancer (NLB)
+
+* **AWS**: [AWS Get Network Load Balancer (NLB) without Targets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlbs_without_targets/README.md): Use this action to get AWS Network Load Balancer (NLB) without Targets
 
 * **AWS**: [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 

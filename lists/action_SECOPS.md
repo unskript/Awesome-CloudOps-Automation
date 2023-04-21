@@ -53,6 +53,8 @@
 
 * **AWS**: [Get all Targets for Network Load Balancer (NLB)](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlb_targets/README.md): Use this action to get all targets for Network Load Balancer (NLB)
 
+* **AWS**: [AWS Get Network Load Balancer (NLB) without Targets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlbs_without_targets/README.md): Use this action to get AWS Network Load Balancer (NLB) without Targets
+
 * **AWS**: [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
 
 * **AWS**: [AWS Get Publicly Accessible DB Snapshots in RDS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_snapshots/README.md): AWS Get Publicly Accessible DB Snapshots in RDS

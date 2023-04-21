@@ -70,6 +70,7 @@
 * [AWS Delete Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_load_balancer/README.md): AWS Delete Load Balancer
 * [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
 * [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
+* [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
 * [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
 * [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret
 * [Delete AWS EBS Volume by Volume ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_volume_by_id/README.md): Delete AWS Volume by Volume ID
@@ -163,6 +164,7 @@
 * [Get AWS Lambdas With High Error Rate](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_with_high_error_rate/README.md): Get AWS Lambda Functions that exceed a given threshold error rate.
 * [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
 * [Get all Targets for Network Load Balancer (NLB)](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlb_targets/README.md): Use this action to get all targets for Network Load Balancer (NLB)
+* [AWS Get Network Load Balancer (NLB) without Targets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlbs_without_targets/README.md): Use this action to get AWS Network Load Balancer (NLB) without Targets
 * [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 * [Get AWS EC2 Instances with a public IP](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_public_ec2_instances/README.md): lists all EC2 instances with a public IP
 * [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
