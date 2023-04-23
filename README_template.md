@@ -68,6 +68,7 @@ cd Awesome-CloudOps-Automation
 docker run -it -p 8888:8888 \
  -v $HOME/Awesome-CloudOps-Automation/custom:/data \
  -v $HOME/.unskript:/unskript \
+ -e ACA_AWESOME_MODE=1 \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
