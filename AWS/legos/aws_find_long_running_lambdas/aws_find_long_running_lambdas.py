@@ -73,7 +73,7 @@ def aws_find_long_running_lambdas(handle, days_back: int = 7, duration_threshold
                             duration_str = message_data[duration_index].strip()
                             duration = float(duration_str[:-2])
                             if duration >= duration_threshold:
-                                result.append({'function_name': function_name, 'duration': duration})
+                                result.append({'function_name': function_name, 'duration': duration, "region": reg})
                 except:
                     pass
         except Exception as error:
