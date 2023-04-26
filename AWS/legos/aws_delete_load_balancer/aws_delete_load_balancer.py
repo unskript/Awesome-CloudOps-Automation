@@ -16,7 +16,7 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region.'
         )
-    elb_arn: Optional[str] = Field(
+    elb_name: Optional[str] = Field(
     title='Load Balancer Name (Classic Type)',
     description='Load Balancer Name of the Classic ELB'
         )
