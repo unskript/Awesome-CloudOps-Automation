@@ -7,14 +7,14 @@ This Lego delete AWS load balancer.
 
 ## Lego Details
 
-    aws_delete_load_balancer(handle, region: str, elb_arn: str, elb_name:strs)
+    aws_delete_load_balancer(handle, region: str, elb_arn: str)
 
         handle: Object of type unSkript AWS Connector.
         elb_arn: load balancer ARNs.
         region: AWS Region.
 
 ## Lego Input
-This Lego take four inputs handle, elb_arn and region, elb_names.
+This Lego take three inputs handle, elb_arn and region.
 
 ## Lego Output
 Here is a sample output.
