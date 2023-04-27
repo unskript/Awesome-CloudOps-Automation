@@ -27,8 +27,8 @@ access. The utility functions uses ZoDB.
 """
 LIST OF CONSTANTS USED IN THIS FILE
 """
-PSS_DB_DIR="/data/db"
-PSS_DB_PATH="/data/db/unskript_pss.db"
+PSS_DB_DIR="/unskript/db"
+PSS_DB_PATH="/unskript/db/unskript_pss.db"
 CS_DB_PATH="/var/unskript/snippets.db"
 SNIPPETS_FILE="/var/unskript/code_snippets.json"
 CUSTOM_SNIPPETS="/data/custom/custom_snippets.json"
