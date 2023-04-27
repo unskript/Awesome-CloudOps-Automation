@@ -175,8 +175,8 @@ def list_runbooks():
             and prints the available runbook and prints in a tabular form.
     
     """
-    runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/*.ipynb')
-    runbooks += glob.glob(os.environ.get('HOME') + '/runbooks/*/*.ipynb')
+    f_path = os.environ.get('HOME') + '/runbooks'
+    runbooks =  glob.glob(f_path + '/**/*.ipynb', recursive=True)
 
     runbooks.sort()
     table = [["File Name",  "Runbook Name"]]
@@ -1159,7 +1159,7 @@ def parse_runbook_param(args):
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') == None:
-          os.environ['EXECUTION_DIR'] = '/data/execution'
+          os.environ['EXECUTION_DIR'] = '/unskript/execution'
           
         create_creds_mapping()
         load_or_create_global_configuration()

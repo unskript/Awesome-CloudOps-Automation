@@ -44,6 +44,7 @@ You can use our base docker to extend the functionality to fit your need. The st
       docker run -it -p 8888:8888 \
              -v $HOME/.unskript:/unskript  \
              -v $ACA_CUSTOM_DIR_NAME:/data \
+             -e ACA_AWESOME_MODE=1 \
              --user root \
              unskript/awesome-runbooks:latest
       ```
@@ -82,6 +83,13 @@ You can use our base docker to extend the functionality to fit your need. The st
    ```
 
    This would run your `custom docker` and you can point your browser to `http://127.0.0.1:8888/lab/tree/Welcome.ipynb`! 
+   Audit logs will not be persisted across docker deletion. In order to persist them, you can use the following command (assuming the data needs to be stored in $HOME/data)
+
+   ```
+   docker run -it -p 8888:8888 \
+       -v $HOME/data:/data  \
+       $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_VERSION 
+   ```
 
 8. Push your `custom docker` to any docker registry for redistribution.
 <br/>
