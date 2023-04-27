@@ -8,7 +8,7 @@ import pprint
 
 
 class InputSchema(BaseModel):
-    elb_arn: Optional[str] = Field(
+    elb_arn: str = Field(
         title='Load Balancer ARN (ALB/NLB type)',
         description='Load Balancer ARN of the ALB/NLB type Load Balancer.'
         )
@@ -24,7 +24,7 @@ def aws_delete_load_balancer_printer(output):
     pprint.pprint(output)
 
 
-def aws_delete_load_balancer(handle, region: str, elb_arn: str="", elb_name:str="") -> Dict:
+def aws_delete_load_balancer(handle, region: str, elb_arn: str) -> Dict:
     """aws_delete_load_balancer dict of loadbalancers info.
 
         :type region: string
