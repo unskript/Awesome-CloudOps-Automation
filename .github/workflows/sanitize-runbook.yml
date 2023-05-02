@@ -26,11 +26,14 @@ jobs:
         uses: jitterbit/get-changed-files@v1
         id: files
 
-  
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+
       - name: Run Sanitize
         run: |
           echo "Running sanitize script on ${{ steps.files.outputs.all }}"
-          for changed_file in ${{ steps.files.outputs.all }}; do
+          for changed_file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             /usr/bin/env python ./sanitize.py ${changed_file}
           done
       
