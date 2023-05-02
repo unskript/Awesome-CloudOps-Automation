@@ -15,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
@@ -25,6 +27,7 @@ jobs:
           /usr/bin/env python -m pip install gitpython
           /usr/bin/env python -m pip install PyGithub
       
+      # Example 1
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v35
