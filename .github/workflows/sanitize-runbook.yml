@@ -1,9 +1,12 @@
 name: Sanitize Runbook
 on:
   pull_request:
-    types: [opened, reopened, edited, ready_for_review]
+    types: [ opened, reopened, edited, ready_for_review ]
   push:
 
+env:
+  PR_NUMBER: ${{ github.event.number }}
+  
 jobs:
   sanitize-runbooks: 
     runs-on: ubuntu-latest 
@@ -29,6 +32,7 @@ jobs:
       - name: Get Changed Files
         uses: darmiel/changed-files@v1
         with:
+          pull-request-number: 546
           # which states should be tracked
           # default:    added,modified,removed
           # available:  added,removed,modified,renamed,copied,changed,unchanged
