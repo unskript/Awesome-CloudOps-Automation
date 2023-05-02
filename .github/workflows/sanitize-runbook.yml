@@ -26,9 +26,18 @@ jobs:
         uses: jitterbit/get-changed-files@v1
         id: files
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v35
+      - name: Get Changed Files
+        uses: darmiel/changed-files@v1
+        with:
+          # which states should be tracked
+          # default:    added,modified,removed
+          # available:  added,removed,modified,renamed,copied,changed,unchanged
+          track: added,modified,removed
+
+      - name: Combine modified and added files
+        run: |
+          cat .changed-files.{modified,added}.txt | uniq > changed_file_list.txt
+          cat changed_file_list.txt
 
       - name: Run Sanitize
         run: |
