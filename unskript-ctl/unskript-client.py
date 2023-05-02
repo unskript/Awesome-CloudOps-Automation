@@ -400,7 +400,6 @@ def update_current_execution(status, id: str, content: dict):
         pass 
     finally:
         if es != {}:
-            print(f"EXEC STATUS IS NOT EMPTY {es.get('exec_status').keys()}")
             if id in es.get('exec_status').keys():
                 prev_status = es['exec_status'].get(id).get('current_status')
             else:
@@ -684,16 +683,19 @@ def show_audit_trail(filter: str = None):
                              "\033[1m Check ID \033[0m \n \033[1m (Check Name)/(Connector) \033[0m", 
                              "\033[1m Run Status \033[0m",
                              "\033[1m Time Stamp \033[0m"]] 
-    runbook_result_table = [["\033[1m Execution ID \033[0m", 
-                             "\033[1m Runbook Name \033[0m \n \033[1m (Parameters) \033[0m", 
+    runbook_result_table = [[ "\033[1m Check Name \033[0m", 
+                             "\033[1m Failed Objects \033[0m", 
                              "\033[1m Run Status \033[0m",
                              "\033[1m Time Stamp \033[0m"]] 
     flag = -1
+    e2c_mapping = {}
     for item in pss_content.items():
         k,v = item
+        e2c_mapping[str(k)] = []
         for l,m in v.items():
             if l == 'check_status':
                 for k1,v1 in m.items():
+                    e2c_mapping[str(k)].append(str(k1))
                     if filter.lower() == k1:
                         flag = 1
                         single_result_table += [[k, 
@@ -710,18 +712,13 @@ def show_audit_trail(filter: str = None):
                 flag = 3
                 exec_status = get_pss_record('current_execution_status')
                 if exec_status:
-                    if CheckOutputStatus(exec_status.get('exec_status').get(filter).get('current_status')) == CheckOutputStatus.SUCCESS:
-                        status = 'PASS'
-                    elif CheckOutputStatus(exec_status.get('exec_status').get(filter).get('current_status')) == CheckOutputStatus.FAILED:
-                        status = 'FAIL'
-                    elif CheckOutputStatus(exec_status.get('exec_status').get(filter).get('current_status')) == CheckOutputStatus.RUN_EXCEPTION:
-                        status = 'ERROR'
-                    else:
-                        status = 'UNKNOWN'
-                    runbook_result_table += [[filter,
-                                              exec_status.get('exec_status').get(filter).get('failed_runbook'),
-                                              status,
-                                              v.get('time_stamp')
+                    if filter in e2c_mapping.keys():
+                        for _f in e2c_mapping.get(filter):
+                            c_name = exec_content.get(_f).get('check_name')
+                            runbook_result_table += [[c_name,
+                                pprint.pformat(exec_content.get(_f).get('failed_objects').get(c_name)),
+                                              exec_content.get(_f).get('status'),
+                                              exec_content.get(_f).get('time_stamp')
                                               ]]
 
             
