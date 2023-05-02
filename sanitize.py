@@ -37,7 +37,7 @@ def sanitize(ipynbFile: str = '') -> bool:
             # Reset CredntialsJson
             cell['metadata']['credentialsJson'] = {}
             # Cleanout output
-            cell['output'] = {}
+            cell['outputs'] = {}
             # Delete source CredntialsJson
             del_cred = re.sub(r"(task.configure\(credentialsJson.*?\'\'\'\))","", str(cell['source']), re.DOTALL)
             cell['source'] = ast.literal_eval(del_cred)
