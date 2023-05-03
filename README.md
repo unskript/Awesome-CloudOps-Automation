@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=477&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=61&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=477&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=62&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -114,6 +114,7 @@ A table lists the xRunBooks that are available. Click on the URL of the xRunBook
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
 |AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
 |AWS |[Create IAM User with policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Create_IAM_User_with_policy.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Create_IAM_User_with_policy.ipynb) | 
+|AWS |[Delete EBS Volume Attached to Stopped Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_EBS_Volumes_Attached_To_Stopped_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_EBS_Volumes_Attached_To_Stopped_Instances.ipynb) | 
 |AWS |[Delete EBS Volume With Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | 
 |AWS |[Delete Old EBS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Old_EBS_Snapshots.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Old_EBS_Snapshots.ipynb) | 
 |AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 
