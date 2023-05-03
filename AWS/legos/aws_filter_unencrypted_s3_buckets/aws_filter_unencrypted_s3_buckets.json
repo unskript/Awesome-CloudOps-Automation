@@ -10,6 +10,6 @@
     "action_supports_iteration": true,
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_SECOPS", "CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_S3" ],
     "action_next_hop":["50d9c6abd7dce3ff9183d4135353e82859bc5a9639455b35bd229331be6048df"],
-    "action_next_hop_parameter_mapping":{}
+    "action_next_hop_parameter_mapping":{"region": ".[].region", "bucket_name":".[].bucket"}
 
 }
