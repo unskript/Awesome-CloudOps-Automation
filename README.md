@@ -58,7 +58,7 @@ docker run -it -p 8888:8888 \
 You can find more information around how to use and play with Runbooks.sh in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
 
 ## 📚 Documentation
-Dive deeper into Runbooks.sh by visiting our comprehensive documentation. Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
+Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
 
 ## 🤝 Contributing
 We welcome contributions from developers of all skill levels! Check out our [Contribution Guidelines](.github/CONTRIBUTING.md) to learn how you can contribute to *Runbooks.sh*.
@@ -70,7 +70,7 @@ Except as otherwise noted **Runbooks.sh** is licensed under the *[Apache License
 Connect with other **Runbooks.sh** users and contributors by joining our [Slack workspace](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation). Share your experiences, ask questions, and collaborate on this exciting project!
 
 ## 📣 Stay Informed
-Keep up-to-date with the latest news, updates, and announcements by following us on Twitter and Linkedin.
+Keep up-to-date with the latest news, updates, and announcements by following us on [Twitter](https://twitter.com/UnSkript) and [Linkedin](https://www.linkedin.com/company/unskript-inc/).
 
 Together, let's make Runbooks.sh the go-to solution for runbook automation and cloud infrastructure management!
 
