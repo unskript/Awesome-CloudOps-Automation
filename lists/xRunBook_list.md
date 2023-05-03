@@ -70,4 +70,4 @@
 * [Rollback Kubernetes Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb): This runbook can be used to rollback Kubernetes Deployment
 
 # Postgresql
-* [Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb): This runbook displays collects the long running queries from a database and sends a message to the specified slack channel. Poorly optimized queries and excessive connections can cause problems in PostgreSQL, impacting upstream services.
+* [Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Postgresql_Display_Long_Running.ipynb): This runbook displays collects the long running queries from a database and sends a message to the specified slack channel. Poorly optimized queries and excessive connections can cause problems in PostgreSQL, impacting upstream services.
