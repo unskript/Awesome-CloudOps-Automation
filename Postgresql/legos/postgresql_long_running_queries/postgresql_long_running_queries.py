@@ -12,9 +12,8 @@ from pydantic import BaseModel, Field
 class InputSchema(BaseModel):
     interval: Optional[int] = Field(
         default=5,
-        title='Interval(in minutes)',
+        title='Interval (in seconds)',
         description='Return queries running longer than interval')
-
 
 def postgresql_long_running_queries_printer(output):
     if output is None:
@@ -30,16 +29,16 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
           :param handle: Object returned from task.validate(...).
 
           :type interval: int
-          :param interval: Interval(in seconds).
+          :param interval: Interval (in seconds).
 
           :rtype: All the results of the query.
       """
     # Input param validation.
 
-    # Multi-line will create an issue when we package the Legos.
-    # Hence concatinating it into a single line.
-    query = "SELECT pid, user, pg_stat_activity.query_start, now() - pg_stat_activity.query_start AS query_time, query, state " \
-        " FROM pg_stat_activity WHERE state = 'active' AND (now() - pg_stat_activity.query_start) > interval '%d minutes';" % interval
+    query = "SELECT pid, user, pg_stat_activity.query_start, now() - " \
+        "pg_stat_activity.query_start AS query_time, query, state " \
+        " FROM pg_stat_activity WHERE state = 'active' AND (now() - " \
+        "pg_stat_activity.query_start) > interval '%d seconds';" % interval
 
     cur = handle.cursor()
     cur.execute(query)
