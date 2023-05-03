@@ -29,6 +29,8 @@ from argparse import ArgumentParser, REMAINDER
 from enum import Enum, EnumMeta
 from db_utils import *
 
+from jupyter_client import KernelManager
+
 import ZODB, ZODB.FileStorage
 from ZODB import DB
 
@@ -220,13 +222,15 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
     client = NotebookClient(nb=nb, kernel_name="python3")
 
     try:
-        client.execute()
+        execution = client.execute()
     except CellExecutionError as e:
         raise e
     finally:
-        nbformat.write(nb, "/tmp/output.ipynb")
+        output_file = filename
+        output_file = output_file.replace('.ipynb', '_output.ipynb')
+        nbformat.write(nb, output_file)
         new_nb = None
-        with open("/tmp/output.ipynb", "r") as f:
+        with open(output_file, "r") as f:
             new_nb = nbformat.read(f, as_version=4)
         outputs = get_last_code_cell_output(new_nb.dict())
     
@@ -234,7 +238,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
     if len(outputs) == 0:
         raise Exception("Unable to execute Runbook. Last cell content is empty")
-
+ 
     results = outputs[0]
     idx = 0
     r = results.get('text')
@@ -452,7 +456,7 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    failed_notebook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
+    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
@@ -633,9 +637,12 @@ def display_failed_checks(connector: str = ''):
     print("")
 
 
+def display_failed_logs(exec_id: str = None):
+    pass 
+
 
 def show_audit_trail(filter: str = None):
-    """display_failed_logs This function reads the failed logs for a given execution ID
+    """show_audit_trail This function reads the failed logs for a given execution ID
        When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']/failed/<UUID>.log
 
     :type filter: string
@@ -660,7 +667,11 @@ def show_audit_trail(filter: str = None):
         for item in pss_content.items():
             k,v = item
             summary_text = "\033[1m" + v.get('summary') + "\033[0m"
-            each_row = [[k, summary_text, v.get('time_stamp')]]
+            check_names = "\033[1m" + str(k) + '\n'  + "\033[0m"
+            for k1,v1 in v.get('check_status').items():
+                check_names += "    " + v1.get('check_name') + ' [' 
+                check_names += "\033[1m" +  v1.get('status') + "\033[0m" + ']' + '\n'
+            each_row = [[check_names, summary_text, v.get('time_stamp')]]
             all_result_table += each_row
 
         print(tabulate(all_result_table, headers='firstrow', tablefmt='fancy_grid'))
@@ -675,10 +686,10 @@ def show_audit_trail(filter: str = None):
         if exec_content == {}:
             print("SYSTEM ERROR: Not able to print trail logs")
             return 
-    connector_result_table = [["\033[1m Execution ID \033[0m", 
-                             "\033[1m Check ID \033[0m \n \033[1m (Check Name) \033[0m", 
-                             "\033[1m Run Status \033[0m",
-                             "\033[1m Time Stamp \033[0m"]]
+    connector_result_table = [["\033[1m Check Name \033[0m", 
+                             "\033[1m Run Status \033[0m", 
+                             "\033[1m Time Stamp \033[0m",
+                             "\033[1m Execution ID \033[0m"]]
     single_result_table = [["\033[1m Execution ID \033[0m", 
                              "\033[1m Check ID \033[0m \n \033[1m (Check Name)/(Connector) \033[0m", 
                              "\033[1m Run Status \033[0m",
@@ -705,7 +716,11 @@ def show_audit_trail(filter: str = None):
                         break
                     elif filter.lower() == v1.get('connector'):
                         flag = 2
-                        connector_result_table += [[k, k1 + '\n' + '( ' + v1.get('check_name') + ' )', v1.get('status'), v.get('time_stamp')]]
+                        #connector_result_table += [[k, k1 + '\n' + '( ' + v1.get('check_name') + ' )', v1.get('status'), v.get('time_stamp')]]
+                        connector_result_table += [[ v1.get('check_name'),
+                                                     v1.get('status'),
+                                                     v.get('time_stamp'),
+                                                     k]]
                         #pprint.pprint(f"{k} {k1} {v1}")
         if flag == -1:
             if str(k) == filter:
@@ -1176,6 +1191,7 @@ if __name__ == "__main__":
     parser.add_argument('-df', '--display-failed-checks', help='Display Failed Checks [all | connector]')
     parser.add_argument('-lc', '--list-checks', type=str, help='List available checks, [all | connector]')
     parser.add_argument('-sa', '--show-audit-trail', type=str, help='Show audit trail [all | connector | execution_id]')
+    parser.add_argument('-dl', '--display-failed-logs', type=str, help='Display failed logs  [execution_id]')
 
     args = parser.parse_args()
 
@@ -1200,5 +1216,7 @@ if __name__ == "__main__":
         list_checks_by_connector(args.list_checks)
     elif args.show_audit_trail not in ('', None):
         show_audit_trail(args.show_audit_trail)
+    elif args.display_failed_logs not in ('', None):
+        display_failed_logs(args.display_failed_logs)
     else:
         parser.print_help() 
