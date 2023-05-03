@@ -29,6 +29,7 @@ from argparse import ArgumentParser, REMAINDER
 from enum import Enum, EnumMeta
 from db_utils import *
 
+from jupyter_client import KernelManager
 
 import ZODB, ZODB.FileStorage
 from ZODB import DB
@@ -744,6 +745,8 @@ def show_audit_trail(filter: str = None):
                     if filter in e2c_mapping.keys():
                         for _f in e2c_mapping.get(filter):
                             c_name = exec_content.get(_f).get('check_name')
+                            if not exec_content.get(_f).get('failed_objects') or not exec_content.get(_f).get('failed_objects').get(c_name):
+                                continue
                             runbook_result_table += [[c_name,
                                 pprint.pformat(exec_content.get(_f).get('failed_objects').get(c_name)),
                                               exec_content.get(_f).get('status'),
