@@ -340,6 +340,8 @@
 
 * [List all Public GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets/README.md): List all publicly available GCP buckets
 
+* [List all GCP VMs and if Publicly Accessible](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_vms_access/README.md): Lists all GCP buckets, and identifies those tha are public.
+
 * [Remove role from user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role/README.md): GCP lego for removing a role from a user (default: 'viewer')
 
 * [GCP Resize a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_resize_gke_cluster/README.md): GCP Resize a GKE cluster by modifying nodes
