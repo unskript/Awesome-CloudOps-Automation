@@ -388,7 +388,6 @@ def update_current_execution(status, id: str, content: dict):
         print("ERROR: Cannot Update Failed execution with No Content")
         return
 
-    execution_file = os.environ.get('EXECUTION_DIR').strip('"') + '/execution_summary.yaml'
     failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + f"{id}.ipynb"
 
     
@@ -638,8 +637,24 @@ def display_failed_checks(connector: str = ''):
 
 
 def display_failed_logs(exec_id: str = None):
-    pass 
+    output = os.environ.get('EXECUTION_DIR', '/unskript/execution').strip('"') + '/workspace/' + f"{exec_id}_output.ipynb"
+    if not os.path.exists(output):
+        print(f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
+        return 
 
+    with open(output, 'r') as f:
+        nb = nbformat.read(f, as_version=4)
+    output = '' 
+    for cell in nb.get('cells'):
+        if cell.get('outputs'):
+            cell_output = cell.get('outputs')[0]
+            if cell.get('metadata').get('name'):
+                output += f"\033[1m {cell.get('metadata').get('name')} \033[0m" + '\n'
+            else:
+                output += f"\033[1m Summary \033[0m" + '\n'
+            if cell_output.get('text'):
+                output += cell_output.get('text') + '\n'
+    print(output)
 
 def show_audit_trail(filter: str = None):
     """show_audit_trail This function reads the failed logs for a given execution ID
