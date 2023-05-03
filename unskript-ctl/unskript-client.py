@@ -29,7 +29,6 @@ from argparse import ArgumentParser, REMAINDER
 from enum import Enum, EnumMeta
 from db_utils import *
 
-from jupyter_client import KernelManager
 
 import ZODB, ZODB.FileStorage
 from ZODB import DB
