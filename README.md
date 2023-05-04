@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=476&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=61&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=477&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=62&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -62,15 +62,18 @@ git clone https://github.com/unskript/Awesome-CloudOps-Automation
 cd Awesome-CloudOps-Automation
 ```
 
-2.  Launch Docker. (if you used a different directory in #1, update that in the first ```-v``` line.)
+2.  Launch Docker.  (if you used a different directory in #1, update that in the first ```-v``` line.)
 
 ```
 docker run -it -p 8888:8888 \
  -v $HOME/Awesome-CloudOps-Automation/custom:/data \
  -v $HOME/.unskript:/unskript \
+ -e ACA_AWESOME_MODE=1 \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
+
+2a. If you wish a non-development version of the Docker (where your RunBooks and Credentials are not synced to the local machine), omit the ```-v``` and ```-e``` lines.
 
 * [YouTube Playlist with step by step guides](https://www.youtube.com/watch?v=QT0sghAo_t0&list=PLG7TPzTSJYkfCAtWKpdTjlRcyS21mXsE2)
 
@@ -85,7 +88,7 @@ docker run -it -p 8888:8888 \
 
 # Open and Use a xRunBook
 
-Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
+Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/awesome.
 A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. 
 
 
@@ -111,6 +114,7 @@ A table lists the xRunBooks that are available. Click on the URL of the xRunBook
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
 |AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
 |AWS |[Create IAM User with policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Create_IAM_User_with_policy.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Create_IAM_User_with_policy.ipynb) | 
+|AWS |[Delete EBS Volume Attached to Stopped Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_EBS_Volumes_Attached_To_Stopped_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_EBS_Volumes_Attached_To_Stopped_Instances.ipynb) | 
 |AWS |[Delete EBS Volume With Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | 
 |AWS |[Delete Old EBS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Old_EBS_Snapshots.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Old_EBS_Snapshots.ipynb) | 
 |AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 
@@ -163,7 +167,7 @@ A table lists the xRunBooks that are available. Click on the URL of the xRunBook
 |Kubernetes |[k8s: Resize List of PVCs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_List_of_PVCs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_List_of_PVCs.ipynb) | 
 |Kubernetes |[k8s: Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_PVC.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_PVC.ipynb) | 
 |Kubernetes |[Rollback Kubernetes Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | 
-|Postgresql |[Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Postgresql/Display_Postgresql_Long_Running.ipynb) | 
+|Postgresql |[Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Postgresql_Display_Long_Running.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Postgresql/Postgresql_Display_Long_Running.ipynb) | 
 
 </details>
 

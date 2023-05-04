@@ -62,15 +62,18 @@ git clone https://github.com/unskript/Awesome-CloudOps-Automation
 cd Awesome-CloudOps-Automation
 ```
 
-2.  Launch Docker. (if you used a different directory in #1, update that in the first ```-v``` line.)
+2.  Launch Docker.  (if you used a different directory in #1, update that in the first ```-v``` line.)
 
 ```
 docker run -it -p 8888:8888 \
  -v $HOME/Awesome-CloudOps-Automation/custom:/data \
  -v $HOME/.unskript:/unskript \
+ -e ACA_AWESOME_MODE=1 \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
+
+2a. If you wish a non-development version of the Docker (where your RunBooks and Credentials are not synced to the local machine), omit the ```-v``` and ```-e``` lines.
 
 * [YouTube Playlist with step by step guides](https://www.youtube.com/watch?v=QT0sghAo_t0&list=PLG7TPzTSJYkfCAtWKpdTjlRcyS21mXsE2)
 
@@ -85,7 +88,7 @@ docker run -it -p 8888:8888 \
 
 # Open and Use a xRunBook
 
-Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
+Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/awesome.
 A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. 
 
 

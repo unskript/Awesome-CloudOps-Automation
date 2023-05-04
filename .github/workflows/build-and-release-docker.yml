@@ -143,7 +143,7 @@ jobs:
           path: /tmp/elyra-3.0.0.dev0.tar.gz
     
   build-unskript:
-    runs-on: ubuntu-20.04 
+    runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
     needs: [build-elyra]
     strategy:
@@ -167,14 +167,17 @@ jobs:
         run: |
           pip install shyaml
           sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7 
+
       
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
-          python-version: '3.7'
+          python-version: '3.9'
 
       - name: Checkout Code
         run: |
+          wget -O /tmp/pandas-2.0.1.tar.gz https://files.pythonhosted.org/packages/6c/e0/73987b6ecc7246e02ab557240843f93fd5adf45d1355abb458aa1f2a0932/pandas-2.0.1.tar.gz
+          sudo pip install /tmp/pandas-2.0.1.tar.gz
           cd $HOME
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
