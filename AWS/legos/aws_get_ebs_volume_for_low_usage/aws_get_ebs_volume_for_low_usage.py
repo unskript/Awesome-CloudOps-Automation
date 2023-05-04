@@ -54,10 +54,11 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
             for volume in response:
                 ebs_volume = {}
                 volume_id = volume["VolumeId"]
+                volume_size = volume['Size']
                 cloudwatch = handle.client('cloudwatch', region_name=reg)
-                cloudwatch_response = cloudwatch.get_metric_statistics(
+                read_metric_data = cloudwatch.get_metric_statistics(
                                     Namespace='AWS/EBS',
-                                    MetricName='VolumeUsage',
+                                    MetricName='VolumeReadBytes',
                                     Dimensions=[
                                         {
                                             'Name': 'VolumeId',
@@ -66,15 +67,30 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
                                     ],
                                     StartTime=days_ago,
                                     EndTime=now,
-                                    Period=3600,
-                                    Statistics=['Average']
+                                    Period=86400,
+                                    Statistics=['Sum']
                                 )
-                for v in cloudwatch_response['Datapoints']:
-                    if v['Average'] < 10:
-                        volume_ids = v['Dimensions'][0]['Value']
-                        ebs_volume["volume_id"] = volume_ids
-                        ebs_volume["region"] = reg
-                        result.append(ebs_volume)
+                write_metric_data = cloudwatch.get_metric_statistics(
+                                    Namespace='AWS/EBS',
+                                    MetricName='VolumeWriteBytes',
+                                    Dimensions=[
+                                        {'Name': 'VolumeId', 'Value': volume_id},
+                                    ],
+                                    StartTime=days_ago,
+                                    EndTime=now,
+                                    Period=86400,
+                                    Statistics=['Sum']
+                                )
+                if not read_metric_data['Datapoints'] and not write_metric_data['Datapoints']:
+                    continue
+                volume_read_bytes = read_metric_data['Datapoints'][0]['Sum'] if read_metric_data['Datapoints'] else 0
+                volume_write_bytes = write_metric_data['Datapoints'][0]['Sum'] if write_metric_data['Datapoints'] else 0
+                volume_usage_bytes = volume_read_bytes + volume_write_bytes
+                volume_usage_percent = volume_usage_bytes / (volume_size * 1024 * 1024 * 1024) * 100
+                if volume_usage_percent < 10:
+                    ebs_volume["volume_id"] = volume_id
+                    ebs_volume["region"] = reg
+                    result.append(ebs_volume)
         except Exception as e:
             pass
 
