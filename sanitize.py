@@ -68,7 +68,7 @@ if __name__ == '__main__':
         repo = Repo('.', search_parent_directories=True)
     except Exception as e:
         raise e
-    
+
     if len(sys.argv) > 1:
         filelist = sys.argv[1:]
     else:
@@ -79,6 +79,9 @@ if __name__ == '__main__':
         sys.exit(0)
 
     for f in filelist:
+        # To handle file delete case, check if the file exists.
+        if os.path.isfile(f) is False:
+            continue
         print(f"Processing {f}")
         if f.endswith('.ipynb'):
             if sanitize(f):
