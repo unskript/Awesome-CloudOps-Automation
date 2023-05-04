@@ -3,11 +3,11 @@
 # @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
 
+import pprint
+from typing import Dict
 from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-import pprint
-from typing import Dict
 
 
 class InputSchema(BaseModel):

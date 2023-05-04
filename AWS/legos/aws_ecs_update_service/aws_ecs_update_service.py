@@ -2,9 +2,9 @@
 ##  All rights reserved.
 ##  @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
 import pprint
+from typing import Optional, Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -19,7 +19,8 @@ class InputSchema(BaseModel):
         description='The name of the service to update.')
     taskDefinition: str = Field(
         title='Task Definition',
-        description='The family and revision (family:revision ) or full ARN of the task definition to run in service eg: srv-722a3657e6e3-TaskDefinition:2'
+        description=('The family and revision (family:revision ) or full ARN of the task '
+                     'definition to run in service eg: srv-722a3657e6e3-TaskDefinition:2')
     )
 
 
@@ -29,7 +30,13 @@ def aws_ecs_update_service_printer(output):
     pprint.pprint(output)
 
 
-def aws_ecs_update_service(handle, region: str, service: str, taskDefinition: str, cluster: str = None) -> Dict:
+def aws_ecs_update_service(
+        handle,
+        region: str,
+        service: str,
+        taskDefinition: str,
+        cluster: str = None
+        ) -> Dict:
     """aws_ecs_update_service returns the Dict .
 
         :type handle: object

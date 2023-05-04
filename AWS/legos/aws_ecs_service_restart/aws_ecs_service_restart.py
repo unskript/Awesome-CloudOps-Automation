@@ -2,8 +2,8 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 import pprint
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -59,8 +59,9 @@ def aws_ecs_service_restart(handle, cluster_arn: str, service_name: str, region:
             cluster=cluster_arn,
             services=[service_name]
         )
-    except:
-        errString = '"Failed restart service: {} in cluster: {} after 40 checks."'.format(service_name, cluster_arn)
+    except Exception as exc:
+        errString = (f"Failed restart service: {service_name} in cluster: "
+                     f"{cluster_arn} after 40 checks.")
         print(errString)
-        raise Exception(errString)
+        raise Exception(errString) from exc
     return True

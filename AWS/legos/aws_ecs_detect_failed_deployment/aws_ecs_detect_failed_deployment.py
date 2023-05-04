@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -27,7 +27,12 @@ def aws_ecs_detect_failed_deployment_printer(output):
     pprint.pprint(output)
 
 
-def aws_ecs_detect_failed_deployment(handle, cluster_name: str, service_name: str, region: str) -> List:
+def aws_ecs_detect_failed_deployment(
+    handle,
+    cluster_name: str,
+    service_name: str,
+    region: str
+    ) -> List:
     """aws_ecs_detect_failed_deployment returns the list .
 
         :type handle: object
@@ -50,8 +55,8 @@ def aws_ecs_detect_failed_deployment(handle, cluster_name: str, service_name: st
     except Exception as e:
         print(f'Failed to get service status for {service_name}, cluster {cluster_name}, {e}')
         return [f'Failed to get service status for {service_name}, cluster {cluster_name}, {e}']
-    # When the deployment is in progress, there will be 2 deployment entries, one PRIMARY and one ACTIVE. PRIMARY will eventually replace
-    # ACTIVE, if its successful.
+    # When the deployment is in progress, there will be 2 deployment entries, one PRIMARY and
+    # one ACTIVE. PRIMARY will eventually replace ACTIVE, if its successful.
     deployments = serviceStatus.get('services')[0].get('deployments')
     if deployments is None:
         print("Empty deployment")
@@ -69,16 +74,23 @@ def aws_ecs_detect_failed_deployment(handle, cluster_name: str, service_name: st
         return ["No deployment in progress"]
 
     # Check if there are any stopped tasks because of this deployment
-    stoppedTasks = ecsClient.list_tasks(cluster=cluster_name, startedBy=primaryDeploymentID, desiredStatus="STOPPED").get('taskArns')
+    stoppedTasks = ecsClient.list_tasks(
+        cluster=cluster_name,
+        startedBy=primaryDeploymentID,
+        desiredStatus="STOPPED"
+        ).get('taskArns')
     if len(stoppedTasks) == 0:
-        print(f'No stopped tasks associated with the deploymentID {primaryDeploymentID}, service {service_name}, cluster {cluster_name}')
-        return [f'No stopped tasks associated with the deploymentID {primaryDeploymentID}, service {service_name}, cluster {cluster_name}']
+        print(f"No stopped tasks associated with the deploymentID {primaryDeploymentID}, "
+              f"service {service_name}, cluster {cluster_name}")
+        return [(f'No stopped tasks associated with the deploymentID {primaryDeploymentID}, '
+                f'service {service_name}, cluster {cluster_name}')]
 
     # Get the reason for the stopped tasks
     taskDetails = ecsClient.describe_tasks(cluster=cluster_name, tasks=stoppedTasks)
     output = []
     for taskDetail in taskDetails.get('tasks'):
-        output.append({"TaskARN":taskDetail['taskArn'], "StoppedReason":taskDetail['stoppedReason']})
+        output.append({
+            "TaskARN":taskDetail['taskArn'],
+            "StoppedReason":taskDetail['stoppedReason']
+            })
     return output
-
-

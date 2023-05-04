@@ -4,11 +4,11 @@
 ##
 
 import pprint
+from typing import List
 from pydantic import BaseModel, Field
+import pandas as pd
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from typing import List
-import pandas as pd
 
 class InputSchema(BaseModel):
     clusterName: str = Field(
@@ -55,7 +55,8 @@ def aws_eks_get_deployments_name(handle, clusterName: str, namespace: str, regio
         for deployment in resp.items:
             res = {}
             res["NAME"] = deployment.metadata.name
-            res['READY'] = "Ready {}/{}".format(deployment.status.ready_replicas, deployment.status.available_replicas)
+            res['READY'] = (f"Ready {deployment.status.ready_replicas}/"
+            f"{deployment.status.available_replicas}")
             res['UP-TO-DATE'] = deployment.status.updated_replicas
             res['AVAILABLE'] = deployment.status.available_replicas
             res['START_TIME'] = deployment.metadata.creation_timestamp.strftime("%m/%d/%Y, %H:%M:%S")

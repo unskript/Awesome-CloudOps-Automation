@@ -2,9 +2,9 @@
 ##  All rights reserved.
 ##  @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -13,7 +13,8 @@ class InputSchema(BaseModel):
         description='AWS Region of the ECS service.')
     taskDefinition: str = Field(
         title='TaskDefinition',
-        description='The family and revision (family:revision ) or full ARN of the task definition to run in service eg: srv-722a3657e6e3-TaskDefinition:2'
+        description=("The family and revision (family:revision ) or full ARN of the task"
+        "definition to run in service eg:srv-722a3657e6e3-TaskDefinition:2")
     )
 
 
@@ -43,7 +44,7 @@ def aws_ecs_describe_task_definition(handle, region: str, taskDefinition: str) -
     try:
         data = ecs_client.describe_task_definition(taskDefinition=taskDefinition)
     except Exception as e:
-        errString = '"Error to describe task definition %s"' % str(e)
+        errString = f"Error to describe task definition {str(e)}"
         print(errString)
-        raise Exception(errString)
+        raise Exception(errString) from e
     return data
