@@ -1,10 +1,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     resource_arn: list = Field(
@@ -25,7 +24,13 @@ def aws_attach_tags_to_resources_printer(output):
         return
     pprint.pprint(output)
 
-def aws_attach_tags_to_resources(handle, resource_arn: list, tag_key: str, tag_value: str, region: str) -> Dict:
+def aws_attach_tags_to_resources(
+    handle,
+    resource_arn: list,
+    tag_key: str,
+    tag_value: str,
+    region: str
+    ) -> Dict:
     """aws_attach_tags_to_resources Returns an Dict of resource info.
 
         :type handle: object
@@ -58,7 +63,4 @@ def aws_attach_tags_to_resources(handle, resource_arn: list, tag_key: str, tag_v
         result["error"] = error
 
     return result
-
-
-
-    
+  

@@ -1,10 +1,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+import pprint
+from typing import Dict
 from pydantic import BaseModel, Field
 from botocore.exceptions import ClientError
-import pprint
 from beartype import beartype
 
 

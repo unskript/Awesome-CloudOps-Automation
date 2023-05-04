@@ -2,17 +2,18 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
+from typing import Dict
+import datetime
 import dateutil
 from pydantic import BaseModel, Field
-from typing import Dict,List
-import pprint
-import datetime
 
 
 class InputSchema(BaseModel):
     threshold_days: int = Field(
         title="Threshold Days",
-        description="Threshold number of days to check for expiry. Eg: 30 -lists all certificates which are expiring within 30 days"
+        description="""Threshold number of days to check for expiry.
+          Eg: 30 -lists all certificates which are expiring within 30 days"""
     )
     region: str = Field(
         title='Region',
@@ -26,18 +27,17 @@ def aws_check_ssl_certificate_expiry_printer(output):
     pprint.pprint(output)
 
 
-def aws_check_ssl_certificate_expiry(
-    handle,
-    threshold_days: int,
-    region: str,
-) -> Dict:
-    """aws_check_ssl_certificate_expiry returns all the ACM issued certificates which are about to expire.
+def aws_check_ssl_certificate_expiry(handle, threshold_days: int, region: str,) -> Dict:
+      
+    """aws_check_ssl_certificate_expiry returns all the ACM issued certificates
+       which are about to expire.
 
             :type handle: object
             :param handle: Object returned from Task Validate
 
             :type threshold_days: int
-            :param threshold_days: Threshold number of days to check for expiry. Eg: 30 -lists all certificates which are expiring within 30 days
+            :param threshold_days: Threshold number of days to check for expiry.
+             Eg: 30 -lists all certificates which are expiring within 30 days
 
             :type region: str
             :param region: Region name of the AWS account
@@ -62,15 +62,15 @@ def aws_check_ssl_certificate_expiry(
                 right_now = datetime.datetime.now(dateutil.tz.tzlocal())
                 diff = expiry_date-right_now
                 days_remaining = diff.days
-                if days_remaining < threshold_days and days_remaining > 0:
+                if 0 < days_remaining < threshold_days:
                     days = days_remaining
                 elif days_remaining < 0:
                     days = days_remaining
                 elif days_remaining > threshold_days:
                     days = days_remaining
                 days_list.append(days)
-    for i in range(0,len(domain_list)):
-        result[domain_list[i]] = days_list[i]
+    for i, n in enumerate(domain_list):
+        result[n] = days_list[i]
     for k,v in result.items():
         if v < threshold_days:
             expiring_domain_list[k]=v

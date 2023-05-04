@@ -2,10 +2,10 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
-from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 import pprint
+from typing import Optional, Dict
+from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 
 
 class InputSchema(BaseModel):
@@ -14,7 +14,8 @@ class InputSchema(BaseModel):
         description='Name of the bucket to be created.')
     acl: str = Field(
         title='ACL',
-        description='The Canned ACL to apply to the bucket. Possible values: private, public-read, public-read-write, authenticated-read.')
+        description='''The Canned ACL to apply to the bucket. Possible values:
+                       private, public-read, public-read-write, authenticated-read.''')
     region: Optional[str] = Field(
         title='Region',
         description='AWS Region of the bucket.')
