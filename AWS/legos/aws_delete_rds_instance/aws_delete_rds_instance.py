@@ -9,8 +9,8 @@ from pydantic import BaseModel, Field
 class InputSchema(BaseModel):
     instance_id: str = Field(
         ...,
-        description='''The DB instance identifier for the DB instance to be deleted.
-        This parameter isn’t case-sensitive.''',
+        description=('The DB instance identifier for the DB instance to be deleted. '
+                     'This parameter isn’t case-sensitive.'),
         title='RDS DB Identifier',
     )
     region: str = Field(
