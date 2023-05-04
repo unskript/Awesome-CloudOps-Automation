@@ -15,7 +15,6 @@ class InputSchema(BaseModel):
         title='Interval (in seconds)',
         description='Return queries running longer than interval')
 
-
 def postgresql_long_running_queries_printer(output):
     if output is None:
         return
@@ -30,7 +29,7 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
           :param handle: Object returned from task.validate(...).
 
           :type interval: int
-          :param interval: Interval(in seconds).
+          :param interval: Interval (in seconds).
 
           :rtype: All the results of the query.
       """
