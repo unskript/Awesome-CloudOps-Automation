@@ -166,7 +166,8 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7 
+          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7
+          python -m pip install --upgrade urllib3
 
       
       - name: Set up Python 3.x
