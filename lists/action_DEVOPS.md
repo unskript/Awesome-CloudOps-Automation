@@ -18,6 +18,8 @@
 
 * [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
 
+* [AWS Delete RDS Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_rds_instance/README.md): Delete AWS RDS Instance
+
 * [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
 
 * [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret
@@ -339,6 +341,8 @@
 * [GCP List Nodes in GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_nodes_in_gke_cluster/README.md): GCP List Nodes of GKE Cluster
 
 * [List all Public GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets/README.md): List all publicly available GCP buckets
+
+* [List all GCP VMs and if Publicly Accessible](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_vms_access/README.md): Lists all GCP buckets, and identifies those tha are public.
 
 * [Remove role from user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role/README.md): GCP lego for removing a role from a user (default: 'viewer')
 
