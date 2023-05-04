@@ -1,0 +1,9 @@
+{
+    "name": "Delete Redshift Clusters with Low CPU Utilization",
+    "description": "Redshift clusters are the basic units of compute and storage in Amazon Redshift, and they can be configured to meet specific performance and cost requirements. In order to optimize the cost and performance of Redshift clusters, it is important to regularly monitor their CPU utilization. If a cluster is consistently showing low CPU utilization over an extended period of time, it may be a good idea to delete the cluster to save costs. This runbook helps us find such clusters and delete them.",
+    "uuid": "2a51c98c5c99d132011e285546e365402351fd3d09214041aea7592367bd48bf",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+}
