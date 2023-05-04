@@ -3,11 +3,11 @@
 # All rights reserved.
 ##
 
+import pprint
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
-from polling2 import poll_decorator
 from unskript.enums.aws_k8s_enums import SizingOption
-import pprint
+from polling2 import poll_decorator
 
 
 class InputSchema(BaseModel):
@@ -57,10 +57,12 @@ def aws_ebs_modify_volume(
     :param volume_id: ebs volume id.
 
     :type resize_option: SizingOption
-    :param resize_option: option to resize the volume, by a fixed amount or by a multiple of the existing size.
+    :param resize_option: option to resize the volume, by a fixed amount
+    or by a multiple of the existing size.
 
     :type value: int
-    :param value: The value by which the volume should be modified, depending upon the resize option.
+    :param value: The value by which the volume should be modified,
+    depending upon the resize option.
 
     :type region: string
     :param region: AWS Region of the volume.
@@ -78,10 +80,6 @@ def aws_ebs_modify_volume(
         newSize = currentSize * resize_value
 
     print(f'CurrentSize {currentSize}, NewSize {newSize}')
-
-    resp = ec2Client.modify_volume(
-        VolumeId=volume_id,
-        Size=newSize)
 
     # Check the modification state
     try:
