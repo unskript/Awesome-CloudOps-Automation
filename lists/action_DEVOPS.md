@@ -18,6 +18,8 @@
 
 * [AWS Delete NAT Gateway](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_nat_gateway/README.md): AWS Delete NAT Gateway
 
+* [AWS Delete RDS Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_rds_instance/README.md): Delete AWS RDS Instance
+
 * [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
 
 * [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret

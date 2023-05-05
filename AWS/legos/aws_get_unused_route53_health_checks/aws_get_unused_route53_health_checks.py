@@ -39,18 +39,17 @@ def aws_get_unused_route53_health_checks(handle, hosted_zone_id: str = "") -> Tu
             hosted_zones = [{'Id': hosted_zone_id}]
         else:
             hosted_zones = aws_get_paginator(route_client, "list_hosted_zones", "HostedZones")
-        all_health_check_ids = set(hc['Id'] for hc in health_checks)
+        used_health_check_ids = set()
         for zone in hosted_zones:
-            unused_health_check_ids = set()
             record_sets = aws_get_paginator(route_client, "list_resource_record_sets", "ResourceRecordSets", HostedZoneId=zone['Id'])
             for record_set in record_sets:
                 if 'HealthCheckId' in record_set:
-                    all_health_check_ids.discard(record_set['HealthCheckId'])
-                else:
-                    unused_health_check_ids.add(record_set['Name'])
-            result.append({'HostedZoneId': zone['Id'], 'UnusedHealthCheckIds': list(unused_health_check_ids)})
+                    used_health_check_ids.add(record_set['HealthCheckId'])
+        for hc in health_checks:
+            if hc['Id'] not in used_health_check_ids:
+                result.append(hc['Id'])
     except Exception as e:
-        pass
+        raise e
 
     if len(result) != 0:
         return (False, result)
