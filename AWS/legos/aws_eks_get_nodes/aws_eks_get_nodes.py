@@ -3,12 +3,12 @@
 # @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
 
-from pydantic import BaseModel, Field
-from kubernetes import client
 import datetime
-from kubernetes.client.rest import ApiException
 from typing import List
+from pydantic import BaseModel, Field
 from unskript.legos.utils import print_output_in_tabular_format
+from kubernetes import client
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -54,8 +54,7 @@ def aws_eks_get_nodes(handle, clusterName: str, region: str) -> List:
 
     output = []
     for node in resp.items:
-        labels = ["%s=%s" % (label, value)
-                  for label, value in node.metadata.labels.items()]
+        labels = [f"{label}={value}" for label, value in node.metadata.labels.items()]
         nodeStatus = (node.status.conditions)
         type = ""
         for i in nodeStatus:

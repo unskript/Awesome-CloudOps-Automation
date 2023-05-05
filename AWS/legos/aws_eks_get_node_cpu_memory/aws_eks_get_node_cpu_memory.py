@@ -3,13 +3,12 @@
 # All rights reserved.
 ##
 import pprint
-import pandas as pd
 from typing import Optional, List
+import pandas as pd
 from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-
-from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 
 
 class InputSchema(BaseModel):
@@ -31,7 +30,12 @@ def aws_eks_get_node_cpu_memory_printer(output):
     pprint.pprint(pd.DataFrame(output))
 
 
-def aws_eks_get_node_cpu_memory(handle: Session, clusterName: str, region: str, nodeName: str = None) -> List:
+def aws_eks_get_node_cpu_memory(
+    handle: Session,
+    clusterName: str,
+    region: str,
+    nodeName: str = None
+    ) -> List:
     """aws_eks_get_node_cpu_memory returns list.
 
         :type handle: object
@@ -53,17 +57,20 @@ def aws_eks_get_node_cpu_memory(handle: Session, clusterName: str, region: str, 
     try:
         if nodeName:
             resp = coreApiClient.read_node(nodeName)
-            data = [{"node_name": resp.metadata.name, "cpu": int(resp.status.capacity.get("cpu").split("Ki")[0]),
-                     "memory": "%s Mi" % round(int(resp.status.capacity.get("memory").split("Ki")[0]) / 1024, 2)}]
+            data = [{
+                "node_name": resp.metadata.name,
+                "cpu": int(resp.status.capacity.get("cpu").split("Ki")[0]),
+                "memory": "%s Mi" % round(int(resp.status.capacity.get("memory").split("Ki")[0]) / 1024, 2)
+                }]
 
         else:
             data = []
             resp = coreApiClient.list_node(pretty=True)
             for node in resp.items:
-                data.append({"node_name": node.metadata.name,
-                             "cpu": node.status.capacity.get("cpu"),
-                             "memory": "%s Mi" %
-                                       round(int(node.status.capacity.get("memory").split("Ki")[0]) / 1024, 2)})
+                data.append({
+                    "node_name": node.metadata.name,
+                    "cpu": node.status.capacity.get("cpu"),
+                    "memory": "%s Mi" % round(int(node.status.capacity.get("memory").split("Ki")[0]) / 1024, 2)})
 
     except ApiException as e:
         pprint.pprint(str(e))
