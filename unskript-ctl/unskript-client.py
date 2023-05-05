@@ -175,8 +175,8 @@ def list_runbooks():
             and prints the available runbook and prints in a tabular form.
     
     """
-    runbooks = glob.glob(os.environ.get('HOME') + '/runbooks/*.ipynb')
-    runbooks += glob.glob(os.environ.get('HOME') + '/runbooks/*/*.ipynb')
+    f_path = os.environ.get('HOME') + '/runbooks'
+    runbooks =  glob.glob(f_path + '/**/*.ipynb', recursive=True)
 
     runbooks.sort()
     table = [["File Name",  "Runbook Name"]]

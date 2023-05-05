@@ -1,19 +1,3 @@
-# RunBook Connectors:
- | | | 
- | ---| ---| 
- | [AWS](xRunBook_List.md#AWS) | [ElasticSearch](xRunBook_List.md#ElasticSearch) | [Jenkins](xRunBook_List.md#Jenkins) |
- | [Jira](xRunBook_List.md#Jira) | [Kubernetes](xRunBook_List.md#Kubernetes) | [Postgresql](xRunBook_List.md#Postgresql) |
- | 
-
- 
-# RunBook Categories:
- | | | 
- | ---| ---| 
- | [IAM](runbook_IAM.md) | [SECOPS](runbook_SECOPS.md) | [COST_OPT](runbook_COST_OPT.md) |
- | [DEVOPS](runbook_DEVOPS.md) | [SRE](runbook_SRE.md) | [CLOUDOPS](runbook_CLOUDOPS.md) |
- | [TROUBLESHOOTING](runbook_TROUBLESHOOTING.md) | [ES](runbook_ES.md) | 
-
- # Runbooks in CLOUDOPS
 * AWS [Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb): Configures the URL endpoint to the SNS associated with a CloudWatch alarm. This allows to external functions to be invoked within unSkript in response to an alert getting generated. Alarms can be attached to the handlers to perform data enrichment or remediation
 * AWS [Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb): This runbook can be used to copy AMI from one region to multiple AWS regions using unSkript legos with AWS CLI commands.We can get all the available regions by using AWS CLI Commands.
 * AWS [Create IAM User with policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Create_IAM_User_with_policy.ipynb): Create new IAM user with a security Policy.  Sends confirmation to Slack.
@@ -47,7 +31,7 @@
 * AWS [AWS Redshift Get Daily Costs from AWS Products](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_get_daily_product_costs.ipynb): This runbook can be used to create charts and alerts around Your AWS product usage. It requires a Cost and USage report to be live in RedShift.
 * AWS [AWS Redshift Get Daily Costs from EC2 Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_get_ec2_daily_costs.ipynb): This runbook can be used to create charts and alerts around AWS EC2 usage. It requires a Cost and USage report to be live in RedShift.
 * AWS [AWS Redshift Update Database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/aws_redshift_update_database.ipynb): This runbook can be used to update a redshift database from a SQL file stored in S3.
-* AWS [Delete IAM profile](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/delete_iam_user.ipynb): This runbook is the inverse of Create IAM user with profile - removes the profile, the login and themn the IAM user itself..
+* AWS [Delete IAM profile](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/delete_iam_user.ipynb): This runbook is the inverse of Create IAM user with profile - removes the profile, the login and then the IAM user itself..
 * Jenkins [Fetch Jenkins Build Logs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jenkins/Fetch_Jenkins_Build_Logs.ipynb): This runbook fetches the logs for a given Jenkins job and posts to a slack channel
 * Jira [Jira Visualize Issue Time to Resolution](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Jira/jira_visualize_time_to_resolution.ipynb): Using the Panel Library - visualize the time it takes for issues to close over a specifict timeframe
 * Kubernetes [k8s: Delete Evicted Pods From All Namespaces](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Delete_Evicted_Pods_From_Namespaces.ipynb): This runbook shows and deletes the evicted pods for given namespace. If the user provides the namespace input, then it only collects pods for the given namespace; otherwise, it will select all pods from all the namespaces.
@@ -60,4 +44,4 @@
 * Kubernetes [k8s: Resize List of PVCs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_List_of_PVCs.ipynb): This runbook resizes a list of Kubernetes PVCs.
 * Kubernetes [k8s: Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_PVC.ipynb): This runbook resizes a Kubernetes PVC.
 * Kubernetes [Rollback Kubernetes Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb): This runbook can be used to rollback Kubernetes Deployment
-* Postgresql [Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb): This runbook displays collects the long running queries from a database and sends a message to the specified slack channel. Poorly optimized queries and excessive connections can cause problems in PostgreSQL, impacting upstream services.
+* Postgresql [Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Postgresql_Display_Long_Running.ipynb): This runbook displays collects the long running queries from a database and sends a message to the specified slack channel. Poorly optimized queries and excessive connections can cause problems in PostgreSQL, impacting upstream services.
