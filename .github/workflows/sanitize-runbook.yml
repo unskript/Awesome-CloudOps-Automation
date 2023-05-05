@@ -1,9 +1,12 @@
 name: Sanitize Runbook
 on:
   pull_request:
-    types: [opened, reopened, edited, ready_for_review]
+    types: [ opened, reopened, edited, ready_for_review ]
   push:
 
+env:
+  PR_NUMBER: ${{ github.event.number }}
+  
 jobs:
   sanitize-runbooks: 
     runs-on: ubuntu-latest 
@@ -15,6 +18,7 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+
       - name: Install system dependencies
         run: |
           pip install shyaml
@@ -23,19 +27,18 @@ jobs:
           /usr/bin/env python -m pip install PyGithub
       
       - name: PR File List
-        uses: jitterbit/get-changed-files@v1
+        uses: tj-actions/changed-files@v35
         id: files
 
-  
       - name: Run Sanitize
         run: |
-          echo "Running sanitize script on ${{ steps.files.outputs.all }}"
-          for changed_file in ${{ steps.files.outputs.all }}; do
+          echo "Running sanitize script on ${{ steps.files.outputs.all_changed_files }}"
+          for changed_file in ${{ steps.changed-files.outputs.all_changed_files }}; do
              if [ ! -f ${changed_file} ]
              then 
                continue
              fi
-            /usr/bin/env python ./sanitize.py ${changed_file}
+            /usr/bin/env python ./sanitize.py $changed_file
           done
       
       - name: Committing back changes
