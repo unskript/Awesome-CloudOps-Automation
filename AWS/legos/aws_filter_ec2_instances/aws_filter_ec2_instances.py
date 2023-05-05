@@ -2,12 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
-
-
+from typing import List
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 from beartype import beartype
 
 class InputSchema(BaseModel):

@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 from beartype import beartype
 
 class InputSchema(BaseModel):
@@ -48,7 +48,6 @@ def aws_filter_ec2_by_tags(handle, tag_key: str, tag_value: str, region: str) ->
     ec2Client = handle.client('ec2', region_name=region)
     res = aws_get_paginator(ec2Client, "describe_instances", "Reservations",
                             Filters=[{'Name': 'tag:' + tag_key, 'Values': [tag_value]}])
-    
     result = []
     for reservation in res:
         for instance in reservation['Instances']:

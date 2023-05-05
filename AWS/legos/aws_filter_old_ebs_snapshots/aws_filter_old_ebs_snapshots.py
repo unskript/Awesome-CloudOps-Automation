@@ -2,11 +2,11 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List, Optional, Tuple
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Optional, Tuple
 from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pytz
 
 
@@ -54,7 +54,7 @@ def aws_filter_old_ebs_snapshots(handle, region: str="", threshold: int = 30) ->
                     snap_data["region"] = reg
                     snap_data["snapshot_id"] = snapshot.id
                     result.append(snap_data)
-        except Exception as e:
+        except Exception:
             pass
     if len(result)!=0:
         return (False, result)

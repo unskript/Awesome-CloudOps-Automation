@@ -2,10 +2,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Optional, Tuple
+from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 
 class InputSchema(BaseModel):
@@ -16,7 +16,9 @@ class InputSchema(BaseModel):
     iops_threshold: Optional[int] = Field(
         default=100,
         title="IOPS's Threshold",
-        description="IOPS's Threshold is a metric used to measure the amount of input/output operations that an EBS volume can perform per second.")
+        description=("IOPS's Threshold is a metric used to measure the amount of input/output "
+                     "operations that an EBS volume can perform per second.")
+        )
 
 
 def aws_filter_ebs_volumes_with_low_iops_printer(output):
@@ -26,14 +28,19 @@ def aws_filter_ebs_volumes_with_low_iops_printer(output):
     pprint.pprint(output)
 
 
-def aws_filter_ebs_volumes_with_low_iops(handle, region: str = "", iops_threshold: int = 100) -> Tuple:
+def aws_filter_ebs_volumes_with_low_iops(
+        handle,
+        region: str = "",
+        iops_threshold: int = 100
+        ) -> Tuple:
     """aws_filter_ebs_unattached_volumes Returns an array of ebs volumes.
 
         :type region: string
         :param region: Used to filter the volume for specific region.
 
         :type iops_threshold: int
-        :param iops_threshold: IOPS's Threshold is a metric used to measure the amount of input/output operations that an EBS volume can perform per second.
+        :param iops_threshold: IOPS's Threshold is a metric used to measure the
+        amount of input/output operations that an EBS volume can perform per second.
 
         :rtype: Tuple with status result and list of low IOPS EBS Volumes.
     """
@@ -56,10 +63,10 @@ def aws_filter_ebs_volumes_with_low_iops(handle, region: str = "", iops_threshol
                     volume_dict["volume_id"] = volume.id
                     volume_dict["volume_iops"] = volume.iops
                     result.append(volume_dict)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)
+    

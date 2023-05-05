@@ -2,13 +2,12 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import List
 from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 import pytz
-from beartype import beartype
 
 
 class InputSchema(BaseModel):

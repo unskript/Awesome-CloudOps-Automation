@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 
 
 class InputSchema(BaseModel):
@@ -18,7 +18,7 @@ class InputSchema(BaseModel):
     tag_value: str = Field(
         title='Tag Value',
         description='The value for the EC2 instance tag.')
-    
+
 
 def aws_filter_large_ec2_instances_printer(output):
     if output is None:
@@ -50,7 +50,8 @@ def aws_filter_large_ec2_instances(handle, tag_key: str, tag_value: str, region:
                                 Filters=[{'Name': 'instance-type', 'Values': ['*large']}])
         for reservation in res:
             for instance in reservation['Instances']:
-                if not any(tag['Key'] == tag_key and tag['Value'] == tag_value for tag in instance["Tags"]):
+                if not any(tag['Key'] == tag_key and
+                           tag['Value'] == tag_value for tag in instance["Tags"]):
                     result.append(instance['InstanceId'])
     except Exception as e:
         result.append(e)
