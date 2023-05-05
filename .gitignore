@@ -5,9 +5,13 @@ __pycache__
 # Ignore temp files (build artifacts) that gets generated
 # for custom Actions
 custom/*
+bin/*
+lib/*
 
 
 # Ignore Temp files
 *.jsonx
 all_*legos.py
+
+pyvenv.cfg
 
