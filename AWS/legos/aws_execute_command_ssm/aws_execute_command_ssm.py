@@ -2,10 +2,10 @@
 # All rights reserved.
 ##
 
-from pydantic import BaseModel, Field
-from typing import List, Dict
 import pprint
 import time
+from typing import List, Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):

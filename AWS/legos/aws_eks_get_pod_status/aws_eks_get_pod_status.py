@@ -3,11 +3,11 @@
 # @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
 
+import pprint
 from typing import Optional, Dict
 from pydantic import BaseModel, Field
-from kubernetes import client
 from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
-import pprint
+from kubernetes import client
 
 
 class InputSchema(BaseModel):
@@ -32,7 +32,13 @@ def aws_eks_get_pod_status_printer(output):
     pprint.pprint(output)
 
 
-def aws_eks_get_pod_status(handle: Session, clusterName: str, pod_name: str, region: str, namespace: str = None) -> Dict:
+def aws_eks_get_pod_status(
+        handle: Session,
+        clusterName: str,
+        pod_name: str,
+        region: str,
+        namespace: str = None
+        ) -> Dict:
     """aws_eks_get_pod_status returns Dict.
 
         :type handle: object
@@ -70,8 +76,7 @@ def aws_eks_get_pod_status(handle: Session, clusterName: str, pod_name: str, reg
             restarts_number = restarts_number + container.restart_count
         containers_number += 1
     res["NAME"] = pod_name
-    res['READY'] = "Ready {}/{}".format(ready_containers_number,
-                                        containers_number)
+    res['READY'] = f"Ready {ready_containers_number}/{containers_number}"
     res['STATUS'] = status.status.phase
     res['RESTARTS'] = restarts_number
     res['START_TIME'] = status.status.start_time.strftime("%m/%d/%Y, %H:%M:%S")

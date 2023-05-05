@@ -4,9 +4,9 @@
 ##
 
 import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from kubernetes import client
-from typing import List
 
 
 class InputSchema(BaseModel):
@@ -24,11 +24,16 @@ class InputSchema(BaseModel):
 def aws_eks_get_running_pods_printer(output):
     if output is None:
         return
-    print("\n") 
+    print("\n")
     pprint.pprint(output)
 
 
-def aws_eks_get_running_pods(handle, clusterName: str, namespace: str, region: str) -> List:
+def aws_eks_get_running_pods(
+    handle,
+    clusterName: str,
+    namespace: str,
+    region: str
+    ) -> List:
     """aws_eks_get_running_pods returns list.
 
         :type handle: object

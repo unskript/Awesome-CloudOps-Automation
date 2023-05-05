@@ -55,13 +55,14 @@ def aws_eks_get_nodes(handle, clusterName: str, region: str) -> List:
     output = []
     for node in resp.items:
         labels = [f"{label}={value}" for label, value in node.metadata.labels.items()]
-        nodeStatus = (node.status.conditions)
+        nodeStatus = node.status.conditions
         type = ""
         for i in nodeStatus:
             type = i.type
 
         output.append(
             {"name": node.metadata.name, "status": type,
-             "age": "%sd" % (datetime.datetime.now() - node.metadata.creation_timestamp.replace(tzinfo=None)).days,
-             "version": node.status.node_info.kubelet_version, "labels": ",".join(labels)})
+             "age": f"{(datetime.datetime.now() - node.metadata.creation_timestamp.replace(tzinfo=None)).days}d",
+             "version": node.status.node_info.kubelet_version, "labels": ",".join(labels)
+             })
     return output

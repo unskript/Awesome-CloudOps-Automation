@@ -3,13 +3,12 @@
 # All rights reserved.
 ##
 import pprint
+from typing import List
 import pandas as pd
 from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from typing import List
-
-from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 
 
 class InputSchema(BaseModel):
