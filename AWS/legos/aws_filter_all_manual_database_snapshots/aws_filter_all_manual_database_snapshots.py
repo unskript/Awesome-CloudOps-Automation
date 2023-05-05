@@ -1,10 +1,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -37,7 +37,7 @@ def aws_filter_all_manual_database_snapshots(handle, region: str) -> List:
                                      SnapshotType='manual')
         for snapshot in response:
             result.append(snapshot['DBSnapshotIdentifier'])
-    except Exception as error:
+    except Exception:
         pass
 
     return result
