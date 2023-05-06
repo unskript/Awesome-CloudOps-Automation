@@ -2,15 +2,11 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Tuple
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Tuple, Optional
 import datetime
-
-from typing import Optional
-
 from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 
 class InputSchema(BaseModel):
@@ -21,12 +17,13 @@ class InputSchema(BaseModel):
     )
     days_back: Optional[int] = Field(
         7,
-        description='Number of days to go back. Default value ids 7 days. Eg: 7 (This checks for functions with high error rate in the last 7 days)',
+        description=('Number of days to go back. Default value ids 7 days. '
+                     'Eg: 7 (This checks for functions with high error rate in the last 7 days)'),
         title='Days Back',
     )
     region: Optional[str] = Field(
         '', 
-        description='AWS region. Eg: "us-west-2"', 
+        description='AWS region. Eg: "us-west-2"',
         title='Region'
     )
 
@@ -37,7 +34,12 @@ def aws_get_lambdas_with_high_error_rate_printer(output):
     pprint.pprint(output)
 
 
-def aws_get_lambdas_with_high_error_rate(handle, error_rate_threshold:float, days_back:int, region:str="") -> Tuple:
+def aws_get_lambdas_with_high_error_rate(
+        handle,
+        error_rate_threshold:float,
+        days_back:int,
+        region:str=""
+        ) -> Tuple:
     """aws_get_lambdas_with_high_error_rate finds AWS Lambda functions with high error rate
 
     :type region: string
@@ -67,7 +69,9 @@ def aws_get_lambdas_with_high_error_rate(handle, error_rate_threshold:float, day
             # Iterate through the list of functions and filter out the ones with a high error rate
             for function in response['Functions']:
                 # Get the configuration for the function
-                config_response = lambdaClient.get_function_configuration(FunctionName=function['FunctionName'])
+                config_response = lambdaClient.get_function_configuration(
+                    FunctionName=function['FunctionName']
+                    )
                 # Get the Errors metric for the function
                 errors_response = cloudwatchClient.get_metric_statistics(
                     Namespace='AWS/Lambda',
@@ -100,6 +104,4 @@ def aws_get_lambdas_with_high_error_rate(handle, error_rate_threshold:float, day
             pass
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
+    return (True, None)
