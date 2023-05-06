@@ -2,31 +2,30 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict, List
-import tabulate
-from dateutil.relativedelta import *
 import datetime
-
-from typing import Optional
-
+from typing import List, Optional
 from pydantic import BaseModel, Field
+import tabulate
+from dateutil.relativedelta import relativedelta
 
 
 class InputSchema(BaseModel):
     number_of_months: Optional[float] = Field(
         '',
-        description='Number of months to fetch the daily costs for. Eg: 1 (This will fetch all the costs for the last 30 days)',
+        description=('Number of months to fetch the daily costs for. '
+                     'Eg: 1 (This will fetch all the costs for the last 30 days)'),
         title='Number of Months',
     )
     start_date: Optional[str] = Field(
         '',
-        description='Start date to get the daily costs from. Note: It should be given in YYYY-MM-DD format. Eg: 2023-04-11',
+        description=('Start date to get the daily costs from. Note: '
+                     'It should be given in YYYY-MM-DD format. Eg: 2023-04-11'),
         title='Start Date',
     )
     end_date: Optional[str] = Field(
         '',
-        description='End date till which daily costs are to be fetched. Note: It should be given in YYYY-MM-DD format. Eg: 2023-04-11',
+        description=('End date till which daily costs are to be fetched. '
+                     'Note: It should be given in YYYY-MM-DD format. Eg: 2023-04-11'),
         title='End Date',
     )
     region: str = Field(..., description='AWS region.', title='Region')
@@ -38,7 +37,12 @@ def aws_get_cost_for_all_services_printer(output):
     rows = [x.values() for x in output]
     print(tabulate.tabulate(rows, tablefmt="fancy_grid", headers=['Date','Service','Cost']))
 
-def aws_get_cost_for_all_services(handle, region:str,number_of_months: int="", start_date: str="", end_date:str="") -> List:
+def aws_get_cost_for_all_services(
+        handle, region:str,
+        number_of_months: int="",
+        start_date: str="",
+        end_date:str=""
+        ) -> List:
     """aws_get_cost_for_all_services returns cost for all services
 
         :type handle: object
@@ -101,4 +105,3 @@ def aws_get_cost_for_all_services(handle, region:str,number_of_months: int="", s
             cost_est["service_cost"] = service_cost
             result.append(cost_est)
     return result
-
