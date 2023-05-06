@@ -190,6 +190,7 @@ jobs:
           /usr/bin/env python -m pip install -r ./requirements.txt --upgrade --upgrade-strategy only-if-needed --use-deprecated=legacy-resolver
           /usr/bin/env python -m pip install --upgrade protobuf
           /usr/bin/env python -m pip install google-api-python-client==2.77.0
+          /usr/bin/env python -m pip install --upgrade urllib3
           make awesome-submodule
           cd awesome
           git checkout ${{ inputs.awesome_branch }}
