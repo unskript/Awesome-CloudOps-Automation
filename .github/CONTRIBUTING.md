@@ -96,4 +96,32 @@ Whether you are a user or contributor, official support channels include:
 - GitHub issues: https://github.com/unskript/Awesome-CloudOps-Automation/issues/new
 - Slack: https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation
  
- 
+ ## Additional Section: Contribution Tips
+1. Use the [Docker environment](#get-started-with-docker), or our free [cloud sandbox](https://us.app.unskript.io/profiles/6c38d3da1cde7b3c0623d138f525a5508a3260c8) for testing your contribution.
+2. Join our [Slack Community](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation) to discuss your PR, and for support if you run into any issues.
+
+
+
+### Create a new xRunBook
+Your RunBooks are stored locally at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks``` Copy an existing xRunBook and rename it. It will appear in the Welcome page on refresh. Click to Open.
+Your saved xRunBook can be found at ```$HOME/Awesome-CloudOps-Automation/custom/runbooks```
+
+  1. All created RunBooks have a ipynb file. You'll need to create a .json file with metadata about your RunBook.  Copy from another RunBook un the repository.
+  2. Copy the saved RunBook from the Custom folder into the folder of the Connector used, and submit a PR!
+  3. Submit Your xRunBook to the repository. Follow the [submission steps](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source) to remove credentials, etc. from your xRunBook.
+  
+
+### Create a new Action
+
+#### Create a new action inside an existing RunBook.
+
+   1. If you will not use external credentials, click *+Add Action* at the top of the menu.
+   2. If you will be using an existing credential, add an existing Action for that service (like AWS), and edit the code to create your new Action.
+   3. If the service you'd like to build for does not have credentials yet, please [file an issue](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=Credential%2Ctriage&template=add_credential.yml&title=%5BCredential%5D%3A+).
+#### Creating and connecting your Action
+
+1. [Creating Custom Actions](https://docs.unskript.com/unskript-product-documentation/guides/actions/create-custom-actions) describes the steps to create your own Action.
+2.  To submit to OSS, follow the [Submit An Action](https://docs.unskript.com/unskript-product-documentation/guides/contribute-to-open-source#actions) instructions.  
+
+### Extending Docker
+You can use our base docker and extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create and build your own custom docker.
