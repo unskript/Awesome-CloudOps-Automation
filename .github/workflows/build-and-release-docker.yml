@@ -163,16 +163,20 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
-      - name: Install system dependencies
-        run: |
-          pip install shyaml
-          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7 
 
       
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
-          python-version: '3.8'
+          python-version: '3.10'
+          
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7
+          python -m pip install --upgrade urllib3
+          python -m pip install beartype
+
 
       - name: Checkout Code
         run: |
@@ -186,6 +190,7 @@ jobs:
           /usr/bin/env python -m pip install -r ./requirements.txt --upgrade --upgrade-strategy only-if-needed --use-deprecated=legacy-resolver
           /usr/bin/env python -m pip install --upgrade protobuf
           /usr/bin/env python -m pip install google-api-python-client==2.77.0
+          /usr/bin/env python -m pip install --upgrade urllib3
           make awesome-submodule
           cd awesome
           git checkout ${{ inputs.awesome_branch }}
