@@ -24,11 +24,16 @@ def sanitize(ipynbFile: str = '') -> bool:
     with open(ipynbFile) as f:
         nb = json.loads(f.read())
 
+        execution_data = {
+            'runbook_name': nb.get('metadata').get('execution_data').get('runbook_name'),
+            'parameters': nb.get('metadata').get('execution_data').get('parameters'),
+        }
+
     new_cells = []
     cells = nb.get("cells")
     for cell in cells:
         # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
-        if cell.get('metadata').get('tags') and 'unSkript.nbParam' in cell.get('metadata').get('tags'):
+        if cell.get('metadata').get('tags') and 'unSkript:nbParam' in cell.get('metadata').get('tags'):
             print("SKIPPING FIRST CELL")
             continue
 
@@ -36,22 +41,32 @@ def sanitize(ipynbFile: str = '') -> bool:
         if cell_type == 'code':
             # Reset CredntialsJson
             cell['metadata']['credentialsJson'] = {}
+
             # Cleanout output
-            cell['outputs'] = {}
+            cell['outputs'] = []
+
             # Delete source CredntialsJson
-            del_cred = re.sub(r"(task.configure\(credentialsJson.*?\'\'\'\))","", str(cell['source']), re.DOTALL)
-            cell['source'] = ast.literal_eval(del_cred)
+            skip_pattern = "task.configure(credentialsJson="
+            cell_source = []
+            skip = False
+            for line in cell.get('source'):
+                if skip_pattern in line:
+                    skip = True
+                elif skip and line.strip() == "}''')":
+                    skip = False
+                elif not skip:
+                    cell_source.append(line)
+
+            cell['source'] = cell_source
+
         new_cells.append(cell)
 
     nb_new = nb.copy()
     nb_new["cells"] = new_cells
     try:
         # Reset Environment & Tenant Information
-        nb_new['metadata']['execution_data']['environment_id'] = ''
-        nb_new['metadata']['execution_data']['environment_name'] = ''
-        nb_new['metadata']['execution_data']['tenant_id'] = ''
-        nb_new['metadata']['execution_data']['tenant_url'] = ''
-        nb_new['metadata']['execution_data']['user_email_id'] = ''
+        nb_new['metadata']['execution_data'] = execution_data
+
     except:
         pass
 
@@ -68,7 +83,7 @@ if __name__ == '__main__':
         repo = Repo('.', search_parent_directories=True)
     except Exception as e:
         raise e
-    
+
     if len(sys.argv) > 1:
         filelist = sys.argv[1:]
     else:
@@ -79,6 +94,9 @@ if __name__ == '__main__':
         sys.exit(0)
 
     for f in filelist:
+        # To handle file delete case, check if the file exists.
+        if os.path.isfile(f) is False:
+            continue
         print(f"Processing {f}")
         if f.endswith('.ipynb'):
             if sanitize(f):
