@@ -52,7 +52,7 @@ docker run -it -p 8888:8888 \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
-3. Point your browser to http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
+3. Point your browser to http://127.0.0.1:8888/awesome.
 
 ### Messing around
 You can find more information around how to use and play with our runbooks in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
