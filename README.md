@@ -16,7 +16,7 @@
 ---
 
 # About the Project
-Runbooks.sh is a powerful, community-driven, open-source runbook automation platform designed to simplify cloud infrastructure management and streamline operations across diverse environments. Few of the highlighting features of Runbooks.sh are:
+Runbooks.sh is a powerful, community-driven, open-source runbook automation platform designed to simplify cloud infrastructure management and streamline operations across diverse environments. Few of the highlighting features:
 
 - **Extensive Library**: Access hundreds of pre-built actions and runbooks to kickstart your automation journey.
 - **Customization**: Create and modify actions and runbooks tailored to your unique requirements.
@@ -28,7 +28,7 @@ Runbooks.sh is a powerful, community-driven, open-source runbook automation plat
 Our mission is to simplify CloudOps automation for DevOps and SRE teams by providing an extensive, community-driven repository of actions and runbooks that streamline day-to-day operations. 
 
 ## 👁️ Vision 
-Runbooks.sh envisions becoming the one-stop solution for all CloudOps automation needs, allowing DevOps and SRE teams to automate their workflows with ease, improve efficiency, and minimize toil.
+Our vision is to be the one-stop solution for all CloudOps automation needs, allowing DevOps and SRE teams to automate their workflows with ease, improve efficiency, and minimize toil.
 
 
 ## 🚀 Quick Start Guide
@@ -39,42 +39,40 @@ We recommend using our docker setup which comes with Jupyter runtime along with 
 1. Clone this repository to your local machine.
 
 ```
-git clone https://github.com/unskript/Runbooks.sh
-cd Runbooks.sh
+git clone https://github.com/unskript/Awesome-CloudOps-Automation
+cd Awesome-CloudOps-Automation
 ```
 2. Launch Docker (update the first -v line if you used a different directory in step 1).
 
 ```
 docker run -it -p 8888:8888 \
- -v $HOME/Runbooks.sh/custom:/data \
+ -v $HOME/Awesome-CloudOps-Automation/custom:/data \
  -v $HOME/.unskript:/unskript \
  -e ACA_AWESOME_MODE=1 \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
-3. Access *Runbooks.sh* at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
+3. Point your browser to http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
 
 ### Messing around
-You can find more information around how to use and play with Runbooks.sh in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
+You can find more information around how to use and play with our runbooks in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
 
 ## 📚 Documentation
 Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
 
 ## 🤝 Contributing
-We welcome contributions from developers of all skill levels! Check out our [Contribution Guidelines](.github/CONTRIBUTING.md) to learn how you can contribute to *Runbooks.sh*.
+We welcome contributions from developers of all skill levels! Check out our [Contribution Guidelines](.github/CONTRIBUTING.md) to learn how you can contribute.
 
 ## 📖 License
-Except as otherwise noted **Runbooks.sh** is licensed under the *[Apache License, Version 2.0](/License)* .
+Except as otherwise noted, this project is licensed under the *[Apache License, Version 2.0](/License)* .
 
 ## 🌐 Join Our Community
-Connect with other **Runbooks.sh** users and contributors by joining our [Slack workspace](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation). Share your experiences, ask questions, and collaborate on this exciting project!
+Connect with other users and contributors by joining our [Slack workspace](https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation). Share your experiences, ask questions, and collaborate on this exciting project!
 
 ## 📣 Stay Informed
 Keep up-to-date with the latest news, updates, and announcements by following us on [Twitter](https://twitter.com/UnSkript) and [Linkedin](https://www.linkedin.com/company/unskript-inc/).
 
 Together, let's make Runbooks.sh the go-to solution for runbook automation and cloud infrastructure management!
-
-
 
 [contributors-shield]: https://img.shields.io/github/contributors/unskript/awesome-cloudops-automation.svg?style=for-the-badge
 [contributors-url]: https://github.com/unskript/awesome-cloudops-automation/graphs/contributors
