@@ -30,7 +30,6 @@ Our mission is to simplify CloudOps automation for DevOps and SRE teams by provi
 ## 👁️ Vision 
 Our vision is to be the one-stop solution for all CloudOps automation needs, allowing DevOps and SRE teams to automate their workflows with ease, improve efficiency, and minimize toil.
 
-
 ## 🚀 Quick Start Guide
 
 We recommend using our docker setup which comes with Jupyter runtime along with pre-built actions and runbooks. Build your own actions and runbooks with ease!
