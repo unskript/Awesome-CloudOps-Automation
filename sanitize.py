@@ -43,6 +43,7 @@ def check_sanity(ipynbFile: str = '') -> bool:
         rc = False
 
     if exec_data.get('parameters') == None:
+        print("Failed parameters value check for notebook")
         rc = False
 
     cells = nb.get("cells")
