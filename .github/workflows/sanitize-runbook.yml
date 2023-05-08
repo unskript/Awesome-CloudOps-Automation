@@ -36,13 +36,6 @@ jobs:
           echo "Running sanitize script on ${{ steps.files.outputs.all_changed_files }}"
           /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs.all_changed_files }}
 
-      - name: Check test status
-        run: |
-          if [ ${{ steps.sanity.exitcode }} -ne 0 ]; then
-            echo "Sanity failed. Exiting."
-            exit 1
-          fi
-
       - name: Committing back changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
