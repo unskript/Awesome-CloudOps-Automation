@@ -3,11 +3,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-
-from typing import Optional, List
-from github import GithubException
-from pydantic import BaseModel, Field
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from github import GithubException
 
 
 class InputSchema(BaseModel):
@@ -49,12 +48,10 @@ def github_list_team_members(handle, organization_name:str, team_name:str) -> Li
             result.append(member_details)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such organization or team found")
+            raise Exception("No such organization or team found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-
-

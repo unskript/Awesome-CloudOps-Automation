@@ -3,16 +3,16 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List,Tuple
+import pprint
+from typing import Tuple
+import datetime
 from pydantic import BaseModel, Field
 from github import GithubException
-import datetime
-import pprint
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -20,7 +20,8 @@ class InputSchema(BaseModel):
         title='Repository'
     )
     threshold_days: int = Field(
-        description="Threshold number of days to check for a stale PR. Eg: 45 -> All PR's older than 45 days will be displayed",
+        description=("Threshold number of days to check for a stale PR. Eg: 45 -> "
+                     "All PR's older than 45 days will be displayed"),
         title='Threshold Days'
     )
 
@@ -66,14 +67,12 @@ def github_list_stale_pull_requests(handle, owner:str, repository:str, threshold
                 result.append(prs_dict)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such repository or user found")
+            raise Exception("No such repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
+    return (True, None)

@@ -3,10 +3,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from github import GithubException
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -55,12 +55,10 @@ def github_list_stargazers(handle, owner:str, repository:str) -> List:
             result.append(stargazer_details)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such repository or user found")
+            raise Exception("No such repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-
-
