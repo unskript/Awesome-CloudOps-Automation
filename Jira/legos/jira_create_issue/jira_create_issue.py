@@ -4,9 +4,9 @@
 ##
 import enum
 import pprint
-from typing import Optional, Any
-from jira import JIRA
+from typing import Optional
 from pydantic import BaseModel, Field
+from jira import JIRA
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -70,7 +70,14 @@ def jira_create_issue_printer(output):
         return
     pp.pprint(output)
 
-def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type: str, description: str = "", fields: dict=None) -> str:
+def jira_create_issue(
+        handle: JIRA,
+        project_name: str,
+        summary: str,
+        issue_type: str,
+        description: str = "",
+        fields: dict=None
+        ) -> str:
     """create_issue creates issue in jira.
         :type project_name: str
         :param project_name: The name of the project for which the issue will be generated
@@ -146,14 +153,18 @@ def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type:
                         if f['schema']['type'] == "array":
                             #There can be 2 scenarios here.
                             # For labels, its an array of strings.
-                            # {'id': 'labels', 'key': 'labels', 'name': 'Labels', 'custom': False, 'orderable': True,
+                            # {'id': 'labels', 'key': 'labels', 'name': 'Labels', 'custom':
+                            # False, 'orderable': True,
                             # 'navigable': True, 'searchable': True, 'clauseNames': ['labels'],
                             # 'schema': {'type': 'array', 'items': 'string', 'system': 'labels'}}
                             #
                             # For others, its an array of dictionary.
-                            # {'id': 'components', 'key': 'components', 'name': 'Components', 'custom': False,
-                            # 'orderable': True, 'navigable': True, 'searchable': True, 'clauseNames': ['component'],
-                            # 'schema': {'type': 'array', 'items': 'component', 'system': 'components'}}
+                            # {'id': 'components', 'key': 'components', 'name': 'Components',
+                            # 'custom': False,
+                            # 'orderable': True, 'navigable': True, 'searchable': True,
+                            # 'clauseNames': ['component'],
+                            # 'schema': {'type': 'array', 'items': 'component',
+                            # 'system': 'components'}}
                             if f['schema']['items'] == "string":
                                 issue_fields.update({f['id']: fields[key]})
                             else:
@@ -165,7 +176,7 @@ def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type:
                             issue_fields.update({f['id']: {'name': fields[key]}})
 
             if found is False:
-                    raise(Exception(f'Invalid field: {key}'))
+                    raise Exception(f'Invalid field: {key}')
 
 
         issue = handle.create_issue(fields=issue_fields)
@@ -175,8 +186,7 @@ def jira_create_issue(handle: JIRA, project_name: str, summary: str, issue_type:
     return issue.key
 
 def get_user_accountId(handle: JIRA, user: str)->str:
-    get_user = handle._get_json("user/search?query=[%s]" % user)
+    get_user = handle._get_json(f"user/search?query=[{user}]")
     if len(get_user) != 0:
         return get_user[0].get('accountId')
-    else:
-        raise(Exception(f'Unable to get accountId for {user}'))
+    raise  Exception(f'Unable to get accountId for {user}')
