@@ -17,15 +17,19 @@ class InputSchema(BaseModel):
     dag_run_id: Optional[str] = Field(
         None,
         title='Run ID',
-        description='The value of this field can be set only when creating the object. If you try to modify the field of an existing object, the request fails with an BAD_REQUEST error')
+        description= '''The value of this field can be set only when creating the object.
+        If you try to modify the field of an existing object, the request fails with an
+        BAD_REQUEST error''')
 
     logical_date: Optional[str] = Field(
         None,
         title='logical date',
-        description='The logical date (previously called execution date). This is the time or interval covered by this DAG run, according to the DAG definition eg: 2019-08-24T14:15:22Z')
+        description='''The logical date (previously called execution date). This is the time
+        or interval covered by this DAG run, according to the DAG definition
+        eg: 2019-08-24T14:15:22Z''')
 
     conf: Optional[dict] = Field(
-        {},
+        None,
         title='conf',
         description='JSON object describing additional configuration parameters')
 
@@ -39,7 +43,7 @@ def airflow_trigger_dag_run_printer(output):
 
 def airflow_trigger_dag_run(handle,
                             dag_id: str,
-                            conf: dict = {},
+                            conf: dict = None,
                             dag_run_id: str = "",
                             logical_date: str = "") -> Dict:
 
