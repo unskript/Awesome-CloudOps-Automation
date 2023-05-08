@@ -5,7 +5,7 @@
 ##
 
 import pprint
-from typing import Optional, List
+from typing import List
 from pydantic import BaseModel, Field
 from github import GithubException
 
@@ -53,18 +53,17 @@ def github_list_open_issues(handle, owner:str, repository:str) -> List:
                 issue_details = {}
                 issue_details["title"] = issue.title
                 issue_details["issue_number"] = issue.number
-                if type(issue.assignee)=='NoneType':
+                if isinstance(issue.assignee, type(None)):
                     issue_details["assignee"] = issue.assignee.login
                 else:
                     issue_details["assignee"] = issue.assignee
                 result.append(issue_details)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such repository or user found")
+            raise Exception("No such repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-

@@ -2,16 +2,15 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-
-from typing import Optional, List, Dict
+import pprint
+from typing import Dict
 from pydantic import BaseModel, Field
 from github import GithubException
-import pprint
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
 
@@ -43,9 +42,8 @@ def github_get_user(handle, owner:str) -> Dict:
         user_details["following"] = user.following
     except GithubException as e:
         if e.status == 404:
-            raise Exception("User not found")
+            raise Exception("User not found") from e
         raise e.data
     except Exception as e:
         raise e
     return user_details
-
