@@ -174,8 +174,8 @@ jobs:
         run: |
           pip install shyaml
           sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7
-          /usr/bin/env python -m pip install --upgrade urllib3
-          /usr/bin/env python -m pip install beartype
+          /usr/bin/env python -m pip install --upgrade urllib3==1.26.6 
+          /usr/bin/env python -m pip install --upgrade types-urllib3==1.26.13
           /usr/bin/env python -m pip list | grep url
 
 
