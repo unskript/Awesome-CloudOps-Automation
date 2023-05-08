@@ -35,9 +35,3 @@ jobs:
         run: |
           echo "Running sanitize script on ${{ steps.files.outputs.all_changed_files }}"
           /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs.all_changed_files }}
-
-      - name: Committing back changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Sanitize Runbook 
-          file_pattern: '*/*.ipynb *.ipynb'
