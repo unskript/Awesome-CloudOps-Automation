@@ -34,7 +34,7 @@ jobs:
         id: sanity
         run: |
           echo "Running sanitize script on ${{ steps.files.outputs.all_changed_files }}"
-          /usr/bin/env python ./sanitize.py -v ${{ steps.changed-files.outputs.all_changed_files }}
+          /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs.all_changed_files }}
 
       - name: Check test status
         run: |
