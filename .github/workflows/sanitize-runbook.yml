@@ -11,7 +11,7 @@ jobs:
   sanitize-runbooks: 
     runs-on: ubuntu-latest 
     strategy:
-      fail-fast: false 
+      fail-fast: true
 
     steps:
       - uses: actions/checkout@v3
@@ -31,6 +31,7 @@ jobs:
         id: files
 
       - name: Run Sanitize
+        id: sanity
         run: |
           echo "Running sanitize script on ${{ steps.files.outputs.all_changed_files }}"
           for changed_file in ${{ steps.changed-files.outputs.all_changed_files }}; do
@@ -38,9 +39,15 @@ jobs:
              then 
                continue
              fi
-            /usr/bin/env python ./sanitize.py $changed_file
-          done
-      
+            /usr/bin/env python ./sanitize.py -v $changed_file
+
+      - name: Check test status
+        run: |
+          if [ ${{ steps.sanity.exitcode }} -ne 0 ]; then
+            echo "Sanity failed. Exiting."
+            exit 1
+          fi
+
       - name: Committing back changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
