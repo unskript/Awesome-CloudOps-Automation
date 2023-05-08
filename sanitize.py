@@ -12,30 +12,30 @@ import argparse
 ## returns True is everything is ok 
 def check_sanity(ipynbFile: str = '') -> bool:
 
+    rc = True
     with open(ipynbFile) as f:
         nb = json.loads(f.read())
 
     if nb.get('metadata') == None:
         print("Failed metadata check for notebook")
-        return False
+        rc = False
 
     if nb.get('metadata').get('execution_data') == None:
         print("Failed execution_data check for notebook")
-        return False
+        rc = False
 
     exec_data = nb.get('metadata').get('execution_data')
     if len(exec_data) > 2:
         print("Failed execution_data keys check for notebook")
-        return False
+        rc = False
     
     if exec_data.get('runbook_name') == None:
-        return False
+        rc = False
     
     if exec_data.get('parameters') == None:
-        return False
+        rc = False
 
     cells = nb.get("cells")
-    rc = True
     for cell in cells:
 
         if cell.get('cell_type') == 'markdown':
