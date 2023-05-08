@@ -189,7 +189,6 @@ jobs:
           /usr/bin/env python -m pip install --upgrade protobuf
           /usr/bin/env python -m pip install --upgrade urllib3==1.26.6 
           /usr/bin/env python -m pip install --upgrade types-urllib3==1.26.13
-          /usr/bin/env python -m pip list | grep url
           /usr/bin/env python -m pip install google-api-python-client==2.77.0
           make awesome-submodule
           cd awesome
