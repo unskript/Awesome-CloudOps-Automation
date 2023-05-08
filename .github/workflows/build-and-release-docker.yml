@@ -168,7 +168,7 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
-          python-version: '3.9'
+          python-version: '3.8'
           
       - name: Install system dependencies
         run: |
