@@ -34,13 +34,7 @@ jobs:
         id: sanity
         run: |
           echo "Running sanitize script on ${{ steps.files.outputs.all_changed_files }}"
-          for changed_file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-             if [ ! -f ${changed_file} ]
-             then 
-               continue
-             fi
-            /usr/bin/env python ./sanitize.py -v $changed_file
-          done
+          /usr/bin/env python ./sanitize.py -v ${{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Check test status
         run: |
