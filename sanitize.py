@@ -24,7 +24,7 @@ def check_sanity(ipynbFile: str = '') -> bool:
         return False
 
     exec_data = nb.get('metadata').get('execution_data')
-    if len((exec_data.get('runbook_name'))) > 2:
+    if len(exec_data) > 2:
         print("Failed execution_data keys check for notebook")
         return False
     
