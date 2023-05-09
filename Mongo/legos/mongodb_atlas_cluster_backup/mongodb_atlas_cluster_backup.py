@@ -4,7 +4,6 @@
 #
 import pprint
 from typing import Dict
-
 import requests
 from pydantic import BaseModel, Field
 from requests.auth import HTTPDigestAuth
@@ -26,7 +25,8 @@ class InputSchema(BaseModel):
     retention_in_days: int = Field(
         default=7,
         title='Retention In Days',
-        description='Number of days that Atlas should retain the on-demand snapshot. Must be at least 1.'
+        description=('Number of days that Atlas should retain the '
+                     'on-demand snapshot. Must be at least 1.')
     )
 
 def mongodb_atlas_cluster_backup_printer(output):
@@ -67,12 +67,12 @@ def mongodb_atlas_cluster_backup(
     auth = HTTPDigestAuth(public_key, private_key)
 
     #Get Project ID from Project Name
-    url =  atlas_base_url + "/groups/byName/{}".format(project_name)
+    url =  atlas_base_url + f"/groups/byName/{project_name}"
     try:
-        resp = requests.get(url, auth=auth)
+        resp = requests.get(url, auth=auth, timeout=10)
         resp.raise_for_status()
     except Exception as e:
-        return {'Get project id failed': e.__str__()}
+        return {'Get project id failed': str(e)}
 
     project_resp = resp.json()
     group_id = project_resp.get("id")
@@ -81,10 +81,11 @@ def mongodb_atlas_cluster_backup(
         "description": description,
         "retentionInDays" : retention_in_days
     }
-    url =  atlas_base_url + "/groups/{}/clusters/{}/backup/snapshots/?pretty=true".format(group_id, cluster_name)
+    url =  atlas_base_url + (f"/groups/{group_id}/clusters/{cluster_name}/backup"
+                             "/snapshots/?pretty=true")
     try:
-        response = requests.post(url, auth=auth, json=body)
+        response = requests.post(url, auth=auth, json=body, timeout=10)
         response.raise_for_status()
     except Exception as e:
-        return {'Start snapshot failed': e.__str__()}
+        return {'Start snapshot failed': str(e)}
     return response.json()
