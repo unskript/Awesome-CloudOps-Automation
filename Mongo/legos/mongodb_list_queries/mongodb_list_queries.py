@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel
 from typing import Dict
+from pydantic import BaseModel
 
 class InputSchema(BaseModel):
     pass
@@ -14,7 +14,7 @@ def mongodb_list_queries_printer(output):
         return
     print("\n\n")
     if isinstance(output, Exception):
-        pprint.pprint("Error : {}".format(output))
+        pprint.pprint(f"Error : {output}")
     else:
         pprint.pprint(output['inprog'])
 
