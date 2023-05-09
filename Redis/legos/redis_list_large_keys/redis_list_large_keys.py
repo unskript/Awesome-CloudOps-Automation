@@ -4,9 +4,8 @@
 #
 
 import pprint
-from beartype import beartype
-from pydantic import BaseModel, Field
 from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     size_in_bytes: int = Field(
@@ -39,4 +38,3 @@ def redis_list_large_keys(handle, size_in_bytes: int) -> Dict :
     except Exception as e:
         result["error"] = e
     return result
-

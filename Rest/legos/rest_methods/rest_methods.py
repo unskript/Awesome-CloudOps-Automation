@@ -4,17 +4,11 @@
 
 import pprint
 from typing import Optional, Dict
+from enum import Enum
 from unskript.enums.rest_enums import Method
-
-from array import array
-from pprint import pprint
-from typing import Optional
-
 import html_to_json
 from pydantic import BaseModel, Field
 
-from enum import Enum
-import pprint
 
 class Method(str, Enum):
     GET = 'GET'
@@ -59,7 +53,7 @@ class InputSchema(BaseModel):
 
 def rest_methods_printer(output):
     if output is None:
-        return
+        return None
     print('\n')
     pprint.pprint(output)
     return output
@@ -110,7 +104,7 @@ def rest_methods(
         else:
             try:
                 result = res.json()
-            except:
+            except Exception:
                 result = html_to_json.convert(res.content)
             print(f"Status: {res.status_code}, Response:{result}")
         return {}
@@ -122,6 +116,6 @@ def rest_methods(
         res.raise_for_status()
         result = res.json()
     except Exception as e:
-        return {'Error while executing api': {e.__str__()}}
+        return {'Error while executing api': {str(e)}}
 
     return result

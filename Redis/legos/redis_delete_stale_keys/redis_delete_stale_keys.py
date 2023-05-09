@@ -4,9 +4,8 @@
 #
 
 import pprint
-from beartype import beartype
-from pydantic import BaseModel, Field
 from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     time_in_sec: int = Field(
