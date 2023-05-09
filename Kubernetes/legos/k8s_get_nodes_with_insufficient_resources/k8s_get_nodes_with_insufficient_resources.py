@@ -2,17 +2,15 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
-import re
-import pprint 
-
+import pprint
 from typing import Tuple
-from kubernetes import client
-from kubernetes.client.rest import ApiException
 from pydantic import BaseModel, Field
-from tabulate import tabulate 
+from tabulate import tabulate
+from kubernetes import client
+
 try:
     from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory, normalize_storage
-except:
+except Exception:
     pass
 
 
@@ -25,16 +23,19 @@ class InputSchema(BaseModel):
 
 def k8s_get_nodes_with_insufficient_resources_printer(output):
     if output is None:
-        return 
-    
+        return
+
     res_hdr = ["Name", "Resource"]
     data = []
     for o in output[1]:
-        if isinstance(o, dict) == True:
+        if isinstance(o, dict) is True:
             res_hdr = ["Name", "Allocatable", "Capacity"]
-            data.append([o.get('name'), pprint.pformat(o.get('allocatable')), pprint.pformat(o.get('capacity'))])        
+            data.append([
+                o.get('name'),
+                pprint.pformat(o.get('allocatable')),
+                pprint.pformat(o.get('capacity'))
+                ])        
     print(tabulate(data, headers=res_hdr, tablefmt='fancy_grid'))
-
 
 
 def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tuple:
@@ -44,12 +45,13 @@ def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tu
     :param handle: Object returned from task.validate(...) function
 
     :type threshold: int
-    :param threshold: Threshold in Percentage. Default value being 85. Any node resource exceeding that threshold
+    :param threshold: Threshold in Percentage. Default value being 85.
+    Any node resource exceeding that threshold
                       is flagged as having insufficient resource.
 
     :rtype: Tuple of the result
     """
-    if handle.client_side_validation != True:
+    if handle.client_side_validation is not True:
         raise Exception(f"K8S Connector is invalid {handle}")
 
     api_client = client.CoreV1Api(api_client=handle)
@@ -68,9 +70,13 @@ def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tu
         if cpu_usage_percent >= threshold \
             or mem_usage_percent >= threshold \
             or storage_usage_percent >= threshold:
-            retval.append({'name': node.metadata.name, 'allocatable': node.status.allocatable, 'capacity': node.status.capacity})
+            retval.append({
+                'name': node.metadata.name,
+                'allocatable': node.status.allocatable,
+                'capacity': node.status.capacity
+                })
 
     if  retval:
         return(False, retval)
-    
+
     return (True, [])

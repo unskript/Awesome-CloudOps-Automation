@@ -4,9 +4,8 @@
 ##
 import pprint
 from typing import Dict
-from kubernetes import client
 from pydantic import BaseModel, Field
-from tabulate import tabulate
+from kubernetes import client
 
 
 class InputSchema(BaseModel):
