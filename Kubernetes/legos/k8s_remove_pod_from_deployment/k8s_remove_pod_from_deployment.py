@@ -3,10 +3,8 @@
 # All rights reserved.
 ##
 import pprint
-
-from kubernetes import client
-from typing import Optional 
 from pydantic import BaseModel, Field
+from kubernetes import client
 
 class InputSchema(BaseModel):
     pod_name: str = Field(
@@ -46,20 +44,20 @@ def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str):
     core_api = client.CoreV1Api(api_client=handle)
     apps_api = client.AppsV1Api(api_client=handle)
 
-    # Labels are key-value pairs that can be attached to Kubernetes objects. 
-    # Labels can be used to organize and group objects, and they can be used to 
+    # Labels are key-value pairs that can be attached to Kubernetes objects.
+    # Labels can be used to organize and group objects, and they can be used to
     # select objects for operations such as deletion and updates.
 
-    # Selectors are used to select a group of objects for an operation. Selectors can be 
-    # specified using labels, and they can be used to select all objects with a given 
+    # Selectors are used to select a group of objects for an operation. Selectors can be
+    # specified using labels, and they can be used to select all objects with a given
     # label or all objects that match a certain pattern.
 
-    # Kubernetes deployment uses Labels and Selectors to select which pods need to be 
+    # Kubernetes deployment uses Labels and Selectors to select which pods need to be
     # updated when a new version of a pod is deployed.
 
     # Here by modifying the selector label for deployment, we are making sure the pod
     # is removed from the deployment. We verify the same by listing the pod labels after
-    # doing a patch operation 
+    # doing a patch operation
     try:
         pod = core_api.read_namespaced_pod(name=pod_name, namespace=namespace)
         owner_references = pod.metadata.owner_references
@@ -73,9 +71,12 @@ def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str):
                 raise Exception(f"Unexpected owner_references kind in pod metadata {pod.metadata.owner_references} Only Deployment is supported")
 
         if deployment_name != '':
-            deployment = apps_api.read_namespaced_deployment(name=deployment_name, namespace=namespace)
-            deployment_labels  = [key for key, value in deployment.spec.selector.match_labels.items()]
-    
+            deployment = apps_api.read_namespaced_deployment(
+                name=deployment_name,
+                namespace=namespace
+                )
+            deployment_labels= [key for key, value in deployment.spec.selector.match_labels.items()]
+
             pod_labels = [key for key,value in pod.metadata.labels.items()]
 
             common_labels = set(deployment_labels) & set(pod_labels)
