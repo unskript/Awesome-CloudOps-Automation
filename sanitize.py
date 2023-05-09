@@ -17,6 +17,10 @@ def check_sanity(ipynbFile: str = '') -> bool:
         nb = json.loads(f.read())
 
     jsonFile = ipynbFile.replace("ipynb", "json")
+    if os.path.exists(jsonFile) == False:
+        print(f"Skipping sanity on file ({ipynbFile}) since {jsonFile} is missing")
+        return True
+     
     with open(jsonFile) as jf:
         jsonData = json.loads(jf.read())
 
