@@ -650,10 +650,8 @@ def display_failed_logs(exec_id: str = None):
             cell_output = cell.get('outputs')[0]
             if cell.get('metadata').get('name'):
                 output += f"\033[1m {cell.get('metadata').get('name')} \033[0m" + '\n'
-            else:
-                output += f"\033[1m Summary \033[0m" + '\n'
-            if cell_output.get('text'):
-                output += cell_output.get('text') + '\n'
+                if cell_output.get('text'):
+                    output += cell_output.get('text') + '\n'
     print(output)
 
 def show_audit_trail(filter: str = None):
@@ -731,12 +729,10 @@ def show_audit_trail(filter: str = None):
                         break
                     elif filter.lower() == v1.get('connector'):
                         flag = 2
-                        #connector_result_table += [[k, k1 + '\n' + '( ' + v1.get('check_name') + ' )', v1.get('status'), v.get('time_stamp')]]
                         connector_result_table += [[ v1.get('check_name'),
                                                      v1.get('status'),
                                                      v.get('time_stamp'),
                                                      k]]
-                        #pprint.pprint(f"{k} {k1} {v1}")
         if flag == -1:
             if str(k) == filter:
                 flag = 3
