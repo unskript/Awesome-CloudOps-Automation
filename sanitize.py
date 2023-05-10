@@ -46,7 +46,7 @@ def check_sanity(ipynbFile: str = '') -> bool:
         print("Failed runbook_name value check for notebook")
         rc = False
 
-    if exec_data.get('parameters') == None:
+    if nb.get('metadata').get('parameterSchema') == None:
         print("Failed parameters value check for notebook")
         rc = False
 
