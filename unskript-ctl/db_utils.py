@@ -254,4 +254,7 @@ def get_creds_by_connector(connector_type: str):
     connection.close()
     db.close()
 
+    if not retval:
+        retval = (None, None)
+
     return retval
