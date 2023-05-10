@@ -199,7 +199,8 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
     if cs == None:
         raise Exception("Code Snippets Are missing")
     for s in cs:
-        d = s.snippet
+        # AFTER EN-4497 data stored in ZoDB is Text no longer object
+        d = s
         s_connector = d.get('metadata').get('action_type')
         s_connector = s_connector.split('_')[-1].lower()
                   
