@@ -12,30 +12,45 @@ import argparse
 ## returns True is everything is ok 
 def check_sanity(ipynbFile: str = '') -> bool:
 
+    rc = True
     with open(ipynbFile) as f:
         nb = json.loads(f.read())
 
+    jsonFile = ipynbFile.replace("ipynb", "json")
+    if os.path.exists(jsonFile) == False:
+        print(f"Skipping sanity on file ({ipynbFile}) since {jsonFile} is missing")
+        return True
+     
+    with open(jsonFile) as jf:
+        jsonData = json.loads(jf.read())
+
     if nb.get('metadata') == None:
         print("Failed metadata check for notebook")
-        return False
+        rc = False
 
     if nb.get('metadata').get('execution_data') == None:
         print("Failed execution_data check for notebook")
-        return False
+        rc = False
 
     exec_data = nb.get('metadata').get('execution_data')
     if len(exec_data) > 2:
         print("Failed execution_data keys check for notebook")
-        return False
-    
+        rc = False
+
     if exec_data.get('runbook_name') == None:
-        return False
+        print("Failed runbook_name check for notebook")
+        rc = False
     
+    ## runbook_name should be same as the name in JSON file
+    if exec_data.get('runbook_name') != jsonData.get('name'):
+        print("Failed runbook_name value check for notebook")
+        rc = False
+
     if exec_data.get('parameters') == None:
-        return False
+        print("Failed parameters value check for notebook")
+        rc = False
 
     cells = nb.get("cells")
-    rc = True
     for cell in cells:
 
         if cell.get('cell_type') == 'markdown':
@@ -76,13 +91,18 @@ def sanitize(ipynbFile: str = '') -> bool:
         print("ERROR: IPYNB file is needed")
         return retVal
 
+    jsonFile = ipynbFile.replace("ipynb", "json")
+    with open(jsonFile) as jf:
+        jsonData = json.loads(jf.read())
+
     with open(ipynbFile) as f:
         nb = json.loads(f.read())
 
         execution_data = {
-            'runbook_name': nb.get('metadata').get('execution_data').get('runbook_name'),
+            'runbook_name': jsonData.get('name'),
             'parameters': nb.get('metadata').get('execution_data').get('parameters'),
         }
+
 
     new_cells = []
     cells = nb.get("cells")
