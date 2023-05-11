@@ -22,11 +22,7 @@ def aws_get_long_running_rds_instances_without_reserved_instances_printer(output
         return
     pprint.pprint(output)
 
-def aws_get_long_running_rds_instances_without_reserved_instances(
-    handle,
-    region: str = "",
-    threshold:int=10
-    ) -> Tuple:
+def aws_get_long_running_rds_instances_without_reserved_instances(handle, region: str = "", threshold:int=10) -> Tuple:
     """aws_get_long_running_rds_instances_without_reserved_instances Gets all DB instances that are not m5 or t3.
 
         :type handle: object
