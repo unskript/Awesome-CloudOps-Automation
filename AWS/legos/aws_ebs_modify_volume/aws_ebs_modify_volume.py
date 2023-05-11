@@ -80,7 +80,11 @@ def aws_ebs_modify_volume(
         newSize = currentSize * resize_value
 
     print(f'CurrentSize {currentSize}, NewSize {newSize}')
-
+    
+    ec2Client.modify_volume(
+        VolumeId=volume_id,
+        Size=newSize)
+    
     # Check the modification state
     try:
         check_modification_status(ec2Client, volume_id)
