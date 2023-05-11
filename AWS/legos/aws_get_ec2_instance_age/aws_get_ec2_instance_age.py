@@ -5,12 +5,13 @@
 ##read the blog https://unskript.com/will-ai-replace-us-using-chatgpt-to-create-python-actions-for-unskript/
 ##
 
-from typing import List, Dict
-from pydantic import BaseModel, Field
 import pprint
+from typing import Dict
 from datetime import datetime, timezone
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from beartype import beartype
+
 @beartype
 def aws_get_ec2_instance_age_printer(output):
     if output is None:
@@ -46,7 +47,6 @@ def aws_get_ec2_instance_age(handle, region: str) -> Dict:
 
             # Print the instance ID and age
             ageText = f"Instance {instance_id} is {age.days} days old"
-            ageDict = {instance_id: age.days}
             print(ageText)
             result[instance_id] = age.days
-    return(result)
+    return result

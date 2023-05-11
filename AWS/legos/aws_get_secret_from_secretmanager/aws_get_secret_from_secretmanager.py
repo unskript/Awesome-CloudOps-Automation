@@ -2,9 +2,8 @@
 ##  All rights reserved.
 ##  @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
-from pydantic import BaseModel, Field
 import pprint
-
+from pydantic import BaseModel, Field
 from botocore.exceptions import ClientError
 
 
@@ -55,12 +54,13 @@ def aws_get_secret_from_secretmanager(handle, SecretId: str, region: str) -> str
             print("An error occurred on service side:", e)
     else:
         # Secrets Manager decrypts the secret value using the associated KMS CMK
-        # Depending on whether the secret was a string or binary, only one of these fields will be populated
+        # Depending on whether the secret was a string or binary, only one of
+        # these fields will be populated
         if 'SecretString' in response:
             text_secret_data = response['SecretString']
             pprint.pprint(text_secret_data)
             return text_secret_data
-        else:
-            binary_secret_data = response['SecretBinary']
-            pprint.pprint(binary_secret_data)
-            return binary_secret_data
+
+        binary_secret_data = response['SecretBinary']
+        pprint.pprint(binary_secret_data)
+        return binary_secret_data
