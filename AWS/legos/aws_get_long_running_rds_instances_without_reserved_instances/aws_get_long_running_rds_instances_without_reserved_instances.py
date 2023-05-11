@@ -1,22 +1,13 @@
-from __future__ import annotations
-
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.connectors.aws import aws_get_paginator
-from datetime import datetime,timedelta, timezone
 import pprint
-
-
-
-from typing import Optional
-
+from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-
+from datetime import datetime,timedelta, timezone
+from unskript.connectors.aws import aws_get_paginator
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 class InputSchema(BaseModel):
     region: Optional[str] = Field('', description='AWS Region.', title='AWS Region')
@@ -26,14 +17,16 @@ class InputSchema(BaseModel):
         title='Threshold(in days)',
     )
 
-
 def aws_get_long_running_rds_instances_without_reserved_instances_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-
-def aws_get_long_running_rds_instances_without_reserved_instances(handle, region: str = "", threshold:int=10) -> Tuple:
+def aws_get_long_running_rds_instances_without_reserved_instances(
+    handle,
+    region: str = "",
+    threshold:int=10
+    ) -> Tuple:
     """aws_get_long_running_rds_instances_without_reserved_instances Gets all DB instances that are not m5 or t3.
 
         :type handle: object
