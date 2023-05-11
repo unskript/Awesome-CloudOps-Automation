@@ -7,7 +7,7 @@ import pprint
 from typing import Optional, List
 from pydantic import BaseModel, Field
 from unskript.enums.github_user_role_enums import GithubUserRole
-from github import GithubException
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
@@ -81,8 +81,8 @@ def github_invite_user_to_org(
             return "Successfully sent invite"
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access") from e
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such organization found") from e
+            raise UnknownObjectException("No such organization found") from e
         raise e.data
     return None

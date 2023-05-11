@@ -5,7 +5,7 @@
 import pprint
 from typing import Dict
 from pydantic import BaseModel, Field
-from github import GithubException
+from github import GithubException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
@@ -42,7 +42,7 @@ def github_get_user(handle, owner:str) -> Dict:
         user_details["following"] = user.following
     except GithubException as e:
         if e.status == 404:
-            raise Exception("User not found") from e
+            raise UnknownObjectException("User not found") from e
         raise e.data
     except Exception as e:
         raise e

@@ -6,7 +6,7 @@
 import pprint
 from typing import List
 from pydantic import BaseModel, Field
-from github import GithubException
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
@@ -64,9 +64,9 @@ def github_list_pull_request_reviewers(
                 result.append(r.login)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access") from e
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found") from e
+            raise UnknownObjectException("No such pull number or repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
