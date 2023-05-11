@@ -5,7 +5,7 @@
 import pprint
 from typing import List
 from pydantic import BaseModel, Field
-from github import GithubException
+from github import GithubException, BadCredentialsException
 
 class InputSchema(BaseModel):
     organization_name: str = Field(
@@ -38,7 +38,7 @@ def github_list_teams_in_org(handle, organization_name:str) -> List:
         [result.append(team.name) for team in teams]
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access") from e
+            raise BadCredentialsException("You need admin access") from e
         raise e.data
     except Exception as e:
         raise e

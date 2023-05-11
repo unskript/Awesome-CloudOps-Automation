@@ -8,7 +8,7 @@ import pprint
 from typing import Tuple
 import datetime
 from pydantic import BaseModel, Field
-from github import GithubException
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 class InputSchema(BaseModel):
     owner: str = Field(
@@ -74,9 +74,9 @@ def github_list_stale_issues(handle, owner:str, repository:str, age_to_stale:int
                 result.append(issue_details)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access") from e
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found") from e
+            raise UnknownObjectException("No such pull number or repository or user found") from e
         raise e.data
     except Exception as e:
         raise e

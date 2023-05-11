@@ -6,7 +6,7 @@
 import pprint
 from typing import List
 from pydantic import BaseModel, Field
-from github import GithubException
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 class InputSchema(BaseModel):
     organization_name: str = Field(
@@ -47,9 +47,9 @@ def github_list_team_repos(handle, organization_name:str, team_name:str) -> List
         result = [repo.full_name for repo in repos]
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access") from e
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such organization or repository found") from e
+            raise UnknownObjectException("No such organization or repository found") from e
         raise e.data
     except Exception as e:
         raise e

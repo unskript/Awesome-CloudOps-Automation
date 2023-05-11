@@ -5,7 +5,7 @@
 ##
 import pprint
 from pydantic import BaseModel, Field
-from github import GithubException
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
@@ -71,9 +71,9 @@ def github_merge_pull_request(
         return f"Successully merged branch with commit SHA- {commit.sha}"
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access") from e
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found") from e
+            raise UnknownObjectException("No such pull number or repository or user found") from e
         if e.status==409:
             raise Exception("Merge Conflict") from e
         raise e.data
