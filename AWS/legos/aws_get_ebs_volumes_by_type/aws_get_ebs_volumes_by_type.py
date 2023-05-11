@@ -2,9 +2,9 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -42,5 +42,5 @@ def aws_get_ebs_volumes_by_type(handle, region: str) -> Dict:
                 result[volume_type] = [volume_id]
 
     except Exception as e:
-        raise Exception(e)
+        raise Exception(e) from e
     return result

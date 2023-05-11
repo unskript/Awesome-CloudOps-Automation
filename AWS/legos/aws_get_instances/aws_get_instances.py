@@ -2,10 +2,9 @@
 ##  All rights reserved.
 ##  @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
+from typing import List
 from pydantic import BaseModel, Field
 import pandas as pd
-from typing import List
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -18,7 +17,7 @@ class InputSchema(BaseModel):
 
 
 def aws_get_instances_printer(output):
-    
+
     if output is None:
         return
     df = pd.DataFrame(output)
@@ -53,5 +52,5 @@ def aws_get_instances(handle, elb_name: str, region: str) -> List:
     instances = []
     for instance in res['InstanceStates']:
         instances.append(instance)
-    
+
     return instances

@@ -1,19 +1,11 @@
-from __future__ import annotations
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
+from __future__ import annotations
+from typing import Dict
 from pydantic import BaseModel, Field
-from typing import List, Dict
-from unskript.connectors.aws import aws_get_paginator
-import pprint
 from beartype import beartype
-
-
-from typing import Optional
-
-from pydantic import BaseModel, Field
-
 
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS Region.', title='Region')
@@ -22,7 +14,6 @@ class InputSchema(BaseModel):
          description='Id of Redshift Query', title='queryId'
 
     )
-    
 
 @beartype
 def aws_get_redshift_query_details(handle, region: str, queryId:str) -> Dict:
@@ -40,5 +31,3 @@ def aws_get_redshift_query_details(handle, region: str, queryId:str) -> Dict:
                "ResultRows":ResultRows
               }
     return details
-
-
