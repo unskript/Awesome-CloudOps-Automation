@@ -48,7 +48,7 @@ def aws_read_object(handle, name: str, key: str) -> List:
             print(content.get("Key"))
             folder_list.append(content.get("Key"))
         return folder_list
-    if key:
+    else:
         res = s3Client.get_object(Bucket=name, Key=key)
         fileSizeLimit = 100000
         output = str(io.BytesIO(res['Body'].read()).read(fileSizeLimit))
