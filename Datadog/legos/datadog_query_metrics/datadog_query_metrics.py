@@ -4,10 +4,10 @@
 ##
 import pprint
 from typing import Dict
-from datadog_api_client import ApiClient
-from datadog_api_client.v1.api.metrics_api import MetricsApi
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field
+from datadog_api_client import ApiClient
+from datadog_api_client.v1.api.metrics_api import MetricsApi
 
 
 class InputSchema(BaseModel):

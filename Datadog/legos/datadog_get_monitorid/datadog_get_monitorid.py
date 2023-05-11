@@ -2,11 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
 from pydantic import BaseModel, Field
 from datadog_api_client.v1.api.monitors_api import MonitorsApi
 from datadog_api_client import ApiClient
 from datadog_api_client.exceptions import NotFoundException
-import pprint
 
 class InputSchema(BaseModel):
     name: str = Field(
@@ -41,5 +41,4 @@ def datadog_get_monitorid(handle, name: str) -> int:
         raise e
     if len(monitors) == 1:
         return int(monitors[0]['id'])
-    else:
-        raise NotFoundException
+    raise NotFoundException
