@@ -10,8 +10,8 @@ from dateutil.relativedelta import relativedelta
 
 
 class InputSchema(BaseModel):
-    number_of_months: Optional[float] = Field(
-        '',
+    number_of_months: Optional[int] = Field(
+        1,
         description=('Number of months to fetch the daily costs for. '
                      'Eg: 1 (This will fetch all the costs for the last 30 days)'),
         title='Number of Months',
@@ -39,7 +39,7 @@ def aws_get_cost_for_all_services_printer(output):
 
 def aws_get_cost_for_all_services(
         handle, region:str,
-        number_of_months: int="",
+        number_of_months: int=1,
         start_date: str="",
         end_date:str=""
         ) -> List:
