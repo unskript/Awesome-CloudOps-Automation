@@ -16,7 +16,7 @@ class InputSchema(BaseModel):
         description="K8S Namespace where the POD exists"
     )
 
-def k8s_remove_pod_from_deployment(output):
+def k8s_remove_pod_from_deployment_printer(output):
     if not output:
         return
 
