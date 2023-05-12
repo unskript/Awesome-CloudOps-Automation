@@ -48,51 +48,47 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
         :rtype: status, list of clusters, nodetype and their region.
     """
     result = []
-    cluster_data = []
-    node_data = []
+    reservedNodesPerRegion = {}
     all_regions = [region]
     if not region:
         all_regions = aws_list_all_regions(handle)
+    # Get the list of reserved node per region per type. We just need to maintain
+    # what type of reserved nodes are present per region. So, reservedNodesPerRegion
+    # would be like:
+    # <region>:{<nodeType>:True/False}
     for reg in all_regions:
         try:
             elasticacheClient = handle.client('elasticache', region_name=reg)
             response = elasticacheClient.describe_reserved_cache_nodes()
+            reservedNodesPerType = {}
             if response['ReservedCacheNodes']:
                 for node in response['ReservedCacheNodes']:
-                    node_dict = {}
-                    node_dict['region'] = reg
-                    node_dict['node_type'] = node['CacheNodeType']
-                    node_data.append(node_dict)
+                    reservedNodesPerType[node['CacheNodeType']] = True
             else:
                 continue
+            reservedNodesPerRegion[reg] = reservedNodesPerType
         except Exception:
             pass
+
     for reg in all_regions:
         try:
             elasticacheClient = handle.client('elasticache', region_name=reg)
             for cluster in elasticacheClient.describe_cache_clusters()['CacheClusters']:
                 cluster_age = datetime.now(timezone.utc) - cluster['CacheClusterCreateTime']
                 if cluster_age > timedelta(days=threshold):
+                    # Check if the cluster node type is present in the reservedNodesPerRegion map.
+                    reservedNodes = reservedNodesPerRegion.get(cluster['region'])
+                    if reservedNodes != None:
+                        if reservedNodes.get(cluster['CacheNodeType']) == True:
+                            continue
                     cluster_dict = {}
                     cluster_dict["region"] = reg
                     cluster_dict["cluster"] = cluster['CacheClusterId']
                     cluster_dict["node_type"] = cluster['CacheNodeType']
-                    cluster_data.append(cluster_dict)
+                    result.append(cluster_dict)
         except Exception:
             pass
-    if len(node_data) != 0:
-        for node in node_data:
-            for cluster in cluster_data:
-                if cluster['node_type'] == node['node_type']:
-                    continue
-                else:
-                    clusters_without_reserved_nodes = {}
-                    clusters_without_reserved_nodes["region"] = cluster['region']
-                    clusters_without_reserved_nodes["cluster"] = cluster['cluster']
-                    clusters_without_reserved_nodes["node_type"] = cluster['node_type']
-                    result.append(clusters_without_reserved_nodes)
-    else:
-        result = cluster_data
+
     if len(result) != 0:
         return (False, result)
     else:
