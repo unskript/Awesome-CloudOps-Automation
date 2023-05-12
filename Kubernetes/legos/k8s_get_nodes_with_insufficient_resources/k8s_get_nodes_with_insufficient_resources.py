@@ -7,6 +7,7 @@ from typing import Tuple
 from pydantic import BaseModel, Field
 from tabulate import tabulate
 from kubernetes import client
+from kubernetes.client.rest import ApiException
 
 try:
     from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory, normalize_storage
@@ -52,7 +53,7 @@ def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tu
     :rtype: Tuple of the result
     """
     if handle.client_side_validation is not True:
-        raise Exception(f"K8S Connector is invalid {handle}")
+        raise ApiException(f"K8S Connector is invalid {handle}")
 
     api_client = client.CoreV1Api(api_client=handle)
     retval = []

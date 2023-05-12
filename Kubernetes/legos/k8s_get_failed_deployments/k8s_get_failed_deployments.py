@@ -5,6 +5,7 @@
 from typing import Tuple
 from pydantic import BaseModel, Field
 from kubernetes import client
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -30,7 +31,7 @@ def k8s_get_failed_deployments(handle, namespace: str = '') -> Tuple:
     :rtype: Tuple of the result
     """
     if handle.client_side_validation is not True:
-        raise Exception(f"K8S Connector is invalid {handle}")
+        raise ApiException(f"K8S Connector is invalid {handle}")
 
     apps_client = client.AppsV1Api(api_client=handle)
     if not namespace:
