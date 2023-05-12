@@ -28,10 +28,10 @@ jobs:
       
       - name: Get list of all ipynb files
         id: files
-        run: echo $(find . -name "*.ipynb") >> $GITHUB_OUTPUT
+        run: echo "files=$(find . -name '*.ipynb') >> $GITHUB_OUTPUT
         
       - name: Run Sanitize
         id: sanity
         run: |
-          echo "Running sanitize script on ${{ steps.files.outputs }}"
-          /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs }}
+          echo "Running sanitize script on ${{ steps.files.outputs.files }}"
+          /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs.files }}
