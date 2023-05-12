@@ -69,7 +69,7 @@ def mongodb_atlas_cluster_backup(
     #Get Project ID from Project Name
     url =  atlas_base_url + f"/groups/byName/{project_name}"
     try:
-        resp = requests.get(url, auth=auth, timeout=10)
+        resp = requests.get(url, auth=auth)
         resp.raise_for_status()
     except Exception as e:
         return {'Get project id failed': str(e)}
@@ -84,7 +84,7 @@ def mongodb_atlas_cluster_backup(
     url =  atlas_base_url + (f"/groups/{group_id}/clusters/{cluster_name}/backup"
                              "/snapshots/?pretty=true")
     try:
-        response = requests.post(url, auth=auth, json=body, timeout=10)
+        response = requests.post(url, auth=auth, json=body)
         response.raise_for_status()
     except Exception as e:
         return {'Start snapshot failed': str(e)}
