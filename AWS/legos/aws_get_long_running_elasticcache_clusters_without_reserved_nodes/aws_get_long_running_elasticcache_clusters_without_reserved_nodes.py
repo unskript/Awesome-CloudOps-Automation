@@ -77,7 +77,7 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
                 cluster_age = datetime.now(timezone.utc) - cluster['CacheClusterCreateTime']
                 if cluster_age > timedelta(days=threshold):
                     # Check if the cluster node type is present in the reservedNodesPerRegion map.
-                    reservedNodes = reservedNodesPerRegion.get(cluster['region'])
+                    reservedNodes = reservedNodesPerRegion.get(reg)
                     if reservedNodes != None:
                         if reservedNodes.get(cluster['CacheNodeType']) == True:
                             continue
