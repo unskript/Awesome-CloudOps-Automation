@@ -8,6 +8,7 @@ from enum import Enum
 from unskript.enums.rest_enums import Method
 import html_to_json
 from pydantic import BaseModel, Field
+from werkzeug.exceptions import MethodNotAllowed
 
 
 class Method(str, Enum):
@@ -109,7 +110,7 @@ def rest_methods(
             print(f"Status: {res.status_code}, Response:{result}")
         return {}
     else:
-        raise Exception(f'Unsupported method {method}')
+        raise MethodNotAllowed(f'Unsupported method {method}')
 
     handle.close()
     try:
