@@ -6,9 +6,6 @@
 
 from __future__ import annotations
 from pydantic import BaseModel, Field
-from typing import List, Dict
-from unskript.connectors.aws import aws_get_paginator
-import pprint
 from beartype import beartype
 
 
@@ -34,13 +31,18 @@ class InputSchema(BaseModel):
 
 
 @beartype
-def aws_create_redshift_query(handle, region: str,cluster:str, database:str, secretArn: str, query:str) -> str:
+def aws_create_redshift_query(
+    handle,
+    region: str,
+    cluster:str,
+    database:str,
+    secretArn: str,
+    query:str
+    ) -> str:
 
     # Input param validation.
     #major change
     client = handle.client('redshift-data', region_name=region)
-    # define your query
-    query = query
     # execute the query
     response = client.execute_statement(
         ClusterIdentifier=cluster,

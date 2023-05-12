@@ -16,6 +16,10 @@ class InputSchema(BaseModel):
         title='Git Repository',
         description='Repository that has Terraform Scripts eg: https://github.com/acme/acme.git'
     )
+    branch: str = Field(
+        title='Git Repository Branch',
+        description='Branch name of repository that has Terraform Scripts eg: master, dev, feature/multiuser'
+    )
     dir_path: Optional[str] = Field(
         title='Directory Path',
         description='Directory within Repository to run the terraform command eg: acme, ./, acme/terrform/main'
@@ -26,7 +30,7 @@ class InputSchema(BaseModel):
     )
 
 
-def terraform_exec_command(handle, repo, command, dir_path:str=None) -> str:
+def terraform_exec_command(handle, repo, branch, command, dir_path:str=None) -> str:
     """terraform_exec_command Executes the terraform command
        with any arguments.
 
@@ -56,7 +60,7 @@ def terraform_exec_command(handle, repo, command, dir_path:str=None) -> str:
     # sanitize inputs that have come from validate
 
     try:
-        result = handle.sidecar_command(repo, handle.credential_id, dir_path, command, str(""))
+        result = handle.sidecar_command(repo, branch, handle.credential_id, dir_path, command, str(""))
         output = result.data.decode('utf-8')
         output = json.loads(output)['output']
     except Exception as e:
