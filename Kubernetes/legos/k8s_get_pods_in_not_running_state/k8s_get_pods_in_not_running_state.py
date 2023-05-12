@@ -4,6 +4,7 @@
 #
 from typing import Tuple
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -13,7 +14,7 @@ class InputSchema(BaseModel):
         title='K8S Namespace'
     )
 
-def k8s_get_pods_in_not_running_state(output):
+def k8s_get_pods_in_not_running_state_printer(output):
     if output is None:
         return
 
@@ -31,16 +32,17 @@ def k8s_get_pods_in_not_running_state(handle, namespace: str = '') -> Tuple:
        :rtype: Tuple Result in tuple format.  
     """
     if handle.client_side_validation is not True:
-        raise Exception(f"K8S Connector is invalid {handle}")
+        raise ApiException(f"K8S Connector is invalid {handle}")
 
     if not namespace:
         kubectl_command =("kubectl get pods --all-namespaces --field-selector=status.phase!=Running"
                            " -o jsonpath=\"{.items[*]['metadata.name', 'metadata.namespace']}\"")
     else:
-        kubectl_command = f"kubectl get pods -n {namespace}" +  " --field-selector=status.phase!=Running -o jsonpath=\"{.items[*]['metadata.name', 'metadata.namespace']}\""
+        kubectl_command = f"kubectl get pods -n {namespace}" + \
+              " --field-selector=status.phase!=Running -o jsonpath=\"{.items[*]['metadata.name', 'metadata.namespace']}\""
     result = handle.run_native_cmd(kubectl_command)
     if result.stderr:
-        raise Exception(f"Error occurred while executing command {kubectl_command} {result.stderr}")
+        raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")
 
     if result.stdout:
         return (False, [{'name': result.stdout.split()[0], 'namespace': result.stdout.split()[-1]}])
