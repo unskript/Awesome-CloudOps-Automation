@@ -49,9 +49,24 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
     """
     result = []
     cluster_data = []
+    node_data = []
     all_regions = [region]
     if not region:
         all_regions = aws_list_all_regions(handle)
+    for reg in all_regions:
+        try:
+            elasticacheClient = handle.client('elasticache', region_name=reg)
+            response = elasticacheClient.describe_reserved_cache_nodes()
+            if response['ReservedCacheNodes']:
+                for node in response['ReservedCacheNodes']:
+                    node_dict = {}
+                    node_dict['region'] = reg
+                    node_dict['node_type'] = node['CacheNodeType']
+                    node_data.append(node_dict)
+            else:
+                continue
+        except Exception:
+            pass
     for reg in all_regions:
         try:
             elasticacheClient = handle.client('elasticache', region_name=reg)
@@ -65,25 +80,19 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
                     cluster_data.append(cluster_dict)
         except Exception:
             pass
-    for clus in cluster_data:
-        ecClient = handle.client('elasticache', region_name=clus['region'])
-        response = ecClient.describe_reserved_cache_nodes()
-        if response['ReservedCacheNodes']:
-            for node in response['ReservedCacheNodes']:
-                if clus['node_type'] == node['CacheNodeType']:
+    if len(node_data) != 0:
+        for node in node_data:
+            for cluster in cluster_data:
+                if cluster['node_type'] == node['node_type']:
                     continue
                 else:
-                    cluster_dict = {}
-                    cluster_dict["region"] = clus['region']
-                    cluster_dict["cluster"] = clus['cluster']
-                    cluster_dict["node_type"] = clus['node_type']
-                    result.append(cluster_dict)
-        else:
-            cluster_dict = {}
-            cluster_dict["region"] = clus['region']
-            cluster_dict["cluster"] = clus['cluster']
-            cluster_dict["node_type"] = clus['node_type']
-            result.append(cluster_dict)
+                    clusters_without_reserved_nodes = {}
+                    clusters_without_reserved_nodes["region"] = cluster['region']
+                    clusters_without_reserved_nodes["cluster"] = cluster['cluster']
+                    clusters_without_reserved_nodes["node_type"] = cluster['node_type']
+                    result.append(clusters_without_reserved_nodes)
+    else:
+        result = cluster_data
     if len(result) != 0:
         return (False, result)
     else:
