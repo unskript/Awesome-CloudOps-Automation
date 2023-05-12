@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
@@ -50,6 +48,7 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
         :rtype: status, list of clusters, nodetype and their region.
     """
     result = []
+    cluster_data = []
     all_regions = [region]
     if not region:
         all_regions = aws_list_all_regions(handle)
@@ -59,30 +58,33 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
             for cluster in elasticacheClient.describe_cache_clusters()['CacheClusters']:
                 cluster_age = datetime.now(timezone.utc) - cluster['CacheClusterCreateTime']
                 if cluster_age > timedelta(days=threshold):
-                    response = elasticacheClient.describe_reserved_cache_nodes()
-                    if response['ReservedCacheNodes']:
-                        for node in response['ReservedCacheNodes']:
-                            if cluster['CacheNodeType'] == node['CacheNodeType']:
-                                continue
-                            else:
-                                cluster_dict = {}
-                                cluster_dict["region"] = reg
-                                cluster_dict["cluster"] = cluster['CacheClusterId']
-                                cluster_dict["node_type"] = cluster['CacheNodeType']
-                                result.append(cluster_dict)
-                    else:
-                        cluster_dict = {}
-                        cluster_dict["region"] = reg
-                        cluster_dict["cluster"] = cluster['CacheClusterId']
-                        cluster_dict["node_type"] = cluster['CacheNodeType']
-                        result.append(cluster_dict)
+                    cluster_dict = {}
+                    cluster_dict["region"] = reg
+                    cluster_dict["cluster"] = cluster['CacheClusterId']
+                    cluster_dict["node_type"] = cluster['CacheNodeType']
+                    cluster_data.append(cluster_dict)
         except Exception:
             pass
+    for clus in cluster_data:
+        ecClient = handle.client('elasticache', region_name=clus['region'])
+        response = ecClient.describe_reserved_cache_nodes()
+        if response['ReservedCacheNodes']:
+            for node in response['ReservedCacheNodes']:
+                if clus['node_type'] == node['CacheNodeType']:
+                    continue
+                else:
+                    cluster_dict = {}
+                    cluster_dict["region"] = clus['region']
+                    cluster_dict["cluster"] = clus['cluster']
+                    cluster_dict["node_type"] = clus['node_type']
+                    result.append(cluster_dict)
+        else:
+            cluster_dict = {}
+            cluster_dict["region"] = clus['region']
+            cluster_dict["cluster"] = clus['cluster']
+            cluster_dict["node_type"] = clus['node_type']
+            result.append(cluster_dict)
     if len(result) != 0:
         return (False, result)
     else:
         return (True, None)
-
-
-
-
