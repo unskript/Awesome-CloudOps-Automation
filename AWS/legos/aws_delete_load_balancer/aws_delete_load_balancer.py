@@ -2,10 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
 import pprint
-
+from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     elb_arn: str = Field(
@@ -41,3 +40,4 @@ def aws_delete_load_balancer(handle, region: str, elb_arn: str) -> Dict:
         return response
     except Exception as e:
         raise Exception(e)
+    

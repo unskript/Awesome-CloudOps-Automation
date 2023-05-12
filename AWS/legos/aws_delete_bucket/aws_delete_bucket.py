@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
 import pprint
+from typing import Optional, Dict
+from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 
 
