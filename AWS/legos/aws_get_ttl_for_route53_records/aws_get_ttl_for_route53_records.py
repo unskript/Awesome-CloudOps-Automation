@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict, List
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 
 
@@ -33,7 +33,12 @@ def aws_get_ttl_for_route53_records(handle, hosted_zone_id:str) -> List:
         :rtype: List of details with the record type, record name and record TTL.
     """
     route53Client = handle.client('route53')
-    response = aws_get_paginator(route53Client, "list_resource_record_sets", "ResourceRecordSets", HostedZoneId=hosted_zone_id)
+    response = aws_get_paginator(
+        route53Client,
+        "list_resource_record_sets",
+        "ResourceRecordSets",
+        HostedZoneId=hosted_zone_id
+        )
     result = []
     for record in response:
         records = {}
@@ -45,4 +50,3 @@ def aws_get_ttl_for_route53_records(handle, hosted_zone_id:str) -> List:
         records["record_ttl"] = record_ttl
         result.append(records)
     return result
-
