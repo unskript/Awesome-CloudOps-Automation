@@ -9,6 +9,6 @@
   "action_supports_iteration": "true",
   "action_supports_poll": "true",
   "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELASTICCACHE"],
-  "action_next_hop": [],
+  "action_next_hop": ["51a0b15d932dddeea9b1991fb6299577756408ff7c47acc5dec3eb114e33562b"],
   "action_next_hop_parameter_mapping": {}
 }

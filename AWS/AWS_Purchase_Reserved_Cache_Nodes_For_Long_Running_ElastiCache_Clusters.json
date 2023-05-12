@@ -1,0 +1,9 @@
+{
+    "name": "Purchase Reserved Nodes For Long Running AWS ElastiCache Clusters ",
+    "description": "Ensuring that long-running AWS ElastiCache clusters have Reserved Nodes purchased for them is an effective cost optimization strategy for AWS users. By committing to a specific capacity of ElastiCache nodes for a period of one or three years, users can take advantage of significant discounts compared to On-Demand pricing. This approach can help optimize AWS costs for ElastiCache clusters that are expected to run for an extended period and have predictable usage patterns. This runbook helps us optimize costs by ensuring that Reserved Nodes are purchased for these ElastiCache clusters.",  
+    "uuid": "51a0b15d932dddeea9b1991fb6299577756408ff7c47acc5dec3eb114e33562b",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_CLOUDOPS"],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
