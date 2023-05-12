@@ -31,11 +31,11 @@ In this document, we'll walk through the anatomy of a Lego/Action, how they are 
   * the Readme (tell us what your action does and how it works)
 
 
-
+# Lego Authoring Guidelines
 
 ## Directory Structure
 
-The Directory structure followed on Runbooks.sh is:
+The Directory structure is:
 
 1. CONNECTOR is a directory of xRunBooks and Lego/Actions that are run for a particular service/API/etc. (for example: Redis, AWS or Slack)
 2. Inside the CONNECTOR Directory will be two files for each xRunBook (a JSON file and the actual rRunBook in the .ipynb file), and the Lego subdirectory will hold all of the Actions.

@@ -13,8 +13,8 @@ We have several forms for your issues:
 
  
  
- ## Contributing
--------------------------
+### Version control branching
+-----------------------------
  
 * Always **make a new branch** for your work. 
 * **Base your new branch off of the master branch** on the main
@@ -53,3 +53,5 @@ Whether you are a user or contributor, official support channels include:
 - GitHub issues: https://github.com/unskript/Awesome-CloudOps-Automation/issues/new
 - Slack: https://communityinviter.com/apps/cloud-ops-community/awesome-cloud-automation
  
+### Extending Docker
+ You can use our base docker and extend the functionality to fit your need. Follow this [document](./README_extending_docker.md) to create and build your own custom docker.
