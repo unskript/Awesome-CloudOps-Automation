@@ -26,9 +26,10 @@ jobs:
           /usr/bin/env python -m pip install gitpython
           /usr/bin/env python -m pip install PyGithub
       
-      - name: PR File List
-        uses: tj-actions/changed-files@v35
+      - name: All Runbooks
         id: files
+        run: |
+          find . -mindepth 2 -maxdepth 2 -name "*.ipynb"
 
       - name: Run Sanitize
         id: sanity
