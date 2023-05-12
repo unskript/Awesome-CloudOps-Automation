@@ -1,14 +1,13 @@
 # Contributing
-Thanks for taking time to contribute and helping us make this project better! The following is a set of guidelines for contributing to Runbooks.sh. 
- 
+Thanks for taking time to contribute and helping us make this project better! The following is a set of guidelines for contributing to the project.
 Please note we have a code of conduct, please follow it in all your interactions with the project.
  
 ## Submitting issues
 
 We have several forms for your issues:
 * [Bug Report](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=): Ensure you have followed the steps in the form so we can best assist you.
-* [Feature Request](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=): Do you have an awesome idea to make runbooks.sh better?  We want to hear it!
-* [Action Creation](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=action%2Ctriage&projects=&template=add_action.yml&title=%5BAction%5D%3A+): Do you have an idea for a new Action inside Runbooks.sh?
+* [Feature Request](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=): Do you have an awesome idea to make this project better?  We want to hear it!
+* [Action Creation](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=action%2Ctriage&projects=&template=add_action.yml&title=%5BAction%5D%3A+): Do you have an idea for a new Action?
 * [RunBook idea](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=runbook%2Ctriage&projects=&template=add_runbook.yml&title=%5BRunBook%5D%3A+): Have a request or idea for a RunBook that will make the life of an SRE better?  File it using this form.
 
  
