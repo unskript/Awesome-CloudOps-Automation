@@ -28,7 +28,7 @@ jobs:
       
       - name: Get list of all ipynb files
         id: files
-        run: echo "files=$(find . -name '*.ipynb') >> $GITHUB_OUTPUT
+        run: echo "files=$(find . -name '*.ipynb')" >> $GITHUB_OUTPUT
         
       - name: Run Sanitize
         id: sanity
