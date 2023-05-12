@@ -8,16 +8,17 @@ import pprint
 
 
 class InputSchema(BaseModel):
-    region: str = Field(..., description='AWS Region.', title='Region')
+    region: str = Field(
+        description='AWS Region.', 
+        title='Region')
     bucket_name: str = Field(
-        ...,
         description='The name of the bucket for which to set the configuration.',
         title='Bucket Name',
     )
     expiration_days: Optional[float] = Field(
         30,
         description='Specifies the expiration for the lifecycle of the object in the form of days. Eg: 30 (days)',
-        title='Expiration Date',
+        title='Expiration Days',
     )
     prefix: Optional[str] = Field(
         '',
@@ -68,7 +69,7 @@ def aws_add_lifecycle_configuration_to_s3_bucket(handle, region: str, bucket_nam
             'Rules': [
                 {
                     'Expiration': {
-                        'Days': 30,
+                        'Days': expiration_days,
                     },
                     'Filter': {
                         'Prefix': ''
