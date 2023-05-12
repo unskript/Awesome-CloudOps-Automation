@@ -4,9 +4,8 @@
 # @author: Yugal Pachpande, @email: yugal.pachpande@unskript.com
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import Any, Dict, List
-
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     name: str = Field(
@@ -15,7 +14,11 @@ class InputSchema(BaseModel):
     )
     corsRules: List[Dict[str, Any]] = Field(
         title='Bucket Policy',
-        description='cross-origin access configuration in JSON format. eg. [{"AllowedHeaders":["*"],"AllowedMethods":["PUT","POST","DELETE"],"AllowedOrigins":["http://www.example1.com" ],"ExposeHeaders": []}, {"AllowedHeaders": [],"AllowedMethods":["GET"],"AllowedOrigins":["*"],"ExposeHeaders":[]}]'
+        description=('cross-origin access configuration in JSON format. '
+                     'eg. [{\"AllowedHeaders\":["*"],\"AllowedMethods\":[\"PUT\",\"POST\",\"DELETE\"],'
+                     '\"AllowedOrigins\":[\"http://www.example1.com\" ],\"ExposeHeaders\": []}, '
+                     '{\"AllowedHeaders\": [],\"AllowedMethods\":[\"GET\"],\"AllowedOrigins\":[\"*\"],'
+                     '\"ExposeHeaders\":[]}]')
     )
     region: str = Field(
         title='Region',
@@ -51,7 +54,7 @@ def aws_put_bucket_cors(handle, name: str, corsRules: List, region: str) -> Dict
     s3Client = handle.client('s3', region_name=region)
 
     cors_configuration = {'CORSRules': corsRules}
-    pprint.pprint("Applying config to bucket: %s" % str(cors_configuration))
+    pprint.pprint(f"Applying config to bucket: {str(cors_configuration)}")
 
     # Setup a CORS policy
     res = s3Client.put_bucket_cors(

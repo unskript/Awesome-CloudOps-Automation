@@ -2,10 +2,12 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
+from typing import Optional, Dict
 from pydantic import BaseModel, Field
 from unskript.enums.aws_canned_acl_enums import CannedACLPermissions
-from typing import Optional, Dict
-import pprint
+
+
 
 class InputSchema(BaseModel):
     region: str = Field(
@@ -16,7 +18,8 @@ class InputSchema(BaseModel):
         description='AWS S3 Bucket Name.')
     acl: Optional[CannedACLPermissions] = Field(
         title='Canned ACL Permission',
-        description="Canned ACL Permission type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.")
+        description=("Canned ACL Permission type - 'private'|'public-read'|'public-read-write"
+                     "'|'authenticated-read'.")
 
 
 def aws_change_acl_permissions_of_buckets_printer(output):
@@ -25,7 +28,12 @@ def aws_change_acl_permissions_of_buckets_printer(output):
     pprint.pprint(output)
 
 
-def aws_change_acl_permissions_of_buckets(handle, bucket_name: str, acl: CannedACLPermissions=CannedACLPermissions.Private, region: str = None) -> Dict:
+def aws_change_acl_permissions_of_buckets(
+    handle,
+    bucket_name: str,
+    acl: CannedACLPermissions=CannedACLPermissions.Private,
+    region: str = None
+    ) -> Dict:
     """ aws_put_bucket_acl get Dict of buckets ACL change info.
 
             :type handle: Session
@@ -35,7 +43,8 @@ def aws_change_acl_permissions_of_buckets(handle, bucket_name: str, acl: CannedA
             :param bucket_name: S3 bucket name where to set ACL on.
 
             :type acl: CannedACLPermissions
-            :param acl: Canned ACL Permission type - 'private'|'public-read'|'public-read-write'|'authenticated-read'.
+            :param acl: Canned ACL Permission type - 'private'|'public-read'|'public-read-write
+            '|'authenticated-read'.
 
             :type region: string
             :param region: location of the bucket.

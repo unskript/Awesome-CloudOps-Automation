@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from unskript.legos.utils import parseARN
-from typing import List
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -48,7 +48,7 @@ def aws_target_group_list_instances(handle, arn: str) -> List:
     for ins in targetHealthResponse["TargetHealthDescriptions"]:
         try:
             privateIP = get_instance_private_ip(ec2Client, ins['Target']['Id'])
-        except Exception as e:
+        except Exception:
             continue
         instanceInfo = {
             'InstanceID': ins['Target']['Id'],
