@@ -38,28 +38,35 @@ def aws_get_long_running_rds_instances_without_reserved_instances(handle, region
     """
     result = []
     all_regions = [region]
+    reservedInstancesPerRegion = {}
     if not region:
         all_regions = aws_list_all_regions(handle)
+    for reg in all_regions:
+        try:
+            rdsClient = handle.client('rds', region_name=reg)
+            response = rdsClient.describe_reserved_nodes()
+            reservedInstancesPerType = {}
+            if response['ReservedDBInstances']:
+                for ins in response['ReservedDBInstances']:
+                    reservedInstancesPerRegion[ins['DBInstanceClass']] = True
+            else:
+                continue
+            reservedInstancesPerRegion[reg] = reservedInstancesPerType
+        except Exception:
+            pass
     for reg in all_regions:
         try:
             rdsClient = handle.client('rds', region_name=reg)
             response = aws_get_paginator(rdsClient, "describe_db_instances", "DBInstances")
             for instance in response:
                 if instance['DBInstanceStatus'] == 'available':
-                    uptime = datetime.now(timezone.utc) - instance['InstanceCreateTime']
-                    if uptime > timedelta(days=threshold):
-                        res = rdsClient.describe_reserved_db_instances()
-                        if res['ReservedDBInstances']:
-                            for ins in res['ReservedDBInstances']:
-                                if ins['DBInstanceClass'] == instance['DBInstanceClass']:
+                        uptime = datetime.now(timezone.utc) - instance['InstanceCreateTime']
+                        if uptime > timedelta(days=threshold):
+                            # Check if the cluster node type is present in the reservedInstancesPerRegion map.
+                            reservedInstances = reservedInstancesPerRegion.get(reg)
+                            if reservedInstances != None:
+                                if reservedInstances.get(instance['DBInstanceClass']) == True:
                                     continue
-                                else:
-                                    db_instance_dict = {}
-                                    db_instance_dict["region"] = reg
-                                    db_instance_dict["instance_type"] = instance['DBInstanceClass']
-                                    db_instance_dict["instance"] = instance['DBInstanceIdentifier']
-                                    result.append(db_instance_dict)
-                        else:
                             db_instance_dict = {}
                             db_instance_dict["region"] = reg
                             db_instance_dict["instance_type"] = instance['DBInstanceClass']
