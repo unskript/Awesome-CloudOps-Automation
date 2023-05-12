@@ -1,6 +1,6 @@
 {
-  "action_title": "AWS Get Long Running ElasticCache clusters Without Reserved Nodes",
-  "action_description": "This action gets information about long running ElasticCache clusters and their status, and checks if they have any reserved nodes associated with them.",
+  "action_title": "AWS Get Long Running ElastiCache clusters Without Reserved Nodes",
+  "action_description": "This action gets information about long running ElastiCache clusters and their status, and checks if they have any reserved nodes associated with them.",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_get_long_running_elasticcache_clusters_without_reserved_nodes",
   "action_needs_credential": "true",
@@ -8,7 +8,7 @@
   "action_is_check": "true",
   "action_supports_iteration": "true",
   "action_supports_poll": "true",
-  "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELASTICCACHE"],
+  "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELASTICACHE"],
   "action_next_hop": [],
   "action_next_hop_parameter_mapping": {}
 }
