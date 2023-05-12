@@ -15,7 +15,7 @@ class InputSchema(BaseModel):
     number_of_days: Optional[int] = Field(
         title="Number of Days",
         description='Number of days to check the Datapoints.')
-    
+
 
 def aws_filter_unused_nat_gateway_printer(output):
     if output is None:
@@ -48,7 +48,6 @@ def is_nat_gateway_used(handle, nat_gateway, start_time, end_time,number_of_days
         return True
 
 
-@beartype
 def aws_filter_unused_nat_gateway(handle, number_of_days: int = 7, region: str = "") -> Tuple:
     """aws_get_natgateway_by_vpc Returns an array of NAT gateways.
 
