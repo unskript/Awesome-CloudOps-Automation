@@ -2,9 +2,9 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -38,4 +38,4 @@ def aws_release_elastic_ip(handle, region: str, allocation_id: str) -> Dict:
         response = ec2_Client.release_address(AllocationId=allocation_id)
         return response
     except Exception as e:
-        raise Exception(e)
+        raise Exception(e) from e

@@ -7,10 +7,11 @@ This Lego Executes Terraform Command.
 
 ## Lego Details
 
-    terraform_exec_command(handle, repo, dir_path, command)
+    terraform_exec_command(handle, repo, branch, dir_path, command)
 
         handle: Object of type unSkript TERRAFORM Connector
         repo: Repository that has Terraform Scripts.
+        branch: Branch name of repository that has Terraform Scripts.
         dir_path: Directory within Repository to run the terraform command.
         command : Terraform Command to Execute.
 

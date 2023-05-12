@@ -1,11 +1,12 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict, Optional, Tuple
+import pprint
+from typing import Optional, Tuple
 from pydantic import BaseModel, Field
+from unskript.legos.utils import CheckOutput
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_filter_all_manual_database_snapshots.aws_filter_all_manual_database_snapshots import aws_filter_all_manual_database_snapshots
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -26,7 +27,8 @@ def aws_get_publicly_accessible_db_snapshots_printer(output):
 
 
 def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
-    """aws_get_publicly_accessible_db_snapshots lists of publicly accessible db_snapshot_identifier.
+    """aws_get_publicly_accessible_db_snapshots lists of publicly accessible
+       db_snapshot_identifier.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -34,7 +36,8 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
         :type region: string
         :param region: Region of the RDS.
 
-        :rtype: Object with status, result having publicly accessible Snapshots Identifier in RDS, error
+        :rtype: Object with status, result having publicly accessible Snapshots 
+        Identifier in RDS, error
     """
     manual_snapshots_list=[]
     result=[]
@@ -55,7 +58,9 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
         try:
             ec2Client = handle.client('rds', region_name=all_snapshots['region'])
             for each_snapshot in all_snapshots['snapshot']:
-                response = ec2Client.describe_db_snapshot_attributes(DBSnapshotIdentifier=each_snapshot)
+                response = ec2Client.describe_db_snapshot_attributes(
+                    DBSnapshotIdentifier=each_snapshot
+                    )
                 db_attribute = response["DBSnapshotAttributesResult"]
                 for value in db_attribute['DBSnapshotAttributes']:
                     p_dict={}
@@ -63,9 +68,8 @@ def aws_get_publicly_accessible_db_snapshots(handle, region: str=None) -> Tuple:
                         p_dict["region"] = all_snapshots['region']
                         p_dict["open_snapshot"] = db_attribute['DBSnapshotIdentifier']
                         result.append(p_dict)
-        except Exception as e:
+        except Exception:
             pass
     if len(result)!=0:
         return (False, result)
-    else:
-        return (True, [])
+    return (True, [])

@@ -143,7 +143,7 @@ jobs:
           path: /tmp/elyra-3.0.0.dev0.tar.gz
     
   build-unskript:
-    runs-on: ubuntu-20.04 
+    runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
     needs: [build-elyra]
     strategy:
@@ -163,25 +163,41 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
-      - name: Install system dependencies
-        run: |
-          pip install shyaml
-          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7 
+
       
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
-          python-version: '3.7'
+          # Restricting python version to 3.9 
+          python-version: '3.9'
+          
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7
+
 
       - name: Checkout Code
         run: |
+          wget -O /tmp/pandas-2.0.1.tar.gz https://files.pythonhosted.org/packages/6c/e0/73987b6ecc7246e02ab557240843f93fd5adf45d1355abb458aa1f2a0932/pandas-2.0.1.tar.gz
+          sudo pip install /tmp/pandas-2.0.1.tar.gz
           cd $HOME
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
           /usr/bin/env python -m pip install /tmp/elyra/*.tar.gz
+          # We use the --upgrade-strage only-if-needed and --use-deprecated=legacy-resolver to avoid
+          # PIP dependency loop. Since we are asking the git runner to be of ubuntu-latest, it becomes
+          # a moving target for us hence we want to restrict the packages that are needed for unskript
+          # to compile to be fixed. 
           /usr/bin/env python -m pip install -r ./requirements.txt --upgrade --upgrade-strategy only-if-needed --use-deprecated=legacy-resolver
           /usr/bin/env python -m pip install --upgrade protobuf
+          # We need to restrict URLLIB3 to 1.26.6 because Version 2.x.y onwards the DEFAULT_CIPHERS
+          # variable is deprecrated. Unfortunately our boto3 and botocore that is needed for our
+          # unskript package does not work with the latest version of URLLIB3. Hence we need to
+          # restrict it to a fixed version of 1.26.6
+          /usr/bin/env python -m pip install --upgrade urllib3==1.26.6 
+          /usr/bin/env python -m pip install --upgrade types-urllib3==1.26.13
           /usr/bin/env python -m pip install google-api-python-client==2.77.0
           make awesome-submodule
           cd awesome

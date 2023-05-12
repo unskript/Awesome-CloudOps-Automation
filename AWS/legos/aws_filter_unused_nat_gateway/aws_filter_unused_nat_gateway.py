@@ -15,7 +15,7 @@ class InputSchema(BaseModel):
     number_of_days: Optional[int] = Field(
         title="Number of Days",
         description='Number of days to check the Datapoints.')
-    
+
 
 def aws_filter_unused_nat_gateway_printer(output):
     if output is None:
@@ -23,13 +23,13 @@ def aws_filter_unused_nat_gateway_printer(output):
     pprint.pprint(output)
 
 
-def is_nat_gateway_used(handle, nat_gateway, start_time, end_time):
+def is_nat_gateway_used(handle, nat_gateway, start_time, end_time,number_of_days):
     datapoints = []
     if nat_gateway['State'] != 'deleted':
         # Get the metrics data for the specified NAT Gateway over the last 7 days
         metrics_data = handle.get_metric_statistics(
             Namespace='AWS/NATGateway',
-            MetricName='BytesIn',
+            MetricName='ActiveConnectionCount',
             Dimensions=[
                 {
                     'Name': 'NatGatewayId',
@@ -38,13 +38,13 @@ def is_nat_gateway_used(handle, nat_gateway, start_time, end_time):
             ],
             StartTime=start_time,
             EndTime=end_time,
-            Period=3600,
+            Period=86400*number_of_days,
             Statistics=['Sum']
         )
         datapoints += metrics_data['Datapoints']
-    if len(datapoints) == 0 or metrics_data['Datapoints'][0]['Sum']:
+    if len(datapoints) == 0 or metrics_data['Datapoints'][0]['Sum']==0:
         return False
-    else: 
+    else:
         return True
 
 
@@ -73,7 +73,7 @@ def aws_filter_unused_nat_gateway(handle, number_of_days: int = 7, region: str =
             response = ec2Client.describe_nat_gateways()
             for nat_gateway in response['NatGateways']:
                 nat_gateway_info = {}
-                if not is_nat_gateway_used(cloudwatch, nat_gateway, start_time, end_time):
+                if not is_nat_gateway_used(cloudwatch, nat_gateway, start_time, end_time,number_of_days):
                     nat_gateway_info["nat_gateway_id"] = nat_gateway['NatGatewayId']
                     nat_gateway_info["reg"] = reg
                     result.append(nat_gateway_info)
@@ -84,3 +84,4 @@ def aws_filter_unused_nat_gateway(handle, number_of_days: int = 7, region: str =
         return (False, result)
     else:
         return (True, None)
+
