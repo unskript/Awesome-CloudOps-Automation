@@ -2,8 +2,6 @@
 
 * [Filter AWS Target groups by tag name](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_target_groups_by_tags/README.md): Filter AWS Target groups which have the provided tag attached to it. It also returns the value of that tag for each target group
 
-* [Find AWS ELBs with no targets or instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_elbs_with_no_targets_or_instances/README.md): Find AWS ELBs with no targets or instances attached to them.
-
 * [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
 
 * [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers

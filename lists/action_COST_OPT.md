@@ -18,13 +18,7 @@
 
 * [Filter AWS Untagged EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_untagged_ec2_instances/README.md): Filter AWS Untagged EC2 Instances
 
-* [Find AWS ELBs with no targets or instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_elbs_with_no_targets_or_instances/README.md): Find AWS ELBs with no targets or instances attached to them.
-
 * [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
-
-* [AWS Filter Lambdas with Long Runtime](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_long_running_lambdas/README.md): This action retrieves a list of all Lambda functions and searches for log events for each function for given runtime(duration).
-
-* [AWS Find RDS Instances with low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_rds_instances_with_low_cpu_utilization/README.md): This lego finds RDS instances are not utilizing their CPU resources to their full potential.
 
 * [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 
@@ -41,14 +35,6 @@
 * [Get EBS Volumes By Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_by_type/README.md): Get EBS Volumes By Type
 
 * [AWS Get Generated Policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_generated_policy/README.md): Given a Region and the ID of a policy generation job, this Action will return the policy (once it has been completed).
-
-* [Get AWS Lambdas With High Error Rate](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_with_high_error_rate/README.md): Get AWS Lambda Functions that exceed a given threshold error rate.
-
-* [AWS Get Long Running RDS Instances Without Reserved Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_rds_instances_without_reserved_instances/README.md): This action gets information about long running instances and their status, and checks if they have any reserved nodes associated with them.
-
-* [AWS Get Long Running Redshift Clusters Without Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_redshift_clusters_without_reserved_nodes/README.md): This action gets information about running clusters and their status, and checks if they have any reserved nodes associated with them.
-
-* [AWS Get Older Generation RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_older_generation_rds_instances/README.md): AWS Get Older Generation RDS Instances action retrieves information about RDS instances using older generation instance types.
 
 * [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
 

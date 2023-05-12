@@ -1,7 +1,5 @@
 * [AWS Start IAM Policy Generation ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/AWS_Start_IAM_Policy_Generation/README.md): Given a region, a CloudTrail ARN (where the logs are being recorded), a reference IAM ARN (whose usage we will parse), and a Service role, this will begin the generation of a IAM policy.  The output is a String of the generation Id.
 
-* [Add Lifecycle Configuration to AWS S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_add_lifecycle_configuration_to_s3_bucket/README.md): Creates a new lifecycle configuration for the bucket or replaces an existing lifecycle configuration.
-
 * [Filter AWS EC2 Instances Without Termination and Lifetime Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_instances_without_termination_and_lifetime_tag/README.md): Filter AWS EC2 Instances Without Termination and Lifetime Tag and Check of they are valid
 
 * [Get AWS public S3 Buckets using ACL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_public_s3_buckets_by_acl/README.md): Get AWS public S3 Buckets using ACL
@@ -19,10 +17,6 @@
 * [AWS Filter Unused Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_log_streams/README.md): This action lists all log streams that are unused for all the log groups by the given threshold.
 
 * [AWS Find Unused NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_nat_gateway/README.md): This action to get all of the Nat gateways that have zero traffic over those
-
-* [Find AWS ELBs with no targets or instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_elbs_with_no_targets_or_instances/README.md): Find AWS ELBs with no targets or instances attached to them.
-
-* [AWS Find S3 Buckets without Lifecycle Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_s3_buckets_without_lifecycle_policies/README.md): S3 lifecycle policies enable you to automatically transition objects to different storage classes or delete them when they are no longer needed. This action finds all S3 buckets without lifecycle policies. 
 
 * [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 
@@ -87,8 +81,6 @@
 * [List All AWS EC2 Instances Under the ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instances/README.md):  Get a list of all AWS EC2 Instances from given ELB
 
 * [AWS Get Internet Gateway by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc/README.md): AWS Get Internet Gateway by VPC ID
-
-* [AWS Get Long Running ElasticCache clusters Without Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/README.md): This action gets information about long running ElasticCache clusters and their status, and checks if they have any reserved nodes associated with them.
 
 * [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
 
