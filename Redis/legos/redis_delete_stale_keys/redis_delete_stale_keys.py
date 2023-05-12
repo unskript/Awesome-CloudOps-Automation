@@ -13,7 +13,7 @@ class InputSchema(BaseModel):
         description='Threshold Idle Time in Seconds')
 
 
-def redis_delete_stale_keys(output):
+def redis_delete_stale_keys_printer(output):
     if output is None:
         return
     print("Deleted Keys: ")
