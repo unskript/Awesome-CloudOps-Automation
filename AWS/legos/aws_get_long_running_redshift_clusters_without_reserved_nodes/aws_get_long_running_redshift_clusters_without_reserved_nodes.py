@@ -44,35 +44,41 @@ def aws_get_long_running_redshift_clusters_without_reserved_nodes(handle, region
         :rtype: status, list of clusters, nodetype and their region.
     """
     result = []
+    reservedNodesPerRegion = {}
     all_regions = [region]
     if not region:
         all_regions = aws_list_all_regions(handle)
     for reg in all_regions:
         try:
             redshiftClient = handle.client('redshift', region_name=reg)
-            for cluster in redshiftClient.describe_clusters()['Clusters']:
-                cluster_age = datetime.now(timezone.utc) - cluster['ClusterCreateTime']
-                if cluster['ClusterStatus'] == 'available' and cluster_age > timedelta(days=threshold):
-                    response = redshiftClient.describe_reserved_nodes()
-                    if response['ReservedNodes']:
-                        for node in response['ReservedNodes']:
-                            if cluster['NodeType'] == node['NodeType']:
-                                continue
-                            else:
-                                cluster_dict = {}
-                                cluster_dict["region"] = reg
-                                cluster_dict["cluster"] = cluster['ClusterIdentifier']
-                                cluster_dict["node_type"] = cluster['NodeType']
-                                result.append(cluster_dict)
-                    else:
-                        cluster_dict = {}
-                        cluster_dict["region"] = reg
-                        cluster_dict["cluster"] = cluster['ClusterIdentifier']
-                        cluster_dict["node_type"] = cluster['NodeType']
-                        result.append(cluster_dict)
+            response = redshiftClient.describe_reserved_nodes()
+            reservedNodesPerType = {}
+            if response['ReservedNodes']:
+                for node in response['ReservedNodes']:
+                    reservedNodesPerType[node['NodeType']] = True
+            else:
+                continue
+            reservedNodesPerRegion[reg] = reservedNodesPerType
         except Exception:
             pass
-
+    for reg in all_regions:
+        try:
+            redshiftClient = handle.client('redshift', region_name=reg)
+            for cluster in redshiftClient.describe_clusters()['Clusters']:
+                cluster_age = datetime.now(timezone.utc) - cluster['ClusterCreateTime']
+            if cluster['ClusterStatus'] == 'available' and cluster_age > timedelta(days=threshold):
+                # Check if the cluster node type is present in the reservedNodesPerRegion map.
+                reservedNodes = reservedNodesPerRegion.get(reg)
+                if reservedNodes != None:
+                    if reservedNodes.get(cluster['NodeType']) == True:
+                        continue
+                cluster_dict = {}
+                cluster_dict["region"] = reg
+                cluster_dict["cluster"] = cluster['ClusterIdentifier']
+                cluster_dict["node_type"] = cluster['NodeType']
+                result.append(cluster_dict)
+        except Exception:
+            pass
     if len(result) != 0:
         return (False, result)
     else:
