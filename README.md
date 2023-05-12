@@ -13,7 +13,7 @@
 <p align="center">
   <h3 align="center">Awesome CloudOps Automation</h3>
   <p align="center">
-    <img src=https://img.shields.io/static/v1?label=ActionCount&message=476&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=61&color=orange>
+    <img src=https://img.shields.io/static/v1?label=ActionCount&message=487&color=green><img src=https://img.shields.io/static/v1?label=xRunBookCount&message=62&color=orange>
   
   <p align="center">
     CloudOps automation made simple!
@@ -62,7 +62,7 @@ git clone https://github.com/unskript/Awesome-CloudOps-Automation
 cd Awesome-CloudOps-Automation
 ```
 
-2.  Launch Docker. (if you used a different directory in #1, update that in the first ```-v``` line.)
+2.  Launch Docker.  (if you used a different directory in #1, update that in the first ```-v``` line.)
 
 ```
 docker run -it -p 8888:8888 \
@@ -72,6 +72,8 @@ docker run -it -p 8888:8888 \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
+
+2a. If you wish a non-development version of the Docker (where your RunBooks and Credentials are not synced to the local machine), omit the ```-v``` and ```-e``` lines.
 
 * [YouTube Playlist with step by step guides](https://www.youtube.com/watch?v=QT0sghAo_t0&list=PLG7TPzTSJYkfCAtWKpdTjlRcyS21mXsE2)
 
@@ -86,7 +88,7 @@ docker run -it -p 8888:8888 \
 
 # Open and Use a xRunBook
 
-Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/lab/tree/Welcome.ipynb.
+Once Docker is running, your unSkript install can be found at http://127.0.0.1:8888/awesome.
 A table lists the xRunBooks that are available. Click on the URL of the xRunBook you would like to explore. 
 
 
@@ -106,22 +108,24 @@ A table lists the xRunBooks that are available. Click on the URL of the xRunBook
   | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
   |AWS |[AWS Access Key Rotation for IAM users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Access_Key_Rotation.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Access_Key_Rotation.ipynb) | 
 |AWS |[AWS Add Mandatory tags to EC2](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_Add_Mandatory_tags_to_EC2.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_Add_Mandatory_tags_to_EC2.ipynb) | 
+|AWS |[AWS EC2 Disk Cleanup](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/AWS_EC2_Disk_Cleanup.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/AWS_EC2_Disk_Cleanup.ipynb) | 
 |AWS |[Create a new AWS IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Add_new_IAM_user.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Add_new_IAM_user.ipynb) | 
 |AWS |[Change AWS EBS Volume To GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Change_AWS_EBS_Volume_To_GP3_Type.ipynb) | 
 |AWS |[Change AWS Route53 TTL](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Change_AWS_Route53_TTL.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Change_AWS_Route53_TTL.ipynb) | 
 |AWS |[Configure URL endpoint on a AWS CloudWatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Configure_url_endpoint_on_a_cloudwatch_alarm.ipynb) | 
 |AWS |[Copy AMI to All Given AWS Regions](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Copy_ami_to_all_given_AWS_regions.ipynb) | 
 |AWS |[Create IAM User with policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Create_IAM_User_with_policy.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Create_IAM_User_with_policy.ipynb) | 
+|AWS |[Delete EBS Volume Attached to Stopped Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_EBS_Volumes_Attached_To_Stopped_Instances.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_EBS_Volumes_Attached_To_Stopped_Instances.ipynb) | 
 |AWS |[Delete EBS Volume With Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_EBS_Volumes_With_Low_Usage.ipynb) | 
 |AWS |[Delete Old EBS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Old_EBS_Snapshots.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Old_EBS_Snapshots.ipynb) | 
 |AWS |[Delete Unattached AWS EBS Volumes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unattached_EBS_Volume.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unattached_EBS_Volume.ipynb) | 
 |AWS |[Delete Unused AWS Log Streams](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Log_Streams.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_Log_Streams.ipynb) | 
 |AWS |[Delete Unused AWS NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_NAT_Gateways.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_NAT_Gateways.ipynb) | 
+|AWS |[Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Route53_Healthchecks.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_Route53_Healthchecks.ipynb) | 
 |AWS |[Delete Unused AWS Secrets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Delete_Unused_AWS_Secrets.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Delete_Unused_AWS_Secrets.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_Instance_from_ASG.ipynb) | 
 |AWS |[Detach EC2 Instance from ASG and Load balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detach_ec2_Instance_from_ASG.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detach_ec2_Instance_from_ASG.ipynb) | 
 |AWS |[Detect ECS failed deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Detect_ECS_failed_deployment.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Detect_ECS_failed_deployment.ipynb) | 
-|AWS |[AWS EC2 Disk Cleanup](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/EC2_Disk_Cleanup.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/EC2_Disk_Cleanup.ipynb) | 
 |AWS |[Enforce HTTP Redirection across all AWS ALB instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Enforce_HTTP_Redirection_across_AWS_ALB.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Enforce_HTTP_Redirection_across_AWS_ALB.ipynb) | 
 |AWS |[Enforce Mandatory Tags Across All AWS Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Enforce_Mandatory_Tags_Across_All_AWS_Resources.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Enforce_Mandatory_Tags_Across_All_AWS_Resources.ipynb) | 
 |AWS |[Handle AWS EC2 Instance Scheduled to retire](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Find_EC2_Instances_Scheduled_to_retire.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Find_EC2_Instances_Scheduled_to_retire.ipynb) | 
@@ -138,7 +142,6 @@ A table lists the xRunBooks that are available. Click on the URL of the xRunBook
 |AWS |[Resize list of pvcs.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Resize_List_Of_Pvcs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Resize_List_Of_Pvcs.ipynb) | 
 |AWS |[Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Resize_PVC.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Resize_PVC.ipynb) | 
 |AWS |[Restart AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restart_AWS_EC2_Instances_By_Tag.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restart_AWS_EC2_Instances_By_Tag.ipynb) | 
-|AWS |[Restart AWS Instances with a given tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restart_Aws_Instance_given_Tag.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restart_Aws_Instance_given_Tag.ipynb) | 
 |AWS |[Restart unhealthy services in a Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restart_Unhealthy_Services_Target_Group.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restart_Unhealthy_Services_Target_Group.ipynb) | 
 |AWS |[Restrict S3 Buckets with READ/WRITE Permissions to all Authenticated Users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Restrict_S3_Buckets_with_READ_WRITE_Permissions.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Restrict_S3_Buckets_with_READ_WRITE_Permissions.ipynb) | 
 |AWS |[Launch AWS EC2 from AMI](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/Run_EC2_from_AMI.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/AWS/Run_EC2_from_AMI.ipynb) | 
@@ -164,7 +167,7 @@ A table lists the xRunBooks that are available. Click on the URL of the xRunBook
 |Kubernetes |[k8s: Resize List of PVCs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_List_of_PVCs.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_List_of_PVCs.ipynb) | 
 |Kubernetes |[k8s: Resize PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Resize_PVC.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Resize_PVC.ipynb) | 
 |Kubernetes |[Rollback Kubernetes Deployment](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Kubernetes/Rollback_k8s_Deployment_and_Update_Jira.ipynb) | 
-|Postgresql |[Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Postgresql/Display_Postgresql_Long_Running.ipynb) | 
+|Postgresql |[Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Postgresql_Display_Long_Running.ipynb) | [Open in Browser](http://127.0.0.1:8888/lab/tree/Postgresql/Postgresql_Display_Long_Running.ipynb) | 
 
 </details>
 

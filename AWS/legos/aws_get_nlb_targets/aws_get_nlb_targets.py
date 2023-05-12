@@ -2,9 +2,9 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     region: str = Field(
@@ -46,5 +46,5 @@ def aws_get_nlb_targets(handle, region: str, nlb_arn: str) -> List:
             target_dict["target_health"] = target['TargetHealth']['State']
             result.append(target_dict)
     except Exception as e:
-        raise Exception(e)
+        raise Exception(e) from e
     return result
