@@ -2,11 +2,11 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
+import pprint
 from typing import Tuple, Optional
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
 
 class InputSchema(BaseModel):
     region: Optional[str] = Field(
@@ -43,15 +43,16 @@ def aws_get_nlbs_without_targets(handle, region: str = "") -> Tuple:
             for elb in resp:
                 nlb_dict = {}
                 if elb['Type'] == "network":
-                    target_groups = elbv2_client.describe_target_groups(LoadBalancerArn=elb['LoadBalancerArn'])
+                    target_groups = elbv2_client.describe_target_groups(
+                        LoadBalancerArn=elb['LoadBalancerArn']
+                        )
                     if len(target_groups['TargetGroups']) == 0:
                         nlb_dict["loadBalancer_arn"] = elb['LoadBalancerArn']
                         nlb_dict["loadBalancer_name"] = elb["LoadBalancerName"]
                         nlb_dict["region"] = reg
                         result.append(nlb_dict)
-        except Exception as e:
+        except Exception:
             pass
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)
