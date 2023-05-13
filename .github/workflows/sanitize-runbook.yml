@@ -29,8 +29,7 @@ jobs:
       - name: All Runbooks
         id: files
         run: |
-          echo "all_runbook_files=$(find . -mindepth 2 -maxdepth 2 -name "*.ipynb")" >> $GITHUB_OUTPUT
-        
+          echo "all_runbook_files=$(find . -mindepth 2 -maxdepth 2 -name \*.ipynb)" >> $GITHUB_OUTPUT
 
       - name: Run Sanitize
         id: sanity
