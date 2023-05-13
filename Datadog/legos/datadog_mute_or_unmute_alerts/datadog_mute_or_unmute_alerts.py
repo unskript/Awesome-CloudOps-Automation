@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from ast import Str
-from pydantic import BaseModel, Field
-from typing import Optional, List
 import pprint
+from ast import Str
+from typing import Optional, List
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     monitorIDs: Optional[List[int]] = Field(
@@ -32,7 +32,7 @@ def datadog_mute_or_unmute_alerts_printer(output):
     pprint.pprint(output)
 
 def datadog_mute_or_unmute_alerts(handle,
-                                  monitorIDs: List[int] = [],
+                                  monitorIDs: List[int] = None,
                                   all: bool = False,
                                   mute: bool = True,
                                   scope: str = "") -> Str:
@@ -48,7 +48,8 @@ def datadog_mute_or_unmute_alerts(handle,
         :param mute: True to mute, False to unmute.
         
         :type scope: str    
-        :param scope: The scope to apply the mute to. For example, if your alert is grouped by "host", you might mute "host:app1".
+        :param scope: The scope to apply the mute to. For example,
+        if your alert is grouped by "host", you might mute "host:app1".
 
         :rtype: String with the execution status.
     """
@@ -60,12 +61,11 @@ def datadog_mute_or_unmute_alerts(handle,
             else:
                 handle.Monitor.mute_all()
             return 'Successfully muted all monitors.'
+        if scope:
+            res = [handle.Monitor.mute(id=x, scope=scope) for x in monitorIDs]
         else:
-            if scope:
-                res = [handle.Monitor.mute(id=x, scope=scope) for x in monitorIDs]
-            else:
-                res = [handle.Monitor.mute(id=x) for x in monitorIDs]
-            return 'Successfully muted monitors.'
+            res = [handle.Monitor.mute(id=x) for x in monitorIDs]
+        return 'Successfully muted monitors.'
     else:
         if all:
             if scope:

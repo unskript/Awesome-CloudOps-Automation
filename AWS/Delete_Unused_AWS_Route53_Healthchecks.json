@@ -1,0 +1,9 @@
+{
+    "name": "Delete Unused AWS Secrets",
+    "description": "When we associate healthchecks with an endpoint, Amazon Route53 sends health check requests to the endpoint IP address. These health checks validate that the endpoint IP addresses are operating as intended. There may be multiple reasons that healtchecks are lying usused for example- health check was mistakenly configured against your application by another customer, health check was configured from your account for testing purposes but wasn't deleted when testing was complete, health check was based on domain names and hence requests were sent due to DNS caching,  Elastic Load Balancing service updated its public IP addresses due to scaling, and the IP addresses were reassigned to your load balancer, and many more. This runbook finds such healthchecks and deletes them to save AWS costs.",
+    "uuid": "10a363abaf49098a0376eae46a6bfac421e606952369fc6ea02768ad319dd0be",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
