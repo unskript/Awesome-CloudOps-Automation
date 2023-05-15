@@ -6,8 +6,23 @@
 ![Actions][actions-shield]
 ![Runbooks][runbooks-shield]
 
-<img src=".github/images/runbooksh_light.png#gh-light-mode-only" alt="Logo" align="right" width="230" height="230" />
-<img src=".github/images/runbooksh_dark.png#gh-dark-mode-only" alt="Logo" align="right" width="230" height="230" />
+![image-light](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(4).png)
+![image-dark](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(7).png)
+
+<!-- <img src=".github/images/runbooksh_light.png#gh-light-mode-only" alt="Logo" align="right" width="230" height="230" />
+<img src=".github/images/runbooksh_dark.png#gh-dark-mode-only" alt="Logo" align="right" width="230" height="230" /> -->
+
+<!-- <img src="https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(4).png" alt="Logo" align="right" width="230" height="230" class="light-image">
+<img src="https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(7).png" alt="Logo" align="right" width="230" height="230" class="dark-image" style="display: none;"> -->
+
+<!-- @media (prefers-color-scheme: dark) {
+    .light-image {
+        display: none;
+    }
+    .dark-image {
+        display: block;
+    }
+} -->
 
 # Runbooks.sh
 ### Empowering Cloud Automation, Together
