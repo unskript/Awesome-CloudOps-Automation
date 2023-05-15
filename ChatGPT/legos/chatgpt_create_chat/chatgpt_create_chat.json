@@ -1,0 +1,12 @@
+{
+  "action_title": "ChatGPT Create Chat",
+  "action_description": "Given a model, temperature and message (list of dictionaries), this Action will create a ChatGPT Chat.",
+  "action_type": "LEGO_TYPE_CHATGPT",
+  "action_entry_function": "chatgpt_create_chat",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+   "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_CHATGPT" ]
+}

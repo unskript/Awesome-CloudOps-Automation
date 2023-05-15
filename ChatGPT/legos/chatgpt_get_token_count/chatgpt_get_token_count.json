@@ -1,0 +1,12 @@
+{
+  "action_title": "ChatGPT Get Token Count",
+  "action_description": "Given a ChatGPT model and input message, this action will calculate the input tokens used.",
+  "action_type": "LEGO_TYPE_CHATGPT",
+  "action_entry_function": "chatgpt_get_token_count",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_INT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+   "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_CHATGPT" ]
+}
