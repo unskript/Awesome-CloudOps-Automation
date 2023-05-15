@@ -4,7 +4,7 @@
 ##
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from unskript.legos.aws.aws_find_s3_buckets_without_lifecycle_policies.aws_find_s3_buckets_without_lifecycle_policies import aws_find_s3_buckets_without_lifecycle_policies
+from unskript.legos.aws.aws_get_s3_buckets.aws_get_s3_buckets import aws_get_s3_buckets
 from typing import List, Optional, Tuple
 import pprint
 
@@ -38,7 +38,7 @@ def aws_find_s3_buckets_without_lifecycle_policies(handle, region: str="") -> Tu
     for reg in all_regions:
         try:
             s3Session = handle.resource("s3", region_name=reg)
-            response = aws_find_s3_buckets_without_lifecycle_policies(handle, region=reg)
+            response = aws_get_s3_buckets(handle, region=reg)
             for bucket in response:
                 bucket_lifecycle_configuration = s3Session.BucketLifecycleConfiguration(bucket)
                 try:
