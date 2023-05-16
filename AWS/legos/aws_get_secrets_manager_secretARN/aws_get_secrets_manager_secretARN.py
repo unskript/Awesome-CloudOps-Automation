@@ -3,20 +3,19 @@
 ##  All rights reserved.
 ##
 from __future__ import annotations
-from typing import Optional
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from pydantic import BaseModel, Field
 from beartype import beartype
+from botocore.exceptions import ClientError
 
 
 class InputSchema(BaseModel):
     region: str = Field(
-        description='AWS Region.', 
+        description='AWS Region.',
         title='Region'
         )
     secret_name: str = Field(
-         description='AWS Secret Name', 
+         description='AWS Secret Name',
          title='secret_name'
         )
 
@@ -47,5 +46,3 @@ def aws_get_secrets_manager_secretARN(handle, region: str, secret_name:str) -> s
     # Decrypts secret using the associated KMS key.
     secretArn = get_secret_value_response['ARN']
     return secretArn
-
-
