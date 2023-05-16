@@ -8,7 +8,7 @@
   "action_is_check": "true",
   "action_supports_iteration": "true",
   "action_supports_poll": "true",
-  "action_next_hop":[],
+  "action_next_hop":["3d74913836e037a001f718b48f1e19010394b90afc2422d0572ab5c515521075"],
   "action_next_hop_parameter_mapping":{},
   "action_categories":[ "CATEGORY_TYPE_CLOUDOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_S3"]
 }
