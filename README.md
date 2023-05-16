@@ -6,28 +6,6 @@
 ![Actions][actions-shield]
 ![Runbooks][runbooks-shield]
 
-<!-- ![image-light](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(4).png?raw=true#gh-light-mode-only)
-![image-dark](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(7).png?raw=true#gh-dark-mode-only) -->
-
-<!-- ![image-light](https://github.com/username/repo/blob/branch/path/to/image-light.png?raw=true#gh-light-mode-only)
-![image-dark](https://github.com/username/repo/blob/branch/path/to/image-dark.png?raw=true#gh-dark-mode-only) -->
-
-
-<!-- <img src=".github/images/runbooksh_light.png#gh-light-mode-only" alt="Logo" align="right" width="230" height="230" />
-<img src=".github/images/runbooksh_dark.png#gh-dark-mode-only" alt="Logo" align="right" width="230" height="230" /> -->
-
-<!-- <img src="https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(4).png" alt="Logo" align="right" width="230" height="230" class="light-image">
-<img src="https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(7).png" alt="Logo" align="right" width="230" height="230" class="dark-image" style="display: none;"> -->
-
-<!-- @media (prefers-color-scheme: dark) {
-    .light-image {
-        display: none;
-    }
-    .dark-image {
-        display: block;
-    }
-} -->
-
 # Runbooks.sh
 ### Empowering Cloud Automation, Together
 **[Explore our docs](https://docs.unskript.com)**   
