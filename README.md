@@ -6,8 +6,8 @@
 ![Actions][actions-shield]
 ![Runbooks][runbooks-shield]
 
-![image-light](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(4).png?raw=true#gh-light-mode-only)
-![image-dark](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(7).png?raw=true#gh-dark-mode-only)
+<!-- ![image-light](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(4).png?raw=true#gh-light-mode-only)
+![image-dark](https://storage.googleapis.com/unskript-website/assets/logos/Runbooks-sh/logo-runbooks%20(7).png?raw=true#gh-dark-mode-only) -->
 
 <!-- ![image-light](https://github.com/username/repo/blob/branch/path/to/image-light.png?raw=true#gh-light-mode-only)
 ![image-dark](https://github.com/username/repo/blob/branch/path/to/image-dark.png?raw=true#gh-dark-mode-only) -->
