@@ -9,6 +9,6 @@
   "action_supports_iteration": "true",
   "action_supports_poll": "true",
   "action_next_hop":["3d74913836e037a001f718b48f1e19010394b90afc2422d0572ab5c515521075"],
-  "action_next_hop_parameter_mapping":{},
+  "action_next_hop_parameter_mapping":{"3d74913836e037a001f718b48f1e19010394b90afc2422d0572ab5c515521075": {"name": "Add Lifecycle Policy to S3 Buckets", "region": ".[0].region", "bucket_names":".[].bucket_name"}},
   "action_categories":[ "CATEGORY_TYPE_CLOUDOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_S3"]
 }
