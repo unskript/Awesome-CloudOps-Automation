@@ -4,16 +4,12 @@
 [![Issues][issues-shield]][issues-url]
 [![Twitter][twitter-shield]][twitter-url]
 ![Actions][actions-shield]
-
-
-<img src="https://i.ibb.co/s6RD5zS/logo-runbooks-4.png" alt="Logo" align="right" width="230" height="230" />
+![Runbooks][runbooks-shield]
 
 # Runbooks.sh
 ### Empowering Cloud Automation, Together
 **[Explore our docs](https://docs.unskript.com)**   
 *[Visit our blog](https://unskript.com/blog)* . *[Report Bug](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&template=bug_report.md&title=)* . *[Request Feature](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&template=feature_request.md&title=)*
-
----
 
 # About the Project
 Runbooks.sh is a powerful, community-driven, open-source runbook automation platform designed to simplify cloud infrastructure management and streamline operations across diverse environments. Few of the highlighting features:

@@ -1,5 +1,7 @@
 * [AWS Start IAM Policy Generation ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/AWS_Start_IAM_Policy_Generation/README.md): Given a region, a CloudTrail ARN (where the logs are being recorded), a reference IAM ARN (whose usage we will parse), and a Service role, this will begin the generation of a IAM policy.  The output is a String of the generation Id.
 
+* [Add Lifecycle Configuration to AWS S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_add_lifecycle_configuration_to_s3_bucket/README.md): Creates a new lifecycle configuration for the bucket or replaces an existing lifecycle configuration.
+
 * [Apply AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_apply_default_encryption_for_s3_buckets/README.md): Apply AWS Default Encryption for S3 Bucket
 
 * [Attach an EBS volume to an AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_attach_ebs_to_instances/README.md): Attach an EBS volume to an AWS EC2 Instance
@@ -33,6 +35,8 @@
 * [AWS Delete Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_access_key/README.md): Delete an Access Key for a User
 
 * [Delete AWS Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_bucket/README.md): Delete an AWS S3 Bucket
+
+* [AWS Delete Classic Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_classic_load_balancer/README.md): Delete Classic Elastic Load Balancers
 
 * [AWS Delete EBS Snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_ebs_snapshot/README.md): Delete EBS Snapshot for an EC2 instance
 
@@ -138,7 +142,15 @@
 
 * [AWS Find Unused NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_nat_gateway/README.md): This action to get all of the Nat gateways that have zero traffic over those
 
+* [Find AWS ELBs with no targets or instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_elbs_with_no_targets_or_instances/README.md): Find AWS ELBs with no targets or instances attached to them.
+
 * [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
+
+* [AWS Filter Lambdas with Long Runtime](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_long_running_lambdas/README.md): This action retrieves a list of all Lambda functions and searches for log events for each function for given runtime(duration).
+
+* [AWS Find RDS Instances with low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_rds_instances_with_low_cpu_utilization/README.md): This lego finds RDS instances are not utilizing their CPU resources to their full potential.
+
+* [AWS Find S3 Buckets without Lifecycle Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_s3_buckets_without_lifecycle_policies/README.md): S3 lifecycle policies enable you to automatically transition objects to different storage classes or delete them when they are no longer needed. This action finds all S3 buckets without lifecycle policies. 
 
 * [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 
@@ -218,11 +230,19 @@
 
 * [Get AWS Lambdas With High Error Rate](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_with_high_error_rate/README.md): Get AWS Lambda Functions that exceed a given threshold error rate.
 
+* [AWS Get Long Running ElasticCache clusters Without Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/README.md): This action gets information about long running ElasticCache clusters and their status, and checks if they have any reserved nodes associated with them.
+
+* [AWS Get Long Running RDS Instances Without Reserved Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_rds_instances_without_reserved_instances/README.md): This action gets information about long running instances and their status, and checks if they have any reserved nodes associated with them.
+
+* [AWS Get Long Running Redshift Clusters Without Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_redshift_clusters_without_reserved_nodes/README.md): This action gets information about running clusters and their status, and checks if they have any reserved nodes associated with them.
+
 * [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
 
 * [Get all Targets for Network Load Balancer (NLB)](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlb_targets/README.md): Use this action to get all targets for Network Load Balancer (NLB)
 
 * [AWS Get Network Load Balancer (NLB) without Targets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nlbs_without_targets/README.md): Use this action to get AWS Network Load Balancer (NLB) without Targets
+
+* [AWS Get Older Generation RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_older_generation_rds_instances/README.md): AWS Get Older Generation RDS Instances action retrieves information about RDS instances using older generation instance types.
 
 * [AWS Get Private Address from NAT Gateways](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_private_address_from_nat_gateways/README.md): This action is used to get private address from NAT gateways.
 
