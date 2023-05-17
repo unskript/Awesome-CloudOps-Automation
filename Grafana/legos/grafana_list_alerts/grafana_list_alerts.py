@@ -3,16 +3,12 @@
 # All rights reserved.
 ##
 import json
-
 import pprint
 from typing import Optional, List
-
 from pydantic import BaseModel, Field
-
 from unskript.connectors.grafana import Grafana
 
 pp = pprint.PrettyPrinter(indent=4)
-
 
 class InputSchema(BaseModel):
     dashboard_id: Optional[int] = Field(
@@ -32,8 +28,11 @@ def grafana_list_alerts_printer(output):
     pprint.pprint(output)
 
 
-def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
-                           panel_id:int = None) -> List[dict]:
+def grafana_list_alerts(
+        handle: Grafana,
+        dashboard_id:int = None,
+        panel_id:int = None
+        ) -> List[dict]:
     """grafana_list_alerts lists the configured alerts in grafana.
        You can filter alerts configured in a particular dashboard.
 
@@ -61,7 +60,8 @@ def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
         print(f'Failed to get grafana rules, {str(e)}')
         raise e
 
-    # Grafana ruler rules api response https://editor.swagger.io/?url=https://raw.githubusercontent.com/grafana/grafana/main/pkg/services/ngalert/api/tooling/post.json
+    # Grafana ruler rules api response
+    # https://editor.swagger.io/?url=https://raw.githubusercontent.com/grafana/grafana/main/pkg/services/ngalert/api/tooling/post.json
     result = []
     folder_names = json.loads(response.content).keys()
     for folder_name in list(folder_names):
@@ -83,8 +83,9 @@ def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
     try:
         response = handle.session.get(url)
         response.raise_for_status()
-    except Exception as e:
-        # This could happen because in non-cloud grafana, there is no rbac, so this api doesnt work with viewer role.
+    except Exception:
+        # This could happen because in non-cloud grafana, there is no rbac,
+        # so this api doesnt work with viewer role.
         print("Unable to get datasources")
         return result
 
@@ -127,7 +128,8 @@ def grafana_list_alerts(handle: Grafana, dashboard_id:int = None,
                             res['id'] = grafana_alert.get('id')
                             res['name'] = alarm.get('name')
                             result.append(res)
-                        # Loki have 'alert' in the key, where as recorded loki has 'record' as the key.
+                        # Loki have 'alert' in the key, where as recorded loki has
+                        # 'record' as the key.
                         else:
                             if 'alert' in rule:
                                 res['name'] = rule.get('alert')
