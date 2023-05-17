@@ -38,4 +38,4 @@ def aws_delete_nat_gateway(handle, nat_gateway_id: str, region: str) -> Dict:
         response = ec2Client.delete_nat_gateway(NatGatewayId=nat_gateway_id)
         return response
     except Exception as e:
-        raise Exception(e)
+        raise Exception(e) from e
