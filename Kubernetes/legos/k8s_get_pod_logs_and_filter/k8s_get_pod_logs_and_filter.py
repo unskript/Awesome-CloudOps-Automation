@@ -52,7 +52,7 @@ def k8s_get_pod_logs_and_filter(handle, namespace: str, pods: List, matchstr: st
         for pod in pods:
             resp = coreApiClient.read_namespaced_pod_log(
                 namespace=namespace, name=pod, pretty=True, timestamps=True)
-            res = re.search(fr'({matchstr})', resp)
+            res = re.search(f'({matchstr})', resp)
             if res is not None:
                 result[pod] = res
 
