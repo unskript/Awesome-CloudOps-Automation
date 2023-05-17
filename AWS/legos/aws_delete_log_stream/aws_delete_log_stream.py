@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -47,3 +47,4 @@ def aws_delete_log_stream(handle, log_group_name: str, log_stream_name: str, reg
         return response
     except Exception as e:
         raise Exception(e)
+    

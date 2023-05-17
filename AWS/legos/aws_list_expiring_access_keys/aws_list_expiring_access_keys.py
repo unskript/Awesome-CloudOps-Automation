@@ -1,12 +1,12 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
+from typing import Tuple
+import datetime
 import dateutil
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_iam_users.aws_list_all_iam_users import aws_list_all_iam_users
-from typing import Dict,List,Tuple
-import pprint
-import datetime
 
 class InputSchema(BaseModel):
     threshold_days: int = Field(
@@ -21,13 +21,15 @@ def aws_list_expiring_access_keys_printer(output):
     pprint.pprint(output)
 
 def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
-    """aws_list_expiring_access_keys returns all the ACM issued certificates which are about to expire given a threshold number of days
+    """aws_list_expiring_access_keys returns all the ACM issued certificates which are
+       about to expire given a threshold number of days
 
         :type handle: object
         :param handle: Object returned from Task Validate
 
         :type threshold_days: int
-        :param threshold_days: Threshold number of days to check for expiry. Eg: 30 -lists all access Keys which are expiring within 30 days
+        :param threshold_days: Threshold number of days to check for expiry. Eg: 30 -lists
+        all access Keys which are expiring within 30 days
 
         :rtype: Status, List of expiring access keys and Error if any 
     """
@@ -36,7 +38,7 @@ def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
     try:
         all_users = aws_list_all_iam_users(handle=handle)
     except Exception as error:
-        raise error 
+        raise error
 
     for each_user in all_users:
         try:
@@ -56,8 +58,7 @@ def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
                 result.append(final_result)
         except Exception as e:
             raise e
-            
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

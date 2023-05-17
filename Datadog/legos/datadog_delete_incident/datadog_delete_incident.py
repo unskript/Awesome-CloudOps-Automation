@@ -2,11 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
 from pydantic import BaseModel, Field
 from datadog_api_client.v2.api.incidents_api import IncidentsApi
 from datadog_api_client import ApiClient
-from typing import Dict
-import pprint
 
 class InputSchema(BaseModel):
     incident_id: str = Field(

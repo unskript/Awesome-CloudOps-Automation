@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
-from botocore.exceptions import ClientError
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
+from botocore.exceptions import ClientError
 
 
 class InputSchema(BaseModel):
@@ -23,7 +23,11 @@ def aws_create_user_login_profile_printer(output):
     pprint.pprint(output)
 
 
-def aws_create_user_login_profile(handle, user_name: str, password: str) -> Dict:
+def aws_create_user_login_profile(
+    handle,
+    user_name: str,
+    password: str
+    ) -> Dict:
     """aws_create_user_login_profile Create login profile for IAM User.
 
         :type handle: object

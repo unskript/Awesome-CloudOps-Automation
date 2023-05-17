@@ -14,7 +14,6 @@ class InputSchema(BaseModel):
         title = "Resource",
         description = ('GCP Resource in the form of project/<PROJECT_ID>'
                        '/serviceAccounts/<SERVICE_ACCOUNT_NAME>')
-
     )
 def gcp_remove_user_role_printer(output):
     if output is None:
@@ -22,7 +21,7 @@ def gcp_remove_user_role_printer(output):
     pprint.pprint("User role removed successfully.")
     pprint.pprint(output)
 
-def gcp_remove_user_role(policy, role: str, member: str, resource: str):
+def gcp_remove_user_role(handle, policy, role: str, member: str, resource: str):
     """Removes a  member from a role binding.
 
         :type role: string
@@ -30,7 +29,7 @@ def gcp_remove_user_role(policy, role: str, member: str, resource: str):
 
         :type member: string
         :param member: user's id to be removed.
-        
+
         :type resource: string
         :param resource: resource for which the policy is being requested.
 
