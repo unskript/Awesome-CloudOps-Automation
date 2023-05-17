@@ -4,9 +4,8 @@
 ##
 import pprint
 from typing import Dict
-from kubernetes import client
 from pydantic import BaseModel, Field
-from tabulate import tabulate
+from kubernetes import client
 
 
 class InputSchema(BaseModel):
@@ -55,8 +54,7 @@ def k8s_get_pod_status(handle, namespace: str, pod_name: str) -> Dict:
             restarts_number = restarts_number + container.restart_count
         containers_number += 1
     res["NAME"] = pod_name
-    res['READY'] = "Ready {}/{}".format(ready_containers_number,
-                                        containers_number)
+    res['READY'] = f"Ready {ready_containers_number}/{containers_number}"
     res['STATUS'] = status.status.phase
     res['RESTARTS'] = restarts_number
     res['START_TIME'] = status.status.start_time.strftime("%m/%d/%Y, %H:%M:%S")

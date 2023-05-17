@@ -1,9 +1,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     listener_arn: str = Field(
@@ -13,7 +13,7 @@ class InputSchema(BaseModel):
     region: str = Field(
         title='Region',
         description='AWS Region of the ALB listeners.')
-        
+
 def aws_modify_listener_for_http_redirection_printer(output):
     if output is None:
         return

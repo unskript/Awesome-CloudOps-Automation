@@ -2,17 +2,11 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field, SecretStr
-from typing import Dict, List
 import pprint
-
-
 from pydantic import BaseModel
-
 
 class InputSchema(BaseModel):
     pass
-
 
 def aws_get_acount_number_printer(output):
     if output is None:
@@ -31,5 +25,3 @@ def aws_get_acount_number(handle) -> str:
 
     # Print the account ID
     return account_id
-
-

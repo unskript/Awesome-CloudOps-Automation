@@ -3,7 +3,6 @@
 ##  All rights reserved.
 ##
 from pydantic import BaseModel
-
 from unskript.connectors.grafana import Grafana
 
 

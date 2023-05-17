@@ -1,10 +1,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -53,8 +52,6 @@ def aws_get_nat_gateway_by_vpc(handle, vpc_id: str, region: str) -> List:
                     if "PublicIp" in address:
                         nat_dict["public_ip"] = address["PublicIp"]
                 result.append(nat_dict)
-    except Exception as e:
+    except Exception:
         pass
     return result
-
-    

@@ -1,5 +1,5 @@
 import pprint
-from typing import List, Dict
+from typing import Dict
 from pydantic import BaseModel, Field
 from google.cloud import container_v1
 from google.protobuf.json_format import MessageToDict
@@ -34,7 +34,13 @@ def gcp_resize_gke_cluster_printer(output):
     pprint.pprint(output)
 
 
-def gcp_resize_gke_cluster(handle, project_id: str, zone: str, cluster_name: str, node_id: str, node_count:int) -> Dict:
+def gcp_resize_gke_cluster(
+        handle,
+        project_id: str,
+        zone: str,
+        cluster_name: str,
+        node_id: str,
+        node_count:int) -> Dict:
     """gcp_resize_gke_cluster Returns the dict of cluster details
 
         :type project_id: string

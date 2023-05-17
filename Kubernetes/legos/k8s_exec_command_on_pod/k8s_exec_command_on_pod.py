@@ -2,13 +2,10 @@
 # Copyright (c) 2021 unSkript.com
 # All rights reserved.
 #
-
-from posixpath import split
-from typing import List
 import pprint
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.stream import stream
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -24,8 +21,8 @@ class InputSchema(BaseModel):
 
 def k8s_exec_command_on_pod_printer(output):
     if output is None:
-        return 
-    
+        return
+
     pprint.pprint(output)
 
 
@@ -44,7 +41,8 @@ def k8s_exec_command_on_pod(handle, namespace: str, podname: str, command: str) 
         :type command: str
         :param command: Commands to execute on the Pod.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format 
+        or Empty String in case of Error.
     """
     coreApiClient = client.CoreV1Api(api_client=handle)
 
