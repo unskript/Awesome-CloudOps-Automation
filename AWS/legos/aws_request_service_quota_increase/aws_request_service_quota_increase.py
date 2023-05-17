@@ -1,9 +1,12 @@
-
+##
+##  Copyright (c) 2023 unSkript, Inc
+##  All rights reserved.
+##
 from __future__ import annotations
-
-from typing import Optional
-
+import pprint
+from typing import Dict
 from pydantic import BaseModel, Field
+from beartype import beartype
 
 
 class InputSchema(BaseModel):
@@ -20,16 +23,7 @@ class InputSchema(BaseModel):
         title='service_code',
     )
 
-##
-##  Copyright (c) 2023 unSkript, Inc
-##  All rights reserved.
-##
-from pydantic import BaseModel, Field
-from typing import List, Dict
-import pprint
-from unskript.connectors.aws import aws_get_paginator
 
-from beartype import beartype
 @beartype
 def aws_get_service_quotas_printer(output):
     if output is None:
@@ -38,7 +32,12 @@ def aws_get_service_quotas_printer(output):
 #list_service_quotas
 #list_aws_default_service_quotas
 @beartype
-def aws_get_service_quotas(handle, service_code:str, quota_code:str, new_quota:float,region:str) -> Dict:
+def aws_get_service_quotas(
+    handle,
+    service_code:str,
+    quota_code:str,
+    new_quota:float,region:str
+    ) -> Dict:
     sqClient = handle.client('service-quotas',region_name=region)
     res = sqClient.request_service_quota_increase(
         ServiceCode=service_code,
@@ -48,4 +47,3 @@ def aws_get_service_quotas(handle, service_code:str, quota_code:str, new_quota:f
 
     #res = sqClient.list_services(MaxResults = 100)
     return res
-
