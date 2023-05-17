@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -33,6 +33,6 @@ def aws_get_s3_buckets(handle, region: str) -> List:
         result = []
         for bucket in response:
             result.append(bucket.name)
-    except Exception as e:
+    except Exception:
         pass
     return result

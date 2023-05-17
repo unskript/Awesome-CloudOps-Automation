@@ -4,17 +4,20 @@
 ##
 import pprint
 from typing import List, Optional
+from pydantic import BaseModel, Field
 from datadog_api_client.v1.api.monitors_api import MonitorsApi
 from datadog_api_client import ApiClient
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
     query: Optional[str] = Field(
         title='Query String',
-        description='''After entering a search query in your `Manage Monitor page <https://app.datadoghq.com/monitors/manage>`_ use the query parameter value in the
-            URL of the page as value for this parameter. Consult the dedicated `manage monitor documentation </monitors/manage/#find-the-monitors>`_
-            page to learn more. The query can contain any number of space-separated monitor attributes, for instance ``query="type:metric status:alert"``.''')
+        description='''After entering a search query in your `Manage Monitor page
+        <https://app.datadoghq.com/monitors/manage>`_ use the query parameter value in the
+        URL of the page as value for this parameter. Consult the dedicated `manage monitor
+        documentation </monitors/manage/#find-the-monitors>`_ page to learn more. The query 
+        can contain any number of space-separated monitor attributes, for instance 
+        ``query="type:metric status:alert"``.''')
     name: Optional[str] = Field(
         title='Name',
         description='A string to filter monitors by name.')
@@ -32,9 +35,12 @@ def datadog_search_monitors(handle,
     """datadog_search_monitors searches monitors in datadog based on filters
 
         :type query: str
-        :param query: After entering a search query in your `Manage Monitor page <https://app.datadoghq.com/monitors/manage>`_ use the query parameter value in the
-            URL of the page as value for this parameter. Consult the dedicated `manage monitor documentation </monitors/manage/#find-the-monitors>`_
-            page to learn more. The query can contain any number of space-separated monitor attributes, for instance ``query="type:metric status:alert"``.
+        :param query: After entering a search query in your `Manage Monitor page 
+        <https://app.datadoghq.com/monitors/manage>`_ use the query parameter value in the
+        URL of the page as value for this parameter. Consult the dedicated `manage monitor 
+        documentation </monitors/manage/#find-the-monitors>`_ page to learn more. The query 
+        can contain any number of space-separated monitor attributes, for instance 
+        ``query="type:metric status:alert"``.
 
         :type name: str
         :param name: A string to filter monitors by name.
@@ -66,4 +72,3 @@ def datadog_search_monitors(handle,
     except Exception as e:
         raise e
     return monitors
-
