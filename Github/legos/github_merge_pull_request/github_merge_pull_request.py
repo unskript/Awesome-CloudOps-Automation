@@ -3,15 +3,14 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
-from pydantic import BaseModel, Field
-from github import GithubException
 import pprint
+from pydantic import BaseModel, Field
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -19,11 +18,11 @@ class InputSchema(BaseModel):
         title='Repository',
     )
     pull_request_number: int = Field(
-        description='Pull request number. Eg: 167', 
+        description='Pull request number. Eg: 167',
         title='Pull Request Number'
     )
     commit_message: str = Field(
-        description='Merge commit message.', 
+        description='Merge commit message.',
         title='Commit Message'
     )
 
@@ -34,7 +33,13 @@ def github_merge_pull_request_printer(output):
     pprint.pprint(output)
 
 
-def github_merge_pull_request(handle, owner:str, repository:str, pull_request_number: int, commit_message:str) -> str:
+def github_merge_pull_request(
+        handle,
+        owner:str,
+        repository:str,
+        pull_request_number: int,
+        commit_message:str
+        ) -> str:
     """github_merge_pull_request returns message and commit sha of successfully merged branch
 
         Note- The base branch is considered to be "master"
@@ -66,12 +71,11 @@ def github_merge_pull_request(handle, owner:str, repository:str, pull_request_nu
         return f"Successully merged branch with commit SHA- {commit.sha}"
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found")
+            raise UnknownObjectException("No such pull number or repository or user found") from e
         if e.status==409:
-            raise Exception("Merge Conflict")
+            raise Exception("Merge Conflict") from e
         raise e.data
     except Exception as e:
         raise e
-
