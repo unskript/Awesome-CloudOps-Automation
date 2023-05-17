@@ -2,10 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-
-from kubernetes import client
-from pydantic import BaseModel, Field
 import pprint
+from pydantic import BaseModel, Field
+from kubernetes import client
 
 class InputSchema(BaseModel):
     namespace: str = Field(
@@ -18,10 +17,10 @@ class InputSchema(BaseModel):
 
 def k8s_get_pod_config_printer(output):
     if output is None:
-        return 
-    
+        return
+
     pprint.pprint(output)
-    
+
 def k8s_get_pod_config(handle, namespace: str, pod: str) -> str:
     """k8s_get_pod_config get pod config
 
