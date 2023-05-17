@@ -2,18 +2,19 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field, SecretStr
-from typing import Dict, List
-from unskript.connectors.aws import aws_get_paginator
-from datetime import datetime, timezone, timedelta
 import pprint
+from typing import List
+from datetime import datetime, timezone
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 
 
 class InputSchema(BaseModel):
     threshold_in_days: int = Field(
         default = 120,
         title="Threshold (In days)",
-        description="(in days) The threshold to check the IAM user access keys older than the threshold."
+        description=("(in days) The threshold to check the IAM user access "
+                     "keys older than the threshold.")
     )
 
 
@@ -30,7 +31,8 @@ def aws_get_users_with_old_access_keys(handle, threshold_in_days: int = 120) -> 
         :param handle: Object returned from Task Validate
         
         :type threshold_in_days: int
-        :param threshold_in_days: (in days) The threshold to check the IAM user access keys older than the threshold.
+        :param threshold_in_days: (in days) The threshold to check the IAM user
+        access keys older than the threshold.
 
         :rtype: Result List of all IAM users with access keys.
     """
@@ -44,13 +46,15 @@ def aws_get_users_with_old_access_keys(handle, threshold_in_days: int = 120) -> 
         try:
             # Get a list of the user's access keys
             access_keys = client.list_access_keys(UserName=user['UserName'])
-        except Exception as e:
+        except Exception:
             continue
         for access_key in access_keys['AccessKeyMetadata']:
             iam_data = {}
             try:
-                access_key_info = client.get_access_key_last_used(AccessKeyId=access_key['AccessKeyId'])
-            except Exception as e:
+                access_key_info = client.get_access_key_last_used(
+                    AccessKeyId=access_key['AccessKeyId']
+                    )
+            except Exception:
                 continue
             if 'LastUsedDate' not in access_key_info['AccessKeyLastUsed']:
                 iam_data["access_key"] = access_key['AccessKeyId']

@@ -12,8 +12,8 @@ from pydantic import BaseModel, Field
 class InputSchema(BaseModel):
     threshold_days: int = Field(
         title="Threshold Days",
-        description="""Threshold number of days to check for expiry.
-          Eg: 30 -lists all certificates which are expiring within 30 days"""
+        description=("Threshold number of days to check for expiry. "
+                     "Eg: 30 -lists all certificates which are expiring within 30 days")
     )
     region: str = Field(
         title='Region',
