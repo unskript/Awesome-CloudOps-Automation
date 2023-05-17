@@ -2,7 +2,7 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint 
+import pprint
 from typing import Dict
 from pydantic import BaseModel, Field
 from google.cloud.compute_v1.services.instances import InstancesClient
@@ -48,11 +48,11 @@ def gcp_stop_compute_instances(handle, project_name: str, zone:str, instance_nam
         ic = InstancesClient(credentials=handle)
         result = ic.stop(
             project=project_name, zone=zone, instance=instance_name)
-        
+
         output['id'] = result.id
         output['name'] = result.name
         output['status'] = result.status
     except Exception as error:
         output["error"] = error
-        
+
     return output
