@@ -9,6 +9,51 @@ import sys
 import argparse
 
 
+import nbformat
+import re
+import requests
+from collections import defaultdict
+
+def extract_links_from_notebook(notebook_path):
+    with open(notebook_path) as f:
+        notebook = nbformat.read(f, as_version=4)
+
+    http_link_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
+    links = []
+    for cell in notebook.cells:
+        if cell.cell_type != "markdown":
+            continue
+
+        for link in re.findall(http_link_pattern, cell.source):
+            if link.endswith("</a></p>"):
+                continue
+            links.append(link)
+
+    return links
+
+def validate_link(link):
+    try:
+        response = requests.get(link, timeout=3)
+        return response.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
+def check_notebooks(notebook_paths):
+    link_cache = {}
+    dead_link_report = defaultdict(list)
+
+    for notebook in notebook_paths:
+        links = extract_links_from_notebook(notebook)
+        for link in links:
+            if link not in link_cache:
+                link_cache[link] = validate_link(link)
+            if not link_cache[link]:
+                dead_link_report[notebook].append(link)
+
+    return dict(dead_link_report)
+
+
 ## returns True is everything is ok 
 def check_sanity(ipynbFile: str = '') -> bool:
 
@@ -185,11 +230,8 @@ if __name__ == '__main__':
         validate_mode = False
 
     # access the list of files
-    filelist = args.files
-    failedlist = []
-    print('List of files:', filelist)
-
-    for f in filelist:
+    filelist = []
+    for f in args.files:
         # To handle file delete case, check if the file exists.
         if os.path.isfile(f) is False:
             continue
@@ -197,6 +239,13 @@ if __name__ == '__main__':
         if f.endswith('.ipynb') is False:
             continue
 
+        filelist.append(f)
+
+    failedlist = []
+    print('List of files:', filelist)
+
+    for f in filelist:
+        # To handle file delete case, check if the file exists.
         print(f"Processing {f}")
         if validate_mode is True:
             rc = check_sanity(f)
@@ -212,5 +261,25 @@ if __name__ == '__main__':
             print(f"Failed sanity {f}")
 
         sys.exit(-1)
-    
+
+
+    dead_links = check_notebooks(filelist)
+    failedlist = []
+    for notebook, links in dead_links.items():
+        if len(links) == 0:
+            continue
+
+        failedlist.append(f)
+        print(f'Notebook {notebook} contains the following dead links:')
+        for link in links:
+            print(link)
+
+
+    if len(failedlist) > 0:
+        
+        for f in failedlist:
+            print(f"Failed sanity {f}")
+
+        sys.exit(-1)
+
     sys.exit(0)
