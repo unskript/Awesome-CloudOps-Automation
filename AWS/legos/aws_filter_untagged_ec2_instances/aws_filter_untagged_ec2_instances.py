@@ -2,11 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
+from typing import Tuple, Optional
 from pydantic import BaseModel, Field
-from typing import List, Tuple, Optional
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -58,13 +58,12 @@ def aws_filter_untagged_ec2_instances(handle, region: str= None) -> Tuple:
             untagged_instances = check_untagged_instance(res, r)
             if len(untagged_instances)!=0:
                 all_instances.append(untagged_instances)
-        except Exception as e:
+        except Exception:
             pass
     try:
         result = all_instances[0]
-    except Exception as e:
+    except Exception:
         pass
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)
