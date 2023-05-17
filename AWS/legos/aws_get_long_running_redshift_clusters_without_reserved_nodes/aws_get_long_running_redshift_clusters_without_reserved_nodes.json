@@ -9,6 +9,6 @@
   "action_supports_iteration": "true",
   "action_supports_poll": "true",
   "action_categories": ["CATEGORY_TYPE_COST_OPT","CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_REDSHIFT"],
-  "action_next_hop": [],
+  "action_next_hop": ["08d3033e428c5fa241be26cfc8787fb16c05c6aa31830075e730fefd5aaf744f"],
   "action_next_hop_parameter_mapping": {}
 }
