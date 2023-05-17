@@ -1,0 +1,14 @@
+{
+  "action_title": "AWS Get Long Running RDS Instances Without Reserved Instances",
+  "action_description": "This action gets information about long running instances and their status, and checks if they have any reserved nodes associated with them.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_get_long_running_rds_instances_without_reserved_instances",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": "true",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+  "action_categories": ["CATEGORY_TYPE_COST_OPT","CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_RDS"],
+  "action_next_hop": [],
+  "action_next_hop_parameter_mapping": {}
+}
