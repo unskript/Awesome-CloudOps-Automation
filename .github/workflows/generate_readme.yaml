@@ -1,8 +1,6 @@
 name: Generate Readme
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 jobs:
   generate-readme:
     if: "!startsWith(github.event.head_commit.message, 'generateReadme:')"

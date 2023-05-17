@@ -1,0 +1,12 @@
+{
+    "name": "Purchase Reserved Nodes For Long Running AWS Redshift Clusters ",
+    "description": "Ensuring that long-running AWS Redshift Clusters have Reserved Nodes purchased for them is a critical cost optimization strategy . By committing to a specific capacity of Redshift nodes for a period of one or three years, users can take advantage of significant discounts compared to On-Demand pricing. This approach can help optimize AWS costs for Redshift Clusters that are expected to run for an extended period and have predictable usage patterns. This runbook helps us to ensure that Reserved Nodes are purchased for these clusters so that users can effectively plan ahead, reduce their AWS bill, and optimize their costs over time.",  
+    "uuid": "08d3033e428c5fa241be26cfc8787fb16c05c6aa31830075e730fefd5aaf744f",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_CLOUDOPS"],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
+  
+  
+  

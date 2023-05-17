@@ -22,7 +22,6 @@ class InputSchema(BaseModel):
                        "URL should start with http or https.")
     )
 
-
 def aws_cloudwatch_attach_webhook_notification_to_alarm_printer(output):
     if output is None:
         return

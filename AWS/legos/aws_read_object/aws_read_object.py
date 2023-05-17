@@ -3,9 +3,9 @@
 ##  All rights reserved.
 ##
 import io
+import pprint
 from typing import List
 from pydantic import BaseModel, Field
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -14,7 +14,9 @@ class InputSchema(BaseModel):
         description='Name of the bucket of the object.')
     key: str = Field(
         title='Object Name',
-        description='Name of S3 object or Prefix. Prefix should end with / to return the list of objects present in the bucket')
+        description=('Name of S3 object or Prefix. Prefix should end with / '
+                     'to return the list of objects present in the bucket')
+                     )
 
 
 def aws_read_object_printer(output):
@@ -46,8 +48,8 @@ def aws_read_object(handle, name: str, key: str) -> List:
             print(content.get("Key"))
             folder_list.append(content.get("Key"))
         return folder_list
-    elif key:
+    else:
         res = s3Client.get_object(Bucket=name, Key=key)
         fileSizeLimit = 100000
-        output = io.BytesIO(res['Body'].read()).read(fileSizeLimit).__str__()
+        output = str(io.BytesIO(res['Body'].read()).read(fileSizeLimit))
         return [output]

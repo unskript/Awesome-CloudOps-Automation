@@ -2,10 +2,10 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field, SecretStr
-from typing import Dict,List
-from unskript.enums.aws_access_key_enums import AccessKeyStatus
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
+from unskript.enums.aws_access_key_enums import AccessKeyStatus
 
 
 class InputSchema(BaseModel):
@@ -44,7 +44,8 @@ def aws_update_access_key(
         :param aws_username: Username of the IAM user to be looked up
 
         :type aws_access_key_id: str
-        :param aws_access_key_id: Old Access Key ID of the user of which the status needs to be updated
+        :param aws_access_key_id: Old Access Key ID of the user of which the status
+        needs to be updated
 
         :type status: AccessKeyStatus
         :param status: Status to set for the Access Key
@@ -52,7 +53,11 @@ def aws_update_access_key(
         :rtype: Result Dictionary of result
     """
     iamClient = handle.client('iam')
-    result = iamClient.update_access_key(UserName=aws_username, AccessKeyId=aws_access_key_id, Status=status)
+    result = iamClient.update_access_key(
+        UserName=aws_username,
+        AccessKeyId=aws_access_key_id,
+        Status=status
+        )
     retVal = {}
     temp_list = []
     for key, value in result.items():

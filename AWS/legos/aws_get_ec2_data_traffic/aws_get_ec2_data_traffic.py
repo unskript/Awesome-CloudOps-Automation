@@ -4,14 +4,13 @@
 ##read the blog https://unskript.com/will-ai-replace-us-using-chatgpt-to-create-python-actions-for-unskript/
 ##
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
 import pprint
-from datetime import datetime, timezone, timedelta
+from typing import Dict
+from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
-
-
 from beartype import beartype
+
 @beartype
 def aws_get_ec2_data_traffic_printer(output):
     if output is None:
@@ -88,14 +87,23 @@ def aws_get_ec2_data_traffic(handle, region: str) -> Dict:
                 #bytes dont mean anything.  Lets use MB
 
                 if len(metrics['MetricDataResults'][0]['Values'])>0:
-                    NetworkInMB = round(float(metrics['MetricDataResults'][0]['Values'][0])/1024/1024,2)
+                    NetworkInMB = round(
+                        float(metrics['MetricDataResults'][0]['Values'][0])/1024/1024,
+                        2
+                        )
                 else:
                     NetworkInMB = "error"
                 if len(metrics['MetricDataResults'][1]['Values'])>0:    
-                    NetworkOutMB = round(float(metrics['MetricDataResults'][1]['Values'][0])/1024/1024,2)
+                    NetworkOutMB = round(
+                        float(metrics['MetricDataResults'][1]['Values'][0])/1024/1024,
+                        2
+                        )
                 else:
                     NetworkOutMB = "error"
-                metricsIwant = {metrics['MetricDataResults'][0]['Label'] : NetworkInMB, metrics['MetricDataResults'][1]['Label'] : NetworkOutMB}
+                metricsIwant = {
+                    metrics['MetricDataResults'][0]['Label'] : NetworkInMB,
+                    metrics['MetricDataResults'][1]['Label'] : NetworkOutMB
+                    }
                 result[instance_id] = metricsIwant
 
-    return(result)
+    return result

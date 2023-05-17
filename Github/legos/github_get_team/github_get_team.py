@@ -2,19 +2,18 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-
-from typing import Optional, List, Dict
-from github import GithubException
-from pydantic import BaseModel, Field
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 class InputSchema(BaseModel):
     organization_name: str = Field(
-        description='Github Organization Name', 
+        description='Github Organization Name',
         title='Organization Name'
     )
     team_name: str = Field(
-        description='Team name in a GitHub Organization', 
+        description='Team name in a GitHub Organization',
         title='Team name'
     )
 
@@ -51,11 +50,10 @@ def github_get_team(handle, organization_name:str, team_name:str) -> Dict:
         team_details["permission"]= team.permission
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such organization or repository found")
+            raise UnknownObjectException("No such organization or repository found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-
