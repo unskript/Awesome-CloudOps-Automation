@@ -2,11 +2,11 @@
 # Copyright (c) 2022 unSkript.com
 # All rights reserved.
 #
-
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
 import pprint
 import json
+from typing import Optional, Tuple
+from pydantic import BaseModel, Field
+
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(
@@ -33,7 +33,7 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
 
         :rtype: Tuple of status result and list of evicted pods
     """
-    if handle.client_side_validation != True:
+    if handle.client_side_validation is not True:
         print(f"K8S Connector is invalid: {handle}")
         return str()
 
@@ -57,11 +57,9 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
                     pod_dict["pod_name"] = i["metadata"]["name"]
                     pod_dict["namespace"] = i["metadata"]["namespace"]
                     result.append(pod_dict)
-    except Exception as e:
+    except Exception:
         pass
-    
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-    
+    return (True, None)
