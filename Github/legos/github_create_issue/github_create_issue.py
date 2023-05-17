@@ -24,7 +24,7 @@ class InputSchema(BaseModel):
     )
     description: str = Field(
         description='Description of the Github Issue', 
-        title='Title of the Issue'
+        title='Description of the Issue'
     )
     assignee: str = Field(
         description='Username of the Github User to assign this issue to ', 
