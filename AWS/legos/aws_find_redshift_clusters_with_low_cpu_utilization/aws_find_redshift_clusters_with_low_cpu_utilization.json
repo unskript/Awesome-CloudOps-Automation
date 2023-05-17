@@ -9,6 +9,6 @@
   "action_supports_iteration": "true",
   "action_supports_poll": "true",
   "action_next_hop":["2a51c98c5c99d132011e285546e365402351fd3d09214041aea7592367bd48bf"],
-  "action_next_hop_parameter_mapping":{"2a51c98c5c99d132011e285546e365402351fd3d09214041aea7592367bd48bf": {"name": "AWS_Delete_Redshift_Clusters_with_Low_CPU_Utilization.ipynb", "region": ".[0].region", "cluster_identifiers":".[].cluster"}},
+  "action_next_hop_parameter_mapping":{"2a51c98c5c99d132011e285546e365402351fd3d09214041aea7592367bd48bf": {"name": "Delete Redshift Clusters with Low CPU Utilization", "region": ".[0].region", "cluster_identifiers":".[].cluster"}},
   "action_categories":["CATEGORY_TYPE_COST_OPT" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_REDSHIFT","CATEGORY_TYPE_AWS_CLOUDWATCH"]
 }
