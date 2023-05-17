@@ -3,6 +3,7 @@
 # All rights reserved.
 ##
 
+import pprint
 from datetime import datetime, timedelta
 from typing import Optional
 import matplotlib.pyplot as plt
@@ -10,7 +11,6 @@ from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 from unskript.enums.aws_k8s_enums import StatisticsType
 from tabulate import tabulate
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -26,12 +26,14 @@ class InputSchema(BaseModel):
     timeSince: int = Field(
         default=3600,
         title="Time Since",
-        description="Starting from now, window (in seconds) for which you want to get the datapoints for.",
+        description=("Starting from now, window (in seconds) for which you want to get "
+                     "the datapoints for.")
     )
     statistics: StatisticsType = Field(
         default=StatisticsType.AVERAGE,
         title="Statistics",
-        description="Cloudwatch metric statistics. Possible values: SampleCount, Average, Sum, Minimum, Maximum.",
+        description=("Cloudwatch metric statistics. Possible values: SampleCount, Average, "
+                     "Sum, Minimum, Maximum.")
     )
     region: str = Field(
         title="Region",
@@ -53,7 +55,8 @@ def aws_get_cloudwatch_ec2_cpuutil(
     statistics: StatisticsType = StatisticsType.AVERAGE,
     period: int = 60,
 ) -> str:
-    """aws_get_cloudwatch_ec2_cpuutil shows plotted AWS cloudwatch statistics for ec2 cpu utilization.
+    """aws_get_cloudwatch_ec2_cpuutil shows plotted AWS cloudwatch statistics
+       for ec2 cpu utilization.
 
         :type instance: string
         :param instance: AWS EC2 instance ID.
@@ -62,10 +65,12 @@ def aws_get_cloudwatch_ec2_cpuutil(
         :param period: The granularity, in seconds, of the returned data points.
 
         :type timeSince: int
-        :param timeSince: Starting from now, window (in seconds) for which you want to get the datapoints for.
+        :param timeSince: Starting from now, window (in seconds) for which you
+        want to get the datapoints for.
 
         :type statistics: StatisticsType
-        :param statistics: Cloudwatch metric statistics. Possible values: SampleCount, Average, Sum, Minimum, Maximum.
+        :param statistics: Cloudwatch metric statistics. Possible values: SampleCount,
+        Average, Sum, Minimum, Maximum.
 
         :type region: string
         :param region: AWS Region of the cloudwatch.
