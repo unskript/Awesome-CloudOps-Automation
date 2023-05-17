@@ -4,9 +4,9 @@
 ##
 import pprint
 from typing import List
+from pydantic import BaseModel
 from datadog_api_client.v1.api.monitors_api import MonitorsApi
 from datadog_api_client import ApiClient
-from pydantic import BaseModel
 
 
 class InputSchema(BaseModel):
@@ -37,4 +37,3 @@ def datadog_list_all_monitors(handle) -> List[dict]:
     except Exception as e:
         raise e
     return monitors
-
