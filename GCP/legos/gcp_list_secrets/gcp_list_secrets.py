@@ -2,11 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-
+import pprint
 from typing import List
 from pydantic import BaseModel, Field
 from google.cloud import secretmanager
-import pprint
 
 class InputSchema(BaseModel):
     name: str = Field(
@@ -33,7 +32,7 @@ def gcp_list_secrets(handle, name: str) -> List:
     try:
             resp = client.list_secrets(parent=parent)
     except Exception as e:
-        raise(e)
+        raise e
     output = []
     for i in resp.secrets:
         output.append(i.name)

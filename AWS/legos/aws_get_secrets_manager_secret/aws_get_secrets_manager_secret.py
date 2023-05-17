@@ -1,15 +1,12 @@
-from __future__ import annotations
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-
-
-
-
-from typing import Optional
-
+from __future__ import annotations
+import pprint
 from pydantic import BaseModel, Field
+from beartype import beartype
+from botocore.exceptions import ClientError
 
 
 class InputSchema(BaseModel):
@@ -19,14 +16,6 @@ class InputSchema(BaseModel):
 
     )
 
-
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
-import pprint
-from beartype import beartype
-
-from beartype import beartype
 @beartype
 def aws_get_secrets_manager_secret_printer(output):
     if output is None:
@@ -58,5 +47,3 @@ def aws_get_secrets_manager_secret(handle, region: str, secret_name:str) -> str:
     # Decrypts secret using the associated KMS key.
     secret = get_secret_value_response['SecretString']
     return secret
-
-

@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 import pprint
-from typing import List,Any, Dict
+from typing import List
+from pydantic import BaseModel
 from google.cloud import storage
 
 class InputSchema(BaseModel):
@@ -15,7 +15,7 @@ def gcp_list_buckets_printer(output):
         print("There are no buckets available")
         return
     pprint.pprint(output)
-    
+
 
 def gcp_list_buckets(handle) -> List:
     """gcp_list_buckets lists all GCP Buckets
