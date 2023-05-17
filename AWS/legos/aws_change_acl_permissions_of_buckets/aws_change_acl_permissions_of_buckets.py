@@ -21,7 +21,6 @@ class InputSchema(BaseModel):
         description=("Canned ACL Permission type - 'private'|'public-read'|'public-read-write"
                      "'|'authenticated-read'."))
 
-
 def aws_change_acl_permissions_of_buckets_printer(output):
     if output is None:
         return

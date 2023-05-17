@@ -1,9 +1,8 @@
 from __future__ import annotations
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
-from pydantic import BaseModel, Field
-from typing import List, Dict
-import pprint
 from beartype import beartype
 
 
@@ -29,7 +28,3 @@ def aws_get_all_service_names(handle, region:str) -> List:
 
     #res = sqClient.list_services(MaxResults = 100)
     return resPaginate
-
-
-
-

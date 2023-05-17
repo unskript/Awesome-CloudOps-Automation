@@ -2,11 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
+import pprint
 from typing import Optional, List
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -50,6 +50,6 @@ def aws_get_all_load_balancers(handle, region: str = "") -> List:
                 elb_dict["load_balancer_dns"] = lb['DNSName']
                 elb_dict["region"] = reg
                 result.append(elb_dict)
-        except Exception as e:
+        except Exception:
             pass
     return result
