@@ -2,12 +2,10 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
+from typing import Dict
 from pydantic import BaseModel, Field
 from unskript.enums.aws_route53_record_type_enums import Route53RecordType
-from typing import Dict
-import pprint
-
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -32,7 +30,13 @@ def aws_update_ttl_for_route53_records_printer(output):
         return
     pprint.pprint(output)
 
-def aws_update_ttl_for_route53_records(handle, hosted_zone_id: str, record_name: str, record_type:Route53RecordType, new_ttl:int) -> Dict:
+def aws_update_ttl_for_route53_records(
+        handle,
+        hosted_zone_id: str,
+        record_name: str,
+        record_type:Route53RecordType,
+        new_ttl:int
+        ) -> Dict:
     """aws_update_ttl_for_route53_records updates the TTL for a Route53 record in a hosted zone.
 
         :type handle: object
@@ -72,4 +76,3 @@ def aws_update_ttl_for_route53_records(handle, hosted_zone_id: str, record_name:
         }
     )
     return response
-

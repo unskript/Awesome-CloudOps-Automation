@@ -1,10 +1,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
-import pprint
 
 class InputSchema(BaseModel):
     vpc_id: str = Field(
@@ -47,4 +47,3 @@ def aws_get_internet_gateway_by_vpc(handle, vpc_id: str, region: str) -> List:
         result.append({"error":error})
 
     return result
-

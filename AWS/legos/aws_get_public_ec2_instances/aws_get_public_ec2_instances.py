@@ -3,12 +3,11 @@
 ##  All rights reserved.
 ##  Written by Doug Sillars (and a little help from ChatGPT)
 
-from typing import List, Dict
-from pydantic import BaseModel, Field
 import pprint
-from datetime import datetime, timezone, timedelta
+from typing import Dict
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
-
+from beartype import beartype
 
 
 class InputSchema(BaseModel):
@@ -16,9 +15,6 @@ class InputSchema(BaseModel):
         title='Region',
         description='AWS Region.')
 
-
-
-from beartype import beartype
 @beartype
 def aws_get_public_ec2_instances_printer(output):
     if output is None:
@@ -45,4 +41,4 @@ def aws_get_public_ec2_instances(handle, region: str) -> Dict:
             if len(public_DNS)>0:
                 public_ip = instance['PublicIpAddress']
                 result[instance_id] = {"public DNS": public_DNS,"public IP":public_ip}
-    return(result)
+    return result

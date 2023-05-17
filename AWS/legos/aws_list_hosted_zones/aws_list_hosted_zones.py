@@ -2,9 +2,8 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from typing import List
 from pydantic import BaseModel
 
 
@@ -39,5 +38,3 @@ def aws_list_hosted_zones(handle) -> List:
             'name': hosted_zone_name
         })
     return result
-
-

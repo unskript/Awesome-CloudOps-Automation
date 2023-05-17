@@ -72,7 +72,7 @@ def load_or_create_global_configuration():
             global_content = yaml.safe_load(f)
 
 
-    for k,v in global_content.items():
+    for k, v in global_content.items():
         k = k.upper()
         os.environ[k] = json.dumps(v)
 
@@ -88,11 +88,12 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
     """
     if nb is None:
         return None
+
     ids = get_code_cell_action_uuids(nb.dict())
     # Firstcell content. Here the workflow will take the UUIDS that we got from
     # get_code_cell_action_uuids
 
-    #FIXME: NEED TO CREATE FIRST CELL VARIABLES BASED ON ENV VARIABLE SET IN THE CONFIG FILE
+    # FIXME: NEED TO CREATE FIRST CELL VARIABLES BASED ON ENV VARIABLE SET IN THE CONFIG FILE
     runbook_params = {}
     if os.environ.get('ACA_RUNBOOK_PARAMS') is not None:
         runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
@@ -100,7 +101,8 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
 
     if runbook_params:
         for k, v in runbook_params.items():
-            runbook_variables = runbook_variables + f"{k} = nbParamsObj.get('{k}')" + '\n'
+            runbook_variables = runbook_variables + \
+                f"{k} = nbParamsObj.get('{k}')" + '\n'
     first_cell_content = f'''\
 import json
 from unskript import nbparams
@@ -115,7 +117,6 @@ paramsJson = json.dumps(paramDict)
 nbParamsObj = nbparams.NBParams(paramsJson)
 {runbook_variables}
 w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={ids})'''
-
 
     # Firstcell content. This is a static content
     last_cell_content = '''\
@@ -145,6 +146,7 @@ except Exception as e:
     if cells[0].get('cell_type') == 'code':
         tags = None
         if cells[0].get('metadata').get('tags') is not None:
+
             if len(cells[0].get('metadata').get('tags')) != 0:
                 tags = cells[0].get('metadata').get('tags')[0]
 
@@ -153,9 +155,11 @@ except Exception as e:
             nb['cells'].remove(nb['cells'][0])
 
     # First Cell insertion
-    nb['cells'].insert(0, nbformat.v4.new_code_cell(first_cell_content, id='firstcell'))
+    nb['cells'].insert(0, nbformat.v4.new_code_cell(
+        first_cell_content, id='firstcell'))
     # Last Cell insertion
-    nb['cells'].extend([nbformat.v4.new_code_cell(last_cell_content, id='lastcell')])
+    nb['cells'].extend(
+        [nbformat.v4.new_code_cell(last_cell_content, id='lastcell')])
 
     return nb
 
@@ -166,10 +170,10 @@ def list_runbooks():
     """list_runbooks  This is simple routine that uses python glob to fetch
             the list of runbooks stored in the a predefined path ~/runbooks
             and prints the available runbook and prints in a tabular form.
-    
+
     """
     f_path = os.environ.get('HOME') + '/runbooks'
-    runbooks =  glob.glob(f_path + '/**/*.ipynb', recursive=True)
+    runbooks = glob.glob(f_path + '/**/*.ipynb', recursive=True)
 
     runbooks.sort()
     table = [["File Name",  "Runbook Name"]]
@@ -179,13 +183,15 @@ def list_runbooks():
             contents = f.read()
         try:
             contents = json.loads(contents)
-            name = contents.get('metadata').get('execution_data').get('runbook_name')
+            name = contents.get('metadata').get(
+                'execution_data').get('runbook_name')
             filename = os.path.basename(runbook)
             table.append([filename, name])
         except Exception:
             pass
 
     print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
+
 
 def run_ipynb(filename: str, status_list_of_dict: list = None):
     """run_ipynb This function takes the Runbook name and executes it
@@ -202,8 +208,10 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     status_dict = {}
     status_dict['runbook'] = filename
     status_dict['result'] = []
-    r_name = '\x1B[1;20;42m' + "Executing Runbook -> " + filename.strip() + '\x1B[0m'
+    r_name = '\x1B[1;20;42m' + "Executing Runbook -> " + \
+        filename.strip() + '\x1B[0m'
     print(r_name)
+
 
     if nb is None:
         raise Exception("Unable to Run the Ipynb file, internal service error")
@@ -213,20 +221,23 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     client = NotebookClient(nb=nb, kernel_name="python3")
 
     try:
-        client.execute()
+        execution = client.execute()
     except CellExecutionError as e:
         raise e
     finally:
-        nbformat.write(nb, "/tmp/output.ipynb")
+        output_file = filename
+        output_file = output_file.replace('.ipynb', '_output.ipynb')
+        nbformat.write(nb, output_file)
         new_nb = None
-        with open("/tmp/output.ipynb", "r") as f:
+        with open(output_file, "r") as f:
             new_nb = nbformat.read(f, as_version=4)
         outputs = get_last_code_cell_output(new_nb.dict())
 
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
     if len(outputs) == 0:
-        raise Exception("Unable to execute Runbook. Last cell content is empty")
+        raise Exception(
+            "Unable to execute Runbook. Last cell content is empty")
 
     results = outputs[0]
     idx = 0
@@ -285,11 +296,11 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
         except Exception:
             pass
         update_current_execution(payload.get('status'), ids[idx], nb.dict())
-        update_check_run_trail(ids[idx], 
-                           get_action_name_from_id(ids[idx], nb.dict()),
-                           get_connector_name_from_id(ids[idx], nb.dict()),
-                           CheckOutputStatus(payload.get('status')), 
-                           failed_result)
+        update_check_run_trail(ids[idx],
+                               get_action_name_from_id(ids[idx], nb.dict()),
+                               get_connector_name_from_id(ids[idx], nb.dict()),
+                               CheckOutputStatus(payload.get('status')),
+                               failed_result)
         idx += 1
 
     # New Line to make the output clear to see
@@ -299,9 +310,9 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     if failed_result_available is True:
         print("")
         print("FAILED RESULTS")
-        for k,v in failed_result.items():
+        for k, v in failed_result.items():
             check_name = '\x1B[1;4m' + k + '\x1B[0m'
-            print(check_name) 
+            print(check_name)
             print("Failed Objects:")
             pprint.pprint(v)
             print('\x1B[1;4m', '\x1B[0m')
@@ -318,7 +329,7 @@ def run_checks(filter: str):
 
     :type filter: string
     :param filter: Filter string, possible values are all,<connector>,failed
-    
+
     :rtype: None
     """
     if filter in ("", None):
@@ -329,7 +340,7 @@ def run_checks(filter: str):
     if filter == 'failed':
         run_status = get_pss_record('current_execution_status')
         exec_status = run_status.get('exec_status')
-        for k,v in exec_status.items():
+        for k, v in exec_status.items():
             if CheckOutputStatus(v.get('current_status')) == CheckOutputStatus.FAILED:
                 temp_check_list = get_checks_by_connector('all', True)
                 for tc in temp_check_list:
@@ -368,13 +379,16 @@ def print_run_summary(status_list_of_dict):
             check_name = st[0]
             if status == 'PASS':
                 p += 1
-                all_result_table.append([check_name, TBL_CELL_CONTENT_PASS, 'N/A', 'N/A'])
+                all_result_table.append(
+                    [check_name, TBL_CELL_CONTENT_PASS, 'N/A', 'N/A'])
             elif status == 'FAIL':
                 f += 1
-                all_result_table.append([check_name, 'N/A', TBL_CELL_CONTENT_FAIL, 'N/A'])
+                all_result_table.append(
+                    [check_name, 'N/A', TBL_CELL_CONTENT_FAIL, 'N/A'])
             elif status == 'ERROR':
                 e += 1
-                all_result_table.append([check_name, 'N/A', 'N/A', TBL_CELL_CONTENT_ERROR])
+                all_result_table.append(
+                    [check_name, 'N/A', 'N/A', TBL_CELL_CONTENT_ERROR])
 
             else:
                 p = f = e = -1
@@ -426,7 +440,6 @@ def update_current_execution(status, id: str, content: dict):
         pass
     finally:
         if es != {}:
-            print(f"EXEC STATUS IS NOT EMPTY {es.get('exec_status').keys()}")
             if id in es.get('exec_status').keys():
                 prev_status = es['exec_status'].get(id).get('current_status')
             else:
@@ -436,9 +449,11 @@ def update_current_execution(status, id: str, content: dict):
             es['exec_status'][id] = {}
 
     es['exec_status'][id]['failed_runbook'] = failed_runbook
-    es['exec_status'][id]['check_name'] = str(get_action_name_from_id(id, content))
+    es['exec_status'][id]['check_name'] = str(
+        get_action_name_from_id(id, content))
     es['exec_status'][id]['current_status'] = status
-    es['exec_status'][id]['connector_type'] = str(get_connector_name_from_id(id, content))
+    es['exec_status'][id]['connector_type'] = str(
+        get_connector_name_from_id(id, content))
 
     if status == prev_status:
         pass
@@ -449,7 +464,6 @@ def update_current_execution(status, id: str, content: dict):
         es['exec_status'][id]['failed_timestamp'] = str(datetime.now())
 
     upsert_pss_record('current_execution_status', es)
-
 
     # Lets create the failed ipynb
     try:
@@ -465,6 +479,7 @@ def update_current_execution(status, id: str, content: dict):
     if os.path.exists(failed_runbook) is not True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
 
+
 def create_jit_runbook(check_list: list):
     """create_jit_runbook This function creates Just In Time runbook
        with just one code cell. The content will be appended with the
@@ -479,8 +494,8 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    failed_notebook = os.environ.get('EXECUTION_DIR').strip('"') + \
-        '/workspace/' + str(uuid.uuid4()) + '.ipynb'
+    failed_notebook = os.environ.get(
+        'EXECUTION_DIR', '/unskript').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
@@ -488,9 +503,9 @@ def create_jit_runbook(check_list: list):
         task_lines = '''
 task.configure(printOutput=True)
 task.configure(credentialsJson=\'\'\'{
-        \"credential_name\":''' +  f" \"{cred_name}\"" + ''',
+        \"credential_name\":''' + f" \"{cred_name}\"" + ''',
         \"credential_type\":''' + f" \"{s_connector}\"" + ''',
-        \"credential_id\":''' +  f" \"{cred_id}\"" + '''}\'\'\')
+        \"credential_id\":''' + f" \"{cred_id}\"" + '''}\'\'\')
         '''
 
         try:
@@ -524,7 +539,7 @@ def update_check_run_trail(
         data : dict = None
         ):
     """update_check_run_trail This function updates PSS for checks_run_trail entry
-       
+
        :type id: str
        :param id: Action UUID to update entry in the audit log
 
@@ -569,6 +584,7 @@ def update_check_run_trail(
 
     upsert_pss_record('check_run_trail', content)
 
+
 def update_audit_trail(status_dict_list: list):
     """update_audit_trail This function will update the status of each run of the runbook
 
@@ -596,7 +612,7 @@ def update_audit_trail(status_dict_list: list):
             if sd == {}:
                 continue
             for s in sd.get('result'):
-                check_name,check_id,connector,status = s
+                check_name, check_id, connector, status = s
                 if status == 'PASS':
                     p += 1
                 elif status == 'FAIL':
@@ -604,13 +620,14 @@ def update_audit_trail(status_dict_list: list):
                 elif status == 'ERROR':
                     e += 1
                 trail_data[id]['check_status'][check_id] = {}
-                trail_data[id]['check_status'][check_id]['check_name']= check_name
+                trail_data[id]['check_status'][check_id]['check_name'] = check_name
                 trail_data[id]['check_status'][check_id]['status'] = status
                 trail_data[id]['check_status'][check_id]['connector'] = connector
 
         trail_data[id]['summary'] = f"Summary (total/p/f/e): {p+e+f}/{p}/{f}/{e}"
     upsert_pss_record('audit_trail', trail_data)
     return id
+
 
 def list_checks_by_connector(connector_name: str):
     """list_checks_by_connector This function reads the ZoDB and displays the
@@ -622,7 +639,8 @@ def list_checks_by_connector(connector_name: str):
 
        :rtype: None
     """
-    list_connector_table = [[TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_UUID]]
+    list_connector_table = [
+        [TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_UUID]]
     for l in get_checks_by_connector(connector_name):
         list_connector_table.append(l)
 
@@ -668,12 +686,30 @@ def display_failed_checks(connector: str = ''):
     print("")
 
 
+def display_failed_logs(exec_id: str = None):
+    output = os.environ.get('EXECUTION_DIR', '/unskript/execution').strip(
+        '"') + '/workspace/' + f"{exec_id}_output.ipynb"
+    if not os.path.exists(output):
+        print(
+            f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
+        return
+
+    with open(output, 'r') as f:
+        nb = nbformat.read(f, as_version=4)
+    output = ''
+    for cell in nb.get('cells'):
+        if cell.get('outputs'):
+            cell_output = cell.get('outputs')[0]
+            if cell.get('metadata').get('name'):
+                output += f"\033[1m {cell.get('metadata').get('name')} \033[0m" + '\n'
+                if cell_output.get('text'):
+                    output += cell_output.get('text') + '\n'
+    print(output)
+
 
 def show_audit_trail(filter: str = None):
-    """display_failed_logs This function reads the failed logs for a given execution ID
-       When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']
-       /failed/<UUID>.log
-
+    """show_audit_trail This function reads the failed logs for a given execution ID
+       When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']/failed/<UUID>.log
     :type filter: string
     :param filter: filter used to query audit_trail to get logs used to serach logs
     """
@@ -691,12 +727,17 @@ def show_audit_trail(filter: str = None):
 
     if filter.lower() == 'all':
         all_result_table = [["\033[1m Execution ID \033[0m",
-                             "\033[1m Execution Summary \033[0m", 
+                             "\033[1m Execution Summary \033[0m",
                              "\033[1m Execution Timestamp \033[0m"]]
         for item in pss_content.items():
-            k,v = item
+            k, v = item
             summary_text = "\033[1m" + v.get('summary') + "\033[0m"
-            each_row = [[k, summary_text, v.get('time_stamp')]]
+            check_names = "\033[1m" + str(k) + '\n' + "\033[0m"
+            for k1, v1 in v.get('check_status').items():
+                check_names += "    " + v1.get('check_name') + ' ['
+                check_names += "\033[1m" + \
+                    v1.get('status') + "\033[0m" + ']' + '\n'
+            each_row = [[check_names, summary_text, v.get('time_stamp')]]
             all_result_table += each_row
 
         print(tabulate(all_result_table, headers='firstrow', tablefmt='fancy_grid'))
@@ -707,73 +748,74 @@ def show_audit_trail(filter: str = None):
         exec_content = get_pss_record('check_run_trail')
     except Exception:
         pass
-    if exec_content == {}:
-        print("SYSTEM ERROR: Not able to print trail logs")
-        return
-    connector_result_table = [["\033[1m Execution ID \033[0m",
-                             "\033[1m Check ID \033[0m \n \033[1m (Check Name) \033[0m", 
+    finally:
+        if exec_content == {}:
+            print("SYSTEM ERROR: Not able to print trail logs")
+            return
+    connector_result_table = [["\033[1m Check Name \033[0m",
+                               "\033[1m Run Status \033[0m",
+                               "\033[1m Time Stamp \033[0m",
+                               "\033[1m Execution ID \033[0m"]]
+    single_result_table = [["\033[1m Execution ID \033[0m",
+                            "\033[1m Check ID \033[0m \n \033[1m (Check Name)/(Connector) \033[0m",
+                            "\033[1m Run Status \033[0m",
+                            "\033[1m Time Stamp \033[0m"]]
+    runbook_result_table = [["\033[1m Check Name \033[0m",
+                             "\033[1m Failed Objects \033[0m",
                              "\033[1m Run Status \033[0m",
                              "\033[1m Time Stamp \033[0m"]]
-    single_result_table = [["\033[1m Execution ID \033[0m",
-                             "\033[1m Check ID \033[0m \n \033[1m (Check Name)/(Connector) \033[0m", 
-                             "\033[1m Run Status \033[0m",
-                             "\033[1m Time Stamp \033[0m"]] 
-    runbook_result_table = [["\033[1m Execution ID \033[0m",
-                             "\033[1m Runbook Name \033[0m \n \033[1m (Parameters) \033[0m", 
-                             "\033[1m Run Status \033[0m",
-                             "\033[1m Time Stamp \033[0m"]] 
     flag = -1
+    e2c_mapping = {}
     for item in pss_content.items():
-        k,v = item
-        for l,m in v.items():
+        k, v = item
+        e2c_mapping[str(k)] = []
+        for l, m in v.items():
             if l == 'check_status':
-                for k1,v1 in m.items():
+                for k1, v1 in m.items():
+                    e2c_mapping[str(k)].append(str(k1))
                     if filter.lower() == k1:
                         flag = 1
                         single_result_table += [[k,
-                                      k1 + '\n' + '( ' + v1.get('check_name') + ' )' + \
-                                        f"( {exec_content.get(filter).get('connector_type')} )",
-                                      v1.get('status'), 
-                                      v.get('time_stamp')]]
+                                                 k1 + '\n' +
+                                                 '( ' + v1.get('check_name') + ' )' +
+                                                 f"( {exec_content.get(filter).get('connector_type')} )",
+                                                 v1.get('status'),
+                                                 v.get('time_stamp')]]
                         break
                     elif filter.lower() == v1.get('connector'):
                         flag = 2
-                        connector_result_table += [[k, k1 + '\n' + '( ' + v1.get('check_name') + \
-                                                    ' )', v1.get('status'), v.get('time_stamp')]]
-                        #pprint.pprint(f"{k} {k1} {v1}")
+                        connector_result_table += [[v1.get('check_name'),
+                                                    v1.get('status'),
+                                                    v.get('time_stamp'),
+                                                    k]]
         if flag == -1:
             if str(k) == filter:
                 flag = 3
                 exec_status = get_pss_record('current_execution_status')
                 if exec_status:
-                    if CheckOutputStatus(
-                        exec_status.get('exec_status').get(filter).get('current_status')
-                        ) == CheckOutputStatus.SUCCESS:
-                        status = 'PASS'
-                    elif CheckOutputStatus(
-                        exec_status.get('exec_status').get(filter).get('current_status')
-                        ) == CheckOutputStatus.FAILED:
-                        status = 'FAIL'
-                    elif CheckOutputStatus(
-                        exec_status.get('exec_status').get(filter).get('current_status')
-                        ) == CheckOutputStatus.RUN_EXCEPTION:
-                        status = 'ERROR'
-                    else:
-                        status = 'UNKNOWN'
-                    runbook_result_table += [[
-                        filter,
-                        exec_status.get('exec_status').get(filter).get('failed_runbook'),
-                        status,
-                        v.get('time_stamp')
-                        ]]
-
+                    if filter in e2c_mapping.keys():
+                        for _f in e2c_mapping.get(filter):
+                            c_name = exec_content.get(_f).get('check_name')
+                            if not exec_content.get(_f).get('failed_objects') or not exec_content.get(_f).get('failed_objects').get(c_name):
+                                continue
+                            runbook_result_table += [[c_name,
+                                                      pprint.pformat(exec_content.get(_f).get(
+                                                          'failed_objects').get(c_name)),
+                                                      exec_content.get(
+                                                          _f).get('status'),
+                                                      exec_content.get(
+                                                          _f).get('time_stamp')
+                                                      ]]
 
     if flag == 1:
-        print(tabulate(single_result_table, headers='firstrow', tablefmt='fancy_grid'))
+        print(tabulate(single_result_table,
+              headers='firstrow', tablefmt='fancy_grid'))
     elif flag == 2:
-        print(tabulate(connector_result_table, headers='firstrow', tablefmt='fancy_grid'))
+        print(tabulate(connector_result_table,
+              headers='firstrow', tablefmt='fancy_grid'))
     elif flag == 3:
-        print(tabulate(runbook_result_table, headers='firstrow', tablefmt='fancy_grid'))
+        print(tabulate(runbook_result_table,
+              headers='firstrow', tablefmt='fancy_grid'))
 
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
@@ -798,6 +840,7 @@ def read_ipynb(filename: str) -> nbformat.NotebookNode:
         raise e
 
     return nb
+
 
 def get_code_cell_action_uuids(content: dict) -> list:
     """get_code_cell_action_uuids This function takes in the notenode dictionary
@@ -856,6 +899,7 @@ def get_last_code_cell_output(content: dict) -> dict:
     print("")
     return retval
 
+
 def get_action_name_from_id(action_uuid: str, content: dict) -> str:
     """get_action_name_from_id This function takes in the action_uuid as string
            and notebook node as dictionary. Iterates over the dictionary for code cells
@@ -880,6 +924,7 @@ def get_action_name_from_id(action_uuid: str, content: dict) -> str:
 
     return retval
 
+
 def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
     """get_connector_name_from_id This function takes in the action_uuid as string
        and notebook node as dictionary. Iterates over the dictionary for code cells
@@ -899,9 +944,11 @@ def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
     for cell in content.get('cells'):
         if cell.get('metadata').get('action_uuid') == action_uuid:
             if cell.get('metadata').get('action_type') is not None:
-                retval = cell.get('metadata').get('action_type').replace('LEGO_TYPE_', '').lower()
+                retval = cell.get('metadata').get(
+                    'action_type').replace('LEGO_TYPE_', '').lower()
 
     return retval
+
 
 def create_creds_mapping():
     """create_creds_mapping This function creates a credential ZoDB collection with the name
@@ -913,21 +960,21 @@ def create_creds_mapping():
 
        :rtype: None
     """
-    creds_files = os.environ.get('HOME').strip('"') + CREDENTIAL_DIR + '/*.json'
+    creds_files = os.environ.get('HOME').strip(
+        '"') + CREDENTIAL_DIR + '/*.json'
     list_of_creds = glob.glob(creds_files)
     d = {}
     for creds in list_of_creds:
         with open(creds, 'r') as f:
             c_data = json.load(f)
-            d[c_data.get('metadata').get('type')] = \
-                {"name": c_data.get('metadata').get('name'), "id": c_data.get('metadata').get('id')}
+            d[c_data.get('metadata').get('type')] = {"name": c_data.get(
+                'metadata').get('name'), "id": c_data.get('metadata').get('id')}
     upsert_pss_record('default_credential_id', d, False)
 
-def print_runbook_params(properties: dict, required: list, orderInputParameters: list = None):
-    """print_runbook_params This function prints the parameterSchema.
-    It respects OrderInputParameters 
-       and lists the Parameters in the same order as displayed in
-       OrderInputParameters.
+
+def print_runbook_params(properties: dict, required: list, orderInputParameters: list = []):
+    """print_runbook_params This function prints the parameterSchema. It respects OrderInputParameters 
+       and lists the Parameters in the same order as displayed in OrderInputParameters.
 
        :type properties: dict
        :param properties: Properties metadata read from the Runbook
@@ -945,36 +992,38 @@ def print_runbook_params(properties: dict, required: list, orderInputParameters:
 
     print("\033[1m Expected Parameters to run the Runbook \033[0m")
     param_data = [['\033[1m Name \033[0m',
-                    '\033[1m Type \033[0m', 
-                    '\033[1m Description \033[0m', 
-                    '\033[1m Default \033[0m']]
+                   '\033[1m Type \033[0m',
+                   '\033[1m Description \033[0m',
+                   '\033[1m Default \033[0m']]
     prop_data = {}
     if not orderInputParameters:
         prop_data = properties
     else:
-        #Starting python version 3.6 and above dict are required to retain theorder in which they
-        #are inserted. So Storing in prop_data the same way as orderInputParameters would retain it.
+        # Starting python version 3.6 and above dict are required to retain the order in which they
+        # are inserted. So Storing in prop_data the same way as orderInputParameters would retain it.
         for _param in orderInputParameters:
             prop_data[_param] = properties.get(_param)
 
-    for k,v in prop_data.items():
+    for k, v in prop_data.items():
         if k in required:
             k = '\033[1m' + k + '*' + '\033[0m'
         param_type = v.get('type')
         if v.get('enum') is not None:
             param_type = "enum"
-            param_type = param_type + "\n" + str(v.get('enum')).replace(',', ' |')
+            param_type = param_type + "\n" + \
+                str(v.get('enum')).replace(',', ' |')
         # Some beautification, if description has 4 or
         # more continuous whitespace lets replace it with a newline
         # If not below command just copies the content of description to text
         text = re.sub(r"\s{4,}", "\n", v.get('description'))
         param_data.append([k,
-                            param_type,
-                            text,
-                            v.get('default') or 'No Default Value'
-                            ])
+                           param_type,
+                           text,
+                           v.get('default') or 'No Default Value'
+                           ])
     print(tabulate(param_data, headers='firstrow', tablefmt='fancy_grid'))
     print("* Required")
+
 
 def get_runbook_metadata_contents(_runbook) -> dict:
     """get_runbook_metadata_contents This function takes Runbook name as
@@ -995,17 +1044,17 @@ def get_runbook_metadata_contents(_runbook) -> dict:
     if not _runbook.endswith('.ipynb'):
         _runbook = _runbook + '.ipynb'
 
-    if os.environ.get('RUNBOOK_PATH'): 
+    if os.environ.get('RUNBOOK_PATH'):
         if os.path.exists(os.environ.get('RUNBOOK_PATH') + '/' + _runbook):
             file_name_to_read = os.environ.get('RUNBOOK_PATH') + '/' + _runbook
     else:
-        l = glob.glob(os.environ.get('HOME') + '/runbooks/*/'  + _runbook)
+        l = glob.glob(os.environ.get('HOME') + '/runbooks/*/' + _runbook)
         if not l:
             # If runbook was not found in $HOME/runbooks/*/ then search in $HOME/runbooks
-            l = glob.glob(os.environ.get('HOME') + '/runbooks/'  + _runbook)
+            l = glob.glob(os.environ.get('HOME') + '/runbooks/' + _runbook)
         if l:
             if os.path.exists(l[0]):
-                file_name_to_read = l[0] 
+                file_name_to_read = l[0]
         else:
             if os.path.exists(os.environ.get('PWD') + '/' + _runbook):
                 file_name_to_read = os.environ.get('PWD') + '/' + _runbook
@@ -1091,7 +1140,7 @@ def non_interactive_parse_runbook_param(args) -> dict:
                     )
                 return {}
 
-            if (idx+1)%2 == 0:
+            if (idx+1) % 2 == 0:
                 values.append(k)
                 continue
             k = k.strip('--')
@@ -1155,7 +1204,6 @@ def interactive_parse_runbook_param(args) -> dict:
         properties = mdata.get('parameterSchema').get('properties')
         required = mdata.get('parameterSchema').get('required')
 
-
         all_param_names = [x for x in properties.keys()]
         optional_params = []
         try:
@@ -1165,15 +1213,15 @@ def interactive_parse_runbook_param(args) -> dict:
                 optional_params = all_param_names
 
         for param in required:
-            retval['params'][param] = input(f"Input the Value or \033[1m  \
-                                            {param} \033[0m (Required): ")
+            retval['params'][param] = input(("Input the Value or \033[1m  "
+                                            f"{param} \033[0m (Required): "))
         for o_param in optional_params:
             default_string = ""
             if properties.get(o_param).get('default') is not None:
-                default_string = f"Defualt value: \033[1m \
-                    {properties.get(o_param).get('default')} \033[0m"
-            temp = input(f" Input the Value for \033[1m {o_param}  \033[0m  \
-                         (OPTIONAL, {default_string} Hit enter to use default): ")
+                default_string = ("Defualt value: \033[1m \"
+                    f"{properties.get(o_param).get('default')} \033[0m")
+            temp = input(f" Input the Value for \033[1m {o_param}  \033[0m  \"
+                         f"(OPTIONAL, {default_string} Hit enter to use default): "))
             if not temp.strip():
                 if properties.get(o_param).get('default') is not None:
                     retval['params'][o_param] = properties.get(o_param).get('default')
@@ -1186,7 +1234,7 @@ def interactive_parse_runbook_param(args) -> dict:
 
 def parse_runbook_param(args):
     """parse_runbook_param This function is called when -rr Option is used in the command line
-       
+
        :type args: list
        :param args: Arguments that was passed with the -rr option as a python list
 
@@ -1212,8 +1260,8 @@ def parse_runbook_param(args):
             exec_id = str(exec_id)
             es['exec_status'] = {}
             es['exec_status'][exec_id] = {}
-            run_command_string = retval.get('runbook_name') + '\n' + \
-                "Runbook Parameters: " + str(args[1:])
+            run_command_string = retval.get(
+                'runbook_name') + '\n' + "Runbook Parameters: " + str(args[1:])
             es['exec_status'][exec_id]['failed_runbook'] = run_command_string
             es['exec_status'][exec_id]['check_name'] = "RUNBOOK"
             if status_list[0][-1] == "FAIL":
@@ -1227,6 +1275,7 @@ def parse_runbook_param(args):
 
     return
 
+
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') is None:
@@ -1239,47 +1288,26 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(prog='unskript-ctl')
     version_number = "0.1.0"
-    description=""
+    description = ""
     description = description + str("\n")
     description = description + str("\t  Welcome to unSkript CLI Interface \n")
     description = description + str(f"\t\t   VERSION: {version_number} \n")
     parser.description = description
-    parser.add_argument(
-        '-lr',
-        '--list-runbooks',
-        help='List Available Runbooks',
-        action='store_true'
-        )
-    parser.add_argument(
-        '-rr',
-        '--run-runbook',
-        type=str,
-        nargs=REMAINDER,
-        help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..'
-        )
-    parser.add_argument(
-        '-rc',
-        '--run-checks',
-        type=str,
-        help='Run all available checks [all | connector | failed]'
-        )
-    parser.add_argument(
-        '-df',
-        '--display-failed-checks',
-        help='Display Failed Checks [all | connector]'
-        )
-    parser.add_argument(
-        '-lc',
-        '--list-checks',
-        type=str,
-        help='List available checks, [all | connector]'
-        )
-    parser.add_argument(
-        '-sa',
-        '--show-audit-trail',
-        type=str,
-        help='Show audit trail [all | connector | execution_id]'
-        )
+                         
+    parser.add_argument('-lr', '--list-runbooks',
+                        help='List Available Runbooks', action='store_true')
+    parser.add_argument('-rr', '--run-runbook', type=str, nargs=REMAINDER,
+                        help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
+    parser.add_argument('-rc', '--run-checks', type=str,
+                        help='Run all available checks [all | connector | failed]')
+    parser.add_argument('-df', '--display-failed-checks',
+                        help='Display Failed Checks [all | connector]')
+    parser.add_argument('-lc', '--list-checks', type=str,
+                        help='List available checks, [all | connector]')
+    parser.add_argument('-sa', '--show-audit-trail', type=str,
+                        help='Show audit trail [all | connector | execution_id]')
+    parser.add_argument('-dl', '--display-failed-logs',
+                        type=str, help='Display failed logs  [execution_id]')
 
     args = parser.parse_args()
 
@@ -1289,7 +1317,7 @@ if __name__ == "__main__":
 
     if args.list_runbooks is True:
         list_runbooks()
-    elif args.run_runbook not in  ('', None):
+    elif args.run_runbook not in ('', None):
         if len(args.run_runbook) == 0:
             parser.print_help()
             sys.exit(0)
@@ -1304,5 +1332,7 @@ if __name__ == "__main__":
         list_checks_by_connector(args.list_checks)
     elif args.show_audit_trail not in ('', None):
         show_audit_trail(args.show_audit_trail)
+    elif args.display_failed_logs not in ('', None):
+        display_failed_logs(args.display_failed_logs)
     else:
         parser.print_help()
