@@ -1,0 +1,9 @@
+{
+    "name": "Delete ECS Clusters with Low CPU Utilization",
+    "description": "ECS clusters are a managed service that allows users to run Docker containers on AWS, making it easier to manage and scale containerized applications. However, running ECS clusters with low CPU utilization can result in wasted resources and unnecessary costs. AWS charges for the resources allocated to a cluster, regardless of whether they are fully utilized or not. By deleting clusters that are not being fully utilized, you can reduce the number of resources being allocated and lower the overall cost of running ECS. Furthermore, deleting unused or low-utilization clusters can also improve overall system performance by freeing up resources for other applications that require more processing power. This runbook helps us to identify such clusters and delete them.",
+    "uuid": "6ad946fb1afd19286a8e7771e0f8e5566e4fdd54e3e2473385b5ac8e206e0a49",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
