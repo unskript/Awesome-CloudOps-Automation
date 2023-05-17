@@ -4,12 +4,9 @@
 ##
 import pprint
 from typing import Optional, Dict
-
 from pydantic import BaseModel, Field
 
 pp = pprint.PrettyPrinter()
-
-
 
 class InputSchema(BaseModel):
     appid: Optional[str] = Field(
