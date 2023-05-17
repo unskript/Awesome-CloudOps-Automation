@@ -1,0 +1,11 @@
+{
+    "name": "Delete EBS Volume Attached to Stopped Instances",
+    "description": "EBS (Elastic Block Storage) volumes are attached to EC2 Instances as storage devices. Unused (Unattached) EBS Volumes can keep accruing costs even when their associated EC2 instances are no longer running. These volumes need to be deleted if the instances they are attached to are no more required. This runbook helps us find such volumes and delete them.",
+    "uuid": "a9d17f4c9feb963b6096290eedb21af43d89e803cdcb1238dc11a544a3071a1e",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
+
+  

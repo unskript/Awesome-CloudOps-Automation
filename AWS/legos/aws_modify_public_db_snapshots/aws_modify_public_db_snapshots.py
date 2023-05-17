@@ -1,9 +1,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     db_snapshot_identifier: str = Field(
@@ -14,7 +14,7 @@ class InputSchema(BaseModel):
         title='Region',
         description='Region of the RDS.'
     )
-    
+
 def aws_modify_public_db_snapshots_printer(output):
     if output is None:
         return
@@ -46,7 +46,7 @@ def aws_modify_public_db_snapshots(handle, db_snapshot_identifier: str, region: 
             ValuesToRemove=['all'])
 
         result.append(response)
-        
+
     except Exception as error:
         result.append(error)
 

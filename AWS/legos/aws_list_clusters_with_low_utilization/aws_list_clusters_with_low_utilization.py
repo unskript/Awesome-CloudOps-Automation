@@ -2,11 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
+import pprint
 from typing import Optional, Tuple
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -34,7 +34,8 @@ def aws_list_clusters_with_low_utilization(handle, region: str = "", threshold: 
         :param region: AWS Region.
 
         :type threshold: int
-        :param threshold: (In percent) Threshold to check for cpu utilization is less than threshold.
+        :param threshold: (In percent) Threshold to check for cpu utilization
+        is less than threshold.
 
         :rtype: List of clusters for low CPU utilization
     """
@@ -58,10 +59,9 @@ def aws_list_clusters_with_low_utilization(handle, region: str = "", threshold: 
                             cluster_dict["cluster_name"] = cluster_name
                             cluster_dict["region"] = reg
                             result.append(cluster_dict)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

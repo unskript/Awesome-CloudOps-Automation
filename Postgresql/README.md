@@ -1,5 +1,5 @@
 # Postgresql RunBooks
-* [Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Display_Postgresql_Long_Running.ipynb): This runbook displays collects the long running queries from a database and sends a message to the specified slack channel. Poorly optimized queries and excessive connections can cause problems in PostgreSQL, impacting upstream services.
+* [Display long running queries in a PostgreSQL database](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/Postgresql_Display_Long_Running.ipynb): This runbook displays collects the long running queries from a database and sends a message to the specified slack channel. Poorly optimized queries and excessive connections can cause problems in PostgreSQL, impacting upstream services.
 
 # Postgresql Actions
 * [PostgreSQL Calculate Bloat](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgres_calculate_bloat/README.md): This Lego calculates bloat for tables in Postgres
