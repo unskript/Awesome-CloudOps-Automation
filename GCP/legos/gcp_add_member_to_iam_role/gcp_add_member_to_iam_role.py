@@ -5,7 +5,7 @@
 from pydantic import BaseModel, Field
 import pprint
 from typing import List,Any, Dict
-import googleapiclient.discovery
+from googleapiclient import discovery
 
 
 class InputSchema(BaseModel):
@@ -48,7 +48,7 @@ def gcp_add_member_to_iam_role(handle, project_id: str, role: str, member_email:
 
         :rtype: Dict of policy details
     """
-    service = googleapiclient.discovery.build(
+    service = discovery.build(
         "cloudresourcemanager", "v1", credentials=handle)
 
     result = {}
@@ -77,7 +77,7 @@ def gcp_add_member_to_iam_role(handle, project_id: str, role: str, member_email:
         add_member = (
             service.projects()
             .setIamPolicy(resource=project_id, body={"policy": get_policy}).execute())
-            
+
         result = add_member
 
     except Exception as error:
