@@ -6,9 +6,6 @@
 ![Actions][actions-shield]
 ![Runbooks][runbooks-shield]
 
-<img src=".github/images/runbooksh_light.png#gh-light-mode-only" alt="Logo" align="right" width="230" height="230" />
-<img src=".github/images/runbooksh_dark.png#gh-dark-mode-only" alt="Logo" align="right" width="230" height="230" />
-
 # Runbooks.sh
 ### Empowering Cloud Automation, Together
 **[Explore our docs](https://docs.unskript.com)**   
