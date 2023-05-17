@@ -2,10 +2,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Optional, Tuple
+from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 
 class InputSchema(BaseModel):
@@ -47,10 +47,9 @@ def aws_list_unattached_elastic_ips(handle, region: str = "") -> Tuple:
                     vpc_data["allocation_id"] = eip['AllocationId']
                     vpc_data["region"] = reg
                     result.append(vpc_data)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Optional, Tuple
+from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 
 class InputSchema(BaseModel):
@@ -49,10 +49,9 @@ def aws_get_ebs_volumes_without_gp3_type(handle, region: str = "") -> Tuple:
                     volume_dict["volume_id"] = volume.id
                     volume_dict["volume_type"] = volume.volume_type
                     result.append(volume_dict)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

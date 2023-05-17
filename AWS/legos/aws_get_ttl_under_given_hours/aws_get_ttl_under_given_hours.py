@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Tuple, Optional
 import pprint
+from typing import Tuple, Optional
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_get_ttl_for_route53_records.aws_get_ttl_for_route53_records import aws_get_ttl_for_route53_records
 
@@ -12,7 +12,8 @@ from unskript.legos.aws.aws_get_ttl_for_route53_records.aws_get_ttl_for_route53_
 class InputSchema(BaseModel):
     threshold: Optional[int] = Field(
         default=1,
-        description='(In hours) A threshold in hours to verify route 53 TTL is within the threshold.',
+        description=('(In hours) A threshold in hours to verify route '
+                     '53 TTL is within the threshold.'),
         title='Threshold (In hours)',
     )
 
@@ -30,7 +31,8 @@ def aws_get_ttl_under_given_hours(handle, threshold: int = 1) -> Tuple:
         :param handle: Object returned by the task.validate(...) method.
 
         :type threshold: str
-        :param threshold: (In hours) A threshold in hours to verify route 53 TTL is within the threshold.
+        :param threshold: (In hours) A threshold in hours to verify route
+        53 TTL is within the threshold.
 
         :rtype: List of details with the record type, record name and record TTL.
     """
@@ -51,11 +53,9 @@ def aws_get_ttl_under_given_hours(handle, threshold: int = 1) -> Tuple:
                     records["record_type"] = record_ttl['record_type']
                     records["record_ttl"] = record_ttl['record_ttl']
                     result.append(records)
-    except Exception as e:
+    except Exception:
         pass
-    
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
+    return (True, None)
