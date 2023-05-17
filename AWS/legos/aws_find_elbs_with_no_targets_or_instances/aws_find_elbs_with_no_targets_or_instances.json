@@ -10,5 +10,5 @@
   "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELB"],
   "action_supports_poll": "true",
   "action_next_hop": ["2aba76792cb2802cae55deb60d28820522aeba93865572a1e9c7ddc5309e1312"],
-  "action_next_hop_parameter_mapping": {"2aba76792cb2802cae55deb60d28820522aeba93865572a1e9c7ddc5309e1312": {"name": "", "region":".[0].region","elb_arns":".[].elb_arn","elb_names":".[].elb_name" }}
+  "action_next_hop_parameter_mapping": {"2aba76792cb2802cae55deb60d28820522aeba93865572a1e9c7ddc5309e1312": {"name": "AWS_Delete_ELBs_With_No_Targets_Or_Instances.ipynb", "region":".[0].region","elb_arns":".[].elb_arn","elb_names":".[].elb_name" }}
 }
