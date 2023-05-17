@@ -34,6 +34,8 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
       """
     # Input param validation.
 
+    # Multi-line will create an issue when we package the Legos.
+    # Hence concatinating it into a single line.
     query = "SELECT pid, user, pg_stat_activity.query_start, now() - " \
         "pg_stat_activity.query_start AS query_time, query, state " \
         " FROM pg_stat_activity WHERE state = 'active' AND (now() - " \
@@ -67,4 +69,3 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
     if len(output) != 0:
         return (False, output)
     return (True, None)
-    

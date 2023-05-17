@@ -1,5 +1,5 @@
 import pprint
-from typing import List, Dict
+from typing import List
 from pydantic import BaseModel, Field
 from google.cloud import container_v1
 
@@ -39,5 +39,5 @@ def gcp_list_gke_cluster(handle, project_id: str, zone: str) -> List:
             cluster_list.append(cluster.name)
     except Exception as error:
         cluster_list.append(error)
-    
+
     return cluster_list

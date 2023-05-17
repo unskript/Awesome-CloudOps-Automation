@@ -2,12 +2,12 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
+import pprint
 from typing import Optional, Tuple
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
+from pydantic import BaseModel, Field
+from unskript.legos.utils import CheckOutput
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -21,7 +21,7 @@ class InputSchema(BaseModel):
 def aws_get_publicly_accessible_db_instances_printer(output):
     if output is None:
         return
-        
+
     if isinstance(output, CheckOutput):
         print(output.json())
     else:
@@ -53,10 +53,9 @@ def aws_get_publicly_accessible_db_instances(handle, region: str = "") -> Tuple:
                     db_instance_dict["region"] = reg
                     db_instance_dict["instance"] = db['DBInstanceIdentifier']
                     result.append(db_instance_dict)
-        except Exception as error:
+        except Exception:
             pass
-        
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)
