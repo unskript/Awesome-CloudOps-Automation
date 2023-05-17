@@ -1,0 +1,9 @@
+{
+  "name": "Stop Idle EC2 Instances",
+  "description": "This runbook can be used to Stop all EC2 Instances that are idle using given cpu threshold and duration.",
+  "uuid": "c03babff32b83949e6ca20a49901d42a5a74ed3036de4609096390c9f6d0851a",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}

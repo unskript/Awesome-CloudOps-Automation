@@ -1,5 +1,5 @@
 import pprint
-from typing import List, Dict
+from typing import List
 from pydantic import BaseModel, Field
 from google.cloud import container_v1
 
