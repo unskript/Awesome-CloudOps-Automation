@@ -14,8 +14,8 @@ class InputSchema(BaseModel):
         description='Name of the bucket to be created.')
     acl: str = Field(
         title='ACL',
-        description='The Canned ACL to apply to the bucket. Possible values: '
-                     'private, public-read, public-read-write, authenticated-read.')
+        description=('The Canned ACL to apply to the bucket. Possible values: '
+                       'private, public-read, public-read-write, authenticated-read.'))
     region: Optional[str] = Field(
         title='Region',
         description='AWS Region of the bucket.')
