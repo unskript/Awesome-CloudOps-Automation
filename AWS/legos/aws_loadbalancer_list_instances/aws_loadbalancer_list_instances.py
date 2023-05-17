@@ -2,16 +2,17 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, List
-from unskript.legos.utils import parseARN
 import pprint
-
+from typing import Optional, List
+from pydantic import BaseModel, Field
+from unskript.legos.utils import parseARN
 
 class InputSchema(BaseModel):
     arn: str = Field(
         title='Loadbalancer Name (Classic) or ARN (ALB/NLB)',
-        description='Name of the classic loadbalancer or ARN of the ALB/NLB. Classic loadbalancer dont have ARN.')
+        description=('Name of the classic loadbalancer or ARN of the ALB/NLB. '
+                     'Classic loadbalancer dont have ARN.')
+                     )
     region: Optional[str] = Field(
         title='Region of the Classic Loadbalancer',
         description='Region of the Classic loadbalancer. You dont need to fill this for ALB/NLB.'
@@ -29,7 +30,12 @@ def aws_loadbalancer_list_instances_printer(output):
     pprint.pprint(output)
 
 
-def aws_loadbalancer_list_instances(handle, arn: str, region: str = None, classic: bool = False) -> List:
+def aws_loadbalancer_list_instances(
+        handle,
+        arn: str,
+        region: str = None,
+        classic: bool = False
+        ) -> List:
     """aws_get_unhealthy_instances returns array of instances
 
         :type handle: object
@@ -48,7 +54,7 @@ def aws_loadbalancer_list_instances(handle, arn: str, region: str = None, classi
     """
     instancesInfo = []
     try:
-        if classic == False:
+        if classic is False:
             parsedArn = parseARN(arn)
             elbv2Client = handle.client('elbv2', region_name=parsedArn['region'])
             ec2Client = handle.client('ec2', region_name=parsedArn['region'])
@@ -63,7 +69,7 @@ def aws_loadbalancer_list_instances(handle, arn: str, region: str = None, classi
                 for ins in targetHealthResponse["TargetHealthDescriptions"]:
                     try:
                         privateIP = get_instance_private_ip(ec2Client, ins['Target']['Id'])
-                    except Exception as e:
+                    except Exception:
                         continue
                     instanceInfo = {
                         'InstanceID': ins['Target']['Id'],
@@ -79,7 +85,7 @@ def aws_loadbalancer_list_instances(handle, arn: str, region: str = None, classi
             for ins in res['InstanceStates']:
                 try:
                     privateIP = get_instance_private_ip(ec2Client, ins['InstanceId'])
-                except Exception as e:
+                except Exception:
                     continue
                 instanceInfo = {
                     'InstanceID': ins['InstanceId'],

@@ -2,11 +2,9 @@
 ## Written by Doug Sillars & ChatGPT
 ##  All rights reserved.
 ##
+from typing import List
 from pydantic import BaseModel, Field
-import pprint
-from typing import List,Any, Dict
 from google.cloud import compute
-
 from beartype import beartype
 
 
@@ -30,10 +28,8 @@ def gcp_list_VMs_access_printer(output):
 
 @beartype
 def gcp_list_VMs_access(handle, project:str, zone:str) -> List:
-
-
     compute_client = compute.InstancesClient(credentials=handle)
-    
+
     vms = compute_client.list(project=project, zone=zone)
     vm_list = []
     for vm in vms:
@@ -42,4 +38,4 @@ def gcp_list_VMs_access(handle, project:str, zone:str) -> List:
         vm_info['publicly_accessible'] = vm.can_ip_forward
         vm_list.append(vm_info)
 
-    return(vm_list)
+    return vm_list
