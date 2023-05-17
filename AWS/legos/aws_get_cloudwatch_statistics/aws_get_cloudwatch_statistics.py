@@ -3,14 +3,14 @@
 # All rights reserved.
 ##
 
-from pydantic import BaseModel, Field
+import pprint
 from typing import Optional, List
 from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
 import matplotlib.pyplot as plt
 from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 from unskript.enums.aws_k8s_enums import StatisticsType
 from tabulate import tabulate
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -33,11 +33,13 @@ class InputSchema(BaseModel):
     )
     timeSince: int = Field(
         title="Time Since",
-        description="Starting from now, window (in seconds) for which you want to get the datapoints for.",
+        description=("Starting from now, window (in seconds) for which you want "
+                     "to get the datapoints for.")
     )
     statistics: StatisticsType = Field(
         title="Statistics",
-        description="Cloudwatch metric statistics. Possible values: SampleCount, Average, Sum, Minimum, Maximum.",
+        description=("Cloudwatch metric statistics. Possible values: SampleCount, "
+                     "Average, Sum, Minimum, Maximum.")
     )
     region: str = Field(
         title="Region", description="AWS Region of the cloudwatch.")
@@ -65,22 +67,26 @@ def aws_get_cloudwatch_statistics(
     being present in the inputParmsJson.
 
         :type name_space: string
-        :param name_space: he namespace of the metric, with or without spaces. For eg: AWS/SQS, AWS/ECS
+        :param name_space: he namespace of the metric, with or without spaces.
+        For eg: AWS/SQS, AWS/ECS
 
         :type metric_name: string
         :param metric_name: The name of the metric, with or without spaces.
 
         :type dimensions: List[dict]
-        :param dimensions: A dimension is a name/value pair that is part of the identity of a metric.
+        :param dimensions: A dimension is a name/value pair that is part of the
+        identity of a metric.
 
         :type period: int
         :param period: The granularity, in seconds, of the returned data points.
 
         :type timeSince: int
-        :param timeSince: Starting from now, window (in seconds) for which you want to get the datapoints for.
+        :param timeSince: Starting from now, window (in seconds) for which you want
+        to get the datapoints for.
 
         :type statistics: StatisticsType
-        :param statistics: Cloudwatch metric statistics. Possible values: SampleCount, Average, Sum, Minimum, Maximum.
+        :param statistics: Cloudwatch metric statistics. Possible values: SampleCount,
+        Average, Sum, Minimum, Maximum.
 
         :type region: string
         :param region: AWS Region of the cloudwatch.
