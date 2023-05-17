@@ -2,8 +2,8 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
 import matplotlib.pyplot as plt
 
 
@@ -16,15 +16,23 @@ class InputSchema(BaseModel):
         description='Configured max connections.')
     time_since: int = Field(
         title='Time Since',
-        description='Starting from now, window (in seconds) for which you want to get the datapoints for.')
+        description=('Starting from now, window (in seconds) for which you '
+                     'want to get the datapoints for.')
+                     )
     region: str = Field(
         title='Region',
         description='AWS Region of the Postgres DB Cluster.')
 
 
-def aws_postgresql_plot_active_connections(handle, cluster_identifier: str, max_connections: int, time_since: int,
-                                           region: str) -> None:
-    """aws_postgresql_plot_active_connections Plots the active connections normalized by the max connections.
+def aws_postgresql_plot_active_connections(
+        handle,
+        cluster_identifier: str,
+        max_connections: int,
+        time_since: int,
+        region: str
+        ) -> None:
+    """aws_postgresql_plot_active_connections Plots the active connections
+       normalized by the max connections.
 
           :type handle: object
           :param handle: Object returned from task.validate(...).
@@ -36,7 +44,8 @@ def aws_postgresql_plot_active_connections(handle, cluster_identifier: str, max_
           :param max_connections: Configured max connections.
 
           :type time_since: int
-          :param time_since: Starting from now, window (in seconds) for which you want to get the datapoints for.
+          :param time_since: Starting from now, window (in seconds) for which
+          you want to get the datapoints for.
 
           :type region: string
           :param region: AWS Region of the Postgres DB Cluster.
@@ -49,7 +58,9 @@ def aws_postgresql_plot_active_connections(handle, cluster_identifier: str, max_
     rds_client = handle.client('rds', region_name=region)
 
     try:
-        describe_db_clusters_resp = rds_client.describe_db_clusters(DBClusterIdentifier=cluster_identifier)
+        describe_db_clusters_resp = rds_client.describe_db_clusters(
+            DBClusterIdentifier=cluster_identifier
+            )
     except Exception as e:
         print(f'describe_db_clusters for cluster {cluster_identifier} hit an exception, {str(e)}')
         raise e
@@ -63,13 +74,22 @@ def aws_postgresql_plot_active_connections(handle, cluster_identifier: str, max_
     plt.figure(figsize=(10, 10))
     plt.ylabel('ActiveConnections/MaxConnections')
     for cluster_instance in cluster_instances:
-        ts, data_points = get_normalized_active_connections(cloud_watch_client, cluster_instance, time_since, max_connections)
+        ts, data_points = get_normalized_active_connections(
+            cloud_watch_client,
+            cluster_instance,
+            time_since, max_connections
+            )
         plt.plot(ts, data_points, label=cluster_instance)
     plt.legend(loc=1, fontsize='medium')
     plt.show()
 
 
-def get_normalized_active_connections(cloudWatch_client, db_instance_id, time_since, max_connections):
+def get_normalized_active_connections(
+        cloudWatch_client,
+        db_instance_id,
+        time_since,
+        max_connections
+        ):
     # Gets metric statistics.
     res = cloudWatch_client.get_metric_statistics(
         Namespace="AWS/RDS",

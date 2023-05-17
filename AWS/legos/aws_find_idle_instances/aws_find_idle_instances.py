@@ -2,30 +2,26 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
+from typing import Optional, Tuple
+import datetime
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-from typing import Dict, Tuple
-import pprint
-import datetime
-
-from typing import Optional
-
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
-    idle_cpu_threshold: int = Field(
-        5, 
+    idle_cpu_threshold: Optional[int] = Field(
+        default=5,
         description='Idle CPU threshold (in percent)', 
         title='Idle CPU Threshold'
     )
-    idle_duration: int = Field(
-       6, 
-       description='Idle duration (in hours)', 
+    idle_duration: Optional[int] = Field(
+       default=6,
+       description='Idle duration (in hours)',
        title='Idle Duration'
     )
     region: Optional[str] = Field(
-        '',
+        default='',
         description='AWS Region to get the instances from. Eg: "us-west-2"',
         title='Region',
     )
@@ -52,12 +48,18 @@ def is_instance_idle(instance_id , idle_cpu_threshold, idle_duration, cloudwatch
         )
         if not cpu_utilization_stats["Datapoints"]:
             return False
-        average_cpu = sum([datapoint["Average"] for datapoint in cpu_utilization_stats["Datapoints"]]) / len(cpu_utilization_stats["Datapoints"])
+        average_cpu = sum(datapoint["Average"] for datapoint in cpu_utilization_stats["Datapoints"]) / len(cpu_utilization_stats["Datapoints"])
     except Exception as e:
         raise e
     return average_cpu < idle_cpu_threshold
 
-def aws_find_idle_instances(handle, idle_cpu_threshold:int, idle_duration:int, region:str='') -> Tuple:
+  
+def aws_find_idle_instances(
+    handle,
+    idle_cpu_threshold:int = 5,
+    idle_duration:int = 6,
+    region:str=''
+    ) -> Tuple:
     """aws_find_idle_instances finds idle EC2 instances
 
     :type region: string
@@ -82,7 +84,12 @@ def aws_find_idle_instances(handle, idle_cpu_threshold:int, idle_duration:int, r
             all_instances = ec2client.describe_instances()
             for instance in all_instances['Reservations']:
                 for i in instance['Instances']:
-                    if i['State']["Name"] == "running" and is_instance_idle(i['InstanceId'], reg, idle_cpu_threshold,idle_duration, cloudwatchclient ):
+                    if i['State']["Name"] == "running" and is_instance_idle(
+                        i['InstanceId'],
+                        idle_cpu_threshold,
+                        idle_duration,
+                        cloudwatchclient
+                        ):
                         idle_instances = {}
                         idle_instances["instance"] = i['InstanceId']
                         idle_instances["region"] = reg
@@ -91,8 +98,4 @@ def aws_find_idle_instances(handle, idle_cpu_threshold:int, idle_duration:int, r
             pass
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
-
-
+    return (True, None)

@@ -2,15 +2,12 @@
 # Copyright (c) 2021 unSkript.com
 # All rights reserved.
 #
-
+import pprint
 import re
 from typing import List, Dict
-from unittest import registerResult
-
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.stream import stream
-from pydantic import BaseModel, Field
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -26,16 +23,23 @@ class InputSchema(BaseModel):
     )
     command: list = Field(
         title='Command',
-        description='List of Commands to Execute on the Pod, ex: ["/bin/sh","-c","nslookup google.com"]')
+        description='List of Commands to Execute on the Pod, '
+        'ex: ["/bin/sh","-c","nslookup google.com"]')
 
 def legoPrinter(output):
     if output is None:
         return
-    
+
     pprint.pprint(output)
 
-        
-def k8s_exec_command_on_pods_and_filter(handle, namespace: str, pods: List, match: str, command: List) -> Dict:
+
+def k8s_exec_command_on_pods_and_filter(
+        handle,
+        namespace: str,
+        pods: List,
+        match: str,
+        command: List
+        ) -> Dict:
 
     """k8s_exec_command_on_pods_and_filter executes the given kubectl command on the pod
 
@@ -54,7 +58,8 @@ def k8s_exec_command_on_pods_and_filter(handle, namespace: str, pods: List, matc
         :type command: List
         :param command: List of Commands to Execute on the Pod.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string 
+        format or Empty String in case of Error.
     """
     coreApiClient = client.CoreV1Api(api_client=handle)
 
@@ -70,8 +75,8 @@ def k8s_exec_command_on_pods_and_filter(handle, namespace: str, pods: List, matc
                           stdout=True,
                           tty=False
                           )
-            res = re.search(r'(%s)' % match, resp)
-            if res != None:
+            res = re.search(f'({match})', resp)
+            if res is not None:
                 result['name'] = pod
                 result['output'] = res
                 result['status'] = 'SUCCESS'

@@ -3,20 +3,15 @@ from __future__ import annotations
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
+from typing import List
 from pydantic import BaseModel, Field
-from typing import List, Dict
-from unskript.connectors.aws import aws_get_paginator
-import pprint
 from beartype import beartype
-
 
 
 class InputSchema(BaseModel):
 
     resultId: str = Field(description='Redshift Query Result', title='resultId')
     region: str = Field(..., description='AWS Region', title='region')
-
-
 
 
 @beartype
@@ -37,14 +32,10 @@ def aws_get_redshift_result(handle, region:str, resultId: str) -> List:
     #now let's make the output into a dict
     listResult = []
     for record in result['Records']:
-
-        for key, value in record[0].items():
-            rowId = value
         entryCounter = 0
         entryDict = {}
         for entry in record:
-
-            for key, value in entry.items():
+            for value in entry.values():
                 entryDict[columnNames[entryCounter]] = value
             entryCounter +=1
         #print("entryDict",entryDict)
@@ -52,6 +43,3 @@ def aws_get_redshift_result(handle, region:str, resultId: str) -> List:
 
     #print(listResult)
     return listResult
-
-
-
