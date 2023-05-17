@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
 from pydantic import BaseModel, Field
 from unskript.connectors.infra import InfraConnector
-import pprint
 
 class InputSchema(BaseModel):
     key: str = Field(
