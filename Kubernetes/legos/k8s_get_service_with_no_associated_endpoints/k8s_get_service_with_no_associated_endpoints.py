@@ -3,11 +3,10 @@
 # All rights reserved.
 #
 import pprint 
-
 from typing import Tuple
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -19,8 +18,8 @@ class InputSchema(BaseModel):
 
 def k8s_get_service_with_no_associated_endpoints_printer(output):
     if output is None:
-        return 
-    
+        return
+
     print(output)
 
 def k8s_get_service_with_no_associated_endpoints(handle, namespace: str = "") -> Tuple:
@@ -35,9 +34,9 @@ def k8s_get_service_with_no_associated_endpoints(handle, namespace: str = "") ->
 
        :rtype: Tuple Result in tuple format.
     """
-    if handle.client_side_validation != True:
-        raise Exception(f"K8S Connector is invalid {handle}")
-    
+    if handle.client_side_validation is not True:
+        raise ApiException(f"K8S Connector is invalid {handle}")
+
     v1 = client.CoreV1Api(api_client=handle)
     services = v1.list_service_for_all_namespaces().items
     services_to_check = services
@@ -46,7 +45,7 @@ def k8s_get_service_with_no_associated_endpoints(handle, namespace: str = "") ->
             if s.metadata.namespace == namespace:
                 services_to_check = s
                 break
-        
+
     retval = []
     for service in services_to_check:
         ep = v1.read_namespaced_endpoints(service.metadata.name, service.metadata.namespace)

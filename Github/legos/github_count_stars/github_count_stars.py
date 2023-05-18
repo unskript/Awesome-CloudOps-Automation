@@ -2,14 +2,13 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
+import pprint
 from pydantic import BaseModel, Field
 from github import GithubException
-import pprint
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -44,9 +43,9 @@ def github_count_stars(handle, owner:str, repository:str) -> int:
         result = len(list(stars))
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such repository or user found")
+            raise Exception("No such repository or user found") from e
         raise e.data
     except Exception as e:
         raise e

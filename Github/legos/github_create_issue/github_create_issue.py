@@ -4,14 +4,14 @@
 ##
 
 import pprint
-from typing import Optional, List, Dict
+from typing import Dict
 from pydantic import BaseModel, Field
 from github import GithubException
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
         title='Repository',
     )
     title: str = Field(
-        description='Title if the Github Issue', 
+        description='Title if the Github Issue',
         title='Title of the Issue'
     )
     description: str = Field(
@@ -27,7 +27,7 @@ class InputSchema(BaseModel):
         title='Description of the Issue'
     )
     assignee: str = Field(
-        description='Username of the Github User to assign this issue to ', 
+        description='Username of the Github User to assign this issue to ',
         title='Username of the Assignee'
     )
 
@@ -39,7 +39,14 @@ def github_create_issue_printer(output):
     pprint.pprint(output)
 
 
-def github_create_issue(handle, owner:str, repository:str, title:str, description:str, assignee: str) -> Dict:
+def github_create_issue(
+        handle,
+        owner:str,
+        repository:str,
+        title:str,
+        description:str,
+        assignee: str
+        ) -> Dict:
     """github_create_issue returns details of newly created issue
 
         :type handle: object
@@ -73,11 +80,10 @@ def github_create_issue(handle, owner:str, repository:str, title:str, descriptio
         issue_details["assignee"] = res.assignee.login
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such repository or user found")
+            raise Exception("No such repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     return issue_details
-

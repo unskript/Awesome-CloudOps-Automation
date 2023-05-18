@@ -31,7 +31,12 @@ def k8s_kubectl_rollout_deployment_printer(data: str):
     print (data)
 
 @beartype
-def k8s_kubectl_rollout_deployment(handle, k8s_cli_string: str, deployment: str, namespace: str) -> str:
+def k8s_kubectl_rollout_deployment(
+    handle,
+    k8s_cli_string: str,
+    deployment: str,
+    namespace: str
+    ) -> str:
     k8s_cli_string = k8s_cli_string.format(deployment=deployment, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
     if result is None or hasattr(result, "stderr") is False or result.stderr is None:
