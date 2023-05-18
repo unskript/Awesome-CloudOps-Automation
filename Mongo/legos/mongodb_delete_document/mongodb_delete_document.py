@@ -2,11 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-import pprint
-
 from pydantic import BaseModel, Field
 from unskript.enums.mongo_enums import DeleteCommands
-from pymongo.errors import *
+from pymongo.errors import AutoReconnect, ServerSelectionTimeoutError
 
 class InputSchema(BaseModel):
     database_name: str = Field(
@@ -42,7 +40,13 @@ def mongodb_delete_document_printer(output):
 
 
 
-def mongodb_delete_document(handle, database_name: str, collection_name: str, command: DeleteCommands, filter: dict) -> int:
+def mongodb_delete_document(
+        handle,
+        database_name: str,
+        collection_name: str,
+        command: DeleteCommands,
+        filter: dict
+        ) -> int:
     """mongodb_delete_document Runs mongo delete command with the provided parameters.
 
         :type handle: object
@@ -67,10 +71,10 @@ def mongodb_delete_document(handle, database_name: str, collection_name: str, co
     try:
         handle.server_info()
     except (AutoReconnect, ServerSelectionTimeoutError) as e:
-        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", e.__str__())
+        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", str(e))
         raise e
     except Exception as e:
-        print("[UNSKRIPT]: Error Connecting: ", e.__str__())
+        print("[UNSKRIPT]: Error Connecting: ", str(e))
         raise e
 
     try:
@@ -79,8 +83,9 @@ def mongodb_delete_document(handle, database_name: str, collection_name: str, co
         if command == DeleteCommands.delete_one:
             result = db[collection_name].delete_one(filter)
             return result.deleted_count
-        elif command == DeleteCommands.delete_many:
+        if command == DeleteCommands.delete_many:
             result = db[collection_name].delete_many(filter)
             return result.deleted_count
     except Exception as e:
         raise e
+    return None

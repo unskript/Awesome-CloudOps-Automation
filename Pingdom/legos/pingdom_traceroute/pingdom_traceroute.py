@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
-from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 import pprint
+from typing import Optional, Dict
+from pydantic import BaseModel, Field
+from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -42,7 +42,10 @@ def pingdom_traceroute(handle, host: str, probeid = None) -> Dict:
 
 
     traceroute = pingdom_client.TracerouteApi(api_client=handle)
-    result = traceroute.traceroute_get_with_http_info(_return_http_data_only=True, host=host,
-                                                      probeid=probeid if probeid != probeid else probeid)
+    result = traceroute.traceroute_get_with_http_info(
+        _return_http_data_only=True,
+        host=host,
+        probeid=probeid if probeid != probeid else probeid
+        )
 
     return result

@@ -4,7 +4,6 @@
 ##
 import pprint
 from pydantic import BaseModel, Field
-from typing import Dict
 
 
 class InputSchema(BaseModel):
@@ -20,7 +19,8 @@ def mysql_kill_query_printer(output):
     pprint.pprint(output)
 
 def mysql_kill_query(handle, processId: int) -> str:
-    """mysql_kill_query can kill queries (read process) that are running more or equal than given interval.
+    """mysql_kill_query can kill queries (read process) that are running more or
+    equal than given interval.
 
         :type handle: object
         :param handle: Object returned by task.validate(...).

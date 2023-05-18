@@ -2,12 +2,13 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from kafka_utils.kafka_check.commands.offline import OfflineCmd
-from kafka_utils.util.zookeeper import ZK
-from pydantic import BaseModel, Field
-from typing import Tuple
 import pprint
 import argparse
+from typing import Tuple
+from pydantic import BaseModel
+from kafka_utils.kafka_check.commands.offline import OfflineCmd
+from kafka_utils.util.zookeeper import ZK
+
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -23,7 +24,7 @@ def kafka_check_offline_partitions_printer(output):
 
 
 def kafka_check_offline_partitions(handle) -> Tuple:
-    
+
     """kafka_check_offline_partitions Checks the number of offline partitions.
 
         :rtype: Tuple of the check
@@ -49,5 +50,5 @@ def kafka_check_offline_partitions(handle) -> Tuple:
 
     if len(check_output[1]['raw']['partitions']) != 0:
         return (False, check_output)
-    else:
-        return (True, check_output)
+    return (True, check_output)
+    

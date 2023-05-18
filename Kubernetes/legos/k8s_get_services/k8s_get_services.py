@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript.com
 # All rights reserved.
 #
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -14,10 +14,9 @@ class InputSchema(BaseModel):
 
 def k8s_get_services_printer(output):
     if output is None:
-        return 
-    
+        return
+
     print(output)
-   
 
 
 def k8s_get_services(handle, namespace: str) -> str:
