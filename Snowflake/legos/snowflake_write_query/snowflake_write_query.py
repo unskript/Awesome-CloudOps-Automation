@@ -1,9 +1,8 @@
+import pprint
 from typing import Dict
 from pydantic import BaseModel, Field
-import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
-
 
 class InputSchema(BaseModel):
     query: str = Field(
