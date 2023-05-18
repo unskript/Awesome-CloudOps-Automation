@@ -3,8 +3,8 @@
 # All rights reserved.
 #
 import pprint
-from pydantic import BaseModel, Field
 from typing import List
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 
@@ -47,19 +47,19 @@ class InputSchema(BaseModel):
 
 def k8s_add_node_to_cluster_printer(output):
     if output is None:
-        return
-    
+        return None
+
     (v1node, data) = output
-    if v1node != None:
-        pp.pprint("Creating Node {}".format(v1node))
+    if v1node is not None:
+        pp.pprint(f"Creating Node {v1node}")
     else:
         pp.pprint("Error Creating Node")
-    if data != None:
-        pp.pprint("Node Created {}".format(data))
+    if data is not None:
+        pp.pprint(f"Node Created {data}")
     else:
         pp.pprint("Node Creation Error")
     return data
-    
+
 
 def k8s_add_node_to_cluster(handle, 
                             node_name: str, 
@@ -93,7 +93,7 @@ def k8s_add_node_to_cluster(handle,
         :rtype: None
     """
 
-    
+
     print(">>>>>>>>>>")
     coreApiClient = client.CoreV1Api(handle)
 
@@ -113,33 +113,24 @@ def k8s_add_node_to_cluster(handle,
             v1NodeStatus.capacity = capacity
 
         if node_info:
-            v1NodeSystemInfo = client.V1NodeSystemInfo(architecture=node_info.get("architecture", None),
-                                                       boot_id=node_info.get(
-                                                           "boot_id", None),
-                                                       container_runtime_version=node_info.get(
-                                                           "container_runtime_version", None),
-                                                       kernel_version=node_info.get(
-                                                           "kernel_version", None),
-                                                       kube_proxy_version=node_info.get(
-                                                           "kube_proxy_version", None),
-                                                       kubelet_version=node_info.get(
-                                                           "kubelet_version", None),
-                                                       machine_id=node_info.get(
-                                                           "machine_id", None),
-                                                       operating_system=node_info.get(
-                                                           "operating_system", None),
-                                                       os_image=node_info.get(
-                                                           "os_image", None),
-                                                       system_uuid=node_info.get("system_uuid", None))
+            v1NodeSystemInfo = client.V1NodeSystemInfo(
+                architecture=node_info.get("architecture", None),
+                boot_id=node_info.get("boot_id", None),
+                container_runtime_version=node_info.get("container_runtime_version", None),
+                kernel_version=node_info.get("kernel_version", None),
+                kube_proxy_version=node_info.get("kube_proxy_version", None),
+                kubelet_version=node_info.get("kubelet_version", None),
+                machine_id=node_info.get("machine_id", None),
+                operating_system=node_info.get("operating_system", None),
+                os_image=node_info.get("os_image", None),
+                system_uuid=node_info.get("system_uuid", None)
+                )
             v1NodeStatus.node_info = v1NodeSystemInfo
 
-        v1Node.status = v1NodeStatus        
+        v1Node.status = v1NodeStatus
         resp = coreApiClient.create_node(body=v1Node, pretty=True)
         return (v1Node, resp)
     except ApiException as e:
-        error = 'An Exception occured while executing the command :{}'.format(
-            e)
+        error = f'An Exception occured while executing the command :{e}'
         pp.pprint(error)
         return (None, None)
-
-    return None

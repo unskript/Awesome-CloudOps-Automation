@@ -9,6 +9,52 @@ import sys
 import argparse
 
 
+import nbformat
+import re
+import requests
+from collections import defaultdict
+from urlextract import URLExtract
+
+def extract_links_from_notebook(notebook_path, extractor):
+    with open(notebook_path) as f:
+        notebook = nbformat.read(f, as_version=4)
+
+    links = []
+    for cell in notebook.cells:
+        if cell.cell_type != "markdown":
+            continue
+
+        urls = extractor.find_urls(cell.source)
+        links.extend(urls)
+
+    return links
+
+def validate_link(link):
+
+    if link == "unSkript.com" or link == "us.app.unskript.io":
+        return True
+
+    try:
+        response = requests.get(link, timeout=3)
+        return response.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
+def check_notebooks(notebook_paths, extractor):
+    link_cache = {}
+    dead_link_report = defaultdict(list)
+
+    for notebook in notebook_paths:
+        links = extract_links_from_notebook(notebook, extractor)
+        for link in links:
+            if link not in link_cache:
+                link_cache[link] = validate_link(link)
+            if not link_cache[link]:
+                dead_link_report[notebook].append(link)
+
+    return dict(dead_link_report)
+
+
 ## returns True is everything is ok 
 def check_sanity(ipynbFile: str = '') -> bool:
 
@@ -185,11 +231,8 @@ if __name__ == '__main__':
         validate_mode = False
 
     # access the list of files
-    filelist = args.files
-    failedlist = []
-    print('List of files:', filelist)
-
-    for f in filelist:
+    filelist = []
+    for f in args.files:
         # To handle file delete case, check if the file exists.
         if os.path.isfile(f) is False:
             continue
@@ -197,6 +240,13 @@ if __name__ == '__main__':
         if f.endswith('.ipynb') is False:
             continue
 
+        filelist.append(f)
+
+    failedlist = []
+    print('List of files:', filelist)
+
+    for f in filelist:
+        # To handle file delete case, check if the file exists.
         print(f"Processing {f}")
         if validate_mode is True:
             rc = check_sanity(f)
@@ -212,5 +262,26 @@ if __name__ == '__main__':
             print(f"Failed sanity {f}")
 
         sys.exit(-1)
-    
+
+
+    extractor = URLExtract()
+    dead_links = check_notebooks(filelist, extractor)
+    failedlist = []
+    for notebook, links in dead_links.items():
+        if len(links) == 0:
+            continue
+
+        failedlist.append(f)
+        print(f'Notebook {notebook} contains the following dead links:')
+        for link in links:
+            print(link)
+
+
+    if len(failedlist) > 0:
+        
+        for f in failedlist:
+            print(f"Failed sanity {f}")
+
+        sys.exit(-1)
+
     sys.exit(0)

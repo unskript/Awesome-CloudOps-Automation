@@ -2,14 +2,13 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, List, Tuple
+import pprint
+from typing import Optional, Tuple
 from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
 import botocore.config
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
-
 
 class InputSchema(BaseModel):
     time_period_in_days: Optional[int] = Field(
@@ -73,10 +72,9 @@ def aws_filter_unused_log_streams(handle, region: str = "", time_period_in_days:
                         unused_log_streams["log_stream_name"] = log_stream['logStreamName']
                         unused_log_streams["region"] = reg
                         result.append(unused_log_streams)
-        except Exception as e:
+        except Exception:
             pass
-        
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

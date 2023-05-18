@@ -5,12 +5,11 @@
 import pprint
 from typing import List
 from typing import Tuple
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from pydantic import BaseModel, Field
 
 pp = pprint.PrettyPrinter(indent=2)
-
 
 class InputSchema(BaseModel):
     namespace: str = Field(
@@ -29,13 +28,17 @@ class InputSchema(BaseModel):
 
 def k8s_update_command_in_pod_spec_printer(output):
     if output is None:
-        return 
-    
-    (command, resp) = output
+        return
+    command = output[0]
     pprint.pprint(command)
-    
 
-def k8s_update_command_in_pod_spec(handle, namespace: str, deployment_name: str, command: List) -> Tuple:
+
+def k8s_update_command_in_pod_spec(
+        handle,
+        namespace: str,
+        deployment_name: str,
+        command: List
+        ) -> Tuple:
     """k8s_update_command_in_pod_spec updateb command in pod spec
 
         :type handle: object
@@ -63,7 +66,6 @@ def k8s_update_command_in_pod_spec(handle, namespace: str, deployment_name: str,
         )
         return (resp.spec.template.spec.containers[0].command, resp)
     except ApiException as e:
-        error = 'An Exception occured while executing the command :{}'.format(
-            e)
+        error = f'An Exception occured while executing the command :{e}'
         pp.pprint(error)
         return (None, error)

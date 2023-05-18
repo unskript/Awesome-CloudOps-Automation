@@ -3,8 +3,8 @@
 # All rights reserved.
 ##
 import pprint 
-from typing import List, Any, Optional, Tuple
-from pydantic import BaseModel, Field
+from typing import List
+from pydantic import BaseModel
 
 class InputSchema(BaseModel):
     pass
@@ -12,7 +12,7 @@ class InputSchema(BaseModel):
 def postgresql_get_cache_hit_ratio_printer(output):
     if output is None:
         return
-    
+
     op = output[1]
     if len(op) > 0:
         cache_hit_ratio = op[0][2] * 100
@@ -33,8 +33,9 @@ def postgresql_get_cache_hit_ratio(handle) -> List:
       """
 
     # Query to get the Cache hit ratio.
-    query = """SELECT sum(heap_blks_read) as heap_read, sum(heap_blks_hit)  as heap_hit, 
-            sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"""
+    query = """SELECT sum(heap_blks_read) as heap_read, sum(heap_blks_hit)  as heap_hit,
+            sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM 
+            pg_statio_user_tables;"""
 
     cur = handle.cursor()
     cur.execute(query)
@@ -46,7 +47,5 @@ def postgresql_get_cache_hit_ratio(handle) -> List:
         cache_hit_ratio = res[0][2] * 100
         if cache_hit_ratio >= 99:
             return (True, res)
-        else:
-            return (False, res)
-    else:
         return (False, res)
+    return (False, res)
