@@ -3,9 +3,9 @@
 # All rights reserved.
 #
 from typing import Tuple
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -17,8 +17,7 @@ class InputSchema(BaseModel):
 
 def k8s_get_unbound_pvcs_printer(output):
     if output is None:
-        return 
-    
+        return
     print(output)
 
 def k8s_get_unbound_pvcs(handle, namespace:str = '') -> Tuple:
@@ -32,8 +31,8 @@ def k8s_get_unbound_pvcs(handle, namespace:str = '') -> Tuple:
 
        :rtype: Tuple Result in tuple format.  
     """
-    if handle.client_side_validation != True:
-        raise Exception(f"K8S Connector is invalid {handle}")
+    if handle.client_side_validation is not True:
+        raise ApiException(f"K8S Connector is invalid {handle}")
 
     v1 = client.CoreV1Api(api_client=handle)
 
@@ -48,17 +47,20 @@ def k8s_get_unbound_pvcs(handle, namespace:str = '') -> Tuple:
     retval = []
     mounted_volume = []
     list_all_volumes = []
-    # Iterate through each PVC 
+    # Iterate through each PVC
     for pvc in pvc_list:
         list_all_volumes.append([pvc.metadata.name, pvc.metadata.namespace])
-    
+
     for pod in pod_list:
         for volume in pod.spec.volumes:
-                if volume.persistent_volume_claim != None:
-                    mounted_volume.append([volume.persistent_volume_claim.claim_name,  pod.metadata.namespace])
-    
+                if volume.persistent_volume_claim is not None:
+                    mounted_volume.append([
+                        volume.persistent_volume_claim.claim_name,
+                        pod.metadata.namespace
+                        ])
+
     if len(mounted_volume) != len(list_all_volumes):
-        unmounted_volumes = set([x[0] for x in list_all_volumes]) - set([x[0] for x in mounted_volume])
+        unmounted_volumes = {x[0] for x in list_all_volumes} - {x[0] for x in mounted_volume}
         for um in unmounted_volumes:
             n = [x for x in list_all_volumes if x[0] == um][0]
             unmounted_pvc_name = n[0]
@@ -67,5 +69,5 @@ def k8s_get_unbound_pvcs(handle, namespace:str = '') -> Tuple:
 
     if retval:
         return (False, retval)
-    
+
     return (True, [])
