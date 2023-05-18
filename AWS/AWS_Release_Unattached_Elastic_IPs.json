@@ -6,4 +6,4 @@
     "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
     "connector_types": [ "CONNECTOR_TYPE_AWS" ],
     "version": "1.0.0"
-  }
+}
