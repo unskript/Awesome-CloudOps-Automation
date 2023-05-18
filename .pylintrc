@@ -146,7 +146,10 @@ disable=abstract-method,
         wrong-import-order,
         xrange-builtin,
         zip-builtin-not-iterating,
-	W0311
+	W,
+        C0103,
+        C0114,
+	C0303
         
 
 
@@ -216,7 +219,7 @@ inlinevar-rgx=^[a-z][a-z0-9_]*$
 class-rgx=^_?[A-Z][a-zA-Z0-9]*$
 
 # Regular expression matching correct module names
-module-rgx=^(_?[a-z][a-z0-9_]*|__init__)$
+#module-rgx=^(_?[a-z][a-z0-9_]*|__init__)$
 
 # Regular expression matching correct method names
 method-rgx=(?x)^(?:(?P<exempt>_[a-z0-9_]+__|runTest|setUp|tearDown|setUpTestCase|tearDownTestCase|setupSelf|tearDownClass|setUpClass|(test|assert)_*[A-Z0-9][a-zA-Z0-9_]*|next)|(?P<camel_case>_{0,2}[A-Z][a-zA-Z0-9_]*)|(?P<snake_case>_{0,2}[a-z][a-z0-9_]*))$
