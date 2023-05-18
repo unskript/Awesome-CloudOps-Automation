@@ -3,9 +3,6 @@
 # All rights reserved.
 ##
 import pprint
-import json 
-
-from kubernetes import client
 from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
@@ -21,7 +18,7 @@ class InputSchema(BaseModel):
 def k8s_gather_data_for_pod_troubleshoot_printer(output):
     if not output:
         return
-    
+
     pprint.pprint(output)
 
 
@@ -42,21 +39,21 @@ def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) 
        :rtype: Output of in the form of dictionary with `describe` and `logs` keys
     """
     if not pod_name or not namespace:
-        raise Exception("POD Name and Namespace are mandatory parameters, cannot be None")
+        raise TypeError("POD Name and Namespace are mandatory parameters, cannot be None")
 
     retval = {}
     # Get Describe POD details
     kubectl_client = f'kubectl describe pod {pod_name} -n {namespace}'
     result = handle.run_native_cmd(kubectl_client)
     if not result.stderr:
-        retval['describe'] =  result.stdout 
+        retval['describe'] =  result.stdout
     else:
-        retval['error'] = result.stderr 
-    # Get Logs for the POD 
+        retval['error'] = result.stderr
+    # Get Logs for the POD
     kubectl_client = f'kubectl logs {pod_name} -n {namespace}'
     result = handle.run_native_cmd(kubectl_client)
     if not result.stderr:
-        retval['logs'] =  result.stdout 
+        retval['logs'] =  result.stdout
     else:
-        retval['error'] = result.stderr 
+        retval['error'] = result.stderr
     return retval

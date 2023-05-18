@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import Optional, Dict
+from pydantic import BaseModel, Field
 from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -26,7 +26,8 @@ def pingdom_do_single_check_printer(output):
 
 
 def pingdom_do_single_check(handle, host: str, type: str = 'http') -> Dict:
-    """pingdom_do_single_check performs a single test using a specified Pingdom probe against a specified target
+    """pingdom_do_single_check performs a single test using a
+    specified Pingdom probe against a specified target
         
         :type handle: object
         :param handle: Object returned from task.validate(...).

@@ -5,7 +5,6 @@
 ##
 
 import pprint
-from typing import Optional, List, Dict
 from pydantic import BaseModel, Field
 from github import GithubException
 
@@ -38,7 +37,13 @@ def github_assign_issue_printer(output):
     pprint.pprint(output)
 
 
-def github_assign_issue(handle, owner:str, repository:str, issue_number:int, assignee:str) -> str:
+def github_assign_issue(
+        handle,
+        owner:str,
+        repository:str,
+        issue_number:int,
+        assignee:str
+        ) -> str:
     """github_assign_issue assigns an issue to user
 
         :type handle: object
@@ -67,13 +72,12 @@ def github_assign_issue(handle, owner:str, repository:str, issue_number:int, ass
         result = issue.add_to_assignees(assignee)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such repository or user found")
+            raise Exception("No such repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     if result is None:
         return f"Issue {issue_no} assigned to {assignee}"
-    else:
-        return f"Unable to assign Issue {issue_no} to {assignee}"
+    return f"Unable to assign Issue {issue_no} to {assignee}"

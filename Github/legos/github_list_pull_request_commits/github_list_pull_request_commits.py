@@ -3,15 +3,15 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
-from pydantic import BaseModel, Field
-from github import GithubException
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
         title='Repository',
     )
     pull_request_number: int = Field(
-        description='Pull request number. Eg: 167', 
+        description='Pull request number. Eg: 167',
         title='Pull Request Number'
     )
 
@@ -29,7 +29,12 @@ def github_list_pull_request_commits_printer(output):
         return
     pprint.pprint(output)
 
-def github_list_pull_request_commits(handle, owner:str, repository:str, pull_request_number: int) -> List:
+def github_list_pull_request_commits(
+        handle,
+        owner:str,
+        repository:str,
+        pull_request_number: int
+        ) -> List:
     """github_list_pull_request_commits returns details of pull requests commits
 
         :type handle: object
@@ -62,12 +67,10 @@ def github_list_pull_request_commits(handle, owner:str, repository:str, pull_req
             result.append(commits_dict)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found")
+            raise UnknownObjectException("No such pull number or repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-
-

@@ -1,0 +1,9 @@
+{
+    "name": "Delete AWS ELBs With No Targets Or Instances",
+    "description": "ELBs are used to distribute incoming traffic across multiple targets or instances, but if those targets or instances are no longer in use, then the ELBs may be unnecessary and can be deleted to save costs. Deleting ELBs with no targets or instances is a simple but effective way to optimize costs in your AWS environment. By identifying and removing these unused ELBs, you can reduce the number of resources you are paying for and avoid unnecessary charges. This runbook helps you identify all types of ELB's- Network, Application, Classic that don't have any target groups or instances attached to them.",
+    "uuid": "2aba76792cb2802cae55deb60d28820522aeba93865572a1e9c7ddc5309e1312",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+}

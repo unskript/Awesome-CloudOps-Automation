@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
 import pprint
+from typing import List, Optional, Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -23,7 +23,8 @@ class InputSchema(BaseModel):
     )
     proxy_host: Optional[str] = Field(
         title='Proxy host',
-        description='Override the proxy host provided in the credentials. It still uses the proxy_user and port from the credentials.'
+        description='Override the proxy host provided in the credentials. \
+            It still uses the proxy_user and port from the credentials.'
     )
 
 
@@ -34,7 +35,13 @@ def ssh_execute_remote_command_printer(output):
     pprint.pprint(output)
 
 
-def ssh_execute_remote_command(sshClient, hosts: List[str], command: str, sudo: bool = False, proxy_host: str = None) -> Dict:
+def ssh_execute_remote_command(
+        sshClient,
+        hosts: List[str],
+        command: str,
+        sudo: bool = False,
+        proxy_host: str = None
+        ) -> Dict:
     """ssh_execute_remote_command executes the given command on the remote
 
         :type hosts: List[str]

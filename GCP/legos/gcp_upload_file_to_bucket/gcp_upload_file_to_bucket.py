@@ -2,9 +2,8 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+from typing import Dict
 from pydantic import BaseModel, Field
-import pprint
-from typing import List,Any, Dict
 from google.cloud import storage
 
 
@@ -25,8 +24,8 @@ class InputSchema(BaseModel):
 def gcp_upload_file_to_bucket_printer(output):
     if output is None:
         return
-    print("Created an object {} in {} bucket".format(output["blob_name"],output["bucket_name"]) )
-    
+    print(f"Created an object {output['blob_name']} in {output['bucket_name']} bucket")
+
 
 def gcp_upload_file_to_bucket(handle,blob_name: str, bucket_name: str, data: str) -> Dict:
     """gcp_upload_file_to_bucket returns a List of objects in the Bucket

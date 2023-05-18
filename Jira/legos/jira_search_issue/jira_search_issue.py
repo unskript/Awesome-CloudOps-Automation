@@ -2,11 +2,11 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from jira import JIRA, Issue
-from pydantic import BaseModel, Field
-from typing import Optional, List, Dict
 import pprint
+from typing import Optional, List
+from pydantic import BaseModel, Field
 from tabulate import tabulate
+from jira import JIRA
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -15,7 +15,8 @@ class InputSchema(BaseModel):
     jql: str = Field(
         title="Jira issue search using Jira Query Language (JQL)",
         description="Search string to execute in JIRA. "
-        "Valid JQL expression eg \"project = EN and status in (\"Selected for Development\") AND labels in (beta)\""
+        "Valid JQL expression eg \"project = EN and status in "
+        "(\"Selected for Development\") AND labels in (beta)\""
     )
     max_results: Optional[int] = Field(
         default=50,
