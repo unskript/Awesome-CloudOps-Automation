@@ -25,6 +25,7 @@ jobs:
           /usr/bin/env python -m pip install GitPython
           /usr/bin/env python -m pip install gitpython
           /usr/bin/env python -m pip install PyGithub
+          /usr/bin/env python -m pip install nbformat
       
       - name: All Runbooks
         id: files
