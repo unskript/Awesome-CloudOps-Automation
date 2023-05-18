@@ -13,38 +13,39 @@ import nbformat
 import re
 import requests
 from collections import defaultdict
+from urlextract import URLExtract
 
-def extract_links_from_notebook(notebook_path):
+def extract_links_from_notebook(notebook_path, extractor):
     with open(notebook_path) as f:
         notebook = nbformat.read(f, as_version=4)
-
-    http_link_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
     links = []
     for cell in notebook.cells:
         if cell.cell_type != "markdown":
             continue
 
-        for link in re.findall(http_link_pattern, cell.source):
-            if link.endswith("</a></p>"):
-                continue
-            links.append(link)
+        urls = extractor.find_urls(cell.source)
+        links.extend(urls)
 
     return links
 
 def validate_link(link):
+
+    if link == "unSkript.com" or link == "us.app.unskript.io":
+        return True
+
     try:
         response = requests.get(link, timeout=3)
         return response.status_code == 200
     except requests.exceptions.RequestException:
         return False
 
-def check_notebooks(notebook_paths):
+def check_notebooks(notebook_paths, extractor):
     link_cache = {}
     dead_link_report = defaultdict(list)
 
     for notebook in notebook_paths:
-        links = extract_links_from_notebook(notebook)
+        links = extract_links_from_notebook(notebook, extractor)
         for link in links:
             if link not in link_cache:
                 link_cache[link] = validate_link(link)
@@ -263,7 +264,8 @@ if __name__ == '__main__':
         sys.exit(-1)
 
 
-    dead_links = check_notebooks(filelist)
+    extractor = URLExtract()
+    dead_links = check_notebooks(filelist, extractor)
     failedlist = []
     for notebook, links in dead_links.items():
         if len(links) == 0:
