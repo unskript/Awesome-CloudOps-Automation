@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import List,Any
+from typing import List
 from pydantic import BaseModel, Field
 from google.cloud.compute_v1.services.instances import InstancesClient
 
@@ -30,11 +30,16 @@ class InputSchema(BaseModel):
 def gcp_list_compute_instances_by_label_printer(output):
     if len(output) == 0:
         return
-        
     pprint.pprint(output)
 
-        
-def gcp_list_compute_instances_by_label(handle, project: str, zone:str, key: str, value: str) -> List:
+
+def gcp_list_compute_instances_by_label(
+        handle,
+        project: str,
+        zone:str,
+        key: str,
+        value: str
+        ) -> List:
     """gcp_list_compute_instances_by_label Returns the List of compute instances
 
         :type project: string

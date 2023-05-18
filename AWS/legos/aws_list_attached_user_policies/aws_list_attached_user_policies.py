@@ -1,17 +1,17 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from botocore.exceptions import ClientError
-import pprint
 
 
 class InputSchema(BaseModel):
     user_name: str = Field(
         title='User Name',
         description='IAM user whose policies need to fetched.')
-        
+
 
 def aws_list_attached_user_policies_printer(output):
     if output is None:

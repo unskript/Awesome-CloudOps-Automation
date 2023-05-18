@@ -1,11 +1,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -38,7 +38,7 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
 
         :rtype: A tuple with execution results and a list of unhealthy instances from ELB
     """
-    
+
     result = []
     all_regions = [region]
     elb_list = []
@@ -49,27 +49,35 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
         for reg in all_regions:
             try:
                 asg_client = handle.client('elb', region_name=reg)
-                response = aws_get_paginator(asg_client, "describe_load_balancers", "LoadBalancerDescriptions")
+                response = aws_get_paginator(
+                    asg_client,
+                    "describe_load_balancers",
+                    "LoadBalancerDescriptions"
+                    )
                 for i in response:
                     elb_dict = {}
                     elb_dict["load_balancer_name"] = i["LoadBalancerName"]
                     elb_dict["region"] = reg
                     elb_list.append(elb_dict)
-            except Exception as error:
+            except Exception:
                 pass
-            
+
     if elb_name and not region:
         for reg in all_regions:
             try:
                 asg_client = handle.client('elb', region_name=reg)
-                response = aws_get_paginator(asg_client, "describe_load_balancers", "LoadBalancerDescriptions")
+                response = aws_get_paginator(
+                    asg_client,
+                    "describe_load_balancers", 
+                    "LoadBalancerDescriptions"
+                    )
                 for i in response:
                     if elb_name in i["LoadBalancerName"]:
                         elb_dict = {}
                         elb_dict["load_balancer_name"] = i["LoadBalancerName"]
                         elb_dict["region"] = reg
                         elb_list.append(elb_dict)
-            except Exception as error:
+            except Exception:
                 pass
 
     if elb_name and region:
@@ -83,7 +91,7 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
                     data_dict["region"] = reg
                     data_dict["load_balancer_name"] = i["LoadBalancerName"]
                     result.append(data_dict)
-        except Exception as e:
+        except Exception:
             pass
 
     for elb in elb_list:
@@ -97,15 +105,9 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
                     data_dict["region"] = reg
                     data_dict["load_balancer_name"] = i["LoadBalancerName"]
                     result.append(data_dict)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
-
-
-
-    
+    return (True, None)

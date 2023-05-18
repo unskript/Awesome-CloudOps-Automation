@@ -3,15 +3,15 @@
 # All rights reserved.
 ##
 
-from pydantic import BaseModel, Field
+import pprint
 from typing import Optional, List
 from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
 import matplotlib.pyplot as plt
 from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
 from unskript.enums.aws_cloudwatch_enums import EBSMetrics
-from tabulate import tabulate
 from unskript.enums.aws_k8s_enums import StatisticsType
-import pprint
+from tabulate import tabulate
 
 
 class InputSchema(BaseModel):
@@ -21,7 +21,9 @@ class InputSchema(BaseModel):
     )
     metric_name: EBSMetrics = Field(
         title="Metric",
-        description="The name of the EBS metric. Eg VolumeReadBytes|VolumeWriteBytes|VolumeReadOps|VolumeWriteOps|VolumeTotalReadTime|VolumeTotalWriteTime|VolumeIdleTime|VolumeQueueLength|VolumeThroughputPercentage|VolumeConsumedReadWriteOps|BurstBalance",
+        description=("The name of the EBS metric. Eg VolumeReadBytes|VolumeWriteBytes|VolumeReadOps"
+                     "|VolumeWriteOps|VolumeTotalReadTime|VolumeTotalWriteTime|VolumeIdleTime"
+                     "|VolumeQueueLength|VolumeThroughputPercentage|VolumeConsumedReadWriteOps|BurstBalance")
     )
     period: Optional[int] = Field(
         default=60,
@@ -31,11 +33,13 @@ class InputSchema(BaseModel):
     timeSince: int = Field(
         default=3600,
         title="Time Since",
-        description="Starting from now, window (in seconds) for which you want to get the datapoints for.",
+        description=("Starting from now, window (in seconds) for which you want to get"
+                     " the datapoints for.")
     )
     statistics: StatisticsType = Field(
         title="Statistics",
-        description="Cloudwatch metric statistics. Possible values: SampleCount, Average, Sum, Minimum, Maximum.",
+        description=("Cloudwatch metric statistics. Possible values: "
+                     "SampleCount, Average, Sum, Minimum, Maximum.")
     )
     region: str = Field(
         title="Region",
@@ -71,10 +75,12 @@ def aws_get_cloudwatch_ebs(
         :param period: The granularity, in seconds, of the returned data points.
 
         :type timeSince: int
-        :param timeSince: Starting from now, window (in seconds) for which you want to get the datapoints for.
+        :param timeSince: Starting from now, window (in seconds) for which you
+        want to get the datapoints for.
 
         :type statistics: StatisticsType
-        :param statistics: Cloudwatch metric statistics. Possible values: SampleCount, Average, Sum, Minimum, Maximum.
+        :param statistics: Cloudwatch metric statistics. Possible values: SampleCount,
+        Average, Sum, Minimum, Maximum.
 
         :type region: string
         :param region: AWS Region of the cloudwatch.
