@@ -10,5 +10,5 @@
   "action_supports_poll": "true",
   "action_categories": ["CATEGORY_TYPE_COST_OPT","CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_RDS"],
   "action_next_hop": ["e0ff270a41b65b1804da257ffec5fbdec7dd51bdb3da925cced7fa3391bfe70b"],
-  "action_next_hop_parameter_mapping": {}
+  "action_next_hop_parameter_mapping":{"e0ff270a41b65b1804da257ffec5fbdec7dd51bdb3da925cced7fa3391bfe70b": {"name": "Purchase Reserved Instances For Long Running AWS RDS Instances", "region": ".[0].region"}}
 }
