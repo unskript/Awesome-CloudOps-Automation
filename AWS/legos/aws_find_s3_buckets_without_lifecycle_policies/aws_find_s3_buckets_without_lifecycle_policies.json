@@ -1,0 +1,14 @@
+{
+  "action_title": "AWS Find S3 Buckets without Lifecycle Policies",
+  "action_description": "S3 lifecycle policies enable you to automatically transition objects to different storage classes or delete them when they are no longer needed. This action finds all S3 buckets without lifecycle policies. ",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_find_s3_buckets_without_lifecycle_policies",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": "true",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+  "action_next_hop":[],
+  "action_next_hop_parameter_mapping":{},
+  "action_categories":[ "CATEGORY_TYPE_CLOUDOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_S3"]
+}

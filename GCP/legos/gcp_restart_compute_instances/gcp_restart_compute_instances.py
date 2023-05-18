@@ -2,7 +2,7 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint 
+import pprint
 from typing import Dict
 from pydantic import BaseModel, Field
 from google.cloud.compute_v1.services.instances import InstancesClient
@@ -28,8 +28,13 @@ def gcp_restart_compute_instances_printer(output):
         return
     pprint.pprint(output)
 
-    
-def gcp_restart_compute_instances(handle, project_name: str, zone:str, instance_name: str) -> Dict:
+
+def gcp_restart_compute_instances(
+        handle,
+        project_name: str,
+        zone:str,
+        instance_name: str
+        ) -> Dict:
     """gcp_restart_compute_instances Returns the dict of instance data
 
         :type project: string
@@ -48,7 +53,7 @@ def gcp_restart_compute_instances(handle, project_name: str, zone:str, instance_
         ic = InstancesClient(credentials=handle)
         result = ic.reset(
             project=project_name, zone=zone, instance=instance_name)
-        
+
         output['id'] = result.id
         output['name'] = result.name
         output['status'] = result.status

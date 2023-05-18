@@ -5,10 +5,9 @@
 import collections
 from typing import Dict
 import pprint
-
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -41,7 +40,7 @@ def k8s_describe_pod(handle, namespace: str, podname: str) -> Dict:
         :rtype: Dict of POD details
     """
     coreApiClient = client.CoreV1Api(api_client=handle)
-   
+
     def cleanNullTerms(_dict):
         """Delete None values recursively from all of the dictionaries"""
         for key, value in list(_dict.items()):
@@ -74,7 +73,8 @@ def k8s_describe_pod(handle, namespace: str, podname: str) -> Dict:
         data["Status"] = resp['status']['phase']
         data["IP"] = resp['status']['pod_ip']
         data["IPS"] = resp['status'].get('pod_i_ps')
-        data["Controlled By"] = resp['metadata']['owner_references'][0]['kind'] + "/" + resp['metadata']['owner_references'][0]['name']
+        data["Controlled By"] = resp['metadata']['owner_references'][0]['kind'] + \
+            "/" + resp['metadata']['owner_references'][0]['name']
         data["Containers"] = ''
         ####
         for container in resp['spec']['containers']:
@@ -95,9 +95,9 @@ def k8s_describe_pod(handle, namespace: str, podname: str) -> Dict:
             if 'args' in resp['spec']['containers'][container_index]:
                 data['   ' + 'Args'] = resp['spec']['containers'][container_index]['args']
             data['   ' + 'State'] = ''
-            if c['state']['running'] == None and c['state']['waiting'] != None:
+            if c['state']['running'] is None and c['state']['waiting'] is not None:
                 data['     ' + 'Reason'] = c['state']['waiting']['reason']
-                if c['last_state']['terminated'] != None:
+                if c['last_state']['terminated'] is not None:
                     msglist.append(c['last_state']['terminated']['message'])
             container_index += 1
         data['Conditions'] = ''
@@ -112,7 +112,8 @@ def k8s_describe_pod(handle, namespace: str, podname: str) -> Dict:
         data['QoS Class:'] = resp['status'].get('qos_class')
         tolerations = []
         for toleration in resp['spec']['tolerations']:
-            tolerations.append(toleration["key"] + ":" + toleration["effect"] + " op=" + toleration["operator"] + " for " + str(toleration["toleration_seconds"]))
+            tolerations.append(toleration["key"] + ":" + toleration["effect"] + " op=" + \
+                         toleration["operator"] + " for " + str(toleration["toleration_seconds"]))
         data['Tolerations'] = tolerations
         data['Events'] = msglist
     except ApiException as e:

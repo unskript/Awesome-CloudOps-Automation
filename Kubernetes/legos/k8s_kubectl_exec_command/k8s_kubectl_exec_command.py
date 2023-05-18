@@ -27,7 +27,13 @@ def k8s_kubectl_exec_command_printer(data: str):
 
     print (data)
 
-def k8s_kubectl_exec_command(handle, k8s_cli_string: str, pod_name:str, command: str, namespace: str) -> str:
+def k8s_kubectl_exec_command(
+        handle,
+        k8s_cli_string: str,
+        pod_name:str,
+        command: str,
+        namespace: str
+        ) -> str:
     """k8s_kubectl_exec_command executes the given kubectl command on the pod
 
         :type handle: object
@@ -45,7 +51,8 @@ def k8s_kubectl_exec_command(handle, k8s_cli_string: str, pod_name:str, command:
         :type namespace: str
         :param namespace: Namespace.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format or
+        Empty String in case of Error.
     """
     k8s_cli_string = k8s_cli_string.format(pod_name=pod_name, command=command, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)

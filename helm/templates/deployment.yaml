@@ -45,6 +45,10 @@ spec:
             httpGet:
               path: /api/kernelspecs
               port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            successThreshold: 3
+            timeoutSeconds: 15
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

@@ -3,9 +3,8 @@
 # All rights reserved.
 ##
 import pprint
-
-from pydantic import BaseModel, Field
 from typing import List, Optional
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -58,8 +57,8 @@ def mongodb_find_one(
         database_name: str,
         collection_name: str,
         filter: dict,
-        projection: dict = {},
-        sort: List = []) -> dict:
+        projection: dict = None,
+        sort: List = None) -> dict:
     """mongodb_find_one and returns .
 
         :type handle: object
@@ -92,4 +91,4 @@ def mongodb_find_one(
         return r or {}
 
     except Exception as e:
-        return {"error" : e.__str__()}
+        return {"error" : str(e)}

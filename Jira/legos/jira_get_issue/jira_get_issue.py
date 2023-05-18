@@ -2,10 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-
-from jira.client import JIRA
-from pydantic import BaseModel, Field
 import pprint
+from pydantic import BaseModel, Field
+from jira.client import JIRA
 
 pp = pprint.PrettyPrinter(indent=4)
 

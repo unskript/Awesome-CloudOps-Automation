@@ -2,10 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+from typing import List
 from pydantic import BaseModel, Field
-from typing import List,Any
 from tabulate import tabulate
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -35,7 +34,8 @@ def mysql_get_long_run_queries(handle, interval: int = 5) -> List:
       """
     # Get long running queries
     try:
-        query = "SELECT PROCESSLIST_ID, PROCESSLIST_INFO FROM performance_schema.threads WHERE PROCESSLIST_COMMAND = 'Query' AND PROCESSLIST_TIME >= %d;" % interval
+        query = ("SELECT PROCESSLIST_ID, PROCESSLIST_INFO FROM performance_schema.threads "
+                 f"WHERE PROCESSLIST_COMMAND = 'Query' AND PROCESSLIST_TIME >= {interval};")
 
         cur = handle.cursor()
         cur.execute(query)
@@ -45,6 +45,6 @@ def mysql_get_long_run_queries(handle, interval: int = 5) -> List:
         cur.close()
         handle.close()
         return res
-        
+
     except Exception as e:
         return {"Error": e}

@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -35,14 +35,19 @@ def mongodb_remove_field_in_collections_printer(output):
         return
     print("\n\n")
     if isinstance(output, Exception):
-        pprint.pprint("Error : {}".format(output))
+        pprint.pprint(f"Error : {output}")
     else:
         for entry in output:
             pprint.pprint(entry)
 
 
-def mongodb_remove_field_in_collections(handle, database_name: str, collection_name: str, remove_fields: dict,
-                                        upsert: bool = True) -> List:
+def mongodb_remove_field_in_collections(
+        handle,
+        database_name: str,
+        collection_name: str,
+        remove_fields: dict,
+        upsert: bool = True
+        ) -> List:
     """mongodb_remove_field_in_collections Remove field from every document in a MongoDB collection.
 
         :type handle: object

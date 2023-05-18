@@ -2,9 +2,9 @@
 ##  Copyright (c) 2022 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):

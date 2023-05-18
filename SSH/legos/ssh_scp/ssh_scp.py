@@ -2,10 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-
-from pydantic import BaseModel, Field
-from typing import Optional
 import pprint
+from typing import Optional
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -15,7 +14,8 @@ class InputSchema(BaseModel):
     )
     proxy_host: Optional[str] = Field(
         title='Proxy host',
-        description='Override the proxy host provided in the credentials. It still uses the proxy_user and port from the credentials.'
+        description='Override the proxy host provided in the credentials. \
+            It still uses the proxy_user and port from the credentials.'
     )
     remote_file: str = Field(
         title='Remote File',
@@ -65,7 +65,5 @@ def ssh_scp(
         :rtype:
     """
     client = sshClient([host], proxy_host)
-    copy_args = [{'local_file': local_file, 'remote_file': remote_file}]
-    cmds = client.copy_file(local_file, remote_file, direction)
+    client.copy_file(local_file, remote_file, direction)
     client.join()
-
