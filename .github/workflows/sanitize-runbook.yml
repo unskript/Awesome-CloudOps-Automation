@@ -21,11 +21,7 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          pip install shyaml
-          /usr/bin/env python -m pip install GitPython
-          /usr/bin/env python -m pip install gitpython
-          /usr/bin/env python -m pip install PyGithub
-          /usr/bin/env python -m pip install nbformat
+          pip install shyaml nbformat URLExtract
       
       - name: All Runbooks
         id: files
