@@ -148,8 +148,11 @@ disable=abstract-method,
         zip-builtin-not-iterating,
 	W,
         C0103,
+        C0115,
         C0114,
-	C0303
+	C0303,
+        C0304,
+        C0301
         
 
 
