@@ -3,10 +3,10 @@
 ##  All rights reserved.
 ##
 
-import datetime
-from boto3.session import Session
 import pprint
+import datetime
 from pydantic import BaseModel, Field
+from boto3.session import Session
 
 
 ## FIXME: make this a JSON schema rather than class
@@ -41,7 +41,7 @@ def aws_get_bucket_size(handle: Session, bucketName: str) -> str:
         )
         print("location of bucket: ", bucketLocationResp)
     except Exception as e:
-        print("Could not get location for bucket {}, error {}".format(bucketName, e))
+        print(f"Could not get location for bucket {bucketName}, error {e}")
         raise e
     region = bucketLocationResp['LocationConstraint']
 

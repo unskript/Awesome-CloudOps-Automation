@@ -3,9 +3,8 @@
 # All rights reserved.
 ##
 from typing import Dict
-
-import psycopg2
 from pydantic import BaseModel, Field
+import psycopg2
 
 class InputSchema(BaseModel):
     commands: list = Field(

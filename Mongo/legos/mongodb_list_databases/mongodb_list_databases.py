@@ -33,10 +33,10 @@ def mongodb_list_databases(handle) -> List:
     try:
         handle.server_info()
     except (AutoReconnect, ServerSelectionTimeoutError) as e:
-        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", e.__str__())
+        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", str(e))
         raise e
     except Exception as e:
-        print("[UNSKRIPT]: Error Connecting: ", e.__str__())
+        print("[UNSKRIPT]: Error Connecting: ", str(e))
         raise e
 
     dblist = handle.list_database_names()
