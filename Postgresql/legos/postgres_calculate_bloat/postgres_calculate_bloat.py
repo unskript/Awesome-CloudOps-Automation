@@ -3,10 +3,9 @@
 # All rights reserved.
 ##
 import pprint
-
-from typing import List, Any, Optional, Tuple
+from typing import List
 from tabulate import tabulate
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class InputSchema(BaseModel):
     pass
@@ -44,10 +43,10 @@ def postgres_calculate_bloat(handle) -> List:
 
           :rtype: Pecentage Bloat and Size Bloat of tables in a database
       """
-    query = "WITH constants AS ( SELECT current_setting('block_size')::numeric AS bs, 23 AS hdr, 8 AS ma), "\
-    "no_stats AS ( SELECT table_schema, table_name, n_live_tup::numeric as est_rows,pg_table_size(relid)::numeric as table_size "\
-    "FROM information_schema.columns "\
-    "JOIN pg_stat_user_tables as psut "\
+    query = "WITH constants AS ( SELECT current_setting('block_size')::numeric AS bs, "\
+    "23 AS hdr, 8 AS ma), no_stats AS ( SELECT table_schema, table_name, n_live_tup:"\
+    ":numeric as est_rows,pg_table_size(relid)::numeric as table_size FROM "\
+    "information_schema.columns JOIN pg_stat_user_tables as psut "\
     "ON table_schema = psut.schemaname "\
     "AND table_name = psut.relname "\
     "LEFT OUTER JOIN pg_stats "\

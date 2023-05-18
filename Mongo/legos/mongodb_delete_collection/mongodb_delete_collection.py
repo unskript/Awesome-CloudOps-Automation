@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -21,19 +21,19 @@ class InputSchema(BaseModel):
 
 def mongodb_delete_collection_printer(output):
     if output is None:
-        return
+        return None
     print("\n\n")
     if isinstance(output, Exception):
-        pprint.pprint("Error : {}".format(output))
+        pprint.pprint(f"Error : {output}")
         return output
-    else:
-        collections_before_drop = output[0]
-        collections_after_drop = output[1]
-        pprint.pprint("Collection count BEFORE drop:{}".format(len(collections_before_drop)))
-        pprint.pprint("Collection count AFTER drop:{}".format(len(collections_after_drop)))
-        diff = len(collections_before_drop) - len(collections_after_drop)
-        if diff != 0:
-            pprint.pprint("Collection deleted successfully !!!")
+    collections_before_drop = output[0]
+    collections_after_drop = output[1]
+    pprint.pprint(f"Collection count BEFORE drop:{len(collections_before_drop)}")
+    pprint.pprint(f"Collection count AFTER drop:{len(collections_after_drop)}")
+    diff = len(collections_before_drop) - len(collections_after_drop)
+    if diff != 0:
+        pprint.pprint("Collection deleted successfully !!!")
+    return None
 
 
 def mongodb_delete_collection(handle, database_name: str, collection_name: str) -> List:

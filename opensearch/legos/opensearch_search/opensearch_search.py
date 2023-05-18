@@ -24,7 +24,8 @@ class InputSchema(BaseModel):
     index: str = Field(
         '',
         title='Index',
-        description='A comma-separated list of index names to search; use _all or empty string to perform the operation on all indices.'
+        description=('A comma-separated list of index names to search; '
+                     'use _all or empty string to perform the operation on all indices.')
     )
     size: int = Field(
         '100',
@@ -36,7 +37,7 @@ class InputSchema(BaseModel):
 def opensearch_search_printer(output):
     print('\n\n')
     all_hits = output['hits']['hits']
-    print("Got %d Hits:" % output['hits']['total']['value'])
+    print(f"Got {output['hits']['total']['value']} Hits:")
 
     for num, doc in enumerate(all_hits):
         pp.pprint(f'DOC ID: {doc["_id"]}')
@@ -50,7 +51,8 @@ def opensearch_search(handle, query: dict, index: str = '', size: int = 100) -> 
         :param query: Opensearch Query DSL.
 
         :type index: string
-        :param index: A comma-separated list of index names to search; use _all or empty string to perform the operation on all indices.
+        :param index: A comma-separated list of index names to search;
+        use _all or empty string to perform the operation on all indices.
 
         :type size: int
         :param size: The number of hits to return.

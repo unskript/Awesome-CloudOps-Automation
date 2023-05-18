@@ -2,12 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Tuple, Optional
-from datetime import datetime, timezone, timedelta
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
-
+from typing import Tuple, Optional
+from datetime import datetime, timezone
+from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 class InputSchema(BaseModel):
     region: Optional[str] = Field(
@@ -16,7 +15,9 @@ class InputSchema(BaseModel):
     threshold: int = Field(
         default=7,
         title='Threshold(In days)',
-        description='The threshold for the reserved instance is scheduled to end within the threshold.')
+        description=('The threshold for the reserved instance is '
+                     'scheduled to end within the threshold.')
+                     )
 
 
 def aws_get_reserved_instances_about_to_retired_printer(output):
@@ -25,8 +26,13 @@ def aws_get_reserved_instances_about_to_retired_printer(output):
     pprint.pprint({"Instances": output})
 
 
-def aws_get_reserved_instances_about_to_retired(handle, region: str = "", threshold: int = 7) -> Tuple:
-    """aws_get_reserved_instances_about_to_retired Returns an array of reserved instances.
+def aws_get_reserved_instances_about_to_retired(
+        handle,
+        region: str = "",
+        threshold: int = 7
+        ) -> Tuple:
+    """aws_get_reserved_instances_about_to_retired Returns an array
+       of reserved instances.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -35,7 +41,8 @@ def aws_get_reserved_instances_about_to_retired(handle, region: str = "", thresh
         :param region: Region to filter instances.
         
         :type threshold: int
-        :param threshold: (in days) The threshold for the reserved instance is scheduled to end within the threshold.
+        :param threshold: (in days) The threshold for the reserved 
+        instance is scheduled to end within the threshold.
 
         :rtype: Array of instances.
     """
@@ -55,10 +62,9 @@ def aws_get_reserved_instances_about_to_retired(handle, region: str = "", thresh
                     instance_dict["instance_id"] = reserved_id["ReservedInstancesId"]
                     instance_dict["region"] = reg
                     result.append(instance_dict)
-        except Exception as e:
+        except Exception:
             pass
-        
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

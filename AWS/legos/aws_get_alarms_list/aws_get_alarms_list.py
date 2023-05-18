@@ -2,10 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, List
 import pprint
-
+from typing import Optional, List
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 
 
@@ -45,7 +44,12 @@ def aws_get_alarms_list(handle, region: str, alarm_name: str = None) -> List:
     result = []
     # if alarm is specified it's returning only it's details
     if alarm_name is not None:
-        res = aws_get_paginator(cloudwatchClient, "describe_alarms", "MetricAlarms", AlarmNames=[alarm_name])
+        res = aws_get_paginator(
+            cloudwatchClient,
+            "describe_alarms",
+            "MetricAlarms",
+            AlarmNames=[alarm_name]
+            )
     else:
         res = aws_get_paginator(cloudwatchClient, "describe_alarms", "MetricAlarms")
 

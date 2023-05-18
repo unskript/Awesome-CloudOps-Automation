@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript.com
 # All rights reserved.
 #
-import pprint 
+import pprint
+from typing import Optional, List
 from pydantic import BaseModel, Field
-from typing import Optional, List, Tuple
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(
@@ -17,7 +17,7 @@ def k8s_list_pvcs_printer(output):
         return
 
     pprint.pprint(output)
-        
+
 def k8s_list_pvcs(handle, namespace: str = '') -> List:
     """k8s_list_pvcs list pvcs
 
@@ -30,9 +30,11 @@ def k8s_list_pvcs(handle, namespace: str = '') -> List:
         :rtype: List
     """
     if namespace == '':
-        kubectl_command = 'kubectl get pvc -A --output=jsonpath=\'{range .items[*]}{@.metadata.namespace}{","}{@.metadata.name}{"\\n"}{end}\''
+        kubectl_command = ('kubectl get pvc -A --output=jsonpath=\'{range .items[*]}'
+                           '{@.metadata.namespace}{","}{@.metadata.name}{"\\n"}{end}\'')
     else:
-        kubectl_command = 'kubectl get pvc -n ' + namespace + ' --output=jsonpath=\'{range .items[*]}{@.metadata.namespace}{","}{@.metadata.name}{"\\n"}{end}\''
+        kubectl_command = ('kubectl get pvc -n ' + namespace + ' --output=jsonpath=\''
+                    '{range .items[*]}{@.metadata.namespace}{","}{@.metadata.name}{"\\n"}{end}\'')
     result = handle.run_native_cmd(kubectl_command)
     if result is None or hasattr(result, "stderr") is False or result.stderr is None:
         print(
