@@ -1,9 +1,7 @@
 import json
-
-from pydantic import BaseModel, Field
 import pprint
-from typing import Dict, List
-
+from typing import List
+from pydantic import BaseModel, Field
 from tabulate import tabulate
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -36,12 +34,11 @@ def salesforce_search_case(handle, search: str) -> List:
            :param search: Search based on Status/Priority/Subject/CaseNumber/Reason
        """
     search = "%" + search
-    query = "SELECT Id FROM Case WHERE Priority Like '%s'" \
-            "Or Status Like '%s' " \
-            "Or Subject Like '%s' " \
-            "Or Reason Like '%s' " \
-            "Or CaseNumber Like '%s' " \
-             % (search, search, search, search, search)
+    query = f"SELECT Id FROM Case WHERE Priority Like '{search}'" \
+            f"Or Status Like '{search}' " \
+            f"Or Subject Like '{search}' " \
+            f"Or Reason Like '{search}' " \
+            f"Or CaseNumber Like '{search}' " \
 
     records = handle.query(query)['records']
     if records:
@@ -49,5 +46,4 @@ def salesforce_search_case(handle, search: str) -> List:
         for record in records:
             cases.append(handle.Case.get(record['Id']))
         return cases
-    else:
-        return records
+    return records

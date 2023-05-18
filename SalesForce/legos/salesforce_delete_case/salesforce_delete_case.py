@@ -1,5 +1,4 @@
 import pprint
-
 from pydantic import BaseModel, Field
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -21,11 +20,10 @@ def salesforce_delete_case(handle, case_number: str) -> str:
            :type case_number: str
            :param case_number: The Case number of the case to delete
        """
-    record_id = handle.query("SELECT Id FROM Case WHERE CaseNumber = '%s'" % case_number)
+    record_id = handle.query(f"SELECT Id FROM Case WHERE CaseNumber = '{case_number}'")
     if not record_id['records']:
         return "Invalid Case Number"
-    else:
-        resp = handle.Case.delete(record_id['records'][0]['Id'])
-        if resp == 204:
-            return "Case %s deleted successfully" % case_number
-        return "Error Occurred"
+    resp = handle.Case.delete(record_id['records'][0]['Id'])
+    if resp == 204:
+        return f"Case {case_number} deleted successfully"
+    return "Error Occurred"
