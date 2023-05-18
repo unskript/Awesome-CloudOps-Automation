@@ -2,15 +2,15 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List,Tuple
+import pprint
+from typing import Tuple
 from pydantic import BaseModel, Field
 from github import GithubException
-import pprint
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -18,7 +18,7 @@ class InputSchema(BaseModel):
         title='Repository',
     )
     pull_request_number: int = Field(
-        description='Pull request number. Eg: 167', 
+        description='Pull request number. Eg: 167',
         title='Pull Request Number'
     )
 
@@ -28,7 +28,12 @@ def github_check_if_pull_request_is_merged_printer(output):
         return
     pprint.pprint(output)
 
-def github_check_if_pull_request_is_merged(handle, owner:str, repository:str, pull_request_number: int) -> Tuple:
+def github_check_if_pull_request_is_merged(
+        handle,
+        owner:str,
+        repository:str,
+        pull_request_number: int
+        ) -> Tuple:
     """github_check_if_pull_request_is_merged returns status, 
 
         :type handle: object
@@ -63,14 +68,12 @@ def github_check_if_pull_request_is_merged(handle, owner:str, repository:str, pu
             result.append(prs_dict)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found")
+            raise Exception("No such pull number or repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
+    return (True, None)

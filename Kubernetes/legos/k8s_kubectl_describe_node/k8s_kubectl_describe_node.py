@@ -1,6 +1,5 @@
-from pydantic import BaseModel, Field
 from pprint import pprint
-from typing import Optional
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     node_name: str = Field(
@@ -18,8 +17,7 @@ def k8s_kubectl_describe_node_printer(data: str):
         return
 
     print("Node Details:")
-
-    pprint (data)
+    pprint(data)
 
 def k8s_kubectl_describe_node(handle, node_name: str, k8s_cli_string: str) -> str:
     """k8s_kubectl_describe_node executes the given kubectl command
@@ -33,7 +31,8 @@ def k8s_kubectl_describe_node(handle, node_name: str, k8s_cli_string: str) -> st
          :type node_name: str
         :param node_name: Node Name.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format or
+        Empty String in case of Error.
     """
 
     k8s_cli_string = k8s_cli_string.format(node_name=node_name)
