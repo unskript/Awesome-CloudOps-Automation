@@ -3,10 +3,10 @@
 # All rights reserved.
 #
 
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
 import pprint
 import json
+from typing import Optional, Tuple
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(
@@ -40,7 +40,7 @@ def k8s_get_deployment_status(handle, deployment: str = "", namespace: str = "")
         :rtype: Tuple with status result and list of failed deployments.
     """
     result = []
-    if handle.client_side_validation != True:
+    if handle.client_side_validation is not True:
         print(f"K8S Connector is invalid: {handle}")
         raise Exception("K8S Connector is invalid")
 
@@ -77,11 +77,13 @@ def k8s_get_deployment_status(handle, deployment: str = "", namespace: str = "")
                 replica_details = items["status"]["conditions"]
                 for i in replica_details:
                     deployment_dict = {}
-                    if "FailedCreate" in i["reason"] and "ReplicaFailure" in i["type"] and "True" in i["status"]:
+                    if ("FailedCreate" in i["reason"] and "ReplicaFailure" in i["type"] and
+                        "True" in i["status"]):
                         deployment_dict["namespace"] = namespace_name
                         deployment_dict["deployment_name"] = deployment_name
                         result.append(deployment_dict)
-                    if "ProgressDeadlineExceeded" in i["reason"] and "Progressing" in i["type"] and "False" in i["status"]:
+                    if ("ProgressDeadlineExceeded" in i["reason"] and "Progressing" in i["type"] and
+                        "False" in i["status"]):
                         deployment_dict["namespace"] = namespace_name
                         deployment_dict["deployment_name"] = deployment_name
                         result.append(deployment_dict)
@@ -91,16 +93,17 @@ def k8s_get_deployment_status(handle, deployment: str = "", namespace: str = "")
             replica_details = status_details["status"]["conditions"]
             for i in replica_details:
                 deployment_dict = {}
-                if "FailedCreate" in i["reason"] and "ReplicaFailure" in i["type"] and "True" in i["status"]:
+                if ("FailedCreate" in i["reason"] and "ReplicaFailure" in i["type"] and
+                    "True" in i["status"]):
                     deployment_dict["namespace"] = namespace_name
                     deployment_dict["deployment_name"] = deployment_name
                     result.append(deployment_dict)
-                if "ProgressDeadlineExceeded" in i["reason"] and "Progressing" in i["type"] and "False" in i["status"]:
+                if ("ProgressDeadlineExceeded" in i["reason"] and "Progressing" in i["type"] and
+                    "False" in i["status"]):
                     deployment_dict["namespace"] = namespace_name
                     deployment_dict["deployment_name"] = deployment_name
                     result.append(deployment_dict)
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)    
+    return (True, None)

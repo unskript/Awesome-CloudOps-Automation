@@ -1,11 +1,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+from typing import List
 from pydantic import BaseModel, Field
 from tabulate import tabulate
-from botocore.exceptions import ClientError
-import pprint
 
 class InputSchema(BaseModel):
     instance_ids: list = Field(

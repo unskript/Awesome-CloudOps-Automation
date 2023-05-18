@@ -2,8 +2,8 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -17,11 +17,13 @@ class InputSchema(BaseModel):
     )
     match_query: dict = Field(
         title='Match Query',
-        description='The selection criteria for the update in dictionary format. For eg: {"foo":"bar"}.'
+        description=('The selection criteria for the update in '
+                     'dictionary format. For eg: {"foo":"bar"}.')
     )
     update: dict = Field(
         title='Update Document',
-        description='''The modifications to apply in dictionary format. For eg: { "$set": { "field": "value" } }.'''
+        description='''The modifications to apply in dictionary format.
+        For eg: { "$set": { "field": "value" } }.'''
     )
     upsert: bool = Field(
         True,
@@ -40,8 +42,14 @@ def mongodb_write_query_printer(output):
         f'MatchedCount: {output["matched_count"]}, ModifiedCount: {output["modified_count"]}')
 
 
-def mongodb_write_query(handle, database_name: str, collection_name: str, match_query: dict, update: dict,
-                        upsert: bool = True) -> Dict:
+def mongodb_write_query(
+        handle,
+        database_name: str,
+        collection_name: str,
+        match_query: dict,
+        update: dict,
+        upsert: bool = True
+        ) -> Dict:
     """mongodb_write_query Updates/creates an entry.
 
         :type handle: object
@@ -74,6 +82,6 @@ def mongodb_write_query(handle, database_name: str, collection_name: str, match_
         result["matched_count"] = res.matched_count
         result["modified_count"] = res.modified_count
     except Exception as e:
-        raise {'error': e.__str__()}
+        raise e
     # this is an object
     return result

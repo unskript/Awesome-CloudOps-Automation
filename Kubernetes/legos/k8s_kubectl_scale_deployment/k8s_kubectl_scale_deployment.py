@@ -27,7 +27,13 @@ def k8s_kubectl_scale_deployment_printer(data: str):
 
     print (data)
 
-def k8s_kubectl_scale_deployment(handle, k8s_cli_string: str, num: str, deployment: str, namespace:str) -> str:
+def k8s_kubectl_scale_deployment(
+        handle,
+        k8s_cli_string: str,
+        num: str,
+        deployment: str,
+        namespace:str
+        ) -> str:
     """k8s_kubectl_scale_deployment executes the given kubectl command
 
         :type handle: object

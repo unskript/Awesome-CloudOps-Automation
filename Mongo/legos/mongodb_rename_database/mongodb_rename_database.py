@@ -4,8 +4,8 @@
 ##
 import os
 import pprint
-import bson
 from typing import List
+import bson
 from pydantic import BaseModel, Field
 
 
@@ -31,7 +31,7 @@ def mongodb_rename_database_printer(output):
         return
     print("\n\n")
     if isinstance(output, Exception):
-        pprint.pprint("Error : {}".format(output))
+        pprint.pprint(f"Error : {output}")
     else:
         pprint.pprint("List of databases after renaming")
         pprint.pprint(output)

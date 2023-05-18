@@ -2,11 +2,10 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-
-from pydantic import BaseModel
-from unskript.legos.postgresql.postgresql_read_query.postgresql_read_query import postgresql_read_query
-from tabulate import tabulate
 from typing import List
+from pydantic import BaseModel
+from tabulate import tabulate
+from unskript.legos.postgresql.postgresql_read_query.postgresql_read_query import postgresql_read_query
 
 
 class InputSchema(BaseModel):
@@ -30,5 +29,6 @@ def postgresql_show_tables(handle) -> List:
           :rtype: List of tables.
       """
 
-    query = "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
+    query = ("SELECT * FROM pg_catalog.pg_tables WHERE schemaname != "
+             "'pg_catalog' AND schemaname != 'information_schema';")
     return postgresql_read_query(handle, query, ())
