@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
+from typing import List
 from pydantic import BaseModel, Field
-from typing import Dict, List
 
 
 class InputSchema(BaseModel):
