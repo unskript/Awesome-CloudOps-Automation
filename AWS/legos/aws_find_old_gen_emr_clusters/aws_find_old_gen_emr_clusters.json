@@ -1,0 +1,14 @@
+{
+    "action_title": "AWS Find EMR Clusters of Old Generation Instances",
+    "action_description": "This action list of EMR clusters of old generation instances.",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_find_old_gen_emr_clusters",
+    "action_needs_credential": true,
+    "action_is_check": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_RDS"],
+    "action_next_hop": [],
+    "action_next_hop_parameter_mapping": {}
+}

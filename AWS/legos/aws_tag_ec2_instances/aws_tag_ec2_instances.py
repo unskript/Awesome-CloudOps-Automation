@@ -2,11 +2,9 @@
 ## Written by Doug Sillars and ChatGPT
 ##  All rights reserved.
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
 import pprint
-from datetime import datetime, timezone
-
+from typing import Dict
+from pydantic import BaseModel, Field
 from beartype import beartype
 
 
@@ -25,9 +23,6 @@ class InputSchema(BaseModel):
         description='Name of the AWS where the instance is located.')
 
 
-
-
-
 @beartype
 def aws_tag_ec2_instances_printer(output):
     if output is None:
@@ -37,10 +32,6 @@ def aws_tag_ec2_instances_printer(output):
 
 @beartype
 def aws_tag_ec2_instances(handle, instance: str, tag_key: str, tag_value: str, region:str) -> Dict:
-
-
     ec2 = handle.client('ec2', region_name=region)
     res = ec2.create_tags(Resources=[instance], Tags=[{'Key': tag_key, 'Value': tag_value}])
-
-
-    return(res)
+    return res

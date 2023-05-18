@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 
 class InputSchema(BaseModel):
     tag_key: str = Field(
@@ -43,7 +43,8 @@ def aws_filter_target_groups_by_tags(handle, tag_key: str, region: str) -> List:
     count = 0
     tbsLength = len(tbs)
     for index, tb in enumerate(tbs):
-        # Need to call describe_tags to get the tags associated with these TGs, however that call can only take 20 TGs.
+        # Need to call describe_tags to get the tags associated with these TGs,
+        # however that call can only take 20 TGs.
         tbArnsList.append(tb.get('TargetGroupArn'))
         count = count + 1
         if count == 20 or index == tbsLength - 1:
@@ -52,9 +53,11 @@ def aws_filter_target_groups_by_tags(handle, tag_key: str, region: str) -> List:
             for tagDescription in tagDescriptions:
                 for tag in tagDescription.get('Tags'):
                     if tag.get('Key') == tag_key:
-                        output.append({"ResourceARN": tagDescription.get('ResourceArn'), "TagValue": tag.get('Value')})
+                        output.append({
+                            "ResourceARN": tagDescription.get('ResourceArn'),
+                            "TagValue": tag.get('Value')
+                            })
                         break
             count = 0
             tbArnsList = []
     return output
-

@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -23,7 +23,8 @@ def mongodb_kill_queries_printer(output):
 
 
 def mongodb_kill_queries(handle, op_id: int) -> Dict:
-    """mongodb_kill_queries can kill queries (read operations) that are running on more than one shard in a cluster.
+    """mongodb_kill_queries can kill queries (read operations) that
+    are running on more than one shard in a cluster.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
