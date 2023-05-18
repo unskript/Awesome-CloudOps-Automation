@@ -2,8 +2,8 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 import pprint
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -21,7 +21,11 @@ def aws_postgresql_get_configured_max_connections_printer(output):
     pprint.pprint(output)
 
 
-def aws_postgresql_get_configured_max_connections(handle, cluster_identifier: str, region: str) -> str:
+def aws_postgresql_get_configured_max_connections(
+        handle,
+        cluster_identifier: str,
+        region: str
+        ) -> str:
     """aws_postgresql_get_configured_max_connection Get the configured max connection.
 
           :type handle: object
@@ -54,7 +58,9 @@ def aws_postgresql_get_configured_max_connections(handle, cluster_identifier: st
 
     rds_client = handle.client('rds', region_name=region)
     try:
-        describe_db_clusters_resp = rds_client.describe_db_clusters(DBClusterIdentifier=cluster_identifier)
+        describe_db_clusters_resp = rds_client.describe_db_clusters(
+            DBClusterIdentifier=cluster_identifier
+            )
     except Exception as e:
         print(f'describe_db_clusters for cluster {cluster_identifier} hit an exception, {str(e)}')
         raise e
@@ -68,7 +74,9 @@ def aws_postgresql_get_configured_max_connections(handle, cluster_identifier: st
     # Now get the type of the DBInstance Identifier.
     # ASSUMPTION: All nodes are of the same type.
     try:
-        describe_instance_resp = rds_client.describe_db_instances(DBInstanceIdentifier=cluster_instances[0])
+        describe_instance_resp = rds_client.describe_db_instances(
+            DBInstanceIdentifier=cluster_instances[0]
+            )
     except Exception as e:
         print(f'describe_db_instance for cluster {cluster_instances[0]} failed, {str(e)}')
         raise e

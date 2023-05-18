@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -40,5 +40,5 @@ def aws_modify_ebs_volume_to_gp3(handle, region: str, volume_id: str) -> List:
         result.append(volumes)
     except Exception as e:
         result.append({"error": e})
-        
+
     return result

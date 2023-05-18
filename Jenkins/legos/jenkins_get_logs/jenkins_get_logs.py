@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict, Optional
 import pprint
+from typing import Dict, Optional
+from pydantic import BaseModel, Field
 
 
 
@@ -31,7 +31,8 @@ def jenkins_get_logs(handle, job_name: str, build_number: int = 0) -> Dict:
         :param job_name: Jenkins job name.
 
         :type build_number: int
-        :param build_number: Specific build number of the job. By default, it gets the last build logs.
+        :param build_number: Specific build number of the job. 
+        By default, it gets the last build logs.
 
         :rtype: Dict with builds number and logs.
     """
