@@ -2,11 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from typing import Any
-
+from typing import Any, List
 import psycopg2
 from pydantic import BaseModel, Field
-from typing import List
 
 class InputSchema(BaseModel):
     stored_procedure_name: str = Field(
@@ -38,10 +36,10 @@ def postgresql_stored_procedures(handle, stored_procedure_name: str, params: Lis
         cur = handle.cursor()
 
         if params:
-            query = "CALL %s" % stored_procedure_name
+            query = f"CALL {stored_procedure_name}"
             cur.execute(query, params)
         else:
-            query = "CALL %s" % stored_procedure_name
+            query = f"CALL {stored_procedure_name}"
             cur.execute(query)
 
         # commit the transaction
@@ -50,10 +48,8 @@ def postgresql_stored_procedures(handle, stored_procedure_name: str, params: Lis
         cur.close()
         print("Call PostgreSQL Stored Procedures successfully")
     except (Exception, psycopg2.DatabaseError) as error:
-        print("Error : {}".format(error))
+        print(f"Error : {error}")
     finally:
         if handle:
             handle.close()
             print("PostgreSQL connection is closed")
-
-    return
