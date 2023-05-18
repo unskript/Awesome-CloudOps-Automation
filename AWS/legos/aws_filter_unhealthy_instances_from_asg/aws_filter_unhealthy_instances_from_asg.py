@@ -1,11 +1,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -37,7 +37,11 @@ def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> Tuple:
     for reg in all_regions:
         try:
             asg_client = handle.client('autoscaling', region_name=reg)
-            response = aws_get_paginator(asg_client, "describe_auto_scaling_instances", "AutoScalingInstances")
+            response = aws_get_paginator(
+                asg_client,
+                "describe_auto_scaling_instances",
+                "AutoScalingInstances"
+                )
 
             # filter instances to only include those that are in an "unhealthy" state
             for instance in response:
@@ -48,13 +52,9 @@ def aws_filter_unhealthy_instances_from_asg(handle, region: str = "") -> Tuple:
                     data_dict["region"] = reg
                     result.append(data_dict)
 
-        except Exception as e:
+        except Exception:
             pass
-    
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
-
-    
+    return (True, None)

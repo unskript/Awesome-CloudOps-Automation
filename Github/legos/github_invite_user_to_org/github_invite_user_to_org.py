@@ -3,25 +3,27 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from github import GithubException
 from unskript.enums.github_user_role_enums import GithubUserRole
-import pprint
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
     email: str = Field(
-        description='Email address of the user to invite to the Github Organization. Eg: user@gmail.com',
+        description=('Email address of the user to invite to the Github Organization. '
+                     'Eg: user@gmail.com'),
         title='Email',
     )
     organization_name: str = Field(
-        description='Github Organization Name', 
+        description='Github Organization Name',
         title='Organization Name'
     )
     role: Optional[GithubUserRole] = Field(
         '',
-        description='Role to assign to the new user. By default, direct_member role will be assigned. Eg:"admin" or "direct_member" or "billing_manager". ',
+        description=('Role to assign to the new user. By default, direct_member role will '
+                     'be assigned. Eg:"admin" or "direct_member" or "billing_manager". '),
         title='Role',
     )
     list_of_teams: List = Field(
@@ -36,7 +38,13 @@ def github_invite_user_to_org_printer(output):
     pprint.pprint(output)
 
 
-def github_invite_user_to_org(handle, organization_name:str, email:str, list_of_teams:list, role:GithubUserRole=GithubUserRole.direct_member)-> str:
+def github_invite_user_to_org(
+        handle,
+        organization_name:str,
+        email:str,
+        list_of_teams:list,
+        role:GithubUserRole=GithubUserRole.direct_member
+        )-> str:
     """github_invite_user_to_org returns status of the invite
 
         :type handle: object
@@ -49,10 +57,12 @@ def github_invite_user_to_org(handle, organization_name:str, email:str, list_of_
         :param list_of_teams: List of teams to add the user to. Eg:["frontend-dev","backend-dev"]
 
         :type email: str
-        :param email: Email address of the user to invite to the Github Organization. Eg: user@gmail.com
+        :param email: Email address of the user to invite to the Github Organization. 
+        Eg: user@gmail.com
 
         :type role: GithubUserRole (Enum)
-        :param role: Role to assign to the new user. By default, direct_member role will be assigned. Eg:"admin" or "direct_member" or "billing_manager". 
+        :param role: Role to assign to the new user. By default, direct_member role will be 
+        assigned. Eg:"admin" or "direct_member" or "billing_manager". 
 
         :rtype: String, Status message for a the invite
     """
@@ -68,12 +78,11 @@ def github_invite_user_to_org(handle, organization_name:str, email:str, list_of_
                 teams_list.append(each_team)
         result = organization.invite_user(email=email, role=role, teams=teams_list)
         if result is None:
-            return f"Successfully sent invite"
+            return "Successfully sent invite"
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such organization found")
+            raise UnknownObjectException("No such organization found") from e
         raise e.data
-
-
+    return None

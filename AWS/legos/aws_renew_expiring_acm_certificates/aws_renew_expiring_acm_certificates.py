@@ -1,11 +1,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-import dateutil
-from pydantic import BaseModel, Field
-from typing import Dict,List
 import pprint
-import datetime
+from typing import Dict, List
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     aws_certificate_arn: List = Field(
@@ -23,7 +21,8 @@ def aws_renew_expiring_acm_certificates_printer(output):
     pprint.pprint(output)
 
 def aws_renew_expiring_acm_certificates(handle, aws_certificate_arn: List, region: str='') -> Dict:
-    """aws_renew_expiring_acm_certificates returns all the ACM issued certificates which are about to expire given a threshold number of days
+    """aws_renew_expiring_acm_certificates returns all the ACM issued certificates
+       which are about to expire given a threshold number of days
 
         :type handle: object
         :param handle: Object returned from Task Validate

@@ -1,12 +1,12 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_list_application_loadbalancers.aws_list_application_loadbalancers import aws_list_application_loadbalancers
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
 def aws_get_alb_listeners_without_http_redirect_printer(output):
     if output is None:
         return
-        
+
     pprint.pprint(output)
 
 
@@ -47,7 +47,7 @@ def aws_get_alb_listeners_without_http_redirect(handle, region: str = "") -> Tup
             alb_dict["region"] = reg
             alb_dict["alb_arn"] = loadbalancer_arn
             alb_list.append(alb_dict)
-        except Exception as error:
+        except Exception:
             pass
         
     for alb in alb_list:
@@ -67,11 +67,9 @@ def aws_get_alb_listeners_without_http_redirect(handle, region: str = "") -> Tup
                                     listener_dict["region"] = alb["region"]
                                     listener_dict["listener_arn"] = listner['ListenerArn']
                                     result.append(listener_dict)
-        except Exception as error:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-    
+    return (True, None)
