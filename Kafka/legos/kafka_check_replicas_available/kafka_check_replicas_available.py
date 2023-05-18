@@ -2,12 +2,12 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
+from typing import Dict
+import argparse
+from pydantic import BaseModel
 from kafka_utils.kafka_check.commands.replica_unavailability import ReplicaUnavailabilityCmd
 from kafka_utils.util.zookeeper import ZK
-from pydantic import BaseModel, Field
-from typing import Dict
-import pprint
-import argparse
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -23,8 +23,9 @@ def kafka_check_replicas_available_printer(output):
 
 
 def kafka_check_replicas_available(handle) -> Dict:
-    
-    """kafka_check_replicas_available Checks if the number of replicas not available for communication is equal to zero.
+
+    """kafka_check_replicas_available Checks if the number of replicas 
+    not available for communication is equal to zero.
 
         :rtype: Dict
     """

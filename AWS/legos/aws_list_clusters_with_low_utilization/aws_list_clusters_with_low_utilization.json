@@ -8,7 +8,7 @@
     "action_is_check":true,
     "action_supports_poll": true,
     "action_supports_iteration": true,
-    "action_next_hop": [],
+    "action_next_hop": ["6ad946fb1afd19286a8e7771e0f8e5566e4fdd54e3e2473385b5ac8e206e0a49"],
     "action_next_hop_parameter_mapping": {},
     "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_AWS_EBC" ]
 }

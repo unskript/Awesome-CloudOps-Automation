@@ -3,10 +3,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
-from pydantic import BaseModel, Field
-from github import GithubException
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 class InputSchema(BaseModel):
     organization_name: str = Field(
@@ -14,7 +14,7 @@ class InputSchema(BaseModel):
         title='Organization Name',
     )
     team_name: str = Field(
-        description='Team name. Eg: "backend"', 
+        description='Team name. Eg: "backend"',
         title='Team Name'
     )
 
@@ -44,15 +44,13 @@ def github_list_team_repos(handle, organization_name:str, team_name:str) -> List
         organization = handle.get_organization(organization_name)
         team = organization.get_team_by_slug(team_name)
         repos = team.get_repos()
-        [result.append(repo.full_name) for repo in repos]
+        result = [repo.full_name for repo in repos]
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such organization or repository found")
+            raise UnknownObjectException("No such organization or repository found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-
-

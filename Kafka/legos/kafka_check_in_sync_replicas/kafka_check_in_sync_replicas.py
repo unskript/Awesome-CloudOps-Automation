@@ -2,12 +2,12 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
+from typing import Dict
+import argparse
+from pydantic import BaseModel, Field
 from kafka_utils.kafka_check.commands.min_isr import MinIsrCmd
 from kafka_utils.util.zookeeper import ZK
-from pydantic import BaseModel, Field
-from typing import Dict
-import pprint
-import argparse
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -17,7 +17,8 @@ class InputSchema(BaseModel):
     min_isr: int = Field(
         3,
         title='Minimum In-Sync Replicas',
-        description='Default min.isr value for cases without settings in Zookeeper. The default value is 3'
+        description='Default min.isr value for cases without '
+        'settings in Zookeeper. The default value is 3'
     )
 
 
@@ -28,11 +29,13 @@ def kafka_check_in_sync_replicas_printer(output):
 
 
 def kafka_check_in_sync_replicas(handle, min_isr: int) -> Dict:
-    
-    """kafka_check_in_sync_replicas checks number of actual min-isr for each topic-partition with configuration for that topic.
+
+    """kafka_check_in_sync_replicas checks number of actual min-isr for 
+    each topic-partition with configuration for that topic.
 
         :type min_isr: int
-        :param min_isr: Default min.isr value for cases without settings in Zookeeper. The default value is 3.
+        :param min_isr: Default min.isr value for cases without settings 
+        in Zookeeper. The default value is 3.
 
         :rtype: Dict
     """
