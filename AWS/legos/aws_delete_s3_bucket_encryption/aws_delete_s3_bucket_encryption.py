@@ -2,10 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
-
+from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     region: str = Field(
@@ -36,8 +35,7 @@ def aws_delete_s3_bucket_encryption(handle, bucket_name: str, region: str) -> Di
 
         :rtype: Dict with the response info.
     """
-    s3Client = handle.client('s3',
-                             region_name=region)
+    s3Client = handle.client('s3', region_name=region)
     
     result = {}
 

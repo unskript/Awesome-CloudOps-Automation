@@ -30,13 +30,19 @@ def mongodb_count_documents_printer(output):
     if output is None:
         return
     if isinstance(output, int):
-        pprint.pprint("Total number of documents : {}".format(output))
+        pprint.pprint(f"Total number of documents : {output}")
     else:
         pprint.pprint(output)
 
 
-def mongodb_count_documents(handle, database_name: str, collection_name: str, filter: dict):
-    """mongodb_count_documents Retrieves the documents present in the collection and the count of the documents using count_documents().
+def mongodb_count_documents(
+        handle,
+        database_name: str,
+        collection_name: str,
+        filter: dict
+        ):
+    """mongodb_count_documents Retrieves the documents present in
+    the collection and the count of the documents using count_documents().
 
         :type handle: object
         :param handle: Object returned from task.validate(...).

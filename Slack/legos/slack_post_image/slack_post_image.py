@@ -4,16 +4,14 @@
 ##
 
 import pprint
-
 from pydantic import BaseModel, Field
 from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
+from beartype import beartype
 
 pp = pprint.PrettyPrinter(indent=2)
 
-from beartype import beartype
-
-## note: Your Slack App will need the files:write scope.  Your Bot will also need to be a member of the channel
+## note: Your Slack App will need the files:write scope.
+# Your Bot will also need to be a member of the channel
 
 class InputSchema(BaseModel):
     channel: str = Field(
@@ -42,7 +40,7 @@ def slack_post_image(
         image: str) -> str:
 
     try:
-        result = handle.files_upload(
+        handle.files_upload(
             channels = channel,
             initial_comment=message,
             file=image
@@ -52,5 +50,5 @@ def slack_post_image(
     except Exception as e:
         print("\n\n")
         pp.pprint(
-            f"Failed sending message to slack channel {channel}, Error: {e.__str__()}")
+            f"Failed sending message to slack channel {channel}, Error: {str(e)}")
         return f"Unable to send message on {channel}"

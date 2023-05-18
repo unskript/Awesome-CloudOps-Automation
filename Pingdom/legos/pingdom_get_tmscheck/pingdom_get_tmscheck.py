@@ -2,13 +2,13 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
-from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 import pprint
+from typing import Optional, Dict
+from pydantic import BaseModel, Field
+from unskript.thirdparty.pingdom import swagger_client as pingdom_client
+
 
 pp = pprint.PrettyPrinter(indent=4)
-
 
 class InputSchema(BaseModel):
     extended_tags: Optional[bool] = Field(
@@ -37,8 +37,14 @@ def pingdom_get_tmschecke_printer(output):
     pprint.pprint(output)
 
 
-def pingdom_get_tmscheck(handle, extended_tags: bool = False, limit: int = 100, offset: int = 0, tags: str = "",
-                         type: str = "") -> Dict:
+def pingdom_get_tmscheck(
+        handle,
+        extended_tags: bool = False,
+        limit: int = 100,
+        offset: int = 0,
+        tags: str = "",
+        type: str = ""
+        ) -> Dict:
     """pingdom_get_tmscheck returns the results of Transaction check
 
         :type handle: object
@@ -63,6 +69,12 @@ def pingdom_get_tmscheck(handle, extended_tags: bool = False, limit: int = 100, 
     """
 
     check = pingdom_client.TMSChecksApi(api_client=handle)
-    result = check.get_all_checks_with_http_info(_return_http_data_only=True, extended_tags=extended_tags, limit=limit,
-                                                 offset=offset, tags=tags if tags != None else None, type=type)
+    result = check.get_all_checks_with_http_info(
+        _return_http_data_only=True,
+        extended_tags=extended_tags,
+        limit=limit,
+        offset=offset,
+        tags=tags if tags is not None else None,
+        type=type
+        )
     return result

@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -23,7 +23,7 @@ def mongodb_create_database_printer(output):
         return
     print("\n\n")
     if isinstance(output[0], Exception):
-        pprint.pprint("Error : {}".format(output[0]))
+        pprint.pprint(f"Error : {output[0]}")
     else:
         pprint.pprint("List of databases after creating new one")
         pprint.pprint(output[0])

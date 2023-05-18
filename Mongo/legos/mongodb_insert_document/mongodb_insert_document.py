@@ -3,10 +3,8 @@
 # All rights reserved.
 ##
 import pprint
-
-from pydantic import BaseModel, Field
-from unskript.enums.mongo_enums import InsertCommands
 from typing import List
+from pydantic import BaseModel, Field
 import pymongo
 
 
@@ -40,7 +38,12 @@ def mongodb_insert_document_printer(output):
             pprint.pprint(entry)
 
 
-def mongodb_insert_document(handle, database_name: str, collection_name: str,  documents: list) -> List:
+def mongodb_insert_document(
+        handle,
+        database_name: str,
+        collection_name: str, 
+        documents: list
+        ) -> List:
     """mongodb_insert_document Runs mongo insert commands with the provided parameters.
 
         :type handle: object
@@ -64,10 +67,10 @@ def mongodb_insert_document(handle, database_name: str, collection_name: str,  d
     try:
         handle.server_info()
     except (pymongo.errors.AutoReconnect, pymongo.errors.ServerSelectionTimeoutError) as e:
-        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", e.__str__())
+        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", str(e))
         raise e
     except Exception as e:
-        print("[UNSKRIPT]: Error Connecting: ", e.__str__())
+        print("[UNSKRIPT]: Error Connecting: ", str(e))
         raise e
 
 
@@ -77,5 +80,5 @@ def mongodb_insert_document(handle, database_name: str, collection_name: str,  d
         res = db[collection_name].insert_many(documents)
         return res.inserted_ids
     except Exception as e:
-        print("[UNSKRIPT]: Error while Inserting Document(s): ", e.__str__())
+        print("[UNSKRIPT]: Error while Inserting Document(s): ", str(e))
         raise e

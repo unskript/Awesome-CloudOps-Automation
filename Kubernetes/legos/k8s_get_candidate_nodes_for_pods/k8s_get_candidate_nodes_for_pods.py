@@ -5,13 +5,11 @@
 
 import pprint
 from typing import Optional, Tuple
-
-from kubernetes import client
 from pydantic import BaseModel, Field
 from tabulate import tabulate
+from kubernetes import client
 
 pp = pprint.PrettyPrinter(indent=2)
-
 
 class InputSchema(BaseModel):
     attachable_volumes_aws_ebs: Optional[int] = Field(
@@ -36,16 +34,24 @@ class InputSchema(BaseModel):
 def k8s_get_candidate_nodes_for_pods_printer(output):
     if output is None:
         return
-    
-    (data, match_nodes) = output
-    print("\n")
-    print(tabulate(data, tablefmt="grid", headers=["Name", "attachable-volumes-aws-ebs", "cpu", "ephemeral-storage",
-                                                    "hugepages-1Gi", "hugepages-2Mi", "memory", "pods"]))
 
-def k8s_get_candidate_nodes_for_pods(handle, 
-                                     attachable_volumes_aws_ebs: int = 0, 
-                                     cpu_limit: int = 0, 
-                                     memory_limit: str = "", 
+    data = output[0]
+    print("\n")
+    print(tabulate(data, tablefmt="grid", headers=[
+        "Name",
+        "attachable-volumes-aws-ebs",
+        "cpu",
+        "ephemeral-storage",
+        "hugepages-1Gi",
+        "hugepages-2Mi",
+        "memory",
+        "pods"
+        ]))
+
+def k8s_get_candidate_nodes_for_pods(handle,
+                                     attachable_volumes_aws_ebs: int = 0,
+                                     cpu_limit: int = 0,
+                                     memory_limit: str = "",
                                      pod_limit: int = 0) -> Tuple:
 
     """k8s_get_candidate_nodes_for_pods get nodes for pod

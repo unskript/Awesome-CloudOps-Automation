@@ -27,7 +27,13 @@ def k8s_kubectl_patch_pod_printer(data: str):
 
     print (data)
 
-def k8s_kubectl_patch_pod(handle, k8s_cli_string: str, pod_name:str, patch: str, namespace: str) -> str:
+def k8s_kubectl_patch_pod(
+        handle,
+        k8s_cli_string: str,
+        pod_name:str,
+        patch: str,
+        namespace: str
+        ) -> str:
     """k8s_kubectl_patch_pod executes the given kubectl command
 
         :type handle: object
@@ -45,7 +51,8 @@ def k8s_kubectl_patch_pod(handle, k8s_cli_string: str, pod_name:str, patch: str,
         :type namespace: str
         :param namespace: Namespace.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format or
+        Empty String in case of Error.
     """
     k8s_cli_string = k8s_cli_string.format(pod_name=pod_name, patch=patch, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
