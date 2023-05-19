@@ -31,7 +31,7 @@ def extract_links_from_notebook(notebook_path, extractor):
 
 def validate_link(link):
 
-    if link == "unSkript.com" or link == "us.app.unskript.io":
+    if link in ("unSkript.com", "us.app.unskript.io"):
         return True
 
     try:
