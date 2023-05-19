@@ -1,9 +1,0 @@
-{
-    "name": "Delete Unused NAT Gateways",
-    "description": "This runbook search for all unused NAT gateways from all the region and delete those gateways.",
-    "uuid": "f2b1eecf9b4f727ec80fc4d4f5c7915b788cafe969552af0a26f8db9747bbcd4",
-    "icon": "CONNECTOR_TYPE_AWS",
-    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
-    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
-    "version": "1.0.0"
-  }
