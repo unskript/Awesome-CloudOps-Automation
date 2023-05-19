@@ -1,5 +1,5 @@
 {
-  "name": "Old Gerneration RDS Instances",
+  "name": "AWS Update RDS Instances from Old to New Generation",
   "description": "This runbook can be used to find the old generation RDS instances for the given AWS region and modify then to the given instance class.",
   "uuid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "icon": "CONNECTOR_TYPE_AWS",
