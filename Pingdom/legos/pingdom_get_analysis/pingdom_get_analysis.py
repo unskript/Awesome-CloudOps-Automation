@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
-from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 import pprint
+from typing import Optional, Dict
+from pydantic import BaseModel, Field
+from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -38,9 +38,16 @@ def pingdom_get_analysis_printer(output):
     pprint.pprint(output)
 
 
-def pingdom_get_analysis(handle, checkid: int, from_timestamp: int = 0, limit: int = 100, offset: int = 0,
-                         to_timestamp: int = 0) -> Dict:
-    """pingdom_get_analysis returns the list of latest root cause analysis results for a specified check.
+def pingdom_get_analysis(
+        handle,
+        checkid: int,
+        from_timestamp: int = 0,
+        limit: int = 100,
+        offset: int = 0,
+        to_timestamp: int = 0
+        ) -> Dict:
+    """pingdom_get_analysis returns the list of latest root cause analysis
+    results for a specified check.
         
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -64,8 +71,12 @@ def pingdom_get_analysis(handle, checkid: int, from_timestamp: int = 0, limit: i
     """
 
     check = pingdom_client.AnalysisApi(api_client=handle)
-    result = check.analysis_checkid_get_with_http_info(_return_http_data_only=True, checkid=checkid,
-                                                       _from=from_timestamp if from_timestamp != 0 else None,
-                                                       to=to_timestamp if to_timestamp != 0 else None, limit=limit,
-                                                       offset=offset)
+    result = check.analysis_checkid_get_with_http_info(
+        _return_http_data_only=True,
+        checkid=checkid,
+        _from=from_timestamp if from_timestamp != 0 else None,
+        to=to_timestamp if to_timestamp != 0 else None,
+        limit=limit,
+        offset=offset
+        )
     return result

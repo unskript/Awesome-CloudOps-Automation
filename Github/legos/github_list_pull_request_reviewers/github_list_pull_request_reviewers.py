@@ -3,15 +3,15 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
-from pydantic import BaseModel, Field
-from github import GithubException
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
         title='Repository',
     )
     pull_request_number: int = Field(
-        description='Pull request number. Eg: 167', 
+        description='Pull request number. Eg: 167',
         title='Pull Request Number'
     )
 
@@ -29,7 +29,12 @@ def github_get_pull_request_reviewers_printer(output):
         return
     pprint.pprint(output)
 
-def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_request_number: int) -> List:
+def github_list_pull_request_reviewers(
+        handle,
+        owner:str,
+        repository:str,
+        pull_request_number: int
+        ) -> List:
     """github_get_pull_request_reviewers returns reviewers of a pull request
 
         :type handle: object
@@ -59,14 +64,12 @@ def github_list_pull_request_reviewers(handle, owner:str, repository:str, pull_r
                 result.append(r.login)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found")
+            raise UnknownObjectException("No such pull number or repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     if len(result) == 0:
         return [f"No reviewers added for Pull Number {pr.number}"]
     return result
-
-

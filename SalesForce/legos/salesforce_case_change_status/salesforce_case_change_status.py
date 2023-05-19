@@ -3,9 +3,7 @@
 # All rights reserved.
 ##
 import pprint
-
 from pydantic import BaseModel, Field
-
 from unskript.enums.salesforce_enums import Status
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -36,16 +34,15 @@ def salesforce_case_change_status(handle, case_number: str, status: Status) -> s
         
         :rtype: str
     """
-    record_id = handle.query("SELECT Id FROM Case WHERE CaseNumber = '%s'" % case_number)
+    record_id = handle.query(f"SELECT Id FROM Case WHERE CaseNumber = '{case_number}'")
     if not record_id['records']:
         return "Invalid Case Number"
-    else:
-        status = status.value if status else None
-        record_id = record_id['records'][0]['Id']
-        data = {
-            "Status": status
-        }
-        resp = handle.Case.update(record_id, data)
-        if resp == 204:
-            return "Status change successfully for case %s " % case_number
-        return "Error Occurred"
+    status = status.value if status else None
+    record_id = record_id['records'][0]['Id']
+    data = {
+    "Status": status
+    }
+    resp = handle.Case.update(record_id, data)
+    if resp == 204:
+        return f"Status change successfully for case {case_number} "
+    return "Error Occurred"

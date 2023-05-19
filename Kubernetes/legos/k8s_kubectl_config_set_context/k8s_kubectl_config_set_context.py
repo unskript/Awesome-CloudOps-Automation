@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
-import pandas as pd
-import io
+
 
 class InputSchema(BaseModel):
     k8s_cli_string: str = Field(

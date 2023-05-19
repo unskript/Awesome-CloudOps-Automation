@@ -2,10 +2,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from github import GithubException
-from typing import Optional, List, Dict
-from pydantic import BaseModel, Field
 import pprint
+from github import GithubException
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -60,11 +60,10 @@ def github_get_branch(handle, owner:str, repository: str, branch_name: str) -> D
                 return [f"{branch_name} not found"]
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such repository or user found")
+            raise Exception("No such repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
-    return result
-
+    return branch_info

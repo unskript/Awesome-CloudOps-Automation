@@ -37,7 +37,8 @@ def k8s_kubectl_delete_pod(handle, k8s_cli_string: str, pod_name: str, namespace
         :type namespace: str
         :param namespace: Namespace.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format or
+        Empty String in case of Error.
     """
     k8s_cli_string = k8s_cli_string.format(pod_name, namespace)
     result = handle.run_native_cmd(k8s_cli_string)

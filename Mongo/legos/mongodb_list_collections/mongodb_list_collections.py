@@ -3,9 +3,9 @@
 ##  All rights reserved.
 ##
 import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from pymongo.errors import InvalidName
-from typing import List
 
 
 class InputSchema(BaseModel):

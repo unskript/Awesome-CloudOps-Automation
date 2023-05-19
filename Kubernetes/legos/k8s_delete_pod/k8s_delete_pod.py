@@ -2,11 +2,11 @@
 # Copyright (c) 2021 unSkript.com
 # All rights reserved.
 #
+import pprint 
 from typing import Dict
+from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from pydantic import BaseModel, Field
-import pprint 
 
 class InputSchema(BaseModel):
     namespace: str = Field(
@@ -19,10 +19,10 @@ class InputSchema(BaseModel):
 
 def k8s_delete_pod_printer(output):
     if output is None:
-        return 
-        
+        return
+
     pprint.pprint(output)
-        
+
 
 def k8s_delete_pod(handle, namespace: str, podname: str) -> Dict:
     """k8s_delete_pod delete a Kubernetes POD in a given Namespace

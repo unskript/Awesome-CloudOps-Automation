@@ -5,7 +5,7 @@
 
 from pydantic import BaseModel, Field
 from unskript.enums.mongo_enums import UpdateCommands
-from pymongo.errors import *
+from pymongo.errors import AutoReconnect, ServerSelectionTimeoutError
 
 
 class InputSchema(BaseModel):
@@ -53,7 +53,7 @@ def mongodb_update_document_printer(output):
     elif output > 1:
         print(f"Updated {output} Documents")
     else:
-        print(f"Updated Given Document")
+        print("Updated Given Document")
 
 
 def mongodb_update_document(
@@ -96,10 +96,10 @@ def mongodb_update_document(
     try:
         handle.server_info()
     except (AutoReconnect, ServerSelectionTimeoutError) as e:
-        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", e.__str__())
+        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", str(e))
         raise e
     except Exception as e:
-        print("[UNSKRIPT]: Error Connecting: ", e.__str__())
+        print("[UNSKRIPT]: Error Connecting: ", str(e))
         raise e
 
     try:
