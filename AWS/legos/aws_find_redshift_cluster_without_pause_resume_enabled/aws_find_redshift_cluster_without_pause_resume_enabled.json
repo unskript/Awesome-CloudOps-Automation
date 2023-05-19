@@ -9,6 +9,6 @@
     "action_supports_iteration": true,
     "action_is_check":true,
     "action_next_hop":[],
-    "action_next_hop_parameter_mapping":{"8b9c4eadb5f2fb817be0952f3ecb28c8e490ece6281286a74a95d5fe25019400": {"name": "AWS Ensure Redshift Clusters have Paused Resume Enabled", "region": ".[0].region", "redshift_clusters":".cluster_name"}},
+    "action_next_hop_parameter_mapping":{"8b9c4eadb5f2fb817be0952f3ecb28c8e490ece6281286a74a95d5fe25019400": {"name": "AWS Ensure Redshift Clusters have Paused Resume Enabled", "region": ".[0].region", "redshift_clusters":".[].cluster_name"}},
     "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_DB" ]
 }
