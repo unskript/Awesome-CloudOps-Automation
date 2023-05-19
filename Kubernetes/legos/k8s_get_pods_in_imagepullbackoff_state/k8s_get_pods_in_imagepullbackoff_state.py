@@ -54,7 +54,7 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Tuple
     if not namespace:
         all_namespaces = re.findall(r"(\S+).*",temp)
         all_unhealthy_pods = re.findall(r"\S+\s+(.*)",temp)
-        unhealthy_pods = [(i, j) for i, j in zip(all_namespaces, all_unhealthy_pods)]
+        unhealthy_pods = list(zip(all_namespaces, all_unhealthy_pods))
         res = defaultdict(list)
         for key, val in unhealthy_pods:
             res[key].append(val)

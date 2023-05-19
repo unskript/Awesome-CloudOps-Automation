@@ -1218,10 +1218,8 @@ def interactive_parse_runbook_param(args) -> dict:
         for o_param in optional_params:
             default_string = ""
             if properties.get(o_param).get('default') is not None:
-                default_string = ("Defualt value: \033[1m \"
-                    f"{properties.get(o_param).get('default')} \033[0m")
-            temp = input(f" Input the Value for \033[1m {o_param}  \033[0m  \"
-                         f"(OPTIONAL, {default_string} Hit enter to use default): "))
+                default_string = fr"Defualt value: \033[1m \{properties.get(o_param).get('default')} \033[0m"
+            temp = input(fr" Input the Value for \033[1m {o_param} \033[0m \(OPTIONAL, {default_string} Hit enter to use default): ")
             if not temp.strip():
                 if properties.get(o_param).get('default') is not None:
                     retval['params'][o_param] = properties.get(o_param).get('default')

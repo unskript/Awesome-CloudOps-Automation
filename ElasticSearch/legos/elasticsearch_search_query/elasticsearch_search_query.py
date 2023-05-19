@@ -71,7 +71,7 @@ def elasticsearch_search_query(handle,
 
     result = {}
     data = handle.search(query={"query_string": {"query": query}}, index=index, size=size, sort=sort, _source=fields)
-    print("Got %d Hits: " % data['hits']['total']['value'])
+    print(f"Got {data['hits']['total']['value']} Hits: ")
     result = data['hits']['hits']
 
     return result
