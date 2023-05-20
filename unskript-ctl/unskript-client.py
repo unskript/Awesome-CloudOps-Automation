@@ -81,7 +81,7 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
     """insert_first_and_last_cell This function inserts the first cell (unskript internal)
            and the last cell to a given notebook and returns the NotebookNode object back.
 
-       :type nb: NotebookNode 
+       :type nb: NotebookNode
        :param nb: NotebookNode Object that has the runbook content in it
 
        :rtype: NotebookNode that has the first and the last cell inserted in it
@@ -197,7 +197,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     """run_ipynb This function takes the Runbook name and executes it
            using nbclient.execute()
 
-       :type filename: str 
+       :type filename: str
        :param filename: Runbook name
 
        :rtype: None, Runbook execution will be displayed
@@ -264,9 +264,9 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
                     get_connector_name_from_id(ids[idx], nb.dict()),
                     'PASS']
                     )
-            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED: 
+            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
                 failed_objects = payload.get('objects')
-                failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects 
+                failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
                 result_table.append([
                     get_action_name_from_id(ids[idx], nb.dict()),
                     TBL_CELL_CONTENT_FAIL,
@@ -323,7 +323,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
 
 def run_checks(filter: str):
     """run_checks This function takes the filter as an argument
-    and based on the filter, this function queries the DB and 
+    and based on the filter, this function queries the DB and
     creates a temporary runnable runbooks and run them, updates
     the audit results.
 
@@ -362,7 +362,7 @@ def run_checks(filter: str):
 
 def print_run_summary(status_list_of_dict):
     """print_run_summary This function is used to just print the Run Summary.
-       :type status_list_of_dict: list 
+       :type status_list_of_dict: list
        :param status_list_of_dict: List of dictionaries that contains result of the run
 
        :rtype: None
@@ -410,10 +410,10 @@ def update_current_execution(status, id: str, content: dict):
        create a dynamic failed runbook. And update the execution_summary.yaml file
        to record the last failed run status
 
-       :type status: CheckOutputStatus 
+       :type status: CheckOutputStatus
        :param status: Enum of type CheckOutputStatus that has the current status
 
-       :type id: string 
+       :type id: string
        :param id: The Execution ID (Action UUID that failed)
 
        :type content: dict
@@ -486,10 +486,10 @@ def create_jit_runbook(check_list: list):
        task lines... and used it create the jit runbook
 
        :type check_list: list
-       :param check_list: List of checks in the form of dictionary 
+       :param check_list: List of checks in the form of dictionary
 
-       :type id: str 
-       :param id: Action UUID 
+       :type id: str
+       :param id: Action UUID
 
        :rtype: None
     """
@@ -589,7 +589,7 @@ def update_audit_trail(status_dict_list: list):
     """update_audit_trail This function will update the status of each run of the runbook
 
        :type status_dict_list: list
-       :param status_dict: List of Python Dictionary that has the status for all the checks that 
+       :param status_dict: List of Python Dictionary that has the status for all the checks that
              were run for the given runbook run
 
        :rtype: None
@@ -793,7 +793,7 @@ def show_audit_trail(filter: str = None):
                 flag = 3
                 exec_status = get_pss_record('current_execution_status')
                 if exec_status:
-                    if filter in e2c_mapping.keys():
+                    if filter in e2c_mapping:
                         for _f in e2c_mapping.get(filter):
                             c_name = exec_content.get(_f).get('check_name')
                             if not exec_content.get(_f).get('failed_objects') or not exec_content.get(_f).get('failed_objects').get(c_name):
@@ -820,13 +820,13 @@ def show_audit_trail(filter: str = None):
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
     """read_ipynb This function takes the Runbook name and reads the content
-           using nbformat.read, Reads as Version 4.0 and returns the 
+           using nbformat.read, Reads as Version 4.0 and returns the
            notebooknode.
 
-       :type filename: str 
+       :type filename: str
        :param filename: Runbook name
 
-       :rtype: NotebookNode 
+       :rtype: NotebookNode
     """
     nb = None
     if os.path.exists(filename) is not True:
@@ -844,13 +844,13 @@ def read_ipynb(filename: str) -> nbformat.NotebookNode:
 
 def get_code_cell_action_uuids(content: dict) -> list:
     """get_code_cell_action_uuids This function takes in the notenode dictionary
-           iterates over it to find all the Action UUIds for the code-cells and 
+           iterates over it to find all the Action UUIds for the code-cells and
            returns it as a list
 
-       :type content: dict 
+       :type content: dict
        :param content: Notebook Node Dictionary
 
-       :rtype: List of Action UUIDs 
+       :rtype: List of Action UUIDs
     """
     retval = []
     if content in ('', None):
@@ -880,10 +880,10 @@ def get_last_code_cell_output(content: dict) -> dict:
     """get_last_code_cell_output This function takes in the notenode dictionary
            finds out the last cell output and returns in the form of a dict
 
-       :type content: dict 
+       :type content: dict
        :param content: Notenode as Dictionary
 
-       :rtype: Last output in the form of Python dictionary  
+       :rtype: Last output in the form of Python dictionary
     """
     retval = {}
     if content in ('', None):
@@ -909,10 +909,10 @@ def get_action_name_from_id(action_uuid: str, content: dict) -> str:
        :type action_uuid: str
        :parm action_uuid: Action UUID as a String
 
-       :type content: dict 
+       :type content: dict
        :param content: Notenode as Dictionary
 
-       :rtype: Name of the Action that matches the given UUID, returns as string  
+       :rtype: Name of the Action that matches the given UUID, returns as string
     """
     retval = ''
     if content in ('', None):
@@ -931,12 +931,12 @@ def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
        that match the action_uuid and returns the action_type (connector_type).
 
        :type action_uuid: string
-       :param action_uuid: Action UUID 
+       :param action_uuid: Action UUID
 
        :type content: dict
        :param content: Notebooknode as Dictionary
 
-       :rtype: string: Name of the connector that matches the given UUID. 
+       :rtype: string: Name of the connector that matches the given UUID.
     """
     retval = ''
     if content in ('', None):
@@ -956,7 +956,7 @@ def create_creds_mapping():
        be a list of dictionaries with {"name", "id"}
 
        This function reads the credentials directory for all the available credentials and updates
-       the ZoDB with the mapping. 
+       the ZoDB with the mapping.
 
        :rtype: None
     """
@@ -973,13 +973,13 @@ def create_creds_mapping():
 
 
 def print_runbook_params(properties: dict, required: list, orderInputParameters: list = []):
-    """print_runbook_params This function prints the parameterSchema. It respects OrderInputParameters 
+    """print_runbook_params This function prints the parameterSchema. It respects OrderInputParameters
        and lists the Parameters in the same order as displayed in OrderInputParameters.
 
        :type properties: dict
        :param properties: Properties metadata read from the Runbook
 
-       :type required: list 
+       :type required: list
        :param required: List of required parameters read from the Runbook
 
        :type orderInputParameters: list
@@ -1072,7 +1072,7 @@ def get_runbook_metadata_contents(_runbook) -> dict:
 
 def non_interactive_parse_runbook_param(args) -> dict:
     """non_interactive_parse_runbook_param This function is called when
-    --runbook_parmas are sent when running the runbook. 
+    --runbook_parmas are sent when running the runbook.
 
        :type args: list
        :param args: Python List the arguments that were passed with the
@@ -1204,7 +1204,7 @@ def interactive_parse_runbook_param(args) -> dict:
         properties = mdata.get('parameterSchema').get('properties')
         required = mdata.get('parameterSchema').get('required')
 
-        all_param_names = [x for x in properties.keys()]
+        all_param_names = list(properties.keys())
         optional_params = []
         try:
             optional_params = set(all_param_names.sort()) - set(required.sort())
@@ -1291,7 +1291,7 @@ if __name__ == "__main__":
     description = description + str("\t  Welcome to unSkript CLI Interface \n")
     description = description + str(f"\t\t   VERSION: {version_number} \n")
     parser.description = description
-                         
+
     parser.add_argument('-lr', '--list-runbooks',
                         help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, nargs=REMAINDER,

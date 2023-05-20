@@ -27,7 +27,7 @@ def pingdom_traceroute_printer(output):
 
 def pingdom_traceroute(handle, host: str, probeid = None) -> Dict:
     """pingdom_traceroute performs traceroute for a given host and returns result.
-        
+
         :type handle: object
         :param handle: Object returned from task.validate(...).
 
@@ -45,7 +45,7 @@ def pingdom_traceroute(handle, host: str, probeid = None) -> Dict:
     result = traceroute.traceroute_get_with_http_info(
         _return_http_data_only=True,
         host=host,
-        probeid=probeid if probeid != probeid else probeid
+        probeid=probeid
         )
 
     return result

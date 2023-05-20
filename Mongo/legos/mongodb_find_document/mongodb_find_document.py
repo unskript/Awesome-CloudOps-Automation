@@ -114,13 +114,13 @@ def mongodb_find_document(
     try:
         handle.server_info()
     except (AutoReconnect, ServerSelectionTimeoutError) as e:
-        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", str(e))
+        print(f"[UNSKRIPT]: Reconnection / Server Selection Timeout Error: {str(e)}")
         raise e
     except Exception as e:
-        print("[UNSKRIPT]: Error Connecting: ", str(e))
+        print(f"[UNSKRIPT]: Error Connecting: {str(e)}")
         raise e
 
-    sort_by = sort if sort else None
+    sort_by = sort
     update = document
     sort = []
     if sort_by:
