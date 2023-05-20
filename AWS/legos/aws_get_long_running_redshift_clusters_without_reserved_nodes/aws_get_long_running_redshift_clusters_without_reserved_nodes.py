@@ -69,8 +69,8 @@ def aws_get_long_running_redshift_clusters_without_reserved_nodes(handle, region
             if cluster['ClusterStatus'] == 'available' and cluster_age > timedelta(days=threshold):
                 # Check if the cluster node type is present in the reservedNodesPerRegion map.
                 reservedNodes = reservedNodesPerRegion.get(reg)
-                if reservedNodes != None:
-                    if reservedNodes.get(cluster['NodeType']) == True:
+                if reservedNodes is not None:
+                    if reservedNodes.get(cluster['NodeType']) is True:
                         continue
                 cluster_dict = {}
                 cluster_dict["region"] = reg

@@ -90,5 +90,3 @@ def k8s_remove_pod_from_deployment(handle, pod_name: str, namespace: str):
             print(f"ERROR: Could not remove {pod_name} from its deployment in {namespace} ")
     except Exception as e:
         raise e
-
-    return

@@ -32,7 +32,7 @@ def mysql_kill_query(handle, processId: int) -> str:
     """
     # Kill long running queries using processId
     try:
-        query = "kill %d;" % processId
+        query = f"kill {processId};"
         cur = handle.cursor()
         cur.execute(query)
         res = cur.fetchall()
