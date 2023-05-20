@@ -101,8 +101,8 @@ def check_modification_status(ec2Client, volumeID) -> bool:
     state = resp['VolumesModifications'][0]['ModificationState']
     progress = resp['VolumesModifications'][0]['Progress']
     print(f'Volume modification state {state}, Progress {progress}')
-    if state == 'completed' or state == None:
+    if state in ('completed', None):
         return True
-    elif state == 'failed':
+    if state == 'failed':
         raise Exception("Get Status Failed")
     return False

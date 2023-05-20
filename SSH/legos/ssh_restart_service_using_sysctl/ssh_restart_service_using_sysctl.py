@@ -65,7 +65,7 @@ def ssh_restart_service_using_sysctl(
 
     for host_output in runCommandOutput:
         hostname = host_output.host
-        output = [line for line in host_output.stdout]
+        output = list(host_output.stdout)
         res[hostname] = output
 
     return res

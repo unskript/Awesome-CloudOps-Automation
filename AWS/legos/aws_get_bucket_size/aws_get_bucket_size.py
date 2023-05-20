@@ -61,6 +61,6 @@ def aws_get_bucket_size(handle: Session, bucketName: str) -> str:
                                         )
     print(response)
     for res in response["Datapoints"]:
-        return str("{:,}".format(int(res["Average"]))).rjust(25)
+        return str(f"{int(res['Average'])}").rjust(25)
     # Note the use of "{:,}".format.
     # This is a new shorthand method to format output.
