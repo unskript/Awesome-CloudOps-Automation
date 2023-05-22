@@ -31,7 +31,8 @@ def k8s_kubectl_show_metrics_node(handle, k8s_cli_string: str, node_name:str) ->
         :type node_name: str
         :param node_name: Node Name.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format or
+        Empty String in case of Error.
     """
     k8s_cli_string = k8s_cli_string.format(node_name=node_name)
     result = handle.run_native_cmd(k8s_cli_string)

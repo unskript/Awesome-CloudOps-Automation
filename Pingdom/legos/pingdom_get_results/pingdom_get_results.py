@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
-from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 import pprint
+from typing import Optional, Dict
+from pydantic import BaseModel, Field
+from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -17,7 +17,9 @@ class InputSchema(BaseModel):
     status: Optional[str] = Field(
         'down',
         title="Status",
-        description="Filter to only show specified results.Comma seperated string. example: down,unconfirmed,unknown")
+        description=("Filter to only show specified results.Comma "
+                     "seperated string. example: down,unconfirmed,unknown")
+                     )
     limit: Optional[int] = Field(
         10,
         title="Limit",
@@ -47,6 +49,10 @@ def pingdom_get_results(handle, checkid: int, status: str = 'down', limit: int =
         :rtype: Returns the raw results for a given checkID.
     """
     check = pingdom_client.ResultsApi(api_client=handle)
-    result = check.results_checkid_get_with_http_info(_return_http_data_only=True, checkid=checkid, status=status,
-                                                      limit=limit)
+    result = check.results_checkid_get_with_http_info(
+        _return_http_data_only=True,
+        checkid=checkid,
+        status=status,
+        limit=limit
+        )
     return result

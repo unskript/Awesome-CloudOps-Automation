@@ -3,10 +3,10 @@
 # All rights reserved.
 ##
 
+import pprint
+from urllib.parse import urlparse
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_get_handle.aws_get_handle import Session
-from urllib.parse import urlparse
-import pprint
 
 class InputSchema(BaseModel):
     alarm_name: str = Field(
@@ -18,8 +18,9 @@ class InputSchema(BaseModel):
         description="AWS Region of the cloudwatch.")
     url: str = Field(
         title="URL",
-        description="URL where the alarm notification needs to be sent. URL should start with http or https.")
-
+        description=("URL where the alarm notification needs to be sent. "
+                       "URL should start with http or https.")
+    )
 
 def aws_cloudwatch_attach_webhook_notification_to_alarm_printer(output):
     if output is None:
@@ -75,7 +76,7 @@ def aws_cloudwatch_attach_webhook_notification_to_alarm(
         print(f'Invalid URL {url}, {e}')
         raise e
 
-    if parsedURL.scheme != 'http' and parsedURL.scheme != 'https':
+    if parsedURL.scheme not in ('http', 'https'):
         return f'Invalid URL {url}'
 
     protocol = parsedURL.scheme
@@ -91,4 +92,3 @@ def aws_cloudwatch_attach_webhook_notification_to_alarm(
     subscriptionArn = response['SubscriptionArn']
     print(f'URL {url} subscribed to SNS {snsArn}, subscription ARN {subscriptionArn}')
     return subscriptionArn
-

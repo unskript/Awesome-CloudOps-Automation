@@ -3,7 +3,6 @@
 ##  All rights reserved.
 ##
 import pprint
-
 import psycopg2
 from pydantic import BaseModel, Field
 
@@ -40,13 +39,11 @@ def postgresql_delete_query(handle, query:str):
       cur.close()
       print("\n")
       pp.pprint("Deleted Record successfully")
-      pp.pprint("The number of deleted rows: {}".format(rows_deleted))
+      pp.pprint(f"The number of deleted rows: {rows_deleted}")
 
   except (Exception, psycopg2.DatabaseError) as error:
-      pp.pprint("Error : {}".format(error))
+      pp.pprint(f"Error : {error}")
   finally:
       if handle:
           handle.close()
           pp.pprint("PostgreSQL connection is closed")
-
-  return

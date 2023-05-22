@@ -4,7 +4,6 @@
 ##
 import pprint
 from typing import Optional, Dict
-
 from pydantic import BaseModel, Field
 
 pp = pprint.PrettyPrinter()
@@ -13,7 +12,9 @@ pp = pprint.PrettyPrinter()
 class InputSchema(BaseModel):
     states: Optional[str] = Field(
         title='states',
-        description='The states of the node, specified as a comma-separated list, valid values are: NEW, RUNNING, UNHEALTHY, DECOMMISSIONING, DECOMMISSIONED, LOST, REBOOTED, SHUTDOWN'
+        description=('The states of the node, specified as a comma-separated list, '
+                     'valid values are: NEW, RUNNING, UNHEALTHY, DECOMMISSIONING, '
+                     'DECOMMISSIONED, LOST, REBOOTED, SHUTDOWN')
     )
     applicationTypes: Optional[str] = Field(
         title='Application Types',
@@ -38,5 +39,7 @@ def hadoop_get_cluster_appstatistics(handle, states: str = "", applicationTypes:
 
         :rtype: Dict cluster app statistics
     """
-    return handle.get_cluster_appstatistics(states=states if states else None,
-                                            applicationTypes=applicationTypes if applicationTypes else None)
+    return handle.get_cluster_appstatistics(
+        states=states if states else None,
+        applicationTypes=applicationTypes if applicationTypes else None
+        )

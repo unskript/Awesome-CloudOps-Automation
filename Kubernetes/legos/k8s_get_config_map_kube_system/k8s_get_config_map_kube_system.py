@@ -2,11 +2,11 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from typing import Optional, List, Tuple
-from kubernetes import client
+from typing import Optional, List
 from pydantic import BaseModel, Field
 from tabulate import tabulate
 from unskript.legos.kubernetes.k8s_kubectl_command.k8s_kubectl_command import k8s_kubectl_command
+from kubernetes import client
 
 
 class InputSchema(BaseModel):
@@ -71,7 +71,7 @@ def k8s_get_config_map_kube_system(handle, config_map_name: str = '', namespace:
         :rtype: List of system kube config maps for a given namespace
     """
     all_namespaces = [namespace]
-    cmd = f"kubectl get ns  --no-headers -o custom-columns=':metadata.name'"
+    cmd = "kubectl get ns  --no-headers -o custom-columns=':metadata.name'"
     if namespace is None or len(namespace)==0:
         kubernetes_namespaces = k8s_kubectl_command(handle=handle,kubectl_command=cmd )
         replaced_str = kubernetes_namespaces.replace("\n"," ")
@@ -93,4 +93,3 @@ def k8s_get_config_map_kube_system(handle, config_map_name: str = '', namespace:
             config_map_dict["details"] = config_maps
             result.append(config_map_dict)
     return result
-

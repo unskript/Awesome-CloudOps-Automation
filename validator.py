@@ -63,7 +63,7 @@ def check_action_by_connector_names(connector: str = '') -> bool:
         check_dir_contents(os.path.join(connector, 'legos', _dir), ret_val)
 
     for k,v in ret_val.items():
-        if v == False:
+        if v is False:
             print(f"CHECK FAILED FOR {k}")
             return False
     
@@ -97,7 +97,7 @@ def check_dir_contents(_dir: str, ret_val) -> bool:
         or readmefile not in dir_content:
         ret_val[_dir] = False
         print(f"ERROR: Missing File {dir_content} ")
-        return
+        return None
     
     try:
         with open(jsonfile, 'r') as f:
@@ -107,13 +107,13 @@ def check_dir_contents(_dir: str, ret_val) -> bool:
         if d.get('action_entry_function') != os.path.basename(_dir):
             print(f"ERROR: ENTRY FUNCTION IN {jsonfile} is Wrong Expecting: {os.path.basename(_dir)} Has: {d.get('action_entry_function')}")
             ret_val[_dir] = False
-            return 
+            return None
     except Exception as e:
         ret_val[_dir] = False
         raise e
  
     ret_val[_dir] = True
-    return
+    return None
 
 
 def main():
@@ -127,7 +127,7 @@ def main():
         result.append(check_action_by_connector_names(os.path.dirname(connector)))
     
     for r in result:
-        if r == False:
+        if r is False:
             print("ERROR: Check Failed. Please note the Validation process checks -")
             print("ERROR:     1. Lego Directory name should match python and json file name ") 
             print("ERROR:     2. Action Entry function should be the same as Lego directory name") 
@@ -137,7 +137,6 @@ def main():
             sys.exit(-1)
 
     print("Checks were successful")
-    return
 
 
 if __name__ == '__main__':

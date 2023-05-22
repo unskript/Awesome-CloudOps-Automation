@@ -1,14 +1,12 @@
+import pprint
 import json
 from typing import Dict, Optional
 from pydantic import BaseModel, Field
 from tabulate import tabulate
-
 from unskript.enums.salesforce_enums import Status, CaseOrigin, CaseType, Priority, CaseReason, \
     PotentialLiability, SLAViolation
-import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
-
 
 class AdditionalInformation(BaseModel):
     product: Optional[str] = Field(
@@ -145,9 +143,9 @@ def salesforce_update_case(handle,
         :rtype: 
     """
 
-    """salesforce_update_case updated a case in Salesforce. """
+#salesforce_update_case updated a case in Salesforce.
 
-    records = handle.query("SELECT Id FROM Case WHERE CaseNumber = '%s'" % case_number)
+    records = handle.query(f"SELECT Id FROM Case WHERE CaseNumber = '{case_number}'")
     if not records['records']:
         return {"Error": "Invalid Case Number"}
 
@@ -166,13 +164,12 @@ def salesforce_update_case(handle,
     case_reason = case_reason.value if case_reason else case.get("Reason")
 
     if contact_name != "":
-        contact_id = handle.query("SELECT Id FROM Contact WHERE Name = '%s'" % contact_name)
+        contact_id = handle.query(f"SELECT Id FROM Contact WHERE Name = '{contact_name}'")
         if contact_id['records'] == []:
             return {"Error": "Invalid Contact name"}
-        else:
-            contact_id = contact_id['records'][0]['Id']
+        contact_id = contact_id['records'][0]['Id']
     if account_name != "":
-        account_id = handle.query("SELECT Id FROM Account WHERE Name = '%s'" % account_name)
+        account_id = handle.query(f"SELECT Id FROM Account WHERE Name = '{account_name}'")
         if account_id['records'] == []:
             return {"Error": "Invalid Account name"}
         else:
@@ -187,10 +184,14 @@ def salesforce_update_case(handle,
     data['Type'] = type
     data['Reason'] = case_reason
     if web_information:
-        if web_information.get("web_email", None): data['SuppliedEmail'] = web_information.get("web_email", None)
-        if web_information.get("web_name", None): data['SuppliedName'] = web_information.get("web_name", None)
-        if web_information.get("web_company", None): data['SuppliedCompany'] = web_information.get("web_company", None)
-        if web_information.get("web_phone", None): data['SuppliedPhone'] = web_information.get("web_phone", None)
+        if web_information.get("web_email", None):
+            data['SuppliedEmail'] = web_information.get("web_email", None)
+        if web_information.get("web_name", None):
+            data['SuppliedName'] = web_information.get("web_name", None)
+        if web_information.get("web_company", None):
+            data['SuppliedCompany'] = web_information.get("web_company", None)
+        if web_information.get("web_phone", None):
+            data['SuppliedPhone'] = web_information.get("web_phone", None)
     if additional_information:
         if additional_information.get("product"):
             data["Product__c"] = additional_information.get("product")
@@ -206,5 +207,4 @@ def salesforce_update_case(handle,
     resp = handle.Case.update(record_id, data)
     if resp == 204:
         return handle.Case.get(record_id)
-    else:
-        return resp
+    return resp

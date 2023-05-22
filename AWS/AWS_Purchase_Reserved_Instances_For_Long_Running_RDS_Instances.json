@@ -1,0 +1,9 @@
+{
+    "name": "Purchase Reserved Instances For Long Running AWS RDS Instances",
+    "description": "Ensuring that long-running AWS RDS instances have Reserved Instances purchased for them is an important cost optimization strategy for AWS users. By committing to a specific capacity of RDS instances for a period of one or three years, users can take advantage of significant discounts compared to On-Demand pricing. This approach can help optimize AWS costs for RDS instances that are expected to run for an extended period and have predictable usage patterns. This runbook helps us to optimize costs by ensuring that Reserved Instances are purchased for these RDS instances.",  
+    "uuid": "e0ff270a41b65b1804da257ffec5fbdec7dd51bdb3da925cced7fa3391bfe70b",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_CLOUDOPS"],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }

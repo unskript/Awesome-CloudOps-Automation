@@ -20,8 +20,8 @@ class InputSchema(BaseModel):
     metadata: dict = Field(
         None,
         title='Metadata',
-        description='This can be useful for storing additional information about the object in a structured format. '
-                    'For Eg. {"order_id": "6735"}'
+        description='This can be useful for storing additional information about the \
+            object in a structured format. For Eg. {"order_id": "6735"}'
     )
     evidence: dict = Field(
         None,
@@ -53,7 +53,8 @@ def stripe_update_dispute(handle,
         :param submit: Whether to immediately submit evidence to the bank.
 
         :type metadata: dict
-        :param metadata: This can be useful for storing additional information about the object in a structured format.
+        :param metadata: This can be useful for storing additional information
+        about the object in a structured format.
 
         :type evidence: dict
         :param evidence: Evidence to upload, to respond to a dispute.

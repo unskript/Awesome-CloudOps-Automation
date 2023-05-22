@@ -3,11 +3,10 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-
-from typing import Optional, List
-from pydantic import BaseModel, Field
-from github import GithubException
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
@@ -34,15 +33,13 @@ def github_list_org_members(handle, organization_name:str)-> List:
     try:
         organization = handle.get_organization(organization_name)
         members = organization.get_members()
-        [result.append(member.login) for member in members]
+        result = [member.login for member in members]
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such organization or user found")
+            raise UnknownObjectException("No such organization or user found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-
-

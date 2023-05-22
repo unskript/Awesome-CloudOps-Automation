@@ -18,7 +18,7 @@ class InputSchema(BaseModel):
 def gcp_delete_service_account_printer(output):
     if output is None:
         return
-    pprint(output)
+    pprint.pprint(output)
 
 
 def gcp_delete_service_account(handle, sa_id: str) -> Dict:
@@ -34,10 +34,9 @@ def gcp_delete_service_account(handle, sa_id: str) -> Dict:
 
     result = {}
     try:
-        service.projects().serviceAccounts().delete(
+        result = service.projects().serviceAccounts().delete(
             name='projects/-/serviceAccounts/' + sa_id).execute()
 
-        result["Success"] = "Account with name {} deleted successfuly".format(email)
 
     except Exception as error:
         result = {"error": error}
