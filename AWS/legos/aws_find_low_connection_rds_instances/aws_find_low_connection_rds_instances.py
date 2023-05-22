@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
         description='Region of the RDS.'
     )
     min_connections: Optional[int] = Field(
-        default='',
+        default=10,
         title='Minimum Number of Connections',
         description='The minimum number of connections for an instance to be considered active.'
     )
