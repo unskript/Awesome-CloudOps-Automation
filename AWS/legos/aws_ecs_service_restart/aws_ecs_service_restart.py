@@ -60,7 +60,7 @@ def aws_ecs_service_restart(handle, cluster_arn: str, service_name: str, region:
             services=[service_name]
         )
     except:
-        errString = '"Failed restart service: {} in cluster: {} after 40 checks."'.format(service_name, cluster_arn)
+        errString = f'"Failed restart service: {service_name} in cluster: {cluster_arn} after 40 checks."'
         print(errString)
         raise Exception(errString)
     return True

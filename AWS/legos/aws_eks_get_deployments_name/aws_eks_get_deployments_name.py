@@ -55,7 +55,7 @@ def aws_eks_get_deployments_name(handle, clusterName: str, namespace: str, regio
         for deployment in resp.items:
             res = {}
             res["NAME"] = deployment.metadata.name
-            res['READY'] = "Ready {}/{}".format(deployment.status.ready_replicas, deployment.status.available_replicas)
+            res['READY'] = f"Ready {deployment.status.ready_replicas}/{deployment.status.available_replicas}"
             res['UP-TO-DATE'] = deployment.status.updated_replicas
             res['AVAILABLE'] = deployment.status.available_replicas
             res['START_TIME'] = deployment.metadata.creation_timestamp.strftime("%m/%d/%Y, %H:%M:%S")

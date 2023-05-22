@@ -31,7 +31,7 @@ def extract_links_from_notebook(notebook_path, extractor):
 
 def validate_link(link):
 
-    if link == "unSkript.com" or link == "us.app.unskript.io":
+    if link in ("unSkript.com", "us.app.unskript.io"):
         return True
 
     try:
@@ -63,18 +63,18 @@ def check_sanity(ipynbFile: str = '') -> bool:
         nb = json.loads(f.read())
 
     jsonFile = ipynbFile.replace("ipynb", "json")
-    if os.path.exists(jsonFile) == False:
+    if os.path.exists(jsonFile) is False:
         print(f"Skipping sanity on file ({ipynbFile}) since {jsonFile} is missing")
         return True
      
     with open(jsonFile) as jf:
         jsonData = json.loads(jf.read())
 
-    if nb.get('metadata') == None:
+    if nb.get('metadata') is None:
         print("Failed metadata check for notebook")
         rc = False
 
-    if nb.get('metadata').get('execution_data') == None:
+    if nb.get('metadata').get('execution_data') is None:
         print("Failed execution_data check for notebook")
         rc = False
 
@@ -83,7 +83,7 @@ def check_sanity(ipynbFile: str = '') -> bool:
         print("Failed execution_data keys check for notebook")
         rc = False
 
-    if exec_data.get('runbook_name') == None:
+    if exec_data.get('runbook_name') is None:
         print("Failed runbook_name check for notebook")
         rc = False
     
@@ -92,7 +92,7 @@ def check_sanity(ipynbFile: str = '') -> bool:
         print("Failed runbook_name value check for notebook")
         rc = False
 
-    if nb.get('metadata').get('parameterSchema') == None:
+    if nb.get('metadata').get('parameterSchema') is None:
         print("Failed parameters value check for notebook")
         rc = False
 
@@ -102,11 +102,11 @@ def check_sanity(ipynbFile: str = '') -> bool:
         if cell.get('cell_type') == 'markdown':
             continue
 
-        if cell.get('metadata') == None:
+        if cell.get('metadata') is None:
             print("Failed metadata check for cell")
             rc = False
 
-        if cell.get('metadata').get('tags') == None:
+        if cell.get('metadata').get('tags') is None:
             print("Failed metadata.tags check for cell")
             rc = False
 
@@ -188,7 +188,7 @@ def sanitize(ipynbFile: str = '') -> bool:
         # Reset Environment & Tenant Information
         nb_new['metadata']['execution_data'] = execution_data
 
-    except:
+    except Exception:
         pass
 
     with open(ipynbFile, 'w') as f:

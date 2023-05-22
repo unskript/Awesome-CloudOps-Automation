@@ -2,17 +2,11 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
-from datetime import datetime,timedelta, timezone
-
-
-
-from typing import Optional
-
+from typing import Optional, Tuple
+from datetime import datetime, timedelta, timezone
 from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 
 class InputSchema(BaseModel):
@@ -78,8 +72,8 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
                 if cluster_age > timedelta(days=threshold):
                     # Check if the cluster node type is present in the reservedNodesPerRegion map.
                     reservedNodes = reservedNodesPerRegion.get(reg)
-                    if reservedNodes != None:
-                        if reservedNodes.get(cluster['CacheNodeType']) == True:
+                    if reservedNodes is not None:
+                        if reservedNodes.get(cluster['CacheNodeType']) is True:
                             continue
                     cluster_dict = {}
                     cluster_dict["region"] = reg
@@ -91,5 +85,4 @@ def aws_get_long_running_elasticcache_clusters_without_reserved_nodes(handle, re
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

@@ -235,14 +235,13 @@ def get_creds_by_connector(connector_type: str):
         creds_dict = root.get('default_credential_id')
     except Exception:
         pass
-    finally:
-        if creds_dict is None:
-            pass
-        else:
-            for cred in creds_dict.keys():
-                if cred == connector_type: 
-                    retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
-                    break
+    if creds_dict is None:
+        pass
+    else:
+        for cred in creds_dict.keys():
+            if cred == connector_type:
+                retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
+                break
     tm.commit()
     del root
     connection.close()
