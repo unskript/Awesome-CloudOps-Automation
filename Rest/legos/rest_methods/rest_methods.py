@@ -11,14 +11,6 @@ from pydantic import BaseModel, Field
 from werkzeug.exceptions import MethodNotAllowed
 
 
-class Method(str, Enum):
-    GET = 'GET'
-    POST = 'POST'
-    PUT = 'PUT'
-    PATCH = 'PATCH'
-    DELETE = 'DELETE'
-
-
 class InputSchema(BaseModel):
     relative_url_path: str = Field(
         title='Path',
@@ -78,7 +70,7 @@ def rest_methods(
 
         :type params: dict
         :param params: Dictionary or bytes to be sent in the query eg {'foo': 'bar'}.
-        
+
         :type headers: dict
         :param headers: Dictionary of HTTP Headers to send with the requests.
 

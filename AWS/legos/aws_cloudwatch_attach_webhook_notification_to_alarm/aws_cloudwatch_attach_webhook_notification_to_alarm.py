@@ -76,7 +76,7 @@ def aws_cloudwatch_attach_webhook_notification_to_alarm(
         print(f'Invalid URL {url}, {e}')
         raise e
 
-    if parsedURL.scheme != 'http' and parsedURL.scheme != 'https':
+    if parsedURL.scheme not in ('http', 'https'):
         return f'Invalid URL {url}'
 
     protocol = parsedURL.scheme
