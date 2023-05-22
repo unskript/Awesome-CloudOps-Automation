@@ -1,5 +1,5 @@
 {
-  "name": "Get unhealthy EC2 instances from ELB",
+  "name": "AWS Get unhealthy EC2 instances from ELB",
   "description": "This runbook can be used to list unhealthy EC2 instance from an ELB. Sometimes it difficult to determine why Amazon EC2 Auto Scaling didn't terminate an unhealthy instance from Activity History alone. You can find further details about an unhealthy instance's state, and how to terminate that instance, by checking the a few extra things.",
   "uuid": "94707558cebedbcb77aabaec5d6d2d1bf3f4664db6e9e905d6d905a11a3ef8bc",
   "icon": "CONNECTOR_TYPE_AWS",
