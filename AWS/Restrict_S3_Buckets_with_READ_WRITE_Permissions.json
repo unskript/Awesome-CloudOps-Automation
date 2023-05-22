@@ -1,9 +1,0 @@
-{
-  "name": "Restrict S3 Buckets with READ/WRITE Permissions to all Authenticated Users",
-  "description": "This runbook will list all the S3 buckets.Filter buckets which has ACL public READ/WRITE permissions and Change the ACL Public READ/WRITE permissions to private in the given region.",
-  "uuid": "750987144b20d7b5984a37e58c2e17b69fd33f799a1f027f0ff7532cee5913c6",
-  "icon": "CONNECTOR_TYPE_AWS",
-  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SECOPS" ],
-  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
-  "version": "1.0.0"
-}
