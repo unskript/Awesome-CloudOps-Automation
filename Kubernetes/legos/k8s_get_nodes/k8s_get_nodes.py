@@ -4,12 +4,10 @@
 #
 import datetime
 from typing import Tuple
-
-import pandas as pd
-from kubernetes import client
-from kubernetes.client.rest import ApiException
 from pydantic import BaseModel
 from tabulate import tabulate
+from kubernetes import client
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -18,8 +16,8 @@ class InputSchema(BaseModel):
 def k8s_get_nodes_printer(result):
     if result is None:
         return
-        
-    (tabular_config_map, output) = result
+
+    tabular_config_map = result[0]
     print("\n")
     print(tabulate(tabular_config_map, tablefmt="github",
                 headers=['name', 'status', 'age', 'version', 'labels']))
@@ -42,25 +40,25 @@ def k8s_get_nodes(handle) -> Tuple:
     tabular_config_map = []
     for node in resp.items:
         print(node.metadata.labels)
-        labels = ["%s=%s" % (label, value)
+        labels = [f"{label}={value}"
                   for label, value in node.metadata.labels.items()]
-        nodeStatus = (node.status.conditions)
-        type = ""
+        nodeStatus = node.status.conditions
+        types = ""
         for i in nodeStatus:
-            type = i.type
+            types = i.type
 
         name = node.metadata.name
-        status = type
+        status = types
         age = (datetime.datetime.now() -
                node.metadata.creation_timestamp.replace(tzinfo=None)).days
         version = node.status.node_info.kubelet_version
         labels = ",".join(labels)
         tabular_config_map.append([name, status, age, version, labels])
 
-        output.append(
-            {"name": name, "status": type,
-             "age": "%sd" % (datetime.datetime.now() - node.metadata.creation_timestamp.replace(tzinfo=None)).days,
-             "version": version, "labels": labels})
-
+        output.append({
+            "name": name,
+            "status": types,
+            "age": f"{(datetime.datetime.now() - node.metadata.creation_timestamp.replace(tzinfo=None)).days}d",
+            "version": version, "labels": labels})
 
     return (tabular_config_map, output)

@@ -2,8 +2,8 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
 import pprint
+from pydantic import BaseModel, Field
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -27,7 +27,7 @@ def kafka_publish_message_printer(output):
 
 
 def kafka_publish_message(handle, topic: str, message: str) -> str:
-    
+
     """kafka_publish_message publish messages
 
         :type topic: str

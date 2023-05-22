@@ -1,0 +1,9 @@
+{
+    "name": "Delete EBS Volume With Low Usage",
+    "description": "This runbook can help us identify low usage Amazon Elastic Block Store (EBS) volumes and delete these volumes in order to lower the cost of your AWS bill. This is calculates using the VolumeUsage metric. It measures the percentage of the total storage space that is currently being used by an EBS volume. This metric is reported as a percentage value between 0 and 100.",
+    "uuid": "c9e1563d58cd6e3778a6c3fb11643498e3cdf3965a18c09214423998d62847b8",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+}

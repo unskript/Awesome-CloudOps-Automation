@@ -6,10 +6,9 @@
 import pprint
 import re
 from typing import Optional, Tuple
-
-from kubernetes import client
 from pydantic import BaseModel, Field
 from tabulate import tabulate
+from kubernetes import client
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -29,7 +28,7 @@ class InputSchema(BaseModel):
 def k8s_list_all_matching_pods_printer(output):
     if output is None:
         return
-    
+
     (match_pods, data) = output
     if len(match_pods) > 0:
         print("\n")
@@ -37,7 +36,7 @@ def k8s_list_all_matching_pods_printer(output):
             "Pod Ip", "Namespace", "Name", "Status", "Start Time"]))
     if not data:
         pp.pprint("No Matching Pods !!!")
-    
+
 
 
 def k8s_list_all_matching_pods(handle, matchstr: str, namespace: str = 'all') -> Tuple:
@@ -61,7 +60,7 @@ def k8s_list_all_matching_pods(handle, matchstr: str, namespace: str = 'all') ->
     res = coreApiClient.list_namespaced_pod(namespace=namespace, pretty=True)
     if len(res.items) > 0:
         match_pods = list(filter(lambda x: (
-            re.search(r'(%s)' % matchstr, x.metadata.name) != None), res.items))
+            re.search(fr'({matchstr})', x.metadata.name) is not None), res.items))
         for pod in match_pods:
             data.append([pod.status.pod_ip, pod.metadata.namespace,
                          pod.metadata.name, pod.status.phase, pod.status.start_time])

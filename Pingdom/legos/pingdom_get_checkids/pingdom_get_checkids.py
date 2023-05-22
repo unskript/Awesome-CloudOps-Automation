@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, List
-from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 import pprint
+from typing import Optional, List
+from pydantic import BaseModel, Field
+from unskript.thirdparty.pingdom import swagger_client as pingdom_client
 
 pp = pprint.PrettyPrinter(indent=4)
 

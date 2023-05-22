@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
+import pprint
 from pydantic import BaseModel, Field
 from unskript.connectors.infra import InfraConnector
-import pprint
 
 class InputSchema(BaseModel):
     old_key: str = Field(
@@ -37,6 +37,6 @@ def workflow_ss_rename_keys(handle: InfraConnector, old_key, new_key) -> bool:
     try:
         handle.rename_workflow_key(old_key, new_key)
     except Exception as e:
-        raise(e)
+        raise e
 
     return True

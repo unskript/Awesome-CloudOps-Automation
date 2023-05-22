@@ -6,9 +6,8 @@
 import re
 import pprint
 from typing import List, Dict
-
-from kubernetes import client
 from pydantic import BaseModel, Field
+from kubernetes import client
 
 
 class InputSchema(BaseModel):
@@ -25,9 +24,9 @@ class InputSchema(BaseModel):
 def k8s_get_pod_logs_and_filter_printer(output):
     if output is None:
         return
-        
+
     pprint.pprint(output)
-    
+
 
 def k8s_get_pod_logs_and_filter(handle, namespace: str, pods: List, matchstr: str) -> Dict:
     """k8s_get_pod_logs_and_filter get pod logs
@@ -53,11 +52,11 @@ def k8s_get_pod_logs_and_filter(handle, namespace: str, pods: List, matchstr: st
         for pod in pods:
             resp = coreApiClient.read_namespaced_pod_log(
                 namespace=namespace, name=pod, pretty=True, timestamps=True)
-            res = re.search(r'(%s)' % matchstr, resp)
-            if res != None:
+            res = re.search(f'({matchstr})', resp)
+            if res is not None:
                 result[pod] = res
 
-    except:
+    except Exception:
         print("Unable to Read Logs from the Pods")
 
     return result

@@ -2,11 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, Tuple
-from pydantic import BaseModel, Field
-from datetime import datetime, timedelta
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Optional, Tuple
+from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 class InputSchema(BaseModel):
     region: Optional[str] = Field(
@@ -44,8 +44,8 @@ def is_nat_gateway_used(handle, nat_gateway, start_time, end_time,number_of_days
         datapoints += metrics_data['Datapoints']
     if len(datapoints) == 0 or metrics_data['Datapoints'][0]['Sum']==0:
         return False
-    else:
-        return True
+    return True
+
 
 
 def aws_filter_unused_nat_gateway(handle, number_of_days: int = 7, region: str = "") -> Tuple:
@@ -77,11 +77,9 @@ def aws_filter_unused_nat_gateway(handle, number_of_days: int = 7, region: str =
                     nat_gateway_info["nat_gateway_id"] = nat_gateway['NatGatewayId']
                     nat_gateway_info["reg"] = reg
                     result.append(nat_gateway_info)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
+    return (True, None)
