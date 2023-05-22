@@ -18,7 +18,11 @@ class InputSchema(BaseModel):
     threshold_days: Optional[int] = Field(
         default=10,
         title='Threshold (In days)',
-        description='(in days) The threshold to check the EBS volume usage less than the threshold.')
+        description='(in days) The threshold to check the EBS volume usage within given days.')
+    usage_percent: Optional[int] = Field(
+        default=10,
+        title='Usage Percent (In percent)',
+        description='(in days) The threshold to compaire the EBS volume usage less than the threshold.')
 
 def aws_get_ebs_volume_for_low_usage_printer(output):
     if output is None:
@@ -27,14 +31,17 @@ def aws_get_ebs_volume_for_low_usage_printer(output):
     pprint.pprint(output)
 
 
-def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: int = 10) -> Tuple:
+def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: int = 10, usage_percent: int = 10) -> Tuple:
     """aws_get_ebs_volume_for_low_usage Returns an array of ebs volumes.
 
         :type region: string
         :param region: AWS Region.
 
         :type threshold_days: int
-        :param threshold_days: (in days) The threshold to check the EBS volume usage
+        :param threshold_days: (in days) The threshold to check the EBS volume usage within given days.
+
+        :type usage_percent: int
+        :param usage_percent: (in percent) The threshold to compaire the EBS volume usage
         less than the threshold.
 
         :rtype: Tuple with status result and list of EBS Volume.
@@ -88,7 +95,7 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
                 volume_write_bytes = write_metric_data['Datapoints'][0]['Sum'] if write_metric_data['Datapoints'] else 0
                 volume_usage_bytes = volume_read_bytes + volume_write_bytes
                 volume_usage_percent = volume_usage_bytes / (volume_size * 1024 * 1024 * 1024) * 100
-                if volume_usage_percent < 10:
+                if volume_usage_percent < usage_percent:
                     ebs_volume["volume_id"] = volume_id
                     ebs_volume["region"] = reg
                     result.append(ebs_volume)
