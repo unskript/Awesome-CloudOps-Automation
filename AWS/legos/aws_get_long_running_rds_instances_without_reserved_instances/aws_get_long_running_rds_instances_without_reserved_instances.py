@@ -64,8 +64,8 @@ def aws_get_long_running_rds_instances_without_reserved_instances(handle, region
                         if uptime > timedelta(days=threshold):
                             # Check if the cluster node type is present in the reservedInstancesPerRegion map.
                             reservedInstances = reservedInstancesPerRegion.get(reg)
-                            if reservedInstances != None:
-                                if reservedInstances.get(instance['DBInstanceClass']) == True:
+                            if reservedInstances is not None:
+                                if reservedInstances.get(instance['DBInstanceClass']) is True:
                                     continue
                             db_instance_dict = {}
                             db_instance_dict["region"] = reg

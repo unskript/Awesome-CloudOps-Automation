@@ -2,10 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel
-from typing import Dict
 import pprint
-
+from typing import Dict
+from pydantic import BaseModel
 
 pp = pprint.PrettyPrinter()
 

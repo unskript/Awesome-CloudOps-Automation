@@ -61,8 +61,7 @@ def aws_eks_get_pod_cpu_memory(handle, clusterName: str, namespace: str, region:
                 data.append({
                     "pod_name": pod['metadata']['name'], "container_name": container.get('name'),
                     "cpu": container['usage']["cpu"],
-                    "memory": "%s Mi" %
-                              round(int(container['usage']["memory"].split("Ki")[0]) / 1024, 2)})
+                    "memory": f"{round(int(container['usage']['memory'].split('Ki')[0]) / 1024, 2)} Mi"})
 
     except ApiException as e:
         pprint.pprint(str(e))

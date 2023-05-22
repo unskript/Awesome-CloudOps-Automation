@@ -65,14 +65,14 @@ def aws_eks_copy_pod_logs_to_bucket(handle, clusterName: str, namespaceName: str
         api_response = coreApiClient.read_namespaced_pod_log(name=podName,
                                                              namespace=namespaceName)
     except ApiException as e:
-        print("An Exception occured while reading pod log: ".format(str(e)))
+        print(f"An Exception occured while reading pod log: {str(e)}")
         raise e
 
     s3Client = handle.client('s3', region_name=region)
     try:
-        s3Client.put_object(Bucket=bucketName, Key="tests/%s_pod_logs" % podName,
+        s3Client.put_object(Bucket=bucketName, Key=f"tests/{podName}_pod_logs",
                             Body=api_response)
     except Exception as e:
-        print("Error: ".format(str(e)))
+        print(f"Error: {str(e)}")
         raise e
-    return {"success": "Successfully copied %s pod logs to %s bucket." % (podName, bucketName)}
+    return {"success": f"Successfully copied {podName} pod logs to {bucketName} bucket."}

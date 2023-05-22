@@ -3,7 +3,6 @@
 ##  All rights reserved.
 ##
 import pprint
-
 import psycopg2
 from pydantic import BaseModel, Field
 
@@ -41,11 +40,9 @@ def postgresql_handling_transaction(handle, transaction:str):
       handle.commit()
       pp.pprint("Transaction completed successfully ")
   except (Exception, psycopg2.DatabaseError) as error:
-      pp.pprint("Error in transaction Reverting all other operations of a transactions {}".format(error))
+      pp.pprint(f"Error in transaction Reverting all other operations of a transactions {error}")
       handle.rollback()
   finally:
       if handle:
           handle.close()
           pp.pprint("PostgreSQL connection is closed")
-
-  return

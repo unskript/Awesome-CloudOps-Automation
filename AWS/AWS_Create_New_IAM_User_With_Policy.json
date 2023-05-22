@@ -1,0 +1,9 @@
+{
+    "name": "Create IAM User with policy",
+    "description": "Create new IAM user with a security Policy.  Sends confirmation to Slack.",
+    "uuid": "1ce85aa2153d808bd95a21a4545c51f239696bc41f55d30b6849cd8218381ffc",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+}

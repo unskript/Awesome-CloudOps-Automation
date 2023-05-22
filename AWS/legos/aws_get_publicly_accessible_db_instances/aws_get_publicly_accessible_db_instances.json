@@ -10,5 +10,5 @@
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_RDS" ],
     "action_next_hop": ["dda26fd556dd6b59e2fac9c9ed6e81fc19e5374746049d494237bcdc6a17fae4"],
-    "action_next_hop_parameter_mapping": {}
+    "action_next_hop_parameter_mapping": {"dda26fd556dd6b59e2fac9c9ed6e81fc19e5374746049d494237bcdc6a17fae4": {"name": "Publicly Accessible Amazon RDS Instances","region":".[0].region"}}
 }

@@ -19,8 +19,8 @@ class InputSchema(BaseModel):
     url: str = Field(
         title="URL",
         description=("URL where the alarm notification needs to be sent. "
-                     "URL should start with http or https."))
-
+                       "URL should start with http or https.")
+    )
 
 def aws_cloudwatch_attach_webhook_notification_to_alarm_printer(output):
     if output is None:
@@ -76,7 +76,7 @@ def aws_cloudwatch_attach_webhook_notification_to_alarm(
         print(f'Invalid URL {url}, {e}')
         raise e
 
-    if parsedURL.scheme != 'http' and parsedURL.scheme != 'https':
+    if parsedURL.scheme not in ('http', 'https'):
         return f'Invalid URL {url}'
 
     protocol = parsedURL.scheme

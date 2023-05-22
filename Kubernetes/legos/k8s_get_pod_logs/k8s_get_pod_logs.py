@@ -2,10 +2,10 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-
-from kubernetes import client
-from pydantic import BaseModel, Field
 import pprint
+from pydantic import BaseModel, Field
+from kubernetes import client
+
 
 class InputSchema(BaseModel):
     namespace: str = Field(
@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
 def k8s_get_pods_logs_printer(output):
     if output is None:
         return
-        
+
     pprint.pprint(output)
 
 
@@ -35,7 +35,8 @@ def k8s_get_pod_logs(handle, namespace: str, pod_name: str) -> str:
         :type pod_name: str
         :param pod_name: Name of the pod.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string
+        format or Empty String in case of Error.
     """
     coreApiClient = client.CoreV1Api(api_client=handle)
 

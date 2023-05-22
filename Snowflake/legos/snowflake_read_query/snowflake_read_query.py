@@ -1,7 +1,6 @@
+import pprint
 from typing import List
 from pydantic import BaseModel, Field
-import pprint
-from tabulate import tabulate
 
 pp = pprint.PrettyPrinter(indent=4)
 
