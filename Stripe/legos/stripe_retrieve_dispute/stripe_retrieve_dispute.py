@@ -37,6 +37,6 @@ def stripe_retrieve_dispute(handle, dispute_id:str) -> List:
         result.append(resp)
         return result
     except Exception as e:
-        pp.pprint(e)
+        pprint.pprint(e)
 
     return None

@@ -3,9 +3,8 @@
 # All rights reserved.
 #
 from typing import Tuple
-from kubernetes import client
-from kubernetes.client.rest import ApiException
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -22,7 +21,7 @@ class InputSchema(BaseModel):
 
 def k8s_get_pods_with_high_restart_printer(output):
     if output is None:
-        return 
+        return
 
     print(output)
 
@@ -41,17 +40,19 @@ def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int =
 
        :rtype: Tuple Result in tuple format.  
     """
-    if handle.client_side_validation != True:
-        raise Exception(f"K8S Connector is invalid {handle}")
+    if handle.client_side_validation is not True:
+        raise ApiException(f"K8S Connector is invalid {handle}")
 
     if not namespace :
-        kubectl_command = "kubectl get pods --all-namespaces --no-headers  | " + f"awk '$5 > {threshold} " + " {print $0}' | awk '{print $1,$2}'"
+        kubectl_command = "kubectl get pods --all-namespaces --no-headers  | " + \
+            f"awk '$5 > {threshold} " + " {print $0}' | awk '{print $1,$2}'"
     else:
-        kubectl_command = f"kubectl get pods -n {namespace}" + " --no-headers  | " + f"awk '$4 > {threshold} " + " {print $0}' | awk '{print $1,$2}'"
+        kubectl_command = f"kubectl get pods -n {namespace}" + " --no-headers  | " + \
+            f"awk '$4 > {threshold} " + " {print $0}' | awk '{print $1,$2}'"
 
     result = handle.run_native_cmd(kubectl_command)
     if result.stderr:
-        raise Exception(f"Error occurred while executing command {result.stderr}")
+        raise ApiException(f"Error occurred while executing command {result.stderr}")
     retval = []
     if result.stdout:
         for line in result.stdout.split('\n'):

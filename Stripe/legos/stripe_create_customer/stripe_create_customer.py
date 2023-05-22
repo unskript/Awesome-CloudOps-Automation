@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import List
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     params: dict = Field(
@@ -20,7 +20,6 @@ def stripe_create_customer_printer(output):
         pprint.pprint(output)
     else:
         pprint.pprint(output)
-
 
 
 def stripe_create_customer(handle, params:dict) -> List:

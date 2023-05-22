@@ -3,7 +3,6 @@
 # All rights reserved.
 ##
 import pprint
-
 from pydantic import BaseModel, Field
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -35,15 +34,14 @@ def salesforce_assign_case(handle, case_number: str, owner_id: str) -> str:
         
         :rtype: str
     """
-    record_id = handle.query("SELECT Id FROM Case WHERE CaseNumber = '%s'" % case_number)
+    record_id = handle.query(f"SELECT Id FROM Case WHERE CaseNumber = '{case_number}'")
     if not record_id['records']:
         return "Invalid Case Number"
-    else:
-        record_id = record_id['records'][0]['Id']
-        data = {
-            "OwnerId": owner_id
-        }
-        resp = handle.Case.update(record_id, data)
-        if resp == 204:
-            return "Case %s assigned successfully" % case_number
-        return "Error Occurred"
+    record_id = record_id['records'][0]['Id']
+    data = {
+        "OwnerId": owner_id
+    }
+    resp = handle.Case.update(record_id, data)
+    if resp == 204:
+        return f"Case {case_number} assigned successfully"
+    return "Error Occurred"

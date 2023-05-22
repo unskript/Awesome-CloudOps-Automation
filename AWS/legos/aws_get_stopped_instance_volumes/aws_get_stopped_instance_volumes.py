@@ -2,11 +2,11 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
+import pprint
 from typing import Optional, Tuple
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -53,10 +53,10 @@ def aws_get_stopped_instance_volumes(handle, region: str = "") -> Tuple:
                                 ebs_volume["volume_id"] = volume_id
                                 ebs_volume["region"] = reg
                                 result.append(ebs_volume)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)
+    

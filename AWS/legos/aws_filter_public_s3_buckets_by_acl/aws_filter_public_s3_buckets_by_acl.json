@@ -11,6 +11,6 @@
   "action_verbs": ["filter"],
   "action_nouns": ["aws","s3","public","buckets","by","acl"],
   "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SECOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_S3" ],
-  "action_next_hop":["305fe6a6f0512eb2d91b71c508b3a192e5b7021bf8196f4deeec5397f2b85e84"],
-  "action_next_hop_parameter_mapping":{}
+  "action_next_hop":["750987144b20d7b5984a37e58c2e17b69fd33f799a1f027f0ff7532cee5913c6"],
+  "action_next_hop_parameter_mapping":{"750987144b20d7b5984a37e58c2e17b69fd33f799a1f027f0ff7532cee5913c6": {"name": "Restrict S3 Buckets with READ/WRITE Permissions to all Authenticated Users", "region": ".[0].region", "bucket_names":".[].bucket"}}
 }

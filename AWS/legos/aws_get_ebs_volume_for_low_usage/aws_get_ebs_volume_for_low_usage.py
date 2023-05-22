@@ -2,12 +2,12 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from unskript.connectors.aws import aws_get_paginator
-from datetime import datetime, timedelta
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Optional, Tuple
+from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 
 
 class InputSchema(BaseModel):
@@ -34,7 +34,8 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
         :param region: AWS Region.
 
         :type threshold_days: int
-        :param threshold_days: (in days) The threshold to check the EBS volume usage less than the threshold.
+        :param threshold_days: (in days) The threshold to check the EBS volume usage
+        less than the threshold.
 
         :rtype: Tuple with status result and list of EBS Volume.
     """
@@ -96,5 +97,4 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

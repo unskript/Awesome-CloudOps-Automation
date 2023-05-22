@@ -3,10 +3,8 @@
 # All rights reserved.
 ##
 from __future__ import annotations
-from pydantic import BaseModel, Field, SecretStr
-from typing import Dict, List
 import pprint
-
+from typing import Dict
 from pydantic import BaseModel
 
 
@@ -28,4 +26,3 @@ def aws_describe_cloudtrail(handle, region:str) -> Dict:
 
 
     return trails
-

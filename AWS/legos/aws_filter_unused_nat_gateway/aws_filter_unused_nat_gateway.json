@@ -8,7 +8,7 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_is_check": true,
-    "action_next_hop":["26da5206a0a18b30a83f9a72e0dc61408237920bf84831165974610c79875bfb"],
-    "action_next_hop_parameter_mapping":{},
+    "action_next_hop":["f2b1eecf9b4f727ec80fc4d4f5c7915b788cafe969552af0a26f8db9747bbcd4"],
+    "action_next_hop_parameter_mapping":{"f2b1eecf9b4f727ec80fc4d4f5c7915b788cafe969552af0a26f8db9747bbcd4": {"name": "Delete Unused NAT Gateways","region":".[0].region","nat_gateway_ids":".[].nat_gateway_id"}},
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SECOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_NAT_GATEWAY","CATEGORY_TYPE_AWS_EC2"  ]
 }

@@ -2,9 +2,8 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 from typing import List
-
+from pydantic import BaseModel, Field
 from unskript.legos.utils import parseARN
 
 
@@ -26,15 +25,14 @@ class InputSchema(BaseModel):
     )
 
 
-"""
-All legos should take inputParamsJson as the input.
-They should assume the handle variable is defined already.
-"""
+#All legos should take inputParamsJson as the input.
+#They should assume the handle variable is defined already.
 
 
 def aws_target_group_register_unregister_instances(handle, arn: str, instance_ids: List, port: int,
                                                    unregister: bool = False) -> None:
-    """aws_target_group_register_unregister_instances Allows register/unregister instances to a target group.
+    """aws_target_group_register_unregister_instances Allows register/unregister instances to a
+       target group.
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
@@ -65,7 +63,7 @@ def aws_target_group_register_unregister_instances(handle, arn: str, instance_id
             'Port': port,
         })
     try:
-        if unregister == True:
+        if unregister is True:
             elbv2Client.deregister_targets({
                 'TargetGroupArn': arn,
                 'Targets': targets

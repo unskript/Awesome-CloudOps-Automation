@@ -25,7 +25,7 @@ class InputSchema(BaseModel):
 def gcp_create_service_account_printer(output):
     if output is None:
         return
-    pprint(output)
+    pprint.pprint(output)
 
 def gcp_create_service_account(handle, project_id: str, accountId: str, display_name:str) -> Dict:
     """gcp_create_service_account Returns a Dict of details of the created service account

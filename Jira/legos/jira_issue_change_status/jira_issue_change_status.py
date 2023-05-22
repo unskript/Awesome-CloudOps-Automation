@@ -3,10 +3,10 @@
 # All rights reserved.
 ##
 
-from jira.client import JIRA
-from pydantic import BaseModel, Field
-from typing import Optional
 import pprint
+from typing import Optional
+from pydantic import BaseModel, Field
+from jira.client import JIRA
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -50,7 +50,11 @@ def jira_issue_change_status(hdl: JIRA, issue_id: str, status: str, transition: 
     if transition == "":
         transitions = hdl.transitions(issue)
         # Transitions look like this
-        # {'id': '11', 'name': 'Backlog', 'to': {'self': 'https://foo/status/10000', 'description': '', 'iconUrl': 'https://foo/', 'name': 'Backlog', 'id': '10000', 'statusCategory': {'self': 'https://foo/rest/api/2/statuscategory/2', 'id': 2, 'key': 'new', 'colorName': 'blue-gray', 'name': 'To Do'}}, 'hasScreen': False, 'isGlobal': True, 'isInitial': False, 'isAvailable': True, 'isConditional': False, 'isLooped': False}
+        # {'id': '11', 'name': 'Backlog', 'to': {'self': 'https://foo/status/10000',
+        # 'description': '', 'iconUrl': 'https://foo/', 'name': 'Backlog', 'id': '10000',
+        # 'statusCategory': {'self': 'https://foo/rest/api/2/statuscategory/2', 'id': 2, 'key': 'new',
+        # 'colorName': 'blue-gray', 'name': 'To Do'}}, 'hasScreen': False, 'isGlobal': True,
+        # 'isInitial': False, 'isAvailable': True, 'isConditional': False, 'isLooped': False}
         t = [t for t in transitions if t.get('to').get('name') == status]
         if len(t) == 0:
             print("No transition found")
