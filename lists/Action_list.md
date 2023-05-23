@@ -29,7 +29,7 @@
  | [AWS_VPC](action_AWS_VPC.md) | [AWS_ASG](action_AWS_ASG.md) | [AWS_LOGS](action_AWS_LOGS.md) |
  | [AWS_NAT_GATEWAY](action_AWS_NAT_GATEWAY.md) | [AWS_CLOUDTRAIL](action_AWS_CLOUDTRAIL.md) | [AWS_DYNAMODB](action_AWS_DYNAMODB.md) |
  | [AWS_LAMBDA](action_AWS_LAMBDA.md) | [AWS_SQS](action_AWS_SQS.md) | [AWS_COST_EXPLORER](action_AWS_COST_EXPLORER.md) |
- | [ECS](action_ECS.md) | [AWS_ROUTE53](action_AWS_ROUTE53.md) | [AWS_ELASTICCACHE](action_AWS_ELASTICCACHE.md) |
+ | [ECS](action_ECS.md) | [AWS_ROUTE53](action_AWS_ROUTE53.md) | [AWS_ELASTICACHE](action_AWS_ELASTICACHE.md) |
  | [TROUBLESHOOTING](action_TROUBLESHOOTING.md) | [AWS_SECRET_MANAGER](action_AWS_SECRET_MANAGER.md) | [AWS_STS](action_AWS_STS.md) |
  | [AWS_POSTGRES](action_AWS_POSTGRES.md) | [AIRFLOW](action_AIRFLOW.md) | [AZURE](action_AZURE.md) |
  | [DATADOG](action_DATADOG.md) | [DATADOG_INCIDENT](action_DATADOG_INCIDENT.md) | [DATADOG_EVENT](action_DATADOG_EVENT.md) |
