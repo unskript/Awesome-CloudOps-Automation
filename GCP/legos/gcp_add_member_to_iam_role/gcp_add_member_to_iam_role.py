@@ -29,7 +29,7 @@ class InputSchema(BaseModel):
 def gcp_add_member_to_iam_role_printer(output):
     if output is None:
         return
-    pprint(output)
+    pprint.pprint(output)
 
 def gcp_add_member_to_iam_role(handle, project_id: str, role: str, member_email:str, version:int = 1) -> Dict:
     """gcp_add_member_to_iam_role Returns a Dict of policy details

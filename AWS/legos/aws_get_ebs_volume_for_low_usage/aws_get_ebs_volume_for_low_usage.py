@@ -18,7 +18,11 @@ class InputSchema(BaseModel):
     threshold_days: Optional[int] = Field(
         default=10,
         title='Threshold (In days)',
-        description='(in days) The threshold to check the EBS volume usage less than the threshold.')
+        description='(in days) The threshold to check the EBS volume usage within given days.')
+    threshold_usage_percent: Optional[int] = Field(
+        default=10,
+        title='Minium usage percent',
+        description='This is the threshold usage percent, below which it will be considered a low usage.')
 
 def aws_get_ebs_volume_for_low_usage_printer(output):
     if output is None:
@@ -27,14 +31,17 @@ def aws_get_ebs_volume_for_low_usage_printer(output):
     pprint.pprint(output)
 
 
-def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: int = 10) -> Tuple:
+def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: int = 10, threshold_usage_percent: int = 10) -> Tuple:
     """aws_get_ebs_volume_for_low_usage Returns an array of ebs volumes.
 
         :type region: string
         :param region: AWS Region.
 
         :type threshold_days: int
-        :param threshold_days: (in days) The threshold to check the EBS volume usage
+        :param threshold_days: (in days) The threshold to check the EBS volume usage within given days.
+
+        :type threshold_usage_percent: int
+        :param usage_percent: (in percent) The threshold to compaire the EBS volume usage
         less than the threshold.
 
         :rtype: Tuple with status result and list of EBS Volume.
@@ -55,10 +62,11 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
             for volume in response:
                 ebs_volume = {}
                 volume_id = volume["VolumeId"]
+                volume_size = volume['Size']
                 cloudwatch = handle.client('cloudwatch', region_name=reg)
-                cloudwatch_response = cloudwatch.get_metric_statistics(
+                read_metric_data = cloudwatch.get_metric_statistics(
                                     Namespace='AWS/EBS',
-                                    MetricName='VolumeUsage',
+                                    MetricName='VolumeReadBytes',
                                     Dimensions=[
                                         {
                                             'Name': 'VolumeId',
@@ -67,16 +75,31 @@ def aws_get_ebs_volume_for_low_usage(handle, region: str = "", threshold_days: i
                                     ],
                                     StartTime=days_ago,
                                     EndTime=now,
-                                    Period=3600,
-                                    Statistics=['Average']
+                                    Period=86400,
+                                    Statistics=['Sum']
                                 )
-                for v in cloudwatch_response['Datapoints']:
-                    if v['Average'] < 10:
-                        volume_ids = v['Dimensions'][0]['Value']
-                        ebs_volume["volume_id"] = volume_ids
-                        ebs_volume["region"] = reg
-                        result.append(ebs_volume)
-        except Exception:
+                write_metric_data = cloudwatch.get_metric_statistics(
+                                    Namespace='AWS/EBS',
+                                    MetricName='VolumeWriteBytes',
+                                    Dimensions=[
+                                        {'Name': 'VolumeId', 'Value': volume_id},
+                                    ],
+                                    StartTime=days_ago,
+                                    EndTime=now,
+                                    Period=86400,
+                                    Statistics=['Sum']
+                                )
+                if not read_metric_data['Datapoints'] and not write_metric_data['Datapoints']:
+                    continue
+                volume_read_bytes = read_metric_data['Datapoints'][0]['Sum'] if read_metric_data['Datapoints'] else 0
+                volume_write_bytes = write_metric_data['Datapoints'][0]['Sum'] if write_metric_data['Datapoints'] else 0
+                volume_usage_bytes = volume_read_bytes + volume_write_bytes
+                volume_usage_percent = volume_usage_bytes / (volume_size * 1024 * 1024 * 1024) * 100
+                if volume_usage_percent < threshold_usage_percent:
+                    ebs_volume["volume_id"] = volume_id
+                    ebs_volume["region"] = reg
+                    result.append(ebs_volume)
+        except Exception as e:
             pass
 
     if len(result) != 0:

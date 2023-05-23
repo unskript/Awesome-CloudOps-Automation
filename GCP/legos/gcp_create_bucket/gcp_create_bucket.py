@@ -33,7 +33,7 @@ class InputSchema(BaseModel):
 def gcp_create_bucket_printer(output):
     if output is None:
         return
-    print("Created bucket {} in {} with storage class {}".format(output["name"], output["location"], output["storage_class"]))
+    print(f"Created bucket {output['name']} in {output['location']} with storage class {output['location']}")
 
 def gcp_create_bucket(handle, bucket_name: str, location: str, project_name: str,storage_class: str) -> Dict:
     """gcp_create_bucket Returns a Dict of details of the newly created bucket

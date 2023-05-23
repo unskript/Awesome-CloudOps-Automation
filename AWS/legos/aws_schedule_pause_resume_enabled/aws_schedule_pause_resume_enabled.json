@@ -1,0 +1,11 @@
+{
+    "action_title": "AWS Schedule Redshift Cluster Pause Resume Enabled",
+    "action_description": "AWS Schedule Redshift Cluster Pause Resume Enabled",
+    "action_type": "LEGO_TYPE_AWS",
+    "action_entry_function": "aws_schedule_pause_resume_enabled",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_supports_iteration": true,
+    "action_categories": [ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS"]
+}
