@@ -1306,6 +1306,8 @@ if __name__ == "__main__":
                         help='Show audit trail [all | connector | execution_id]')
     parser.add_argument('-dl', '--display-failed-logs',
                         type=str, help='Display failed logs  [execution_id]')
+    parser.add_argument('-cc', '--create-credentials', 
+                        help='Create Credential', action='store_true')
 
     args = parser.parse_args()
 
@@ -1332,5 +1334,11 @@ if __name__ == "__main__":
         show_audit_trail(args.show_audit_trail)
     elif args.display_failed_logs not in ('', None):
         display_failed_logs(args.display_failed_logs)
+    elif args.create_credentials == True:
+        try:
+            from creds_ui import main as ui
+            ui()
+        except:
+            print("Required Python library creds_ui is not packaged, please raise an issue on Github")
     else:
         parser.print_help()
