@@ -82,5 +82,5 @@ Together, let's make Runbooks.sh the go-to solution for runbook automation and c
 [twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=for-the-badge&logo=twitter&colorB=555
 [twitter-url]: https://twitter.com/unskript
 [awesome-shield]: https://img.shields.io/badge/awesome-cloudops-orange?style=for-the-badge&logo=bookstack 
-[actions-shield]: https://img.shields.io/badge/ActionsCount-476-orange?style=for-the-badge 
-[runbooks-shield]:https://img.shields.io/badge/xRunbooksCount-61-green?style=for-the-badge
+[actions-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/unskript/Awesome-CloudOps-Automation/master/.github/images/actionShield.json&style=for-the-badge
+[runbooks-shield]:https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/unskript/Awesome-CloudOps-Automation/master/.github/images/runbookShield.json&style=for-the-badge
