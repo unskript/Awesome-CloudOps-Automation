@@ -969,6 +969,9 @@ def create_creds_mapping():
             c_data = json.load(f)
             d[c_data.get('metadata').get('type')] = {"name": c_data.get(
                 'metadata').get('name'), "id": c_data.get('metadata').get('id')}
+            if not c_data.get('metadata').get('connectorData'):
+                print(f"ERROR: The Credential data for {c_data.get('metadata').get('type')} is empty!"
+                       " Please use unskript-ctl.sh -cc option to create the credential")
     upsert_pss_record('default_credential_id', d, False)
 
 
