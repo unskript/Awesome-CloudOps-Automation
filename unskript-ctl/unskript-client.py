@@ -1337,7 +1337,7 @@ if __name__ == "__main__":
         show_audit_trail(args.show_audit_trail)
     elif args.display_failed_logs not in ('', None):
         display_failed_logs(args.display_failed_logs)
-    elif args.create_credentials == True:
+    elif args.create_credentials is True:
         try:
             from creds_ui import main as ui
             ui()

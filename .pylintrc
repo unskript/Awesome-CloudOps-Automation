@@ -152,7 +152,8 @@ disable=abstract-method,
         C0114,
 	C0303,
         C0304,
-        C0301
+        C0301,
+        E0203
         
 
 
