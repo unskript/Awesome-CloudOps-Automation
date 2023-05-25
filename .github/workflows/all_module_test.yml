@@ -19,17 +19,21 @@ jobs:
       
       - uses: actions/checkout@v3
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.GHACTION_AWS_REGION }}
+          role-to-assume: ${{ secrets.GHACTION_AWS_ROLE }}
+          role-session-name: ${{ secrets.GHACTION_AWS_SESSION_NAME }}
+
       - name: Install system dependencies
         run: |
           pip install shyaml
           sudo apt update
           sudo apt install -y wget
-          wget -O /tmp/requirements.txt ${{ secrets.BUILD_REQUIREMENTS }}
-          pip install --no-cache-dir -r /tmp/requirements.txt
-          wget -O /tmp/main_module.tar.gz ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }}
-          pip install --no-cache-dir /tmp/main_module.tar.gz
-          wget -O /tmp/sub_module.tar.gz ${{ secrets.SUB_MODULE_BUILD_PACKAGE }}
-          pip install --no-cache-dir /tmp/sub_module.tar.gz
+          wget -qO- ${{ secrets.BUILD_REQUIREMENTS }} | sudo pip install --no-cache-dir -r /dev/stdin
+          wget -qO- ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin
+          wget -qO- ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin 
         
       
       - name: Run All Modules Check
