@@ -4,9 +4,9 @@
 ##
 import pprint
 from typing import Dict
+from pydantic import BaseModel, Field
 from datadog_api_client import ApiClient
 from datadog_api_client.v1.api.monitors_api import MonitorsApi
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):

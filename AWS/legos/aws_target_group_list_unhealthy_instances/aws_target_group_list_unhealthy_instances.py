@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from unskript.legos.utils import parseARN
-from typing import List
-import pprint
 
 
 class InputSchema(BaseModel):
@@ -21,7 +21,7 @@ def aws_target_group_list_unhealthy_instances_printer(output):
 
 
 def aws_target_group_list_unhealthy_instances(handle, arn: str) -> List:
-    
+
     """aws_target_group_list_unhealthy_instances returns array of unhealthy instances
 
         :type handle: object

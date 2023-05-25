@@ -2,10 +2,9 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
-
+from typing import Dict
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     user_name: str = Field(
@@ -43,4 +42,4 @@ def aws_revoke_policy_from_iam_user(handle, user_name: str, policy_arn: str) -> 
                             PolicyArn=policy_arn)
         return response
     except Exception as e:
-        raise Exception(e)
+        raise Exception(e) from e

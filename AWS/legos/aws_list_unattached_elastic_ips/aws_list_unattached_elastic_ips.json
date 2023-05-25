@@ -10,6 +10,6 @@
     "action_supports_iteration": true,
     "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2"],
     "action_next_hop": ["a9d7ea5f3d31745f1de9fb8616ab6fbc20ff11e665808bdde6a9ba9b8b32e28a"],
-    "action_next_hop_parameter_mapping": {}
+    "action_next_hop_parameter_mapping": {"a9d7ea5f3d31745f1de9fb8616ab6fbc20ff11e665808bdde6a9ba9b8b32e28a": {"name": "Release Unattached AWS Elastic IPs", "region": ".[0].region", "allocation_ids":".[].allocation_id"}}
 }
   

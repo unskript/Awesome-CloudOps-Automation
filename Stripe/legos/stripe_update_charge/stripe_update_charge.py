@@ -3,7 +3,7 @@
 # All rights reserved.
 ##
 import pprint
-from typing import List, Dict
+from typing import List
 from pydantic import BaseModel, Field
 
 
@@ -27,18 +27,20 @@ class InputSchema(BaseModel):
     metadata: dict = Field(
         None,
         title='Metadata',
-        description='This can be useful for storing additional information about the object in a structured format. '
-                    'For Eg. {"order_id": "6735"}'
+        description='This can be useful for storing additional information about \
+            the object in a structured format. For Eg. {"order_id": "6735"}'
     )
     shipping: dict = Field(
         None,
         title='Shipping Details',
-        description='Shipping information for the charge. Helps prevent fraud on charges for physical goods.'
+        description='Shipping information for the charge. Helps prevent fraud on \
+            charges for physical goods.'
     )
     fraud_details: dict = Field(
         None,
         title='Fraud Details',
-        description='A set of key-value pairs you can attach to a charge giving information about its riskiness'
+        description='A set of key-value pairs you can attach to a charge giving \
+            information about its riskiness'
     )
     transfer_group: str = Field(
         None,
@@ -62,13 +64,13 @@ def stripe_update_charge(
         customer: str,
         description: str,
         receipt_email: str,
-        metadata: dict = {},
-        shipping: dict = {},
-        fraud_details: dict = {},
+        metadata: dict = None,
+        shipping: dict = None,
+        fraud_details: dict = None,
         transfer_group: str = "") -> List:
 
-    """stripe_update_charge Updates the specified charge by setting the values of the parameters passed.
-        Any parameters not provided will be left unchanged.
+    """stripe_update_charge Updates the specified charge by setting the values of 
+    the parameters passed. Any parameters not provided will be left unchanged.
 
         :type charge_id: string
         :param charge_id: Charge ID.
@@ -80,16 +82,20 @@ def stripe_update_charge(
         :param description: Description
 
         :type receipt_email: string
-        :param receipt_email: This is the email address that the receipt for this charge will be sent to
+        :param receipt_email: This is the email address that the
+        receipt for this charge will be sent to
 
         :type metadata: dict
-        :param metadata: This can be useful for storing additional information about the object in a structured format.
+        :param metadata: This can be useful for storing additional
+        information about the object in a structured format.
 
         :type shipping: dict
-        :param shipping: Shipping information for the charge. Helps prevent fraud on charges for physical goods.
+        :param shipping: Shipping information for the charge. Helps
+        prevent fraud on charges for physical goods.
 
         :type fraud_details: dict
-        :param fraud_details: A set of key-value pairs you can attach to a charge giving information about its riskiness
+        :param fraud_details: A set of key-value pairs you can attach
+        to a charge giving information about its riskiness
 
         :type transfer_group: string
         :param transfer_group: A string that identifies this transaction as part of a group.

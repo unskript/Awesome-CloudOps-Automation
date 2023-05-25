@@ -2,10 +2,10 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Tuple, List, Any
 import random
 import string
+from typing import Tuple, List, Any
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -42,14 +42,11 @@ def postgresql_write_query(handle, query: str, params: List = List[Any]):
     random_id = ''.join(
         [random.choice(string.ascii_letters + string.digits) for n in range(32)])
 
-    query = "PREPARE psycop_{random_id} AS {query};".format(
-        random_id=random_id, query=query)
+    query = f"PREPARE psycop_{random_id} AS {query};"
     if not params:
-        prepared_query = "EXECUTE psycop_{random_id};".format(
-            random_id=random_id)
+        prepared_query = "EXECUTE psycop_{random_id};"
     else:
-        prepared_query = "EXECUTE psycop_{random_id} {params};".format(
-            random_id=random_id, params=tuple(params))
+        prepared_query = "EXECUTE psycop_{random_id} {params};"
 
     cur.execute(query)
     cur.execute(prepared_query)
@@ -57,4 +54,3 @@ def postgresql_write_query(handle, query: str, params: List = List[Any]):
     handle.commit()
     cur.close()
     handle.close()
-    return

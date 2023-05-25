@@ -2,11 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-
-from pydantic import BaseModel, Field
 from typing import Optional, List
+from pydantic import BaseModel, Field
 from tabulate import tabulate
-import pprint
 
 class InputSchema(BaseModel):
     amount: int = Field(
@@ -32,7 +30,13 @@ def stripe_create_charge_printer(output):
 
 
 
-def stripe_create_charge(handle, amount: int, source: str = "", description: str = "", currency: str = "usd") -> List:
+def stripe_create_charge(
+        handle,
+        amount: int,
+        source: str = "",
+        description: str = "",
+        currency: str = "usd"
+        ) -> List:
     """stripe_create_charge Charges a credit card or other payment source to the given amount
         in the given currency.
         
@@ -59,8 +63,7 @@ def stripe_create_charge(handle, amount: int, source: str = "", description: str
             source=source,
             description=description)
         result.append([str(data['amount']), data['id'], data['description']])
-    except Exception as e:
-        od = e
+    except Exception:
         data = 'Error occurred when Creating a charge'
         print(data)
 

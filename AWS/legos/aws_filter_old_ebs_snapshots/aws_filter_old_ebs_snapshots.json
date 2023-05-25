@@ -10,6 +10,6 @@
     "action_next_hop": ["303d6481e8cfa508d9ba11f847906c7d46f30a1c70f9b6b0e04b12409e74f704"],
     "action_supports_iteration": true,
     "action_categories": [  "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EBS" ],
-    "action_next_hop_parameter_mapping":{}
+    "action_next_hop_parameter_mapping":{"303d6481e8cfa508d9ba11f847906c7d46f30a1c70f9b6b0e04b12409e74f704": {"name": "Delete Old EBS Snapshots", "region":".[0].region","snapshot_ids":".[].snapshot_id"}}
 }
   

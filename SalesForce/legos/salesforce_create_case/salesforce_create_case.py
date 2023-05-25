@@ -1,11 +1,10 @@
+import pprint
 import json
 from typing import Dict, Optional
 from pydantic import BaseModel, Field
 from tabulate import tabulate
-
 from unskript.enums.salesforce_enums import Status, CaseOrigin, CaseType, Priority, CaseReason, \
     PotentialLiability, SLAViolation
-import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -136,7 +135,7 @@ def salesforce_create_case(handle,
         :rtype: 
     """
 
-    """salesforce_create_case creates a case in Salesforce. """
+#salesforce_create_case creates a case in Salesforce.
 
     contact_id = ""
     account_id = ""
@@ -147,17 +146,15 @@ def salesforce_create_case(handle,
     case_reason = case_reason.value if case_reason else None
 
     if contact_name != "":
-        contact_id = handle.query("SELECT Id FROM Contact WHERE Name = '%s'" % contact_name)
+        contact_id = handle.query(f"SELECT Id FROM Contact WHERE Name = '{contact_name}'")
         if contact_id['records'] == []:
             return {"Error": "Invalid Contact name"}
-        else:
-            contact_id = contact_id['records'][0]['Id']
+        contact_id = contact_id['records'][0]['Id']
     if account_name != "":
-        account_id = handle.query("SELECT Id FROM Account WHERE Name = '%s'" % account_name)
+        account_id = handle.query(f"SELECT Id FROM Account WHERE Name = '{account_name}'")
         if account_id['records'] == []:
             return {"Error": "Invalid Account name"}
-        else:
-            account_id = account_id['records'][0]['Id']
+        account_id = account_id['records'][0]['Id']
 
     data = {}
     data['Status'] = status
@@ -187,5 +184,4 @@ def salesforce_create_case(handle,
     case = handle.Case.create(data)
     if case.get("success"):
         return handle.Case.get(case.get("id"))
-    else:
-        return case.get("errors")
+    return case.get("errors")

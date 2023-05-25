@@ -44,6 +44,7 @@ You can use our base docker to extend the functionality to fit your need. The st
       docker run -it -p 8888:8888 \
              -v $HOME/.unskript:/unskript  \
              -v $ACA_CUSTOM_DIR_NAME:/data \
+             -e ACA_AWESOME_MODE=1 \
              --user root \
              unskript/awesome-runbooks:latest
       ```

@@ -1,10 +1,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
+import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
-import pprint
 
 class InputSchema(BaseModel):
     region: str = Field(
@@ -36,4 +36,3 @@ def aws_get_tags_of_all_resources(handle, region: str) -> List:
         result.append({"error":error})
 
     return result
-
