@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -48,7 +49,13 @@ def k8s_kubectl_show_metrics_pod(
     """
     k8s_cli_string = k8s_cli_string.format(pod_name=pod_name, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
-    if result is None or hasattr(result, "stderr") is False or result.stderr is None:
-        return None
+    if result is None:
+        print(
+            f"Error while executing command ({k8s_cli_string}) (empty response)")
+        return False, None
+
+    if result.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {k8s_cli_string} {result.stderr}")
 
     return result.stdout

@@ -41,6 +41,7 @@ def k8s_get_pods_in_not_running_state(handle, namespace: str = '') -> Tuple:
         kubectl_command = f"kubectl get pods -n {namespace}" + \
               " --field-selector=status.phase!=Running -o jsonpath=\"{.items[*]['metadata.name', 'metadata.namespace']}\""
     result = handle.run_native_cmd(kubectl_command)
+
     if result.stderr:
         raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")
 

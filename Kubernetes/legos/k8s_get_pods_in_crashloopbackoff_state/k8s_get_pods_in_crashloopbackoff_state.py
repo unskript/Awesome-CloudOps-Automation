@@ -8,6 +8,7 @@ import re
 from typing import Optional, Tuple
 from collections import defaultdict
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -35,19 +36,24 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
 
         :rtype: Status, List of pods in CrashLoopBackOff State 
     """
-    if handle.client_side_validation is not True:
-        print(f"K8S Connector is invalid: {handle}")
-        return str()
+    if handle.client_side_validation == False:
+        raise ApiException(f"K8S Connector is invalid: {handle}")
+
     kubectl_command =("kubectl get pods --all-namespaces | grep CrashLoopBackOff "
                       "| tr -s ' ' | cut -d ' ' -f 1,2")
     if namespace:
         kubectl_command = "kubectl get pods -n " + namespace + \
             " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
     response = handle.run_native_cmd(kubectl_command)
-    if response is None or hasattr(response, "stderr") is False or response.stderr is None:
+
+    if response is None:
         print(
-            f"Error while executing command ({kubectl_command}): {response.stderr}")
-        return str()
+            f"Error while executing command ({kubectl_command}) (empty response)")
+        return False, None
+        
+    if response.stderr:
+        raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
+
     temp = response.stdout
     result = []
     res = []

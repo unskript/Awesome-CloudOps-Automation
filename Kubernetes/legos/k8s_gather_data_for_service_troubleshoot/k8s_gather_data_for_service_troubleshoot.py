@@ -5,6 +5,7 @@
 import pprint
 import json
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     service_name: str = Field(
@@ -42,6 +43,16 @@ def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace
     # Get Service Detail
     describe_cmd = f'kubectl describe svc {servicename} -n {namespace}'
     describe_output = handle.run_native_cmd(describe_cmd)
+
+    if describe_output is None:
+        print(
+            f"Error while executing command ({describe_cmd}) (empty response)")
+        return None
+
+    if describe_output.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {describe_cmd} {describe_output.stderr}")
+
     retval = {}
     if not describe_output.stderr:
         retval['describe'] = describe_output.stdout
