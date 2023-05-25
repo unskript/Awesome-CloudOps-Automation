@@ -18,8 +18,8 @@ class InputSchema(BaseModel):
         description="K8S Namespace where the POD exists"
     )
     file_name: str = Field(
-        title="Script Text",
-        description="Text data of the script that needs to be run on the pod. "
+        title="Script filename with the full path",
+        description="Script filename with the full path. "
     )
 
 def k8s_execute_local_script_on_a_pod_printer(output):
