@@ -24,6 +24,7 @@ jobs:
           pip install shyaml
           sudo apt update
           sudo apt install -y wget
+          wget -qO- ${{ secrets.BUILD_REQUIREMENTS }} | sudo pip install --no-cache-dir -r /dev/stdin
           wget -qO- ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin
           wget -qO- ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin          
       
