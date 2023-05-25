@@ -34,9 +34,15 @@ jobs:
           pip install shyaml
           sudo apt update
           sudo apt install -y wget
-          wget -qO- ${{ secrets.BUILD_REQUIREMENTS }} | sudo pip install --no-cache-dir -r /dev/stdin
-          wget -qO- ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin
-          wget -qO- ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin 
+          #wget -qO- ${{ secrets.BUILD_REQUIREMENTS }} | sudo pip install --no-cache-dir -r /dev/stdin
+          #wget -qO- ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin
+          #wget -qO- ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin
+          wget -qO /tmp/requirements.txt ${{ secrets.BUILD_REQUIREMENTS }} 
+          pip install --no-cache-dir -r /tmp/requirements.txt
+          wget -qO /tmp/main_module.tar.gz  ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} 
+          pip install --no-cache-dir /tmp/main_module.tar.gz
+          wget -qO /tmp/sub_module.tar.gz ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} 
+          pip install --no-cache-dir /tmp/sub_module.tar.gz
         
       
       - name: Run All Modules Check
