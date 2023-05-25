@@ -33,14 +33,17 @@ def test_if_importable(files: list) -> bool:
         :rtype: bool, True if importable, False if files is empty or not a list.
                 Exception in case not able to import the file
     """
-    if not files or isinstance(files, list) != True:
+    if not files or not isinstance(files, list):
         return False 
     
     print(f"Total number of file: {len(files)}")
     for f in files:
         print(f"Processing {f} ...")
+        # Remove Leading `./`
         f = f.replace('./', '')
+        # Replace `/` with `.`
         f = f.replace('/', '.')
+        # Remove trailing `.py`
         f = f.replace('.py', '')
         try:
             module = importlib.import_module(f)
