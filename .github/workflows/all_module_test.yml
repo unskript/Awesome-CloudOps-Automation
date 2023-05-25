@@ -1,0 +1,32 @@
+name: All Modules Import Test
+on:
+  pull_request:
+    types: [ opened, reopened, edited, ready_for_review ]
+  push:
+
+  
+jobs:
+  all-module-import-test: 
+    runs-on: ubuntu-latest 
+    strategy:
+      fail-fast: true
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+      
+      - uses: actions/checkout@v3
+
+      - name: Install system dependencies
+        run: |
+          pip install shyaml
+          sudo apt update
+          sudo apt install -y wget
+          wget -qO- ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin
+          wget -qO- ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} | sudo pip install --no-cache-dir -r /dev/stdin          
+      
+      - name: Run All Modules Check
+
+        run: /usr/bin/env python all_modules_test.py
