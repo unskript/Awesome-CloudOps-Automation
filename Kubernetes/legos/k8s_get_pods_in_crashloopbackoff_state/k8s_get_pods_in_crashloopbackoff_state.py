@@ -36,7 +36,8 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
 
         :rtype: Status, List of pods in CrashLoopBackOff State 
     """
-    if handle.client_side_validation == False:
+
+    if handle.client_side_validation is False:
         raise ApiException(f"K8S Connector is invalid: {handle}")
 
     kubectl_command =("kubectl get pods --all-namespaces | grep CrashLoopBackOff "

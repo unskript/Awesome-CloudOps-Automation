@@ -52,8 +52,8 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str=None) -> Tuple
             f"Error while executing command ({kubectl_command}) (empty response)")
         return False, None
         
-    if result.stderr:
-        raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")
+    if response.stderr:
+        raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
 
     temp = response.stdout
     result = []
