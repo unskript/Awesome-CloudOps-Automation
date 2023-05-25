@@ -4,6 +4,9 @@ on:
     types: [ opened, reopened, edited, ready_for_review ]
   push:
 
+permissions:
+    id-token: write
+    contents: read
   
 jobs:
   all-module-import-test: 
