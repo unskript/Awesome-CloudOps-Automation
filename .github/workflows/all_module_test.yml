@@ -33,7 +33,7 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-          pip install --upgrade pip=22.2.2
+          pip install --upgrade pip==22.2.2
           sudo apt update
           sudo apt install -y wget
           sudo apt install -y awscli
