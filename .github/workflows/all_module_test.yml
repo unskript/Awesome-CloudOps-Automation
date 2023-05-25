@@ -29,19 +29,20 @@ jobs:
           role-to-assume: ${{ secrets.GHACTION_AWS_ROLE }}
           role-session-name: ${{ secrets.GHACTION_AWS_SESSION_NAME }}
 
+     
       - name: Install system dependencies
         run: |
           pip install shyaml
           sudo apt update
           sudo apt install -y wget
-          wget -O /tmp/requirements.txt ${{ secrets.BUILD_REQUIREMENTS }} 
+          sudo apt install -y awscli
+          aws s3 cp ${{ secrets.BUILD_REQUIREMENTS }} /tmp/requirements.txt
           pip install --no-cache-dir -r /tmp/requirements.txt
-          wget -O /tmp/main_module.tar.gz  ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} 
+          aws s3 cp   ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }}  /tmp/main_module.tar.gz
           pip install --no-cache-dir /tmp/main_module.tar.gz
-          wget -O /tmp/sub_module.tar.gz ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} 
+          aws s3 cp  ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} /tmp/sub_module.tar.gz
           pip install --no-cache-dir /tmp/sub_module.tar.gz
         
-      
       - name: Run All Modules Check
 
         run: /usr/bin/env python all_modules_test.py
