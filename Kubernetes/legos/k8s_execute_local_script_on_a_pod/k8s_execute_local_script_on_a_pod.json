@@ -1,6 +1,6 @@
 {
-    "action_title": "Execute Local Script on a Pod",
-    "action_description": "Execute a given script on a pod in a namespace",
+    "action_title": "Execute local script on a pod",
+    "action_description": "Execute local script on a pod in a namespace",
     "action_type": "LEGO_TYPE_K8S",
     "action_entry_function": "k8s_execute_local_script_on_a_pod",
     "action_needs_credential": true,
