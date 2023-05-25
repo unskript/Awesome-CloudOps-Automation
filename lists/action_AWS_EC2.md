@@ -38,6 +38,8 @@
 
 * [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
 
+* [AWS Find Redshift Cluster without Pause Resume Enabled](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_cluster_without_pause_resume_enabled/README.md): Use This Action to AWS find redshift cluster for which paused resume are not Enabled
+
 * [Get AWS EC2 Instances All ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_ec2_instances/README.md): Use This Action to Get All AWS EC2 Instances
 
 * [Get AWS AutoScaling Group Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances

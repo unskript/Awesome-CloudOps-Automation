@@ -43,7 +43,7 @@ def aws_ecs_describe_task_definition(handle, region: str, taskDefinition: str) -
     try:
         data = ecs_client.describe_task_definition(taskDefinition=taskDefinition)
     except Exception as e:
-        errString = '"Error to describe task definition %s"' % str(e)
+        errString = f'"Error to describe task definition {str(e)}"'
         print(errString)
         raise Exception(errString)
     return data

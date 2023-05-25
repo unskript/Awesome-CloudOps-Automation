@@ -2,10 +2,10 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, List
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import Optional, List
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
 
 
 class InputSchema(BaseModel):
@@ -39,6 +39,6 @@ def aws_list_application_loadbalancers(handle, region: str) -> List:
         for elb in resp:
             if elb['Type'] == "application":
                 result.append(elb['LoadBalancerArn'])
-    except Exception as e:
+    except Exception:
         pass
     return result

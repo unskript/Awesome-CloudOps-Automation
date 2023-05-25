@@ -20,22 +20,27 @@
 </p>
 
 
-# Actions (AKA Legos)
+# Actions
 
-Actions (also known as Legos) are the atomic units of xRunBooks.  All xRunBooks are composed of Actions, and each Action is a step that progresses the xRunBook.
+Actions are the atomic units of xRunBooks.  All xRunBooks are composed of Actions, and each Action is a step that progresses the xRunBook.
 
 In this document, we'll walk through the anatomy of a Lego/Action, how they are created, and how they work.
+
+> TL;dr: If you build your Action with the Docker Open source, and save it to your computer, these files will be generated for you. You'll have to modify two files before making a contribution: 
+  * the JSON file (to update the parameters)
+  * the Readme (tell us what your action does and how it works)
+
 
 # Lego Authoring Guidelines
 
 ## Directory Structure
 
-The Directory structure followed on Awesome-CloudOps-Automation is:
+The Directory structure is:
 
 1. CONNECTOR is a directory of xRunBooks and Lego/Actions that are run for a particular service/API/etc. (for example: Redis, AWS or Slack)
 2. Inside the CONNECTOR Directory will be two files for each xRunBook (a JSON file and the actual rRunBook in the .ipynb file), and the Lego subdirectory will hold all of the Actions.
 
-In this document, we'll walk through the steps in creating a Lego/Action.
+In this document, we'll walk through the steps in creating an Action.
 
 ```
 CONNECTOR
@@ -74,7 +79,7 @@ AWS
 
 ```
 
- 1. Every Directory under the CONNECTOR will have __init__.py file (Essential to distinguish as a module/sub-module)
+ 1. Every Directory under the CONNECTOR will have __init__.py file (Essential to distinguish as a module/sub-module).  
 
  2. Every CONNECTOR will have a legos Directory. (Example: AWS/legos)
 
@@ -90,9 +95,9 @@ AWS
 
 ## README.md
 
-The  README.md explains what the LEGO is supposed to do, It should contain:
+The  README.md explains what the Action is supposed to do, It should contain:
 
-  1. **Lego Title** 
+  1. **Action Title** 
       ```
         Example:
           <h2>Delete AWS EBS Volume </h2>
@@ -101,10 +106,10 @@ The  README.md explains what the LEGO is supposed to do, It should contain:
   2.  **Description**: explains what the Lego is intended to do.
 
       ```
-      This Lego deletes AWS EBS volume and gives a list of deletion status.
+      This Action deletes AWS EBS volume and gives a list of deletion status.
       ```
 
-  3. **Lego Details**: here we explain the Lego signature, what are the different input fields to the Lego.  It's also nice to add an example of how the Lego might be used:
+  3. **Action Details**: here we explain the Action signature, what are the different input fields to the Action.  It's also nice to add an example of how the Action might be used:
 
       ```
       aws_delete_volumes(handle: object, volume_id: str, region: str)
@@ -120,19 +125,19 @@ The  README.md explains what the LEGO is supposed to do, It should contain:
                            "vol-039ce61146a4d7901",
                            "us-west-2")
     
- 5. **Lego Input**: explains how many parameters are needed for the Lego. Which of them are Mandatory, which of them are optional. 
+ 5. **Action Input**: explains how many parameters are needed for the LeActiongo. Which of them are Mandatory, which of them are optional. 
 
  ```
 
-This Lego take three inputs handle, volume_id and region. All three are required.
+This Action take three inputs handle, volume_id and region. All three are required.
  ```
 
- 6. **Lego Output** A sample output from the Lego/Action upon completion.  Ensure to remove sensitive values. 
+ 6. **Action Output** A sample output from the Action upon completion.  Ensure to remove sensitive values. 
 
 
-## Lego JSON file
+## Action JSON file
 
-If you created your Action with the Docker build of unSkript, the JSON file is generated for you. It can be found in the $USER/.unskript/custom/contrib/unskript/legos/{Action name} directory.
+If you created your Action with the Docker build of unSkript, the JSON file is generated for you. 
 
 Here is an example JSON file:
 Example:
@@ -146,7 +151,8 @@ Example:
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
     "action_supports_poll": true,
-    "action_supports_iteration": true
+    "action_supports_iteration": true,
+    "action_categories": []
   }
   
 ```
@@ -157,15 +163,17 @@ All of these fields are Mandatory.
 * **Action Type**:
 * Action Entry Function:
 * **Action Needs Credential**: Boolean - are the credentials for this connector required?
-* **Action Output Type**:
-* **Action Supports Poll**:
+* **Action Output Type**: A string? a List?  what does the output look like?
+* **Action Supports Poll**: can we poll this Action if it takes a while to finish?
+* **action_supports_iteration**: Can we run this Action many times with multiple inputs?
+* **action_categories**: categories that appear in teh documentation - for added visibility of your action.
 
 
 ## Python file
 
 This is the Python file that is run in the xRunBook.  Examples can be found in the various Lego directories in this repository.
 
-The fastest way to create the Python file is to create your Action in the Docker build of unSkript. WHen you save your Action (from the three dot menu next to the "Run Action" button), it will be saved locally on your computer in the $USER/.unskript/custom/contrib/unskript/legos/{Action name} directory.
+The fastest way to create the Python file is to create your Action in the Docker build of unSkript. WHen you save your Action (from the three dot menu next to the "Run Action" button), it will be saved locally on your computer
 
 ## __init__.py
 

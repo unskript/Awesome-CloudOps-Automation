@@ -3,8 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from pydantic import BaseModel, Field
 from typing import List
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -16,20 +16,20 @@ class InputSchema(BaseModel):
 
 def mongodb_delete_database_printer(output):
     if output is None:
-        return
+        return None
     print("\n\n")
     if isinstance(output, Exception):
-        pprint.pprint("Error : {}".format(output))
+        pprint.pprint(f"Error : {output}")
         return output
-    else:
-        db_names_before_drop = output[0]
-        db_names_after_drop = output[1]
-        pprint.pprint("db count BEFORE drop:{}".format(len(db_names_before_drop)))
-        pprint.pprint("db count AFTER drop:{}".format(len(db_names_after_drop)))
+    db_names_before_drop = output[0]
+    db_names_after_drop = output[1]
+    pprint.pprint(f"db count BEFORE drop:{len(db_names_before_drop)}")
+    pprint.pprint(f"db count AFTER drop:{len(db_names_after_drop)}")
 
-        diff = len(db_names_before_drop) - len(db_names_after_drop)
-        if diff != 0:
-            pprint.pprint("Database deleted successfully !!!")
+    diff = len(db_names_before_drop) - len(db_names_after_drop)
+    if diff != 0:
+        pprint.pprint("Database deleted successfully !!!")
+    return None
 
 
 def mongodb_delete_database(handle, database_name: str) -> List:

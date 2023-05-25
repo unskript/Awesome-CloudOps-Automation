@@ -1,0 +1,9 @@
+{
+    "name": "AWS Redshift Update Database",
+    "description": "This runbook can be used to update a redshift database from a SQL file stored in S3.",  
+    "uuid": "a79201f821993867e23dd9603ed7ef5123324353d717c566f902f7ca6e471f5c",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_CLOUDOPS" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }

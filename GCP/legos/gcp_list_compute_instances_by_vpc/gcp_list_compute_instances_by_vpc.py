@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
 from typing import List
 from pydantic import BaseModel, Field
-import pprint
 from google.cloud.compute_v1.services.instances import InstancesClient
 
 class InputSchema(BaseModel):
@@ -25,11 +25,15 @@ class InputSchema(BaseModel):
 def gcp_list_compute_instances_by_vpc_printer(output):
     if len(output) == 0:
         return
+    pprint.pprint(output)
 
-    pprint(output)
 
-        
-def gcp_list_compute_instances_by_vpc(handle, project: str, zone: str, vpc_id: str) -> List:
+def gcp_list_compute_instances_by_vpc(
+        handle,
+        project: str,
+        zone: str,
+        vpc_id: str
+        ) -> List:
     """gcp_list_instances_by_vpc Returns the List of compute instances
     
         :type project: string
@@ -48,7 +52,6 @@ def gcp_list_compute_instances_by_vpc(handle, project: str, zone: str, vpc_id: s
     instances = ic.list(project=project, zone=zone)
     instance_list = []
     for instance in instances:
-        instance.name
         instance_list.append(instance.name)
 
     for instance in instance_list:

@@ -4,9 +4,8 @@
 #
 
 import pprint
-from beartype import beartype
-from pydantic import BaseModel, Field
 from typing import List
+from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     pattern: str = Field(
@@ -37,4 +36,3 @@ def redis_delete_keys(handle, pattern: str) -> List:
     except Exception as e:
         print(e)
     return result
-        
