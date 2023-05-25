@@ -5,10 +5,9 @@
 
 import pprint
 from typing import Optional, Tuple
-
-from kubernetes import client
 from pydantic import BaseModel, Field
 from tabulate import tabulate
+from kubernetes import client
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -22,7 +21,7 @@ class InputSchema(BaseModel):
 
 def k8s_get_all_pods_printer(output):
     (healthy_pods, unhealthy_pods, data) = output
-    
+
     if len(healthy_pods) > 0:
         print("\n Healthy PODS \n")
         print(tabulate(healthy_pods, headers=[
@@ -33,9 +32,9 @@ def k8s_get_all_pods_printer(output):
         print(tabulate(unhealthy_pods, headers=[
             "NAME", "READY", "STATUS", "RESTARTS", "Age"]))
 
-   
+
 def k8s_get_all_pods(handle, namespace: str = "all") -> Tuple:
-    
+
     """k8s_get_all_pods get all pods
 
         :type handle: object
@@ -56,13 +55,20 @@ def k8s_get_all_pods(handle, namespace: str = "all") -> Tuple:
             if container_status.ready is False:
                 waiting_state = container_status.state.waiting
                 status = waiting_state.reason
-                unhealthy_pods.append([i.metadata.name, str(
-                    0) + "/" + str(len(i.status.container_statuses)), status, container_status.restart_count,
-                    i.status.start_time])
+                unhealthy_pods.append([i.metadata.name,
+                                       str(0) + "/" + str(len(i.status.container_statuses)),
+                                       status,
+                                       container_status.restart_count,
+                                       i.status.start_time
+                                       ])
             else:
-                healthy_pods.append([i.metadata.name, str(len(i.status.container_statuses)) + "/" + str(len(
-                    i.status.container_statuses)), i.status.phase, container_status.restart_count, i.status.start_time])
-
+                healthy_pods.append([
+                    i.metadata.name,
+                    str(len(i.status.container_statuses)) + "/" + str(len(i.status.container_statuses)),
+                    i.status.phase,
+                    container_status.restart_count,
+                    i.status.start_time
+                    ])
 
 
     return (healthy_pods, unhealthy_pods, data)

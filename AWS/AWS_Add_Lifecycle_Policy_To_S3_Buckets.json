@@ -1,0 +1,9 @@
+{
+    "name": "Add Lifecycle Policy to S3 Buckets",
+    "description": "Attaching lifecycle policies to AWS S3 buckets enables us to automate the management of object lifecycle in your storage buckets. By configuring lifecycle policies, you can define rules that determine the actions to be taken on objects based on their age or other criteria. This includes transitioning objects to different storage classes, such as moving infrequently accessed data to lower-cost storage tiers or archiving them to Glacier, as well as setting expiration dates for objects. By attaching lifecycle policies to your S3 buckets, you can optimize storage costs by automatically moving data to the most cost-effective storage tier based on its lifecycle. Additionally, it allows you to efficiently manage data retention and comply with regulatory requirements or business policies regarding data expiration. This runbook helps us find all the buckets without any lifecycle policy and attach one to them.",
+    "uuid": "3d74913836e037a001f718b48f1e19010394b90afc2422d0572ab5c515521075",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }

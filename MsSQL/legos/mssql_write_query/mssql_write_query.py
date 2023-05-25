@@ -2,8 +2,8 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 from typing import List, Any
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -38,4 +38,3 @@ def mssql_write_query(handle, query: str, params: List = List[Any]) -> None:
     handle.commit()
     cur.close()
     handle.close()
-    return

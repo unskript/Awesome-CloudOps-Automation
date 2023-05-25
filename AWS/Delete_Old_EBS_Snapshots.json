@@ -1,9 +1,0 @@
-{
-    "name": "Delete Old EBS Snapshots",
-    "description": "Amazon Elastic Block Store (EBS) snapshots are created incrementally, an initial snapshot will include all the data on the disk, and subsequent snapshots will only store the blocks on the volume that have changed since the prior snapshot. Unchanged data is not stored, but referenced using the previous snapshot. This runbook helps us to find old EBS snapshots and thereby lower storage costs.",
-    "uuid": "303d6481e8cfa508d9ba11f847906c7d46f30a1c70f9b6b0e04b12409e74f704",
-    "icon": "CONNECTOR_TYPE_AWS",
-    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
-    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
-    "version": "1.0.0"
-  }

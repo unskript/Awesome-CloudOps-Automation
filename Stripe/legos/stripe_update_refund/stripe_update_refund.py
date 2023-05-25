@@ -30,10 +30,12 @@ def stripe_update_refund_printer(output):
 
 
 def stripe_update_refund(handle, refund_id:str, metadata:dict) -> List:
-    """stripe_update_refund Updates the specified refund by setting the values of the parameters passed.
+    """stripe_update_refund Updates the specified refund by setting the values 
+    of the parameters passed.
 
         :type metadata: dict
-        :param metadata: Updates the specified refund by setting the values of the parameters passed.
+        :param metadata: Updates the specified refund by setting the values of
+        the parameters passed.
 
         :type refund_id: string
         :param refund_id: Refund Id

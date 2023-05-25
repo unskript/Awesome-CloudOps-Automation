@@ -2,12 +2,12 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from unskript.connectors.aws import aws_get_paginator
-from datetime import datetime, timedelta
-from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
+from typing import Optional, Tuple
+from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
+from unskript.connectors.aws import aws_get_paginator
+from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pytz
 
 
@@ -63,10 +63,9 @@ def aws_list_unused_secrets(handle, region: str = "", max_age_days: int = 30) ->
                         secret_dict["secret_name"] = secret_id
                         secret_dict["region"] = reg
                         result.append(secret_dict)
-        except Exception as e:
+        except Exception:
             pass
 
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

@@ -1,45 +1,35 @@
 name: Sanitize Runbook
 on:
   pull_request:
-    types: [opened, reopened, edited, ready_for_review]
+    types: [ opened, reopened, edited, ready_for_review ]
   push:
 
+env:
+  PR_NUMBER: ${{ github.event.number }}
+  
 jobs:
   sanitize-runbooks: 
     runs-on: ubuntu-latest 
     strategy:
-      fail-fast: false 
+      fail-fast: true
 
     steps:
       - uses: actions/checkout@v3
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+
       - name: Install system dependencies
         run: |
-          pip install shyaml
-          /usr/bin/env python -m pip install GitPython
-          /usr/bin/env python -m pip install gitpython
-          /usr/bin/env python -m pip install PyGithub
+          pip install shyaml nbformat URLExtract
       
-      - name: PR File List
-        uses: jitterbit/get-changed-files@v1
+      - name: All Runbooks
         id: files
-
-  
-      - name: Run Sanitize
         run: |
-          echo "Running sanitize script on ${{ steps.files.outputs.all }}"
-          for changed_file in ${{ steps.files.outputs.all }}; do
-             if [ ! -f ${changed_file} ]
-             then 
-               continue
-             fi
-            /usr/bin/env python ./sanitize.py ${changed_file}
-          done
-      
-      - name: Committing back changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Sanitize Runbook 
-          file_pattern: '*/*.ipynb *.ipynb'
+          echo "all_runbook_files=$(find . -mindepth 2 -maxdepth 2 -name \*.ipynb | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Run Sanitize
+        id: sanity
+        run: |
+          echo "Running sanitize script on ${{ steps.files.outputs.all_runbooks_files }}"
+          /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs.all_runbook_files }}

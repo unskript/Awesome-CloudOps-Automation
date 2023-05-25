@@ -14,11 +14,17 @@
 
 * [Filter AWS EBS Volume with Low IOPS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_ebs_volumes_with_low_iops/README.md): IOPS (Input/Output Operations Per Second) is a metric used to measure the amount of input/output operations that an EBS volume can perform per second.
 
+* [AWS Find Low Connections RDS instances Per Day](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_low_connection_rds_instances/README.md): This action will find RDS DB instances with a number of connections below the specified minimum in the specified region.
+
+* [AWS Find EMR Clusters of Old Generation Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_old_gen_emr_clusters/README.md): This action list of EMR clusters of old generation instances.
+
 * [Get AWS ALB Listeners Without HTTP Redirection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alb_listeners_without_http_redirect/README.md): Get AWS ALB Listeners Without HTTP Redirection
 
 * [AWS Get EBS Volumes for Low Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volume_for_low_usage/README.md): This action list low use volumes from AWS which used <10% capacity from the given threshold days.
 
 * [Get AWS EBS Volume Without GP3 Type](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ebs_volumes_without_gp3_type/README.md): AWS recently introduced the General Purpose SSD (gp3) volume type, which is designed to provide higher IOPS performance at a lower cost than the gp2 volume type.
+
+* [AWS Get Idle EMR Clusters](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_idle_emr_clusters/README.md): This action list of EMR clusters that have been idle for more than the specified time.
 
 * [AWS Get Publicly Accessible RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_instances/README.md): AWS Get Publicly Accessible RDS Instances
 

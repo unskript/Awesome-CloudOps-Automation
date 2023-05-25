@@ -3,10 +3,10 @@
 # All rights reserved.
 ##
 
-from jira.client import JIRA
-from pydantic import BaseModel, Field
-from typing import Dict, Optional
 import pprint
+from typing import Dict, Optional
+from pydantic import BaseModel, Field
+from jira.client import JIRA
 
 
 class InputSchema(BaseModel):
@@ -23,12 +23,14 @@ class InputSchema(BaseModel):
         title='Visibility',
         description='''a dict containing two entries: "type" and "value".
               "type" is 'role' (or 'group' if the Jira server has configured comment visibility for groups)
-              "value" is the name of the role (or group) to which viewing of this comment will be restricted.'''
+              "value" is the name of the role (or group) to which viewing of this comment 
+              will be restricted.'''
     )
     is_internal: Optional[bool] = Field(
         False,
         title='Internal',
-        description='True marks the comment as \'Internal\' in Jira Service Desk (Default: ``False``)'
+        description=('True marks the comment as \'Internal\' in Jira Service Desk '
+                     '(Default: ``False``)')
     )
 
 
@@ -56,11 +58,14 @@ def jira_add_comment(hdl: JIRA,
 
         :type visibility: Dict[str, str]
         :param visibility: a dict containing two entries: "type" and "value".
-              "type" is 'role' (or 'group' if the Jira server has configured comment visibility for groups)
-              "value" is the name of the role (or group) to which viewing of this comment will be restricted.
+              "type" is 'role' (or 'group' if the Jira server has configured 
+              comment visibility for groups)
+              "value" is the name of the role (or group) to which viewing of 
+              this comment will be restricted.
 
         :type is_internal: bool
-        :param is_internal: True marks the comment as \'Internal\' in Jira Service Desk (Default: ``False``)
+        :param is_internal: True marks the comment as \'Internal\' in Jira 
+        Service Desk (Default: ``False``)
 
         :rtype: Jira comment id (int)
     """

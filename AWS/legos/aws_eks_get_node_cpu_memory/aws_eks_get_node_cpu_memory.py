@@ -54,7 +54,7 @@ def aws_eks_get_node_cpu_memory(handle: Session, clusterName: str, region: str, 
         if nodeName:
             resp = coreApiClient.read_node(nodeName)
             data = [{"node_name": resp.metadata.name, "cpu": int(resp.status.capacity.get("cpu").split("Ki")[0]),
-                     "memory": "%s Mi" % round(int(resp.status.capacity.get("memory").split("Ki")[0]) / 1024, 2)}]
+                     "memory": f"{round(int(resp.status.capacity.get('memory').split('Ki')[0]) / 1024, 2)} Mi"}]
 
         else:
             data = []
@@ -62,8 +62,7 @@ def aws_eks_get_node_cpu_memory(handle: Session, clusterName: str, region: str, 
             for node in resp.items:
                 data.append({"node_name": node.metadata.name,
                              "cpu": node.status.capacity.get("cpu"),
-                             "memory": "%s Mi" %
-                                       round(int(node.status.capacity.get("memory").split("Ki")[0]) / 1024, 2)})
+                             "memory": f"{round(int(node.status.capacity.get('memory').split('Ki')[0]) / 1024, 2)} Mi"})
 
     except ApiException as e:
         pprint.pprint(str(e))
