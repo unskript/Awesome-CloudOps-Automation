@@ -2,12 +2,12 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
+
 from pydantic import BaseModel, Field
-from typing import Tuple
+from typing import Tuple, Optional
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 import pprint
 import datetime
-from typing import Optional
 
 class InputSchema(BaseModel):
     days_back: Optional[int] = Field(
