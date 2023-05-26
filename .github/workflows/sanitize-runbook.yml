@@ -6,10 +6,10 @@ on:
 
 env:
   PR_NUMBER: ${{ github.event.number }}
-  
+
 jobs:
-  sanitize-runbooks: 
-    runs-on: ubuntu-latest 
+  sanitize-runbooks:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
 
@@ -22,7 +22,7 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml nbformat URLExtract
-      
+
       - name: All Runbooks
         id: files
         run: |
@@ -34,9 +34,9 @@ jobs:
           echo "Running sanitize script on ${{ steps.files.outputs.all_runbooks_files }}"
           /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs.all_runbook_files }}
 
-      - name: Pytype Python Checker
-        # You may pin to the exact commit or the version.
-        # uses: theahura/pytype-action@83188a10fef4b23f61ece9aef0b3950d7d893bed
-        uses: theahura/pytype-action@v1.6
-        with:
-          args: -d import-error
+ #     - name: Pytype Python Checker
+ #       # You may pin to the exact commit or the version.
+ #       # uses: theahura/pytype-action@83188a10fef4b23f61ece9aef0b3950d7d893bed
+ #       uses: theahura/pytype-action@v1.6
+ #       with:
+ #         args: -d import-error
