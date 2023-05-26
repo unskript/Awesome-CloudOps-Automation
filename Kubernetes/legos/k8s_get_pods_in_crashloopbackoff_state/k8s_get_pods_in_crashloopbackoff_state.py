@@ -17,13 +17,14 @@ class InputSchema(BaseModel):
         title='Namespace',
         description='k8s Namespace')
 
+
 def k8s_get_pods_in_crashloopbackoff_state_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple:
+def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '') -> Tuple:
     """k8s_get_pods_in_crashloopbackoff_state executes the given kubectl
     command to find pods in CrashLoopBackOff State
 
@@ -40,8 +41,8 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
     if handle.client_side_validation is False:
         raise ApiException(f"K8S Connector is invalid: {handle}")
 
-    kubectl_command =("kubectl get pods --all-namespaces | grep CrashLoopBackOff "
-                      "| tr -s ' ' | cut -d ' ' -f 1,2")
+    kubectl_command = ("kubectl get pods --all-namespaces | grep CrashLoopBackOff "
+                       "| tr -s ' ' | cut -d ' ' -f 1,2")
     if namespace:
         kubectl_command = "kubectl get pods -n " + namespace + \
             " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
@@ -51,33 +52,34 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
         print(
             f"Error while executing command ({kubectl_command}) (empty response)")
         return False, None
-        
+
     if response.stderr:
-        raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
+        raise ApiException(
+            f"Error occurred while executing command {kubectl_command} {response.stderr}")
 
     temp = response.stdout
     result = []
     res = []
-    unhealthy_pods =[]
+    unhealthy_pods = []
     unhealthy_pods_tuple = ()
     if not namespace:
-        all_namespaces = re.findall(r"(\S+).*",temp)
-        all_unhealthy_pods = re.findall(r"\S+\s+(.*)",temp)
+        all_namespaces = re.findall(r"(\S+).*", temp)
+        all_unhealthy_pods = re.findall(r"\S+\s+(.*)", temp)
         unhealthy_pods = list(zip(all_namespaces, all_unhealthy_pods))
         res = defaultdict(list)
         for key, val in unhealthy_pods:
             res[key].append(val)
     elif namespace:
         all_pods = []
-        all_unhealthy_pods =[]
-        all_pods = re.findall(r"(\S+).*",temp)
+        all_unhealthy_pods = []
+        all_pods = re.findall(r"(\S+).*", temp)
         for p in all_pods:
-                unhealthy_pods_tuple = (namespace,p)
-                unhealthy_pods.append(unhealthy_pods_tuple)
+            unhealthy_pods_tuple = (namespace, p)
+            unhealthy_pods.append(unhealthy_pods_tuple)
         res = defaultdict(list)
         for key, val in unhealthy_pods:
             res[key].append(val)
-    if len(res)!=0:
+    if len(res) != 0:
         result.append(dict(res))
     if len(result) != 0:
         return (False, result)

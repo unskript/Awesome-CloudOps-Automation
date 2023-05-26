@@ -44,7 +44,7 @@ def k8s_kubectl_rollout_deployment(
     if result is None:
         print(
             f"Error while executing command ({k8s_cli_string}) (empty response)")
-        return None
+        return ""
 
     if result.stderr:
         raise ApiException(

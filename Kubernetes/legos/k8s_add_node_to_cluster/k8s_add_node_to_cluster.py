@@ -66,7 +66,7 @@ def k8s_add_node_to_cluster(handle,
                             cluster_name: str, 
                             provider_id: str, 
                             node_info: dict, 
-                            capacity: dict) -> List:
+                            capacity: dict) -> tuple:
 
 
     """k8s_add_node_to_cluster add node to cluster
@@ -94,7 +94,6 @@ def k8s_add_node_to_cluster(handle,
     """
 
 
-    print(">>>>>>>>>>")
     coreApiClient = client.CoreV1Api(handle)
 
     try:
@@ -130,6 +129,7 @@ def k8s_add_node_to_cluster(handle,
         v1Node.status = v1NodeStatus
         resp = coreApiClient.create_node(body=v1Node, pretty=True)
         return (v1Node, resp)
+
     except ApiException as e:
         error = f'An Exception occured while executing the command :{e}'
         pp.pprint(error)

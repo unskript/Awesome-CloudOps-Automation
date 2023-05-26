@@ -61,7 +61,7 @@ def k8s_kubectl_exec_command(
     if result is None:
         print(
             f"Error while executing command ({k8s_cli_string}) (empty response)")
-        return False, None
+        return ""
         
     if result.stderr:
         raise ApiException(f"Error occurred while executing command {k8s_cli_string} {result.stderr}")

@@ -44,7 +44,7 @@ def k8s_get_pods_attached_to_pvc(handle, namespace: str, pvc: str) -> str:
     if result is None:
         print(
             f"Error while executing command ({kubectl_command}) (empty response)")
-        return None
+        return ""
         
     if result.stderr:
         raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")

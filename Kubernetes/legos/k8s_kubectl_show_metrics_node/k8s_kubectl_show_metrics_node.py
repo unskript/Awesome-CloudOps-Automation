@@ -43,7 +43,7 @@ def k8s_kubectl_show_metrics_node(handle, k8s_cli_string: str, node_name: str) -
     if result is None:
         print(
             f"Error while executing command ({k8s_cli_string}) (empty response)")
-        return False, None
+        return ""
 
     if result.stderr:
         raise ApiException(

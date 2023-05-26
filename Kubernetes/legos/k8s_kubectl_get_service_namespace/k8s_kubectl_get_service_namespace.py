@@ -42,7 +42,7 @@ def k8s_kubectl_get_service_namespace(handle, k8s_cli_string: str, namespace: st
     if result is None:
         print(
             f"Error while executing command ({k8s_cli_string}) (empty response)")
-        return False, None
+        return []
         
     if result.stderr:
         raise ApiException(f"Error occurred while executing command {k8s_cli_string} {result.stderr}")

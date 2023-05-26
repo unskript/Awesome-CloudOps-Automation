@@ -71,7 +71,7 @@ def k8s_change_pvc_size(
     if result is None:
         print(
             f"Error while executing command ({kubectl_command}) (empty response)")
-        return False, None
+        return ""
 
     if result.stderr:
         raise ApiException(

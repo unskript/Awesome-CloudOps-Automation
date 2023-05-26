@@ -23,7 +23,7 @@ def k8s_gather_data_for_pod_troubleshoot_printer(output):
     pprint.pprint(output)
 
 
-def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) -> str:
+def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) -> dict:
     """k8s_gather_data_for_pod_troubleshoot This function gathers data from the k8s namespace
        to assist in troubleshooting of a pod. The gathered data are returned in the form of a
        Dictionary with `logs`, `events` and `details` keys. 
@@ -50,7 +50,7 @@ def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) 
     if result is None:
         print(
             f"Error while executing command ({kubectl_client}) (empty response)")
-        return None
+        return {}
 
     if result.stderr:
         raise ApiException(

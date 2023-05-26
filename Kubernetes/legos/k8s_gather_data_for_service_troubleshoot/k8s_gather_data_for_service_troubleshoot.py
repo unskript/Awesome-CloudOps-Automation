@@ -47,7 +47,7 @@ def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace
     if describe_output is None:
         print(
             f"Error while executing command ({describe_cmd}) (empty response)")
-        return None
+        return {}
 
     if describe_output.stderr:
         raise ApiException(

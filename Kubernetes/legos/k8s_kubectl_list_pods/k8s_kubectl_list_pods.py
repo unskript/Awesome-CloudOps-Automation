@@ -42,7 +42,7 @@ def k8s_kubectl_list_pods(handle, k8s_cli_string: str, namespace: str) -> list:
     if result is None:
         print(
             f"Error while executing command ({k8s_cli_string}) (empty response)")
-        return False, None
+        return []
 
     if result.stderr:
         raise ApiException(

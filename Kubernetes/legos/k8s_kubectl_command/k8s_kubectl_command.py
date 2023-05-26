@@ -42,7 +42,7 @@ def k8s_kubectl_command(handle, kubectl_command: str) -> str:
     if result is None:
         print(
             f"Error while executing command ({kubectl_command}) (empty response)")
-        return False, None
+        return ""
         
     if result.stderr:
         raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")
