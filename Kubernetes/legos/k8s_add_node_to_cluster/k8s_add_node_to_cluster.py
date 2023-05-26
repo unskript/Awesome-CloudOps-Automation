@@ -3,7 +3,7 @@
 # All rights reserved.
 #
 import pprint
-from typing import List
+from typing import List, Tuple
 from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
@@ -61,12 +61,12 @@ def k8s_add_node_to_cluster_printer(output):
     return data
 
 
-def k8s_add_node_to_cluster(handle, 
-                            node_name: str, 
-                            cluster_name: str, 
-                            provider_id: str, 
-                            node_info: dict, 
-                            capacity: dict) -> tuple:
+def k8s_add_node_to_cluster(handle,
+                            node_name: str,
+                            cluster_name: str,
+                            provider_id: str,
+                            node_info: dict,
+                            capacity: dict) -> Tuple:
 
 
     """k8s_add_node_to_cluster add node to cluster

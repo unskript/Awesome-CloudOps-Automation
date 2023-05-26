@@ -3,9 +3,8 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Optional
+from typing import Optional, Type
 from pydantic import BaseModel, Field
-from unskript.legos.utils import CheckOutput
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
 
@@ -19,13 +18,10 @@ class InputSchema(BaseModel):
 def aws_filter_unused_keypairs_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
+def aws_filter_unused_keypairs(handle, region: str = None) -> Tuple:
     """aws_filter_unused_keypairs Returns an array of KeyPair.
 
         :type region: object
