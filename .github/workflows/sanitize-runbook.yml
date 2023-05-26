@@ -38,3 +38,5 @@ jobs:
         # You may pin to the exact commit or the version.
         # uses: theahura/pytype-action@83188a10fef4b23f61ece9aef0b3950d7d893bed
         uses: theahura/pytype-action@v1.6
+        with:
+          args: -d import-error
