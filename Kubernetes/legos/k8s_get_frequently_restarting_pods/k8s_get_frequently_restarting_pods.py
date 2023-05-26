@@ -41,7 +41,7 @@ def k8s_get_frequently_restarting_pods(handle, restart_threshold:int=90) -> Tupl
     """
     result = []
     cmd = "kubectl get pods --all-namespaces --sort-by='.status.containerStatuses[0].restartCount' -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,RESTART_COUNT:.status.containerStatuses[0].restartCount' -o json"
-    res = k8s_get_frequently_restarting_pods(handle=handle, kubectl_command=cmd)
+    res = k8s_kubectl_command(handle=handle, kubectl_command=cmd)
     all_pods_data = json.loads(res)
     for pod_data in all_pods_data['items']:
         pod = pod_data['metadata']['name']
