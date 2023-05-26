@@ -33,7 +33,7 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
         :param namespace: Namespace to get the pods from. Eg:"logging",
         if not given all namespaces are considered
 
-        :rtype: Status, List of pods in CrashLoopBackOff State 
+        :rtype: Status, List of pods in CrashLoopBackOff State
     """
     if handle.client_side_validation is not True:
         print(f"K8S Connector is invalid: {handle}")
@@ -42,7 +42,7 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
                       "| tr -s ' ' | cut -d ' ' -f 1,2")
     if namespace:
         kubectl_command = "kubectl get pods -n " + namespace + \
-            " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
+        " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
     response = handle.run_native_cmd(kubectl_command)
     if response is None or hasattr(response, "stderr") is False or response.stderr is None:
         print(
