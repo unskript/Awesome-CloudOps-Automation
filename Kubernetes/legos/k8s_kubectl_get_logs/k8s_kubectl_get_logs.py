@@ -1,5 +1,6 @@
 from pprint import pprint
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     k8s_cli_string: str = Field(
@@ -44,5 +45,13 @@ def k8s_kubectl_get_logs(handle, k8s_cli_string: str, pod_name: str, namespace:s
     """
     k8s_cli_string = k8s_cli_string.format(pod_name=pod_name, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
+    if result is None:
+        print(
+            f"Error while executing command ({k8s_cli_string}) (empty response)")
+        return ""
+        
+    if result.stderr:
+        raise ApiException(f"Error occurred while executing command {k8s_cli_string} {result.stderr}")
+
     data = result.stdout
     return data
