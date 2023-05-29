@@ -6,6 +6,7 @@ import pprint
 from typing import Optional
 from pydantic import BaseModel, Field
 from unskript.enums.aws_k8s_enums import SizingOption
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     namespace: str = Field(
@@ -67,10 +68,14 @@ def k8s_change_pvc_size(
     # Get the current size.
     kubectl_command = f'kubectl get pvc {name} -n {namespace}  -o jsonpath={{.status.capacity.storage}}'
     result = handle.run_native_cmd(kubectl_command)
-    if result.stderr:
+    if result is None:
         print(
-            f"Error while executing command ({kubectl_command}): {result.stderr}")
-        return str(f"Error Changing PVC Size {kubectl_command}: {result.stderr}")
+            f"Error while executing command ({kubectl_command}) (empty response)")
+        return ""
+
+    if result.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {kubectl_command} {result.stderr}")
 
     currentSize = result.stdout
     currentSizeInt = int(currentSize.rstrip("Gi"))
