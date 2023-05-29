@@ -3,7 +3,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import Optional, Type
+from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
