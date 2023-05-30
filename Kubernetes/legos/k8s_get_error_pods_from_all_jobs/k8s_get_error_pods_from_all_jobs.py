@@ -38,7 +38,7 @@ def k8s_get_error_pods_from_all_jobs(handle, namespace: str = '') -> Tuple:
         raise ApiException(f"K8S Connector is invalid {handle}")
 
     if not namespace:
-        kubectl_command =("kubectl get jobs --all-namespaces -o json")
+        kubectl_command = f"kubectl get jobs --all-namespaces -o json"
     else:
         kubectl_command = f"kubectl get jobs -n {namespace} -o json"
     result = handle.run_native_cmd(kubectl_command)
