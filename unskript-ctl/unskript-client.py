@@ -1277,7 +1277,14 @@ def parse_runbook_param(args):
     return
 
 def parse_creds(args):
-    """parse_creds parses the given arguments
+    """parse_creds parses the given arguments. Currently only
+       file based credential creation is supported via command options.
+       (K8S). For the rest of credentials, UI is prompted.
+
+       :type args: list
+       :param args: ParseArgs List that it returns for the given option
+
+       :rtype: None
     """ 
     # Check if creds that need to be created is for k8s, if yes
     # read the given kubecofnig and create the credential of it. 
@@ -1313,6 +1320,8 @@ def parse_creds(args):
         display_creds_ui() 
 
 def display_creds_ui():
+    """display_creds_ui Display the npyscreen based UI for user to add creds
+    """
     try:
         from creds_ui import main as ui
         ui()
@@ -1321,6 +1330,10 @@ def display_creds_ui():
 
 
 def list_creds():
+    """list_creds Lists the credentials and their status (ACTIVE or INACTIVE) same as how
+       we display on the UI. ACTIVE means the credential data has been filled and ready to go
+       INACTIVE means the credential is not yet ready to be used.
+    """
     creds_dir = os.environ.get('HOME') + CREDENTIAL_DIR
     creds_files = glob.glob(creds_dir + '/*.json',recursive=True)
     creds_data = [["#", "Connector Type", "Connector Name", "Status"]]
@@ -1333,7 +1346,7 @@ def list_creds():
         else:
             c_type = "UNDEFINED"
         
-        if content.get('metadata') and content.get('metadata').get('connectorData') == {}:
+        if content.get('metadata') and content.get('metadata').get('connectorData') == "{}":
             status = "IN ACTIVE"
         else:
             status = "ACTIVE"

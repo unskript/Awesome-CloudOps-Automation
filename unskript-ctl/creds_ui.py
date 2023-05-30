@@ -283,14 +283,14 @@ class AWSCreds(CredsForm):
 class GCPCreds(CredsForm):
     def create(self):
         super().create()
-        self.gcpjson = self.add(npyscreen.MultiLineEditableBoxed, name="~ Paste your Credential JSON Below ~", align="^", color="IMPORTANT")
+        self.gcpjson = self.add(npyscreen.MultiLineEditableBoxed, values=[""],name="~ Paste your Credential JSON Below ~", align="^", color="IMPORTANT")
         
         c_data = read_existing_creds(CREDS_DIR + 'gcpcreds.json')
         if c_data:
             self.gcpjson.value = json.dumps(c_data)
 
     def on_ok(self):
-        if self.gcpjson.value:
+        if self.gcpjson.values:
             creds_file = CREDS_DIR + 'gcpcreds.json'
             if os.path.exists(creds_file) is False:
                 npyscreen.notify("GCP Credential File is Missing! Cannot proceed further. Contact support@unskript.com")
@@ -300,7 +300,7 @@ class GCPCreds(CredsForm):
             if not contents:
                 npyscreen.notify("GCP Credential File is Missing! Cannot proceed further. Contact support@unskript.com")
                 raise AssertionError("Credential file for GCP is Missing")
-            contents['metadata']['connectorData'] = json.dumps(self.gcpjson.value)
+            contents['metadata']['connectorData'] = json.dumps(self.gcpjson.values)
     
             with open(creds_file, 'w', encoding="utf-8") as f:
                 f.write(json.dumps(contents, indent=2))
@@ -652,14 +652,14 @@ class JiraCreds(CredsForm):
 class K8SCreds(CredsForm):
     def create(self):
         super().create()
-        self._kubeconfig = self.add(npyscreen.MultiLineEditableBoxed, name="~ Paste your Kube Configuration Below ~", align="^", color="IMPORTANT",)
+        self._kubeconfig = self.add(npyscreen.MultiLineEditableBoxed, values=[""],name="~ Paste your Kube Configuration Below ~", align="^", color="IMPORTANT",)
 
         c_data = read_existing_creds(CREDS_DIR + 'k8screds.json')
         if c_data:
             self._kubeconfig.value = json.dumps(c_data)
     
     def on_ok(self):
-        if self._kubeconfig.value:
+        if self._kubeconfig.values:
             creds_file = CREDS_DIR + 'k8screds.json'
             if os.path.exists(creds_file) is False:
                 npyscreen.notify("K8S Credential File is Missing! Cannot proceed further. Contact support@unskript.com")
@@ -669,7 +669,7 @@ class K8SCreds(CredsForm):
             if not contents:
                 npyscreen.notify("K8S Credential File is Missing! Cannot proceed further. Contact support@unskript.com")
                 raise AssertionError("Credential file for K8S is Missing")
-            contents['metadata']['connectorData'] = json.dumps({"kubeconfig": self._kubeconfig.value})
+            contents['metadata']['connectorData'] = json.dumps({"kubeconfig": self._kubeconfig.values})
     
             with open(creds_file, 'w', encoding="utf-8") as f:
                 f.write(json.dumps(contents, indent=2))
