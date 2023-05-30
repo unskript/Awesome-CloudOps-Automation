@@ -1347,9 +1347,9 @@ def list_creds():
             c_type = "UNDEFINED"
         
         if content.get('metadata') and content.get('metadata').get('connectorData') == "{}":
-            status = "IN ACTIVE"
+            status = "Incomplete"
         else:
-            status = "ACTIVE"
+            status = "Active"
         
         if content.get('display_name'):
             name = content.get('display_name')
