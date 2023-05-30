@@ -1288,7 +1288,7 @@ def parse_creds(args):
             print("ERROR: Need a path for kubeconfig file as value for the k8s credential")
             parser.print_help()
             sys.exit(1)
-        if os.path.exists(args[1]) == False:
+        if os.path.exists(args[1]) is False:
             print(f"ERROR: Credential File {args[1]} does not exist, please check path")
             parser.print_help()
             sys.exit(1)
