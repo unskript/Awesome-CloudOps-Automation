@@ -669,7 +669,7 @@ class K8SCreds(CredsForm):
             if not contents:
                 npyscreen.notify("K8S Credential File is Missing! Cannot proceed further. Contact support@unskript.com")
                 raise AssertionError("Credential file for K8S is Missing")
-            contents['metadata']['connectorData'] = json.dumps(self._kubeconfig.value)
+            contents['metadata']['connectorData'] = json.dumps({"kubeconfig": self._kubeconfig.value})
     
             with open(creds_file, 'w', encoding="utf-8") as f:
                 f.write(json.dumps(contents, indent=2))
