@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -32,4 +32,5 @@ def aws_delete_route53_health_check(handle, health_check_id: str) -> Dict:
         response = route_client.delete_health_check(HealthCheckId=health_check_id)
         return response
     except Exception as e:
-        raise Exception(e)
+        raise Exception(e) from e
+    

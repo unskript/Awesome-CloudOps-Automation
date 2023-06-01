@@ -3,12 +3,12 @@
 # All rights reserved.
 #
 
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from collections import defaultdict
-import json
 import pprint
 import re
+from typing import Optional, Tuple
+from collections import defaultdict
+from pydantic import BaseModel, Field
+
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(
@@ -23,22 +23,26 @@ def k8s_get_pods_in_crashloopbackoff_state_printer(output):
 
 
 def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple:
-    """k8s_get_pods_in_crashloopbackoff_state executes the given kubectl command to find pods in CrashLoopBackOff State
+    """k8s_get_pods_in_crashloopbackoff_state executes the given kubectl
+    command to find pods in CrashLoopBackOff State
 
         :type handle: object
         :param handle: Object returned from the Task validate method
 
         :type namespace: Optional[str]
-        :param namespace: Namespace to get the pods from. Eg:"logging", if not given all namespaces are considered
+        :param namespace: Namespace to get the pods from. Eg:"logging",
+        if not given all namespaces are considered
 
         :rtype: Status, List of pods in CrashLoopBackOff State 
     """
-    if handle.client_side_validation != True:
+    if handle.client_side_validation is not True:
         print(f"K8S Connector is invalid: {handle}")
         return str()
-    kubectl_command ="kubectl get pods --all-namespaces | grep CrashLoopBackOff | tr -s ' ' | cut -d ' ' -f 1,2"
+    kubectl_command =("kubectl get pods --all-namespaces | grep CrashLoopBackOff "
+                      "| tr -s ' ' | cut -d ' ' -f 1,2")
     if namespace:
-        kubectl_command = "kubectl get pods -n " + namespace + " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
+        kubectl_command = "kubectl get pods -n " + namespace + \
+            " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
     response = handle.run_native_cmd(kubectl_command)
     if response is None or hasattr(response, "stderr") is False or response.stderr is None:
         print(
@@ -52,7 +56,7 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
     if not namespace:
         all_namespaces = re.findall(r"(\S+).*",temp)
         all_unhealthy_pods = re.findall(r"\S+\s+(.*)",temp)
-        unhealthy_pods = [(i, j) for i, j in zip(all_namespaces, all_unhealthy_pods)]
+        unhealthy_pods = list(zip(all_namespaces, all_unhealthy_pods))
         res = defaultdict(list)
         for key, val in unhealthy_pods:
             res[key].append(val)
@@ -67,8 +71,7 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str=None) -> Tuple
         for key, val in unhealthy_pods:
             res[key].append(val)
     if len(res)!=0:
-        result.append(dict(res)) 
+        result.append(dict(res))
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)

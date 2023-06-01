@@ -9,6 +9,6 @@
   "action_supports_poll": "true",
   "action_is_check": "true",
   "action_next_hop": ["10a363abaf49098a0376eae46a6bfac421e606952369fc6ea02768ad319dd0be"],
-  "action_next_hop_parameter_mapping": {},
+  "action_next_hop_parameter_mapping": {"10a363abaf49098a0376eae46a6bfac421e606952369fc6ea02768ad319dd0be": {"name": "Delete Unused Route53 HealthChecks", "health_check_ids": ".[]"}},
   "action_categories": ["CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ROUTE53"]
 }

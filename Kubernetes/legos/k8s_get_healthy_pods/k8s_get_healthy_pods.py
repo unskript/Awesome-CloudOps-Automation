@@ -3,13 +3,10 @@
 # All rights reserved.
 ##
 from typing import List
-
-from kubernetes import client
 from pydantic import BaseModel, Field
-import pprint
+from kubernetes import client
 from kubernetes.client.rest import ApiException
 
-import inspect
 
 class InputSchema(BaseModel):
     namespace: str = Field(
@@ -20,7 +17,7 @@ class InputSchema(BaseModel):
 def k8s_get_healthy_pods_printer(data: list):
     if data is None:
         return
-        
+
     print("POD List:")
 
     for pod in data:
@@ -38,8 +35,8 @@ def k8s_get_healthy_pods(handle, namespace: str) -> List:
         :rtype: List
     """
     coreApiClient = client.CoreV1Api(api_client=handle)
-    try: 
-        api_response = coreApiClient.read_namespace_status(namespace, pretty=True)
+    try:
+        coreApiClient.read_namespace_status(namespace, pretty=True)
     except ApiException as e:
         #print("Exception when calling CoreV1Api->read_namespace_status: %s\n" % e)
         raise e

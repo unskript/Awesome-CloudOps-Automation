@@ -8,3 +8,5 @@
 
 * [AWS Get Redshift Result](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_result/README.md): Given a QueryId, Get the Query Result, and format into a List
 
+* [AWS Purchase Redshift Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_purchase_redshift_reserved_node/README.md): This action purchases reserved nodes. Amazon Redshift offers a predefined set of reserved node offerings. You can purchase one or more of the offerings.
+

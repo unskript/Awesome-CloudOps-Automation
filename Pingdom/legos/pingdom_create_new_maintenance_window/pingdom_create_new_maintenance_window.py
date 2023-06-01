@@ -2,11 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
+import pprint
 from typing import Optional, List
 from datetime import datetime as dt, timedelta
+from pydantic import BaseModel, Field
 from unskript.thirdparty.pingdom import swagger_client as pingdom_client
-import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -20,11 +20,15 @@ class InputSchema(BaseModel):
     tmsids: Optional[List[int]] = Field(
         default=None,
         title='Transaction checks Ids',
-        description='Transaction checks Ids to assign to the maintenance window eg: [120824,1208233].')
+        description=('Transaction checks Ids to assign to the maintenance '
+                     'window eg: [120824,1208233].')
+        )
     uptimeids: Optional[List[int]] = Field(
         default=None,
         title='Uptime Ids',
-        description='Uptime checks Ids to assign to the maintenance window eg: [11061762,11061787].')
+        description=('Uptime checks Ids to assign to the maintenance window eg: '
+                     '[11061762,11061787].')
+                     )
 
 
 def pingdom_create_new_maintenance_window_printer(output):
@@ -32,7 +36,8 @@ def pingdom_create_new_maintenance_window_printer(output):
         return
     print("\n")
     pp.pprint(
-        f'Successfully created maintenance window {output}, starting time {dt.now().strftime("%H:%M:%S")}')
+        (f'Successfully created maintenance window {output}',
+        f'starting time {dt.now().strftime("%H:%M:%S")}'))
 
 
 def pingdom_create_new_maintenance_window(handle,
@@ -71,10 +76,10 @@ def pingdom_create_new_maintenance_window(handle,
     obj['from'] = start_time.strftime("%s")
     obj['to'] = to_time
 
-    if tmsids != None:
+    if tmsids is not None:
         obj['tmsids'] = tmsids
 
-    if uptimeids != None:
+    if uptimeids is not None:
         obj['uptimeids'] = uptimeids
 
     maintenance = pingdom_client.MaintenanceApi(api_client=handle)

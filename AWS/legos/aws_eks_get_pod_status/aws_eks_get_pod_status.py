@@ -70,8 +70,7 @@ def aws_eks_get_pod_status(handle: Session, clusterName: str, pod_name: str, reg
             restarts_number = restarts_number + container.restart_count
         containers_number += 1
     res["NAME"] = pod_name
-    res['READY'] = "Ready {}/{}".format(ready_containers_number,
-                                        containers_number)
+    res['READY'] = f"Ready {ready_containers_number}/{containers_number}"
     res['STATUS'] = status.status.phase
     res['RESTARTS'] = restarts_number
     res['START_TIME'] = status.status.start_time.strftime("%m/%d/%Y, %H:%M:%S")
