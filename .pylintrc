@@ -141,6 +141,7 @@ disable=abstract-method,
         unpacking-in-except,
         useless-else-on-loop,
         useless-object-inheritance,
+        import-outside-toplevel,
         useless-suppression,
         using-cmp-argument,
         wrong-import-order,
@@ -152,7 +153,8 @@ disable=abstract-method,
         C0114,
 	C0303,
         C0304,
-        C0301
+        C0301,
+        E0203
         
 
 
