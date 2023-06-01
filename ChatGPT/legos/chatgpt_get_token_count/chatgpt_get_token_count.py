@@ -5,14 +5,14 @@ from __future__ import annotations
 ##  All rights reserved.
 ##
 #Note - this requires the tiktoken library to be installed
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import tiktoken
 
 
 
 from typing import List
 
-from pydantic import BaseModel, Field
+
 
 
 class InputSchema(BaseModel):
@@ -52,6 +52,5 @@ def unskript_default_printer(output):
         for item in output.items():
             print(f'item: {item}')
     else:
-        print(f'Output for {task.name}')
         print(output)
 
