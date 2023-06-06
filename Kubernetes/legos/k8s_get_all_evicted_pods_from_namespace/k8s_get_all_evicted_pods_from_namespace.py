@@ -7,6 +7,8 @@ import json
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 
+from kubernetes.client.rest import ApiException
+
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(
@@ -35,17 +37,21 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
     """
     if handle.client_side_validation is not True:
         print(f"K8S Connector is invalid: {handle}")
-        return str()
+        return False, None
 
     kubectl_command = "kubectl get pods --all-namespaces -o json | grep Evicted"
     if namespace:
         kubectl_command = "kubectl get pods -n " + namespace + " -o json | grep Evicted"
 
     response = handle.run_native_cmd(kubectl_command)
-    if response is None or hasattr(response, "stderr") is False or response.stderr is None:
+
+    if response is None:
         print(
-            f"Error while executing command ({kubectl_command}): {response.stderr}")
-        return str()
+            f"Error while executing command ({kubectl_command}) (empty response)")
+        return False, None
+        
+    if response.stderr:
+        raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
 
     result = []
     try:
