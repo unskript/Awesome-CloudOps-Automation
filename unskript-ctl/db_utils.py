@@ -194,7 +194,7 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
     if cs is None:
         raise Exception("Code Snippets Are missing")
     for s in cs:
-        d = s.snippet
+        d = s
         s_connector = d.get('metadata').get('action_type')
         s_connector = s_connector.split('_')[-1].lower()
 

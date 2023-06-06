@@ -53,6 +53,7 @@ def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int =
     result = handle.run_native_cmd(kubectl_command)
     if result.stderr:
         raise ApiException(f"Error occurred while executing command {result.stderr}")
+
     retval = []
     if result.stdout:
         for line in result.stdout.split('\n'):
