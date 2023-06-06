@@ -28,6 +28,8 @@
 
 * [AWS Delete EBS Snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_ebs_snapshot/README.md): Delete EBS Snapshot for an EC2 instance
 
+* [AWS Delete ECS Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_ecs_cluster/README.md): Delete AWS ECS Cluster
+
 * [AWS Delete Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_load_balancer/README.md): AWS Delete Load Balancer
 
 * [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
@@ -121,6 +123,8 @@
 * [AWS Filter Lambdas with Long Runtime](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_long_running_lambdas/README.md): This action retrieves a list of all Lambda functions and searches for log events for each function for given runtime(duration).
 
 * [AWS Find RDS Instances with low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_rds_instances_with_low_cpu_utilization/README.md): This lego finds RDS instances are not utilizing their CPU resources to their full potential.
+
+* [AWS Find Redshift Cluster without Pause Resume Enabled](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_cluster_without_pause_resume_enabled/README.md): Use This Action to AWS find redshift cluster for which paused resume are not Enabled
 
 * [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
 
@@ -216,6 +220,12 @@
 
 * [Plot AWS PostgreSQL Active Connections](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_postgresql_plot_active_connections/README.md): Plot AWS PostgreSQL Action Connections
 
+* [AWS Purchase ElastiCache Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_purchase_elasticcache_reserved_node/README.md): This action purchases a reserved cache node offering.
+
+* [AWS Purchase RDS Reserved Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_purchase_rds_reserved_instance/README.md): This action purchases a reserved DB instance offering.
+
+* [AWS Purchase Redshift Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_purchase_redshift_reserved_node/README.md): This action purchases reserved nodes. Amazon Redshift offers a predefined set of reserved node offerings. You can purchase one or more of the offerings.
+
 * [ Apply CORS Policy for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_put_bucket_cors/README.md):  Apply CORS Policy for S3 Bucket
 
 * [Apply AWS New Policy for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_put_bucket_policy/README.md): Apply a New AWS Policy for S3 Bucket
@@ -235,6 +245,8 @@
 * [AWS Revoke Policy from IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_revoke_policy_from_iam_user/README.md): AWS Revoke Policy from IAM User
 
 * [Start AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
+
+* [AWS Schedule Redshift Cluster Pause Resume Enabled](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_schedule_pause_resume_enabled/README.md): AWS Schedule Redshift Cluster Pause Resume Enabled
 
 * [AWS Service Quota Limits](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits/README.md): Input a List of Service Quotas, and get back which of your instances are above the warning percentage of the quota
 

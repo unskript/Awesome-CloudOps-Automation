@@ -4,6 +4,7 @@
 ##
 import pprint
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     pod_name: str = Field(
@@ -22,7 +23,7 @@ def k8s_gather_data_for_pod_troubleshoot_printer(output):
     pprint.pprint(output)
 
 
-def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) -> str:
+def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) -> dict:
     """k8s_gather_data_for_pod_troubleshoot This function gathers data from the k8s namespace
        to assist in troubleshooting of a pod. The gathered data are returned in the form of a
        Dictionary with `logs`, `events` and `details` keys. 
@@ -45,10 +46,16 @@ def k8s_gather_data_for_pod_troubleshoot(handle, pod_name: str, namespace: str) 
     # Get Describe POD details
     kubectl_client = f'kubectl describe pod {pod_name} -n {namespace}'
     result = handle.run_native_cmd(kubectl_client)
-    if not result.stderr:
-        retval['describe'] =  result.stdout
-    else:
-        retval['error'] = result.stderr
+
+    if result is None:
+        print(
+            f"Error while executing command ({kubectl_client}) (empty response)")
+        return {}
+
+    if result.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {kubectl_client} {result.stderr}")
+
     # Get Logs for the POD
     kubectl_client = f'kubectl logs {pod_name} -n {namespace}'
     result = handle.run_native_cmd(kubectl_client)

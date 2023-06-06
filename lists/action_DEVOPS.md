@@ -14,6 +14,8 @@
 
 * [AWS Delete Classic Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_classic_load_balancer/README.md): Delete Classic Elastic Load Balancers
 
+* [AWS Delete ECS Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_ecs_cluster/README.md): Delete AWS ECS Cluster
+
 * [AWS Delete Load Balancer](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_load_balancer/README.md): AWS Delete Load Balancer
 
 * [AWS Delete Log Stream](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_log_stream/README.md): AWS Delete Log Stream
@@ -92,6 +94,8 @@
 
 * [Filter AWS Unused Keypairs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_filter_unused_keypairs/README.md): Filter AWS Unused Keypairs
 
+* [AWS Find Redshift Cluster without Pause Resume Enabled](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_cluster_without_pause_resume_enabled/README.md): Use This Action to AWS find redshift cluster for which paused resume are not Enabled
+
 * [AWS Get All Load Balancers](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_load_balancers/README.md): AWS Get All Load Balancers
 
 * [Get AWS AutoScaling Group Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances
@@ -144,7 +148,7 @@
 
 * [AWS Get Internet Gateway by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc/README.md): AWS Get Internet Gateway by VPC ID
 
-* [AWS Get Long Running ElasticCache clusters Without Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/README.md): This action gets information about long running ElasticCache clusters and their status, and checks if they have any reserved nodes associated with them.
+* [AWS Get Long Running ElastiCache clusters Without Reserved Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/README.md): This action gets information about long running ElastiCache clusters and their status, and checks if they have any reserved nodes associated with them.
 
 * [AWS Get NAT Gateway Info by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_nat_gateway_by_vpc/README.md): This action is used to get the details about nat gateways configured for VPC.
 
@@ -227,6 +231,8 @@
 * [AWS Revoke Policy from IAM User](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_revoke_policy_from_iam_user/README.md): AWS Revoke Policy from IAM User
 
 * [Start AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
+
+* [AWS Schedule Redshift Cluster Pause Resume Enabled](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_schedule_pause_resume_enabled/README.md): AWS Schedule Redshift Cluster Pause Resume Enabled
 
 * [AWS Service Quota Limits](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits/README.md): Input a List of Service Quotas, and get back which of your instances are above the warning percentage of the quota
 

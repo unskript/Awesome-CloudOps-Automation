@@ -4,6 +4,7 @@
 #
 
 from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -40,8 +41,12 @@ def k8s_get_pods_attached_to_pvc(handle, namespace: str, pvc: str) -> str:
     """
     kubectl_command = f"kubectl describe pvc {pvc} -n {namespace} | awk \'/Used By/ {{print $3}}\'"
     result = handle.run_native_cmd(kubectl_command)
-    if result.stderr:
+    if result is None:
         print(
-            f"Error while executing command ({kubectl_command}): {result.stderr}")
-        return str()
+            f"Error while executing command ({kubectl_command}) (empty response)")
+        return ""
+        
+    if result.stderr:
+        raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")
+
     return result.stdout
