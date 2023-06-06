@@ -38,6 +38,8 @@
 
 * [AWS Find Idle Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_idle_instances/README.md): Find Idle EC2 instances
 
+* [AWS Find Redshift Cluster without Pause Resume Enabled](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_cluster_without_pause_resume_enabled/README.md): Use This Action to AWS find redshift cluster for which paused resume are not Enabled
+
 * [Get AWS EC2 Instances All ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_all_ec2_instances/README.md): Use This Action to Get All AWS EC2 Instances
 
 * [Get AWS AutoScaling Group Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_auto_scaling_instances/README.md): Use This Action to Get AWS AutoScaling Group Instances
@@ -93,10 +95,6 @@
 * [Restart AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_restart_ec2_instances/README.md): Restart AWS EC2 Instances
 
 * [Start AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_run_instances/README.md): Start an AWS EC2 Instances
-
-* [AWS Service Quota Limits](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits/README.md): Input a List of Service Quotas, and get back which of your instances are above the warning percentage of the quota
-
-* [AWS VPC service quota limit](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_service_quota_limits_vpc/README.md): This Action queries all VPC Storage quotas, and returns all usage over warning_percentage.
 
 * [Stop AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_stop_instances/README.md): Stop an AWS Instance
 

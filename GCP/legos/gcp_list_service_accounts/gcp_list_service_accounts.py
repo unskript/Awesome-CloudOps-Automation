@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
 import pprint
 from typing import List
+from pydantic import BaseModel, Field
 import googleapiclient.discovery
 
 
@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
 def gcp_list_service_accounts_printer(output):
     if output is None:
         return
-    pprint(output)
+    pprint.pprint(output)
 
 def gcp_list_service_accounts(handle, project_id: str) -> List:
     """gcp_list_service_accounts Returns a list of service accounts

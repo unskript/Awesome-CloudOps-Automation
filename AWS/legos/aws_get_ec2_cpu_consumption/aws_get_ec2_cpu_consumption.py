@@ -3,13 +3,13 @@
 ## written by Doug Sillars with the aid of ChatGPT
 ##read the blog https://unskript.com/will-ai-replace-us-using-chatgpt-to-create-python-actions-for-unskript/
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
 import pprint
-from datetime import datetime, timezone, timedelta
+from typing import Dict
+from datetime import datetime, timedelta
+from pydantic import BaseModel, Field
 from unskript.connectors.aws import aws_get_paginator
-
 from beartype import beartype
+
 @beartype
 def aws_get_ec2_cpu_consumption_printer(output):
     if output is None:
@@ -57,13 +57,14 @@ def aws_get_ec2_cpu_consumption(handle, region: str) -> Dict:
                     Period=3600,
                     Statistics=['Average']
                 )
-                
+
                 # Calculate the average CPU usage for the past 24 hours
                 #error check for the presence of CPU  usage data
                 if len(response['Datapoints'])>0:               
-                    cpu_utilization_values = [datapoint['Average'] for datapoint in response['Datapoints']]
+                    cpu_utilization_values = [datapoint['Average'] for
+                                              datapoint in response['Datapoints']]
                     avg_cpu_utilization = sum(cpu_utilization_values) / len(cpu_utilization_values)
                     results[instance_id] = avg_cpu_utilization
                 else:
                     results[instance_id] = "error"
-    return(results)
+    return results

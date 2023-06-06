@@ -13,11 +13,13 @@ from tabulate import tabulate
 class InputSchema(BaseModel):
     promql_query: str = Field(
         title="PromQL Query",
-        description="This is a PromQL query, a few examples can be found at https://prometheus.io/docs/prometheus/latest/querying/examples/"
+        description="This is a PromQL query, a few examples can be found at \
+            https://prometheus.io/docs/prometheus/latest/querying/examples/"
     )
     timeSince: int = Field(
         title="Time Since",
-        description="Starting from now, window (in seconds) for which you want to get the datapoints for.",
+        description="Starting from now, window (in seconds) \
+            for which you want to get the datapoints for.",
     )
     step: str = Field(
         title="Step",
@@ -44,10 +46,12 @@ def prometheus_get_metric_range_data(
     :param handle: Object returned from task.validate(...).
 
     :type promql_query: string
-    :param PromQL Query: This is a PromQL query, a few examples can be found at https://prometheus.io/docs/prometheus/latest/querying/examples/
+    :param PromQL Query: This is a PromQL query, a few examples can be found at 
+    https://prometheus.io/docs/prometheus/latest/querying/examples/
 
     :type timeSince: int
-    :param timeSince: Starting from now, window (in seconds) for which you want to get the metric values for.
+    :param timeSince: Starting from now, window (in seconds) for which you want
+    to get the metric values for.
 
     :type step: string
     :param Step: Query resolution step width in duration format or float number of seconds

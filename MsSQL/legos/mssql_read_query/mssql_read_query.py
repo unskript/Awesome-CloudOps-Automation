@@ -2,12 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+from typing import Tuple, List
 from pydantic import BaseModel, Field
-from typing import Tuple
 from tabulate import tabulate
-from typing import List
-
-
 
 class InputSchema(BaseModel):
     query: str = Field(

@@ -2,12 +2,11 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
+import pprint
+from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from typing import List, Tuple,Optional
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.connectors.aws import aws_get_paginator
-import pprint
 
 class InputSchema(BaseModel):
     region: Optional[str] = Field(
@@ -19,13 +18,10 @@ class InputSchema(BaseModel):
 def aws_filter_unused_keypairs_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
-def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
+def aws_filter_unused_keypairs(handle, region: str = None) -> Tuple:
     """aws_filter_unused_keypairs Returns an array of KeyPair.
 
         :type region: object
@@ -44,7 +40,10 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
     for r in all_regions:
         try:
             ec2Client = handle.client('ec2', region_name=r)
-            key_pairs_all = list(map(lambda i: i['KeyName'], ec2Client.describe_key_pairs()['KeyPairs']))
+            key_pairs_all = list(map(
+                lambda i: i['KeyName'],
+                ec2Client.describe_key_pairs()['KeyPairs']
+                ))
             res = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
             for reservation in res:
                 for keypair in reservation['Instances']:
@@ -67,10 +66,9 @@ def aws_filter_unused_keypairs(handle, region: str = None) -> CheckOutput:
                     final_dict["unused_keys"]=final_list
             if len(final_dict)!=0:
                 result.append(final_dict)
-        except Exception as e:
+        except Exception:
             pass
-        
+
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
+    return (True, None)
