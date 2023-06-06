@@ -1,0 +1,9 @@
+{
+    "name": "IP Exhaustion Mitigation: Failing K8s Pod Deletion from Jobs",
+    "description": "Preventing IP exhaustion is critical in Kubernetes environments, and a key strategy is deleting failing pods from jobs. Failing pods can consume valuable IP resources, leading to scarcity and inefficiency. By proactively identifying and removing malfunctioning pods, administrators can promptly free up IP addresses, optimizing resource utilization. This approach ensures that IP allocation remains efficient, enabling the cluster to accommodate new pods without experiencing IP exhaustion. This runbook helps us to identify failing pods within jobs thereby maximizing IP availability for other pods and services.",  
+    "uuid": "88e97c46ad944d2f0541cd1f87e3ec5b8a4619f6093e89b55cec53b2a47e45aa",
+    "icon": "CONNECTOR_TYPE_K8S",
+    "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_K8S" ],
+    "version": "1.0.0"
+  }  
