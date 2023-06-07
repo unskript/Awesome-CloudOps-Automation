@@ -1,0 +1,74 @@
+{{- if .Values.useStatefulSet }}
+{{- if .Values.persistence.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "awesome-runbooks.fullname" . }}
+  namespace: {{ .Values.common.namespace }}
+  labels:
+    {{ .Values.common.labels | nindent 4}}
+spec:
+  podManagementPolicy: Parallel
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{ .Values.common.labels | nindent 8 }}
+  serviceName: {{ include "awesome-runbooks.fullname" . }}
+  template:
+    metadata:
+      labels:
+        {{ .Values.common.labels | nindent 8 }}
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: {{ .Values.common.terminationGracePeriodSeconds }}
+      containers:
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ include "awesome-runbooks.fullname" . }}
+        ports:
+        - containerPort: {{ .Values.common.port }}
+          protocol: TCP
+          name: jupyterlab-http
+        livenessProbe:
+            httpGet:
+              path: /api/kernelspecs
+              port: jupyterlab-http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/kernelspecs
+            port: jupyterlab-http
+          initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
+          periodSeconds: {{ .Values.common.periodSeconds }}
+          successThreshold: {{ .Values.common.successThreshold }}
+          timeoutSeconds: {{ .Values.common.timeoutSeconds }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+          - mountPath: {{ .Values.persistence.mountPath }}
+            name: {{ .Values.persistence.name }}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Values.persistence.name }}
+    spec:
+      accessModes:
+        {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size }}
+
+{{- end }}
+{{- end }}
