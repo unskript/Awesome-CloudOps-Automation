@@ -1,16 +1,17 @@
+{{-if eq .Values.useStatefulSet false}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "unskript-awesome-runbooks.fullname" . }}
+  name: {{ include "awesome-runbooks.fullname" . }}
   labels:
-    {{- include "unskript-awesome-runbooks.labels" . | nindent 4 }}
+    {{- include "awesome-runbooks.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "unskript-awesome-runbooks.selectorLabels" . | nindent 6 }}
+      {{- include "awesome-runbooks.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +19,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "unskript-awesome-runbooks.selectorLabels" . | nindent 8 }}
+        {{- include "awesome-runbooks.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "unskript-awesome-runbooks.serviceAccountName" . }}
+      serviceAccountName: {{ include "awesome-runbooks.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -63,3 +64,5 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
+{{- end }}

@@ -1,4 +1,4 @@
-# Default values for unskript-awesome-runbooks.
+# Default values for awesome-runbooks.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: unskript/awesome-runbooks
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -28,6 +28,34 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
+# Flag to indicate whether to use stateful-set or not
+useStatefulSet: true 
+
+common:
+  namespace: ""
+  command: ["/bin/bash", "-ec", "while :; do echo '.'; sleep 86400 ; done"]
+  port: 8888
+
+# Persistence 
+persistence:
+  enabled: true
+  name: "awesome-runbooks-pvc"
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce 
+  size: 1Gi
+  annotations: {}
+  mountPath: /unskript
+  subPath: ""
+  volumeClaimTemplate:
+    selector: {} 
+    requests: {}
+    dataSource: {}
+
+
+replicaSet:
+  podManagementPolicy: Parallel
+
 securityContext: {}
   # capabilities:
   #   drop:
@@ -46,16 +74,16 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #    cpu: "1.0"
+  #    memory: "400Mi"
   # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #    cpu: "1.0"
+  #    memory: "400Mi"
 
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 3
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
