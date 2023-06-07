@@ -1,26 +1,30 @@
-{{-if eq .Values.useStatefulSet true}}
+{{- if .Values.useStatefulSet }}
+{{- if .Values.persistence.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "awesome-runbooks.fullname" . }}
-  {{-if not eq .Values.common.namespace ""}}
-  namespace: {{ .Values.common.namespace }} 
-  {{- end }}
+  namespace: {{ .Values.common.namespace }}
   labels:
-    app:{{ include "awesome-runbooks.fullname" . }}
+    {{ .Values.common.labels | nindent 4}}
 spec:
   podManagementPolicy: Parallel
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app:{{ include "awesome-runbooks.fullname" . }}
-  serviceName:{{ include "awesome-runbooks.fullname" . }}
+      {{ .Values.common.labels | nindent 8 }}
+  serviceName: {{ include "awesome-runbooks.fullname" . }}
   template:
     metadata:
       labels:
-        app:{{ include "awesome-runbooks.fullname" . }}
+        {{ .Values.common.labels | nindent 8 }}
     spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: {{ .Values.common.terminationGracePeriodSeconds }}
       containers:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -35,10 +39,10 @@ spec:
           httpGet:
             path: /api/kernelspecs
             port: jupyterlab-http
-          initialDelaySeconds: 5
-          periodSeconds: 30
-          successThreshold: 3
-          timeoutSeconds: 15
+          initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
+          periodSeconds: {{ .Values.common.periodSeconds }}
+          successThreshold: {{ .Values.common.successThreshold }}
+          timeoutSeconds: {{ .Values.common.timeoutSeconds }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
@@ -46,11 +50,7 @@ spec:
             name: {{ .Values.persistence.name }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
+
   updateStrategy:
     rollingUpdate:
       partition: 0
@@ -60,8 +60,12 @@ spec:
       name: {{ .Values.persistence.name }}
     spec:
       accessModes:
-        - {{ .Values.persistence.accessModes }}
+        {{- range .Values.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
       resources:
         requests:
           storage: {{ .Values.persistence.size }}
-{{- end}}
+
+{{- end }}
+{{- end }}

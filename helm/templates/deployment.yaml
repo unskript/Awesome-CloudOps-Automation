@@ -1,4 +1,4 @@
-{{-if eq .Values.useStatefulSet false}}
+{{- if eq .Values.useStatefulSet false}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "awesome-runbooks.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- if not (eq .Values.autoscaling.enabled "") }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
