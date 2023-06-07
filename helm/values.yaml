@@ -33,7 +33,6 @@ useStatefulSet: true
 
 common:
   namespace: "awesome-ops"
-  command: ["/bin/bash", "-ec", "while :; do echo '.'; sleep 86400 ; done"]
   port: 8888
   labels: "app: awesome-runbooks"
   initialDelaySeconds: 5
@@ -79,12 +78,12 @@ resources:
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #    cpu: "1.0"
-  #    memory: "400Mi"
-  # requests:
-  #    cpu: "1.0"
-  #    memory: "400Mi"
+  limits:
+     cpu: "1.0"
+     memory: "400Mi"
+  requests:
+     cpu: "1.0"
+     memory: "400Mi"
 
 
 autoscaling:

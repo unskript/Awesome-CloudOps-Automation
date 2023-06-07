@@ -29,7 +29,7 @@ spec:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ include "awesome-runbooks.fullname" . }}
-        command: {{ .Values.common.command }}
+        command: ["/bin/bash", "-ec", "while :; do echo '.'; sleep 86400 ; done"]
         ports:
         - containerPort: {{ .Values.common.port }}
           protocol: TCP
