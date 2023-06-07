@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "awesome-runbooks.labels" . | nindent 4 }}
 spec:
-  {{- if not (eq .Values.autoscaling.enabled "") }}
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
