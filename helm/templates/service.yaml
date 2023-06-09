@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "unskript-awesome-runbooks.fullname" . }}
+  name: {{ include "awesome-runbooks.fullname" . }}
   labels:
-    {{- include "unskript-awesome-runbooks.labels" . | nindent 4 }}
+    {{- include "awesome-runbooks.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "unskript-awesome-runbooks.selectorLabels" . | nindent 4 }}
+    {{- include "awesome-runbooks.selectorLabels" . | nindent 4 }}

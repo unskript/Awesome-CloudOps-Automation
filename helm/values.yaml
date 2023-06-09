@@ -1,4 +1,4 @@
-# Default values for unskript-awesome-runbooks.
+# Default values for awesome-runbooks.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: unskript/awesome-runbooks
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -28,6 +28,52 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
+# Flag to indicate whether to use stateful-set or not
+useStatefulSet: true 
+
+# This section is common variables defined
+# Which is used in the template/*.yaml files
+common:
+  # Default namespace to be used. Change it as you see fit
+  namespace: "awesome-ops"
+  # ContainerPort to listen on 
+  port: 8888
+  # Labels that should be attached to the POD
+  labels: "app: awesome-runbooks"
+  # These settings are recommended for optimal operation
+  # of the POD
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  successThreshold: 3
+  timeoutSeconds: 15
+  terminationGracePeriodSeconds: 30
+
+# Persistence 
+persistence:
+  # Flag to enable creation of PVC
+  enabled: true
+  # Name of the PVC 
+  name: "awesome-runbooks-pvc"
+  # PVC Storage Class, by default not set
+  storageClassName: ""
+  # PV Access Mode. 
+  accessModes:
+    - ReadWriteOnce 
+  # Size of the PV
+  size: 1Gi
+  # Any Annotations for the PVC
+  annotations: {}
+  # MountPath that will be visible on the POD 
+  mountPath: /unskript
+  # Any subdirectory under the mounthPath, default is at the root level
+  subPath: ""
+  # You can finetune volume template fields below
+  volumeClaimTemplate:
+    selector: {} 
+    requests: {}
+    dataSource: {}
+
+
 securityContext: {}
   # capabilities:
   #   drop:
@@ -40,24 +86,21 @@ service:
   type: ClusterIP
   port: 8888
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  # We recommend using 1vCPU and 400Mb of RAM to get the best performance
+  limits:
+     cpu: "1.0"
+     memory: "400Mi"
+  requests:
+     cpu: "1.0"
+     memory: "400Mi"
+
 
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 3
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
