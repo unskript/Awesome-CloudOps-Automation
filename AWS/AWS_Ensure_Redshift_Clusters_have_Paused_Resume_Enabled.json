@@ -1,0 +1,9 @@
+{
+    "name": "AWS Ensure Redshift Clusters have Paused Resume Enabled",
+    "description": "This runbook finds redshift clusters that don't have pause resume enabled and schedules the pause resume for the cluster.",
+    "uuid": "8b9c4eadb5f2fb817be0952f3ecb28c8e490ece6281286a74a95d5fe25019400",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }

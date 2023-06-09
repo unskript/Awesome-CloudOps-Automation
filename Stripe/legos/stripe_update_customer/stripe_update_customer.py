@@ -35,8 +35,8 @@ class InputSchema(BaseModel):
     metadata: dict = Field(
         None,
         title='Metadata',
-        description='This can be useful for storing additional information about the object in a structured format. '
-                    'For Eg. {"order_id": "6735"}'
+        description='This can be useful for storing additional information about the object \
+            in a structured format. For Eg. {"order_id": "6735"}'
     )
     shipping: dict = Field(
         None,
@@ -91,7 +91,8 @@ def stripe_update_customer(
         :param balance: Current Balance
 
         :type metadata: dict
-        :param metadata: This can be useful for storing additional information about the object in a structured format.
+        :param metadata: This can be useful for storing additional information
+        about the object in a structured format.
 
         :type shipping: dict
         :param shipping: Shipping information for the customer.

@@ -3,13 +3,8 @@
 # All rights reserved.
 ##
 from __future__ import annotations
-from pydantic import BaseModel, Field, SecretStr
-from typing import Dict, List
 import pprint
-
-
-
-
+from typing import Dict
 from pydantic import BaseModel
 
 
@@ -33,4 +28,3 @@ def aws_get_generated_policy(handle, region:str,jobId:str) -> Dict:
     result['generatedPolicyResult'] = response['generatedPolicyResult']
     result['generationStatus'] = response['jobDetails']['status']
     return result
-

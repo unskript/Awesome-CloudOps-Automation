@@ -2,9 +2,9 @@
 # Copyright (c) 2021 unSkript.com
 # All rights reserved.
 #
+import pprint
 from typing import Dict
 from pydantic import BaseModel, Field
-import pprint
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 
@@ -18,11 +18,11 @@ class InputSchema(BaseModel):
 def k8s_desribe_node_printer(output):
     if output is None:
         return
-        
-    pprint.pprint(output)
-        
 
-def k8s_describe_node(handle, node_name: str) -> Dict:
+    pprint.pprint(output)
+
+
+def k8s_describe_node(handle, node_name: str):
     """k8s_describe_node get nodes details
 
         :type handle: object

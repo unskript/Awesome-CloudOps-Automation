@@ -2,9 +2,9 @@
 ##  Copyright (c) 2021 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -13,7 +13,9 @@ class InputSchema(BaseModel):
         description='Name of the bucket.')
     enable_write: bool = Field(
         title='Enable write',
-        description='Set this to true, if you want the bucket to be publicly writeable as well. By default, it is made publicly readable.')
+        description=('Set this to true, if you want the bucket to be publicly writeable as well. '
+                     'By default, it is made publicly readable.')
+                    )
 
 
 def aws_make_bucket_public_printer(output):

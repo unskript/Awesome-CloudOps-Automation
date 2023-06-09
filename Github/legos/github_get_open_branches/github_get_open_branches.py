@@ -3,15 +3,15 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List
 import pprint
+from typing import List
+from pydantic import BaseModel, Field
 from github import GithubException
 
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -50,16 +50,13 @@ def github_get_open_branches(handle, owner: str, repository: str)-> List:
         for repo in repos:
             if repo.full_name == repo_name:
                 branches = repo.get_branches()
-                [result.append(branch.name) for branch in branches[:100]]
+                result = [branch.name for branch in branches[:100]]
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found")
+            raise Exception("No such pull number or repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     return result
-
-
-

@@ -3,12 +3,11 @@
 # All rights reserved.
 ##
 import pprint
-
-from pydantic import BaseModel, Field
 from typing import List, Optional
+from pydantic import BaseModel, Field
 from unskript.enums.mongo_enums import FindCommands
 from pymongo import ReturnDocument
-from pymongo.errors import *
+from pymongo.errors import AutoReconnect, ServerSelectionTimeoutError
 
 class InputSchema(BaseModel):
     database_name: str = Field(
@@ -30,7 +29,8 @@ class InputSchema(BaseModel):
     )
     filter: dict = Field(
         title='Filter',
-        description='A query that matches the document to update, delete, find and replace. For eg: {"foo":"bar"}.'
+        description=('A query that matches the document to update, delete, find '
+                     'and replace. For eg: {"foo":"bar"}.')
     )
     document: Optional[dict] = Field(
         default=None,
@@ -77,9 +77,9 @@ def mongodb_find_document(
         collection_name: str,
         filter: dict,
         command: FindCommands = FindCommands.find,
-        document: dict = {},
-        projection: dict = {},
-        sort: List = []) -> List:
+        document: dict = None,
+        projection: dict = None,
+        sort: List = None) -> List:
     """mongodb_find_document Runs mongo find commands with the provided parameters.
 
         :type handle: object
@@ -114,13 +114,13 @@ def mongodb_find_document(
     try:
         handle.server_info()
     except (AutoReconnect, ServerSelectionTimeoutError) as e:
-        print("[UNSKRIPT]: Reconnection / Server Selection Timeout Error: ", e.__str__())
+        print(f"[UNSKRIPT]: Reconnection / Server Selection Timeout Error: {str(e)}")
         raise e
     except Exception as e:
-        print("[UNSKRIPT]: Error Connecting: ", e.__str__())
+        print(f"[UNSKRIPT]: Error Connecting: {str(e)}")
         raise e
 
-    sort_by = sort if sort else None
+    sort_by = sort
     update = document
     sort = []
     if sort_by:
@@ -152,8 +152,13 @@ def mongodb_find_document(
             pprint.pprint("One matching docuemnt replaced")
             result.append(record)
         elif command == FindCommands.find_one_and_update:
-            record = db[collection_name].find_one_and_update(filter, update=update, projection=projection, sort=sort,
-                                                          return_document=ReturnDocument.AFTER)
+            record = db[collection_name].find_one_and_update(
+                filter,
+                update=update,
+                projection=projection,
+                sort=sort,
+                return_document=ReturnDocument.AFTER
+                )
             pprint.pprint("Document Updated")
             result.append(record)
         return result

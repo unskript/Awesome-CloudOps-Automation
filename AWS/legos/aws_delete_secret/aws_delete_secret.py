@@ -2,9 +2,9 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Dict
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -41,4 +41,5 @@ def aws_delete_secret(handle, region: str, secret_name: str) -> Dict:
         response = secrets_client.delete_secret(SecretId=secret_name)
         return response
     except Exception as e:
-        raise Exception(e)
+        raise Exception(e) from e
+    

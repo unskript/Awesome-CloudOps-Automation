@@ -1,0 +1,9 @@
+{
+  "name": "Secure Publicly accessible Amazon RDS Snapshot",
+  "description": "This lego can be used to list all the manual database snapshots in the given region. Get publicly accessible DB snapshots in RDS and Modify the publicly accessible DB snapshots in RDS to private.",
+  "uuid": "7c0d143556a33b81d3fb1ff08dfdd59cebe5d58b00b55e8ae660df2e42f71bfe",
+  "icon": "CONNECTOR_TYPE_AWS",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_SECOPS" ],
+  "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+  "version": "1.0.0"
+}

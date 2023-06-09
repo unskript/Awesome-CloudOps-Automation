@@ -2,10 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-
-from pydantic import BaseModel, Field
-from typing import Optional
 import pprint
+from typing import Optional
+from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
@@ -15,11 +14,13 @@ class InputSchema(BaseModel):
     )
     proxy_host: Optional[str] = Field(
         title='Proxy host',
-        description='Override the proxy host provided in the credentials. It still uses the proxy_user and port from the credentials.'
+        description='Override the proxy host provided in the credentials. \
+            It still uses the proxy_user and port from the credentials.'
     )
     inspect_folder: str = Field(
         title='Inspect Folder',
-        description='''Folder to inspect on the remote host. Folders are scanned using "find inspect_folder -type f -exec du -sk '{}' + | sort -rh | head -n count"'''
+        description='''Folder to inspect on the remote host. Folders are scanned using \
+            "find inspect_folder -type f -exec du -sk '{}' + | sort -rh | head -n count"'''
     )
     threshold: Optional[int] = Field(
         default=100,

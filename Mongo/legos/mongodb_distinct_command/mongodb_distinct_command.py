@@ -4,7 +4,6 @@
 ##
 import pprint
 from typing import List
-
 from pydantic import BaseModel, Field
 
 
@@ -44,8 +43,15 @@ def mongodb_distinct_command_printer(output):
         pprint.pprint(output)
 
 
-def mongodb_distinct_command(handle, database_name: str, collection_name: str, key: str, filter=None) -> List:
-    """mongodb_distinct_command Retrieves the documents present in the collection and the count of the documents using count_documents().
+def mongodb_distinct_command(
+        handle,
+        database_name: str,
+        collection_name: str,
+        key: str,
+        filter=None
+        ) -> List:
+    """mongodb_distinct_command Retrieves the documents present in the collection
+    and the count of the documents using count_documents().
 
         :type handle: object
         :param handle: Object returned from task.validate(...).

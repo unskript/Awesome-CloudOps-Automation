@@ -3,7 +3,6 @@
 # All rights reserved.
 ##
 import pprint
-
 from pydantic import BaseModel, Field
 
 
@@ -20,8 +19,7 @@ class InputSchema(BaseModel):
 def workflow_ss_append_keys_printer(output):
     if output is None:
         return
-    if True:
-        pprint.pprint("The workflow key appended successfully!")
+    pprint.pprint("The workflow key appended successfully!")
 
 def workflow_ss_append_keys(handle, key, value) -> bool:
     """workflow_ss_append_keys append the values for that key

@@ -1,8 +1,7 @@
 import json
-
-from pydantic import BaseModel, Field
 import pprint
 from typing import Dict
+from pydantic import BaseModel, Field
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -23,8 +22,7 @@ def salesforce_get_case(handle, case_number: str) -> Dict:
            :type case_number: str
            :param case_number: The Case number to get the details about the case
        """
-    record_id = handle.query("SELECT Id FROM Case WHERE CaseNumber = '%s'" % case_number)
+    record_id = handle.query(f"SELECT Id FROM Case WHERE CaseNumber = '{case_number}'")
     if not record_id['records']:
         return {"Error": "Invalid Case Number"}
-    else:
-        return handle.Case.get(record_id['records'][0]['Id'])
+    return handle.Case.get(record_id['records'][0]['Id'])
