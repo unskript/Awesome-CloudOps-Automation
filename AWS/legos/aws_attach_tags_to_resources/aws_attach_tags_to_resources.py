@@ -63,7 +63,7 @@ def aws_attach_tags_to_resources(
     result = {}
 
     #break the ARN list into groups of 20 to send through the API
-    list_of_lists = break_list(taggedResources, 20)
+    list_of_lists = break_list(resource_arn, 20)
 
     for index, smallerList in enumerate(list_of_lists):
 
