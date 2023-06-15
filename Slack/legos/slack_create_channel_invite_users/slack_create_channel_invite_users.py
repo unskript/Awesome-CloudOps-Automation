@@ -5,16 +5,13 @@ from __future__ import annotations
 # All rights reserved.
 ##
 import pprint
+from typing import List
 from pydantic import BaseModel, Field
 from slack_sdk import WebClient
 ## note: Your Slack App will need the files:write scope.
 # Your Bot will also need to be a member of the channel
 
 
-
-from typing import List
-
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
