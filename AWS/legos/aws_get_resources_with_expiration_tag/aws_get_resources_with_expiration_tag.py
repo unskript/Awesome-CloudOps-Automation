@@ -10,9 +10,6 @@ import pprint
 
 
 
-from pydantic import BaseModel, Field
-
-
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS Region.', title='Region')
     tag: str = Field(..., description='The Tag to search for', title='tag')
@@ -21,7 +18,7 @@ class InputSchema(BaseModel):
 def aws_get_resources_with_expiration_tag_printer(output):
     if output is None:
         return
-    pprint.pprint(f"there are {len(output)} resources missing tag {Tag_Key}. We can fix a max of 20." )
+    pprint.pprint(f"there are {len(output)} resources with expiration tag." )
 
 
 def aws_get_resources_with_expiration_tag(handle, region: str, tag:str) -> List:

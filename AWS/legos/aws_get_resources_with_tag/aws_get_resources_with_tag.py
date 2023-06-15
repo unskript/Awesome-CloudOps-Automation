@@ -9,10 +9,6 @@ from unskript.connectors.aws import aws_get_paginator
 import pprint
 
 
-
-from pydantic import BaseModel, Field
-
-
 class InputSchema(BaseModel):
     region: str = Field(..., description='AWS Region.', title='Region')
     tag: str = Field(..., description='The Tag to search for', title='tag')
@@ -21,7 +17,7 @@ class InputSchema(BaseModel):
 def aws_get_resources_with_tag_printer(output):
     if output is None:
         return
-    pprint.pprint(f"there are {len(output)} resources with tag {Tag_Key}. We can fix a max of 20." )
+    pprint.pprint(f"there are {len(output)} resources with the desired tag." )
 
 
 def aws_get_resources_with_tag(handle, region: str, tag:str) -> List:
