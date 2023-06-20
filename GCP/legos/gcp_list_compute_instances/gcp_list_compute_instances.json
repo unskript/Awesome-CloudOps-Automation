@@ -1,6 +1,6 @@
 {
-    "action_title": "Get list  compute instance",
-    "action_description": "Get list compute instance",
+    "action_title": "Get GCP compute instances",
+    "action_description": "Get GCP compute instances",
     "action_type": "LEGO_TYPE_GCP",
     "action_entry_function": "gcp_list_compute_instances",
     "action_needs_credential": true,
