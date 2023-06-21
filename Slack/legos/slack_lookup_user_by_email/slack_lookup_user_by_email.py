@@ -13,9 +13,6 @@ from slack_sdk import WebClient
 
 
 
-from pydantic import BaseModel, Field
-
-
 class InputSchema(BaseModel):
     email: str = Field(..., description='Email Address of user', title='email')
 

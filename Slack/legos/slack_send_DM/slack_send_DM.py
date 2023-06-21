@@ -7,17 +7,11 @@ from __future__ import annotations
 import pprint
 from pydantic import BaseModel, Field
 from slack_sdk import WebClient
-from typing import Dict
+from typing import Dict, List
 ## note: Your Slack App will need the:
 #im:write  (for DM)
 #mpim:write scope (for group IM messages).
 # Your Bot will also need to be a member of the channel
-
-
-
-from typing import List
-
-from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
