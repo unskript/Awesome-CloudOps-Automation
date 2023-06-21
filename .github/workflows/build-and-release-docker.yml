@@ -372,7 +372,7 @@ jobs:
           pip install shyaml
 
       - name: Setup Docker Buildx 
-        uses: crazy-max/ghaction-docker-buildx@e01797ad2ea9a981005ad58c99afa8d842e3d3eb # v1.6.2
+        uses: crazy-max/ghaction-docker-buildx@126d331dc69f4a1aa02452e374835e6a5d565613 # v3.3.1
         with:
           version: latest
           config: .github/buildkitd.toml 
