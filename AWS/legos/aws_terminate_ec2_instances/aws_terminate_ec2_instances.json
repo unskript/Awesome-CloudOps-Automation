@@ -1,6 +1,6 @@
 {
-    "action_title": "Terminate AWS Instances",
-    "action_description": "Terminate AWS Instances",
+    "action_title": "Terminate AWS EC2 Instances",
+    "action_description": "This Action will Terminate AWS EC2 Instances",
     "action_type": "LEGO_TYPE_AWS",
     "action_entry_function": "aws_terminate_ec2_instances",
     "action_needs_credential": true,
