@@ -1,12 +1,12 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">]
 (https://unskript.com/assets/favicon.png)
-<h1>Find AWS Lambdas Not Using ARM64 Graviton2 Processor</h1>
+<h1>Get AWS Lambdas Not Using ARM64 Graviton2 Processor</h1>
 
 ## Description
-Find all AWS Lambda functions that are not using the Arm-based AWS Graviton2 processor for their runtime architecture
+Get all AWS Lambda functions that are not using the Arm-based AWS Graviton2 processor for their runtime architecture
 
 ## Lego Details
-	aws_find_lambdas_not_using_arm_graviton2_processor(handle,region:str="")
+	aws_get_lambdas_not_using_arm_graviton2_processor(handle,region:str="")
 		handle: Object of type unSkript AWS Connector.
 		region: Optional, AWS Region
 
