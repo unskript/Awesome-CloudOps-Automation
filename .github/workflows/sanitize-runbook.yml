@@ -33,6 +33,10 @@ jobs:
         run: |
           echo "Running sanitize script on ${{ steps.files.outputs.all_runbooks_files }}"
           /usr/bin/env python ./sanitize.py -v ${{ steps.files.outputs.all_runbook_files }}
+          
+      - name: Run Region Test
+        run: |
+          /usr/bin/env python ./region_test.py  
 
  #     - name: Pytype Python Checker
  #       # You may pin to the exact commit or the version.
