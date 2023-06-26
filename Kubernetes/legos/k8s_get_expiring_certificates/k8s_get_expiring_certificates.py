@@ -41,7 +41,6 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
     """
     result = []
     all_namespaces = [namespace]
-    secrets = []
     cmd = "kubectl get ns  --no-headers -o custom-columns=':metadata.name'"
     if namespace is None or len(namespace)==0:
         kubernetes_namespaces = k8s_kubectl_command(handle=handle,kubectl_command=cmd )
@@ -49,25 +48,25 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
         stripped_str = replaced_str.strip()
         all_namespaces = stripped_str.split(" ")
     coreApiClient = client.CoreV1Api(api_client=handle)
-    try:
-        coreApiClient.read_namespace_status(namespace, pretty=True)
-    except ApiException as e:
-        raise e
     for n in all_namespaces:
-        secrets.append(coreApiClient.list_namespaced_secret(n).items)
-    expiration_threshold = timedelta(days=expiring_threshold)
-    for secret in secrets[0]:
-        if secret.type == "kubernetes.io/tls":
-            cert_data = secret.data.get("tls.crt")
+        coreApiClient.read_namespace_status(n, pretty=True)
+        secret = coreApiClient.list_namespaced_secret(n).items
+        expiration_threshold = timedelta(days=expiring_threshold)
+        # Check if the secret contains a certificate
+        if secret[0].type == "kubernetes.io/tls":
+            # Get the certificate data
+            cert_data = secret[0].data.get("tls.crt")
             if cert_data:
+                # Decode the certificate data
                 cert_data_decoded = base64.b64decode(cert_data).decode("utf-8")
+                # Parse the certificate expiration date
                 cert_exp = None
                 try:
                     cert_exp = datetime.strptime(cert_data_decoded.split("-----END CERTIFICATE-----")[0].split("Not After : ")[-1].strip(), "%b %d %H:%M:%S %Y %Z")
                 except ValueError:
                     pass
                 if cert_exp and cert_exp < datetime.now() + expiration_threshold:
-                    result.append(secret.metadata.name)
+                    result.append({"secret_name": secret[0].metadata.name, "namespace": n})
     if len(result) != 0:
         return (False, result)
     return (True, None)
