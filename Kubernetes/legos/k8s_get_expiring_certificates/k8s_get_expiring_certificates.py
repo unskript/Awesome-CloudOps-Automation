@@ -5,7 +5,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
 import base64
-from kubernetes import client
+from kubernetes import client, watch
 from kubernetes.client.rest import ApiException
 from datetime import datetime, timedelta
 from unskript.legos.kubernetes.k8s_kubectl_command.k8s_kubectl_command import k8s_kubectl_command
@@ -50,7 +50,7 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
     coreApiClient = client.CoreV1Api(api_client=handle)
     for n in all_namespaces:
         coreApiClient.read_namespace_status(n, pretty=True)
-        secret = coreApiClient.list_namespaced_secret(n).items
+        secret = coreApiClient.list_namespaced_secret(n, watch=False, limit=200).items
         expiration_threshold = timedelta(days=expiring_threshold)
         # Check if the secret contains a certificate
         if secret[0].type == "kubernetes.io/tls":
