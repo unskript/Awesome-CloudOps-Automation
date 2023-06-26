@@ -969,6 +969,9 @@ def create_creds_mapping():
             c_data = json.load(f)
             d[c_data.get('metadata').get('type')] = {"name": c_data.get(
                 'metadata').get('name'), "id": c_data.get('metadata').get('id')}
+            if not c_data.get('metadata').get('connectorData'):
+                print(f"ERROR: The Credential data for {c_data.get('metadata').get('type')} is empty!"
+                       " Please use unskript-ctl.sh -cc option to create the credential")
     upsert_pss_record('default_credential_id', d, False)
 
 
@@ -1273,6 +1276,89 @@ def parse_runbook_param(args):
 
     return
 
+def parse_creds(args):
+    """parse_creds parses the given arguments. Currently only
+       file based credential creation is supported via command options.
+       (K8S). For the rest of credentials, UI is prompted.
+
+       :type args: list
+       :param args: ParseArgs List that it returns for the given option
+
+       :rtype: None
+    """ 
+    # Check if creds that need to be created is for k8s, if yes
+    # read the given kubecofnig and create the credential of it. 
+    connector_type = args[0]
+    connector_type = connector_type.replace('-','')
+    if connector_type.lower() in ("k8s", "kubernetes"):
+        if len(args) == 1:
+            print("ERROR: Need a path for kubeconfig file as value for the k8s credential")
+            parser.print_help()
+            sys.exit(1)
+        if os.path.exists(args[1]) is False:
+            print(f"ERROR: Credential File {args[1]} does not exist, please check path")
+            parser.print_help()
+            sys.exit(1)
+        with open(args[1], 'r', encoding='utf-8') as f:
+            creds_data = f.read()
+        k8s_creds_file = os.environ.get('HOME') + CREDENTIAL_DIR + '/k8screds.json'
+        with open(k8s_creds_file, 'r', encoding='utf-8') as f:
+            k8s_creds_content = json.loads(f.read())
+        try:
+            k8s_creds_content['metadata']['connectorData'] = json.dumps({"kubeconfig": creds_data})
+            with open(k8s_creds_file, 'w', encoding='utf-8') as f:
+                f.write(json.dumps(k8s_creds_content, indent=2))
+        except:
+            print(f"ERROR: Updating K8S Credential. Please check if kubeconfig file exists")
+            sys.exit(1)
+        finally:
+            print("Successfully Created K8S Credential")
+
+    else:
+        # Currently only file based creds creation is supported, 
+        # for the rest, display UI.
+        display_creds_ui() 
+
+def display_creds_ui():
+    """display_creds_ui Display the npyscreen based UI for user to add creds
+    """
+    try:
+        from creds_ui import main as ui
+        ui()
+    except:
+        print("Required Python library creds_ui is not packaged, please raise an issue on Github")    
+
+
+def list_creds():
+    """list_creds Lists the credentials and their status (ACTIVE or INACTIVE) same as how
+       we display on the UI. ACTIVE means the credential data has been filled and ready to go
+       INACTIVE means the credential is not yet ready to be used.
+    """
+    creds_dir = os.environ.get('HOME') + CREDENTIAL_DIR
+    creds_files = glob.glob(creds_dir + '/*.json',recursive=True)
+    creds_data = [["#", "Connector Type", "Connector Name", "Status"]]
+    index = 0
+    for cf in creds_files:
+        with open(cf, 'r', encoding='utf-8') as f:
+            content = json.loads(f.read())
+        if content.get('type'):
+            c_type = content.get('type').replace('CONNECTOR_TYPE_', '')
+        else:
+            c_type = "UNDEFINED"
+        
+        if content.get('metadata') and content.get('metadata').get('connectorData') == "{}":
+            status = "Incomplete"
+        else:
+            status = "Active"
+        
+        if content.get('display_name'):
+            name = content.get('display_name')
+        else:
+            name = "UNDEFINED"
+        creds_data.append([index, c_type, name, status])
+        index += 1
+    print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
+    
 
 if __name__ == "__main__":
     try:
@@ -1306,6 +1392,10 @@ if __name__ == "__main__":
                         help='Show audit trail [all | connector | execution_id]')
     parser.add_argument('-dl', '--display-failed-logs',
                         type=str, help='Display failed logs  [execution_id]')
+    parser.add_argument('-cc', '--create-credentials', type=str, nargs=REMAINDER, 
+                        help='Create Credential [-creds-type creds_file_path]')
+    parser.add_argument('-cl', '--credential-list', 
+                        help='Credential List', action='store_true')
 
     args = parser.parse_args()
 
@@ -1332,5 +1422,12 @@ if __name__ == "__main__":
         show_audit_trail(args.show_audit_trail)
     elif args.display_failed_logs not in ('', None):
         display_failed_logs(args.display_failed_logs)
+    elif args.create_credentials not in ('', None):
+        if len(args.create_credentials) == 0:
+            display_creds_ui()
+        else:
+            parse_creds(args.create_credentials)
+    elif args.credential_list is True:
+        list_creds()
     else:
         parser.print_help()

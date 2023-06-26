@@ -1,0 +1,14 @@
+{
+  "action_title": "Find AWS Lambdas Not Using ARM64 Graviton2 Processor",
+  "action_description": "Find all AWS Lambda functions that are not using the Arm-based AWS Graviton2 processor for their runtime architecture",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_get_lambdas_not_using_arm_graviton2_processor",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": "true",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+  "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_LAMBDA"],
+  "action_next_hop": [],
+  "action_next_hop_parameter_mapping": {}
+}
