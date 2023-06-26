@@ -17,7 +17,15 @@ def git_top_dir() -> str:
 # Get the top-level directory of the Git repository
 folder_path = git_top_dir()
 
-def check_method_signature(param, method_name):
+def check_method_signature(param):
+    """ Accepts a string representing the parameters. 
+        Returns true if the method signature either doesn't contain 
+        a riff or "region" at all, or contains "region" exactly. 
+        Else it returns false.
+
+        :type module: string
+        :param param: the parameters being checked.
+    """
     if re.search(r"egion", param):
         # checks if that riff is "region" exactly
         pattern = r"(?<![^\s(,])region(?=\s|:|\))"
@@ -26,9 +34,16 @@ def check_method_signature(param, method_name):
         return True
 
 def check_module_methods(module):
+    """ Accepts a module and calls check_method_signature on each 
+        function/method present in it.
+
+        :type module: ModuleSpec
+        :param module: The module being checked.
+    """
     has_region = True
     module_act = importlib.util.module_from_spec(module)
     module_source = inspect.getsource(module_act)
+    # finding all the methods in the file
     method_matches = re.findall(r"def (.*?)\)", module_source, flags=re.DOTALL)
     for method_match in method_matches:
         method_name = re.findall(r"(\w+)\s*\(", method_match)
@@ -37,6 +52,7 @@ def check_module_methods(module):
             has_region = False
     return has_region
 
+# Runs the checker on all the files in the repository
 if __name__ == '__main__':   
     current_file = os.path.abspath(__file__)
     for root, dirs, files in os.walk(folder_path):
