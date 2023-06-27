@@ -1,0 +1,10 @@
+{
+  "name": "List all of the Columns for the Selected Tables in a PostgreSQL database",
+  "description": "This runbook will create a JSON file of all the tables and columns in each table for the selected schema.  Knowing what data is availble in each table helsp users make better decisions about the queries that they can make.", 
+  "uuid": "adcf88e8035c594e599fc9a33c28c9099187211f6daccb9d3ab4e5d19233086f",
+  "icon": "CONNECTOR_TYPE_POSTGRESQL",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+  "connector_types": [ "CONNECTOR_TYPE_POSTGRESQL" ],
+  "version": "1.0.0"
+}
+
