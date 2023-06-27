@@ -1,13 +1,14 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, Field
 from google.cloud.compute_v1.services.instances import InstancesClient
+import re
 
 class InputSchema(BaseModel):
     project: str = Field(
         title = "GCP Project",
         description = "GCP Project Name"
     )
-    zone: str = Field(
+    zone: Optional[str] = Field(
         title = "Zone",
         description = "GCP Zone where instance list should be gotten from"
     )
@@ -19,7 +20,7 @@ def gcp_list_compute_instances_printer(output):
     for instance in output:
         print(instance)
 
-def gcp_list_compute_instances(handle, project: str, zone:str) -> List:
+def gcp_list_compute_instances(handle, project: str, zone:str="") -> List:
     """gcp_list_compute_instances Returns the List of compute instances
     from given project and zone
 
@@ -32,10 +33,18 @@ def gcp_list_compute_instances(handle, project: str, zone:str) -> List:
     :rtype: List of instances
     """
     output = []
-    ic = InstancesClient(credentials=handle)
-    instances = ic.list(project=project, zone=zone)
-
-    for instance in instances:
-        output.append({"Name": instance.name, "MachineType": instance.machine_type})
-
+    instanceClient = InstancesClient(credentials=handle)
+    if zone:
+        instances = instanceClient.list(project=project, zone=zone)
+        for instance in instances:
+            output.append({"instance_name": instance.name,"instance_zone": zone})
+    else:
+        request = {"project" : project,}
+        agg_list = instanceClient.aggregated_list(request=request)
+        for zone, response in agg_list:
+            if response.instances:
+                for instance in response.instances:
+                    zone_url = re.compile(r'https:\/\/www\.googleapis\.com\/compute\/v1\/projects\/unskript-dev\/zones\/([A-Za-z0-9]+(-[A-Za-z0-9]+)+)')
+                    zone = zone_url.search(instance.zone)
+                    output.append({"instance_name": instance.name, "instance_zone": zone.group(1)})
     return output
