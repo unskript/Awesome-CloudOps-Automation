@@ -41,10 +41,10 @@ def gcp_list_compute_instances(handle, project: str, zone:str="") -> List:
     else:
         request = {"project" : project,}
         agg_list = instanceClient.aggregated_list(request=request)
-        for zone, response in agg_list:
+        for instance_zone, response in agg_list:
             if response.instances:
                 for instance in response.instances:
                     zone_url = re.compile(r'https:\/\/www\.googleapis\.com\/compute\/v1\/projects\/unskript-dev\/zones\/([A-Za-z0-9]+(-[A-Za-z0-9]+)+)')
-                    zone = zone_url.search(instance.zone)
-                    output.append({"instance_name": instance.name, "instance_zone": zone.group(1)})
+                    instance_zone = zone_url.search(instance.zone)
+                    output.append({"instance_name": instance.name, "instance_zone": instance_zone.group(1)})
     return output
