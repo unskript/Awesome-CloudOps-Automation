@@ -12,5 +12,5 @@
     "action_is_check": true,
     "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE", "CATEGORY_TYPE_TROUBLESHOOTING", "CATEGORY_TYPE_AWS", "CATEGORY_TYPE_AWS_ELB"],
     "action_next_hop": ["7a5cf9629c56eb979a01977330c3d2df656e965a78323be4fa49fdc3b527c9d7"],
-    "action_next_hop_parameter_mapping": {"7a5cf9629c56eb979a01977330c3d2df656e965a78323be4fa49fdc3b527c9d7": {"name": "AWS Restart unhealthy services in a Target Group", "region": ".[0].regions", "instance_ids": ".[].instance"}}
+    "action_next_hop_parameter_mapping": {"7a5cf9629c56eb979a01977330c3d2df656e965a78323be4fa49fdc3b527c9d7": {"name": "AWS Restart unhealthy services in a Target Group", "region": ".[0].regions", "instance_ids": "map(.instance)"}}
 }
