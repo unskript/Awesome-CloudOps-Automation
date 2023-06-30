@@ -24,16 +24,19 @@ from beartype import beartype
 
 class InputSchema(BaseModel):
     GoogleSheetID: str = Field(
+        ...,
         '',
         description='SheetId (from the URL) of your Google Sheet',
         title='GoogleSheetID',
     )
     StartingCell: str = Field(
+        ...,
         '"A1"',
         description='Starting Cell for the data insertion into the sheet.',
         title='StartingCell',
     )
     csvList: List = Field(
+        ...,
         '',
         description='List of rows to be inserted into the Google Sheet',
         title='csvList',
