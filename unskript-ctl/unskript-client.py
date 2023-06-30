@@ -13,8 +13,11 @@ import sys
 import glob
 import json
 import pprint
+import time
 import re
 import uuid
+import psutil
+import subprocess
 from datetime import datetime
 from argparse import ArgumentParser, REMAINDER
 from db_utils import *
@@ -1359,6 +1362,48 @@ def list_creds():
         index += 1
     print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
     
+def start_debug():
+    """start_debug Starts Debug session. This assumes that the remote
+       config is copied to /tmp as  /tmp/remoteconfig. If this file
+       does not exist, then this function will raise an exception.
+    """
+    if os.path.exists("/tmp/remoteconfig") == False:
+        raise Exception("Required Remote Configuration not present. Ensure /tmp/remoteconfig file is present.")
+
+    command = ["openvpn --config /tmp/remoteconfig"]
+    process = subprocess.Popen(command,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=True)
+
+    # Lets give few seconds for the subprocess to spawn
+    time.sleep(5)
+
+    # Lets verify if the openvpn process is really running
+    running = False
+    for proc in psutil.process_iter(['pid', 'name']):
+        # Search for openvpn process. 
+        if proc.info['name'] == "openvpn":
+            running = True
+            break
+
+    if running == True:
+        print ("Successfully Started the Debug Session")
+    else:
+        print (f"Error Occured while starting the Debug Session {process}")
+
+def stop_debug():
+    """stop_debug Stops the Actiev Debug session.
+    """
+    for proc in psutil.process_iter(['pid', 'name']):
+        # Search for openvpn process. On Docker, we dont expect
+        # Multiple process of openvpn to run. 
+        if proc.info['name'] == "openvpn":
+            process = psutil.Process(proc.info['pid'])
+            process.terminate()
+            process.wait()
+
+    print("Stoped Active Debug session successfully")
 
 if __name__ == "__main__":
     try:
@@ -1396,6 +1441,10 @@ if __name__ == "__main__":
                         help='Create Credential [-creds-type creds_file_path]')
     parser.add_argument('-cl', '--credential-list', 
                         help='Credential List', action='store_true')
+    parser.add_argument('--start-debug', 
+                        help='Start Debug Session. Make sure Remote configuration is copied as /tmp/remoteconfig', action='store_true')
+    parser.add_argument('--stop-debug', 
+                        help='Stop Current Debug Session', action='store_true')
 
     args = parser.parse_args()
 
@@ -1429,5 +1478,9 @@ if __name__ == "__main__":
             parse_creds(args.create_credentials)
     elif args.credential_list is True:
         list_creds()
+    elif args.start_debug is True:
+        start_debug()
+    elif args.stop_debug is True:
+        stop_debug()
     else:
         parser.print_help()
