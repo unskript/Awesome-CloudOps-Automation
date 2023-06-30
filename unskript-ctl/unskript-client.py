@@ -1367,7 +1367,7 @@ def start_debug():
        config is copied to /tmp as  /tmp/remoteconfig. If this file
        does not exist, then this function will raise an exception.
     """
-    if os.path.exists("/tmp/remoteconfig") == False:
+    if os.path.exists("/tmp/remoteconfig") is False:
         raise Exception("Required Remote Configuration not present. Ensure /tmp/remoteconfig file is present.")
 
     command = ["openvpn --config /tmp/remoteconfig"]
@@ -1387,7 +1387,7 @@ def start_debug():
             running = True
             break
 
-    if running == True:
+    if running is True:
         print ("Successfully Started the Debug Session")
     else:
         print (f"Error Occured while starting the Debug Session {process}")
