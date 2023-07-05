@@ -18,7 +18,6 @@ class InputSchema(BaseModel):
 def k8s_get_failed_deployments_printer(output):
     if output is None:
         return
-
     print(output)
 
 
@@ -32,23 +31,19 @@ def k8s_get_failed_deployments(handle, namespace: str = '') -> Tuple:
     """
     if handle.client_side_validation is not True:
         raise ApiException(f"K8S Connector is invalid {handle}")
-
     apps_client = client.AppsV1Api(api_client=handle)
     if not namespace:
-        deployments = apps_client.list_deployment_for_all_namespaces().items 
+        deployments = apps_client.list_deployment_for_all_namespaces().items
     else:
         deployments = apps_client.list_namespaced_deployment(namespace).items
-
     retval = []
     for deployment in deployments:
-        cond_dict = deployment.status.conditions[0].to_dict()
-        if cond_dict.get('status') == 'False':
-            retval.append({
-                'name': deployment.metadata.name,
-                'namespace': deployment.metadata.namespace
-                })
-
+        for i in deployment.status.conditions:
+            if i.type == 'Available' and i.status == 'False':
+                retval.append({
+                    'name': deployment.metadata.name,
+                    'namespace': deployment.metadata.namespace
+                    })
     if retval:
         return (False, retval)
-
-    return (True, [])
+    return (True, None)
