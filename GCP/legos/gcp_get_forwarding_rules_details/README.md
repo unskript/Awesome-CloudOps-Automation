@@ -3,7 +3,7 @@
 <h1>Get details of GCP forwarding rules</h1>
 
 ## Description
-Get details for forwarding rules associated with a backend service.
+Get details of forwarding rules associated with a backend service.
 
 ## Lego Details
 	gcp_get_forwarding_rules_details(handle, project: str)
