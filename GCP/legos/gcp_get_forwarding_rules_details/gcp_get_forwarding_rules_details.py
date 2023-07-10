@@ -6,11 +6,6 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 from google.cloud import compute_v1
 
-
-
-from pydantic import BaseModel, Field
-
-
 class InputSchema(BaseModel):
     project: str = Field(..., description='GCP project ID', title='Project ID')
 
