@@ -22,7 +22,7 @@ def k8s_desribe_node_printer(output):
     pprint.pprint(output)
 
 
-def k8s_describe_node(handle, node_name: str) -> Dict:
+def k8s_describe_node(handle, node_name: str):
     """k8s_describe_node get nodes details
 
         :type handle: object

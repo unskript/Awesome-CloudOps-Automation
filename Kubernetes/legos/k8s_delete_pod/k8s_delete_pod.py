@@ -24,7 +24,7 @@ def k8s_delete_pod_printer(output):
     pprint.pprint(output)
 
 
-def k8s_delete_pod(handle, namespace: str, podname: str) -> Dict:
+def k8s_delete_pod(handle, namespace: str, podname: str):
     """k8s_delete_pod delete a Kubernetes POD in a given Namespace
 
         :type handle: object

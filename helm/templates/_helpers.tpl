@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "unskript-awesome-runbooks.name" -}}
+{{- define "awesome-runbooks.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "unskript-awesome-runbooks.fullname" -}}
+{{- define "awesome-runbooks.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "unskript-awesome-runbooks.chart" -}}
+{{- define "awesome-runbooks.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "unskript-awesome-runbooks.labels" -}}
-helm.sh/chart: {{ include "unskript-awesome-runbooks.chart" . }}
-{{ include "unskript-awesome-runbooks.selectorLabels" . }}
+{{- define "awesome-runbooks.labels" -}}
+helm.sh/chart: {{ include "awesome-runbooks.chart" . }}
+{{ include "awesome-runbooks.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "unskript-awesome-runbooks.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "unskript-awesome-runbooks.name" . }}
+{{- define "awesome-runbooks.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "awesome-runbooks.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "unskript-awesome-runbooks.serviceAccountName" -}}
+{{- define "awesome-runbooks.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "unskript-awesome-runbooks.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "awesome-runbooks.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

@@ -1,0 +1,14 @@
+{
+    "suite_name": "AWS RDS Health",
+    "suite_check_uuids":   
+            ["f50fe12ce6fe9000257361f74d58e99fb1c08cf36ffbdc60f507f442324dd703", 
+            "97bfc082be1cffdf5c795b3119bfa90b36946934b37cf213d762e0ee3ee881f8", 
+            "8d01f8abc8274090c2325ef32905b2649a6af779ce86f78b9e9712ad1d482165", 
+            "75df073e335235a086b5a58213acac248ce54dbbecb786b028726f987fcfe243", 
+            "1e04772ba07b2ed694a0be4c8265b425d8a7de0a40484ff35b9b9c770e43bf4c", 
+            "08da2db2f8fe2dbce378c314e54341b68ee2e9e99ae271f2acd044ef7e8bdee3", 
+            "77d61931741da6d2be410571e205c93962815430843b1fbaf8e575e6384598ae", 
+            "e665224418391a4deafae48140c5b83c8af7b881dd281acbd79ed9ceb52aad4f"]
+    
+
+  }
