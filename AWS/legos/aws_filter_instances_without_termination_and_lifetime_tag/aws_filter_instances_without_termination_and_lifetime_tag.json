@@ -12,5 +12,5 @@
     "action_is_check":true,
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_COST_OPT","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2" ],
     "action_next_hop":["29ce1935204c64d816fd1f01f4fe41e8d8bd47725b899535c6acee703a7bcf0d"],
-    "action_next_hop_parameter_mapping":{"29ce1935204c64d816fd1f01f4fe41e8d8bd47725b899535c6acee703a7bcf0d": {"name": "Terminate EC2 Instances Without Valid Lifetime Tags", "region": ".[0].region", "instance_ids":".instances"}}
+    "action_next_hop_parameter_mapping":{"29ce1935204c64d816fd1f01f4fe41e8d8bd47725b899535c6acee703a7bcf0d": {"name": "Terminate EC2 Instances Without Valid Lifetime Tags", "region": ".[0].region", "instance_ids":".[0].instances"}}
   }
