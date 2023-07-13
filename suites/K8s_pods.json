@@ -1,0 +1,12 @@
+{
+    "suite_name": "K8s Pod Health",
+    "suite_check_uuids": ["d8047bf803242cfbfd1a19e28d64ae8d95168f8edb753ae4e1e7a7af1ffccf07", 
+                            "683b7f1a1482a5bed32698689e2b47e13dcdb5e00d719316cc46ada5ead26758",
+                             "0ee6916ced53898c496c01c396ee6765611e023029080258463bd4331af54582", 
+                             "feb60351fb3290f22855cc68f4741e24cd930debb326724e977ad9e450c49c74", 
+                             "d7a1da167d056a912739fce8c4571c6863050f52d6e19495971277057e709857", 
+                             "38e1b66dd63e5e211aca4c451e211fe24b00e1ec206e172e85bfe93427a795c2", 
+                             "bf0dad12a041d356406d77f967c2ff2ed31e1bfd47088c0844b629d792fb28ca", 
+                             "0e3f155377bafd8cf105db4ada0772c979dc14f95a8d76110b0ff2005a652b95", 
+                             "f859a8bb5222b242b8366f5d0459b72309b6891d2dcac154cd273f4dbde1e5ac"]
+  }
