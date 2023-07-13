@@ -1,0 +1,7 @@
+{
+    "suite_name": "AWS Lambda Health",
+    "suite_check_uuids":   
+    ["e0427cd28eee85da5bdda8b0b6e5294f9761f5229695d0b30c86062d906f946f", 
+    "b67ac77869789a5c1a9fd6acf2786d5899e0df9c6cbee27601674a6956822ed3", 
+    "7c711bc3e744eb16a7372e2b6d27706d5aa53303bf30e633fa58c9e610aa1b29"]
+  }
