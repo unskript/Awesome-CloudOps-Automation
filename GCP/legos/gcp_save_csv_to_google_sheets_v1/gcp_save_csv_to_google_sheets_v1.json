@@ -3,10 +3,10 @@
   "action_description": "Saves your CSV (see notes) into a prepared Google Sheet.",
   "action_type": "LEGO_TYPE_GCP",
   "action_entry_function": "gcp_save_csv_to_google_sheets_v1",
-  "action_needs_credential": "true",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
-  "action_is_check": "false",
-  "action_supports_iteration": "true",
-  "action_supports_poll": "true",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
   "action_categories":[ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_GCP","CATEGORY_TYPE_GCP_SHEETS" ]
 }
