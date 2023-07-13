@@ -64,7 +64,7 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
 
     nodes = node_api.list_node()
     retval = {}
-    for node in nodes.items():
+    for node in nodes.items:
         # Lets check Node Pressure, more than 80%, will need to to raise an exception
         cpu_usage = normalize_cpu(node.status.allocatable['cpu'])
         cpu_capacity = normalize_cpu(node.status.capacity['cpu'])
@@ -72,11 +72,13 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
         mem_capacity = normalize_memory(node.status.capacity['memory'])
         cpu_usage_percent = (cpu_usage / cpu_capacity) * 100
         mem_usage_percent = (mem_usage / mem_capacity) * 100
-        retval['node_name'] = node.metadata.name
-        if cpu_usage_percent >= threshold:
-            retval['cpu_high'] = True
-        if mem_usage_percent >= threshold:
-            retval['mem_high'] = True
+        #check if either is over trheshold. If so, add the node and failure to the return value
+        if (cpu_usage_percent >= threshold) or (mem_usage_percent >= threshold):
+            retval[node.metadata.name] = {}
+            if cpu_usage_percent >= threshold:
+                retval[node.metadata.name]['cpu_high'] = True
+            if mem_usage_percent >= threshold:
+                retval[node.metadata.name]['mem_high'] = True
 
         # Lets get abnormal events. Lets go with `warning` as the default level
         events = k8s_get_abnormal_events(node_api, node.metadata.name)

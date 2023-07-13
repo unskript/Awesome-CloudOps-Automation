@@ -73,6 +73,7 @@ def aws_get_cost_for_all_services(
     else:
         start = start_date
         end = end_date
+    total_cost = 0
     result = []
     CEclient = handle.client('ce', region_name=region)
     try:
@@ -103,5 +104,7 @@ def aws_get_cost_for_all_services(
             service_cost = group['Metrics']['UnblendedCost']['Amount']
             cost_est["service_name"] = service_name
             cost_est["service_cost"] = service_cost
+            total_cost += float(service_cost)
             result.append(cost_est)
+    print(f"Total Cost: {total_cost}")
     return result
