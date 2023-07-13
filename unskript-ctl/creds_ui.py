@@ -27,7 +27,6 @@ CONNECTOR_LIST = [
     'Github', 
     'Netbox', 
     'Nomad', 
-    'ChatGPT', 
     'Jira', 
     'Kafka', 
     'MongoDB', 
@@ -129,7 +128,6 @@ class CredsApp(npyscreen.NPSAppManaged):
         self.ui['Github'] = self.addForm("Github", GithubCreds, name='Github Connector', color="IMPORTANT",)
         self.ui['Netbox'] = self.addForm("Netbox", NetboxCreds, name='Netbox Connector', color="IMPORTANT",)
         self.ui['Nomad'] = self.addForm("Nomad", NomadCreds, name='Nomad Connector', color="IMPORTANT",)
-        self.ui['ChatGPT'] = self.addForm("ChatGPT", ChatGPTCreds, name='ChatGPT Connector', color="IMPORTANT",)
         self.ui['Jira'] = self.addForm("Jira", JiraCreds, name='Jira Connector', color="IMPORTANT",)
         self.ui['Kafka'] = self.addForm("Kafka", KafkaCreds, name='Kafka Connector', color="IMPORTANT",)
         self.ui['MongoDB'] = self.addForm("MongoDB", MongoCreds, name='MongoDB Connector', color="IMPORTANT",)
@@ -575,38 +573,6 @@ class NomadCreds(CredsForm):
             d['timeout'] = self._timeout.value
             d['token'] = self._token.value
             d['host'] = self._host.value
-            contents['metadata']['connectorData'] = json.dumps(d)
-            with open(creds_file, 'w', encoding="utf-8") as f:
-                f.write(json.dumps(contents, indent=2))
-        super().on_ok()
-
-class ChatGPTCreds(CredsForm):
-    def create(self):
-        super().create()
-        self._organization = self.add(npyscreen.TitleText, name="Organization", align="^", color="IMPORTANT",)
-        self._api_token = self.add(npyscreen.TitlePassword, name="API Token", align="^", color="IMPORTANT",)
-    
-        c_data = read_existing_creds(CREDS_DIR + 'chatgptcreds.json')
-        if c_data:
-            if c_data.get('organization'):
-                self._organization.value = c_data.get('organization')
-            if c_data.get('api_token'):
-                self._api_token.value = c_data.get('api_token')
-
-    def on_ok(self):
-        if self._api_token.value and self._organization.value:
-            creds_file = CREDS_DIR + 'chatgptcreds.json'
-            if os.path.exists(creds_file) is False:
-                npyscreen.notify("ChatGPT Credential File is Missing! Cannot proceed further. Contact support@unskript.com")
-                raise AssertionError("Credential file for ChatGPT is Missing")
-            with open(creds_file, 'r', encoding="utf-8") as f:
-                contents = json.loads(f.read())
-            if not contents:
-                npyscreen.notify("ChatGPT Credential File is Missing! Cannot proceed further. Contact support@unskript.com")
-                raise AssertionError("Credential file for ChatGPT is Missing")
-            d = {}
-            d['organization'] = self._organization.value
-            d['api_token'] = self._api_token.value
             contents['metadata']['connectorData'] = json.dumps(d)
             with open(creds_file, 'w', encoding="utf-8") as f:
                 f.write(json.dumps(contents, indent=2))
