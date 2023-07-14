@@ -48,15 +48,18 @@ def aws_send_email(handle, Region:str, Sender:str, Receiver:str, Subject:str, Me
             }
         }
     }
-
-    # Send the email
-    response = client.send_email(
-        Source=Sender,
-        Destination={
-            'ToAddresses': [Receiver]
-        },
-        Message=message
-    )
+    try:
+        # Send the email
+        response = client.send_email(
+            Source=Sender,
+            Destination={
+                'ToAddresses': [Receiver]
+            },
+            Message=message
+        )
+    except Error as e:
+        response = e
+        raise e
 
     # Print the response
     print(response)
