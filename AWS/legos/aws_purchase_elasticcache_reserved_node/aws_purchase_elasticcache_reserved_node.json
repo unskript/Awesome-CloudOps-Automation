@@ -3,10 +3,10 @@
   "action_description": "This action purchases a reserved cache node offering.",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_purchase_elasticcache_reserved_node",
-  "action_needs_credential": "false",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
-  "action_is_check": "false",
-  "action_supports_iteration": "true",
-  "action_supports_poll": "true",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
   "action_categories": ["CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELASTICACHE"]
 }

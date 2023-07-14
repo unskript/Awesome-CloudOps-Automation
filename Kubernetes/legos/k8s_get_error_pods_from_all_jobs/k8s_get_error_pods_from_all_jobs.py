@@ -7,7 +7,7 @@ import pprint
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from kubernetes.client.rest import ApiException
-import json
+from kubernetes import client, watch
 
 
 class InputSchema(BaseModel):
@@ -23,7 +23,7 @@ def k8s_get_error_pods_from_all_jobs_printer(output):
     pprint.pprint(output)
 
 
-def k8s_get_error_pods_from_all_jobs(handle, namespace: str = '') -> Tuple:
+def k8s_get_error_pods_from_all_jobs(handle, namespace:str="") -> Tuple:
     """k8s_get_error_pods_from_all_jobs This check function uses the handle's native command
        method to execute a pre-defined kubectl command and returns the output of list of error pods
        from all jobs.
@@ -33,41 +33,26 @@ def k8s_get_error_pods_from_all_jobs(handle, namespace: str = '') -> Tuple:
 
        :rtype: Tuple Result in tuple format.
     """
-    action_op = []
-    if handle.client_side_validation is not True:
-        raise ApiException(f"K8S Connector is invalid {handle}")
-
-    if not namespace:
-        kubectl_command = f"kubectl get jobs --all-namespaces -o json"
+    result = []
+    coreApiClient = client.CoreV1Api(api_client=handle)
+    BatchApiClient = client.BatchV1Api(api_client=handle)
+    # If namespace is provided, get jobs from the specified namespace
+    if namespace:
+        jobs = BatchApiClient.list_namespaced_job(namespace,watch=False, limit=200).items
+    # If namespace is not provided, get jobs from all namespaces
     else:
-        kubectl_command = f"kubectl get jobs -n {namespace} -o json"
-    result = handle.run_native_cmd(kubectl_command)
-    if result.stderr:
-        raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")
-    job_names = []
-    if result.stdout:
-        op = json.loads(result.stdout)
-        for jobs in op["items"]:
-            job_dict = {}
-            job_dict["job_name"] = jobs["metadata"]["name"]
-            job_dict["namespace"] = jobs["metadata"]["namespace"]
-            job_names.append(job_dict)
-    if job_names:
-        for job in job_names:
-            command = f"""kubectl get pods --selector=job-name={job["job_name"]} -n {job["namespace"]} --field-selector=status.phase!=Running -o json"""
-            pod_result = handle.run_native_cmd(kubectl_command)
-            if pod_result.stderr:
-                raise ApiException(f"Error occurred while executing command {command} {pod_result.stderr}")
-            job_names = []
-            if pod_result.stdout:
-                pod_op = json.loads(pod_result.stdout)
-                for pods in pod_op["items"]:
-                    pod_dict = {}
-                    pod_dict["job_name"] = job["job_name"]
-                    pod_dict["namespace"] = job["namespace"]
-                    pod_dict["pod_name"] = pods["metadata"]["name"]
-                    action_op.append(pod_dict)
-    if len(action_op) != 0:
-        return (False, action_op)
+        jobs = BatchApiClient.list_job_for_all_namespaces(watch=False, limit=200).items
+
+    for job in jobs:
+        # Fetching all the pods associated with the current job
+        pods = coreApiClient.list_namespaced_pod(job.metadata.namespace, label_selector=f"job-name={job.metadata.name}",watch=False, limit=200).items
+
+        # Checking the status of each pod
+        for pod in pods:
+            # If the pod status is 'Failed', print its namespace and name
+            if pod.status.phase != "Succeeded":
+                result.append({"namespace":pod.metadata.namespace,"pod_name":pod.metadata.name})
+    if len(result) != 0:
+        return (False, result)
     else:
         return (True, None)
