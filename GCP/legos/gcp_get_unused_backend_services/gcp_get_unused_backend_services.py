@@ -35,6 +35,7 @@ def gcp_get_unused_backend_services(handle, project: str) -> List:
     backendClient = compute_v1.BackendServicesClient(credentials=handle)
     instanceClient = compute_v1.InstanceGroupsClient(credentials=handle)
 
+    # List all backend services
     backend_services = [
         {
             "backend_service_name": page.name, 
