@@ -1,0 +1,9 @@
+{
+    "name": "AWS Update Resource Tags",
+    "description": "This runbook can be used to update an existing tag to any resource in an AWS Region.",  
+    "uuid": "a79201f821993867e23dd9603ed7ef5523324353d717c566f902f7ca6e471f5c",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_CLOUDOPS" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
