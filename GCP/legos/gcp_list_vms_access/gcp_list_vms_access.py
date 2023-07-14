@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
 
 
 @beartype
-def gcp_list_VMs_access_printer(output):
+def gcp_list_vms_access_printer(output):
     if len(output)==0:
         print("There are no publicly readable buckets available")
         return
@@ -27,7 +27,7 @@ def gcp_list_VMs_access_printer(output):
 
 
 @beartype
-def gcp_list_VMs_access(handle, project:str, zone:str) -> List:
+def gcp_list_vms_access(handle, project:str, zone:str) -> List:
     compute_client = compute.InstancesClient(credentials=handle)
 
     vms = compute_client.list(project=project, zone=zone)

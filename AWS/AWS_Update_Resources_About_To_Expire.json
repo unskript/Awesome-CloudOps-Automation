@@ -1,0 +1,9 @@
+{
+    "name": "AWS Add Tags Across Selected AWS Resources",
+    "description": "This finds resources missing a tag, and allows you to choose which resources should add a specific tag/value pair.",  
+    "uuid": "a79201f821993867e23dd9603ed7ef5523324353d717c566f902f7ac6e471f5c",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_CLOUDOPS" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
