@@ -2,7 +2,7 @@
 ##  All rights reserved.
 ##
 import pprint
-from typing import List
+from typing import Tuple
 from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel, Field
 from dateutil.parser import parse
@@ -23,7 +23,7 @@ def aws_list_users_with_old_passwords_printer(output):
     pprint.pprint(output)
 
 
-def aws_list_users_with_old_passwords(handle, threshold_days: int = 120) -> List:
+def aws_list_users_with_old_passwords(handle, threshold_days: int = 120) -> Tuple:
     """aws_list_users_with_old_passwords lists all the IAM users with old passwords.
 
         :type handle: object

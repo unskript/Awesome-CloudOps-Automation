@@ -9,7 +9,7 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_next_hop": ["da23633be34037f023e1c1f56220ec75eb2729d7d8eb2bca9badec15ed0fd2ca"],
-    "action_next_hop_parameter_mapping": {"da23633be34037f023e1c1f56220ec75eb2729d7d8eb2bca9badec15ed0fd2ca": {"name": "Delete Unattached AWS EBS Volumes", "region":".[0].region","ebs_volume":".[].volume_id"}},
+    "action_next_hop_parameter_mapping": {"da23633be34037f023e1c1f56220ec75eb2729d7d8eb2bca9badec15ed0fd2ca": {"name": "Delete Unattached AWS EBS Volumes", "region":".[0].region","ebs_volume":"map(.volume_id)"}},
     "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_AWS_EBC" ]
 }
   

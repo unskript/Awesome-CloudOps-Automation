@@ -4,7 +4,7 @@
 ##
 ## CSV must have each line as a list. For Example:
 ##[['This file was created 02/17/2023'],
-##['Service Code', 'Quota Name', 'Quota Code', 'Quota Value', 'Quota Unit', 'Global?', 'Adjustable?'], 
+##['Service Code', 'Quota Name', 'Quota Code', 'Quota Value', 'Quota Unit', 'Global?', 'Adjustable?'],
 ##['AWSCloudMap', 'DiscoverInstances operation per account steady rate', 'L-514A639A', 1000.0, 'None', False, True], ['AWSCloudMap', 'DiscoverInstances operation per account burst rate', 'L-76CF203B', 2000.0, 'None', False, True], ['AWSCloudMap', 'Namespaces per Region', 'L-0FE3F50E', 50.0, 'None', False, True],
 
 ##You must also turn on the Google Sheets API in your Google Console:
@@ -24,7 +24,6 @@ from beartype import beartype
 
 class InputSchema(BaseModel):
     GoogleSheetID: str = Field(
-        '',
         description='SheetId (from the URL) of your Google Sheet',
         title='GoogleSheetID',
     )
@@ -34,7 +33,6 @@ class InputSchema(BaseModel):
         title='StartingCell',
     )
     csvList: List = Field(
-        '',
         description='List of rows to be inserted into the Google Sheet',
         title='csvList',
     )
