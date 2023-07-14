@@ -1,17 +1,19 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">]
 (https://unskript.com/assets/favicon.png)
-<h1>Find AWS Lambdas Not Using ARM64 Graviton2 Processor</h1>
+<h1>AWS Get Resources With Tag</h1>
 
 ## Description
-Find all AWS Lambda functions that are not using the Arm-based AWS Graviton2 processor for their runtime architecture
+For a given tag and region, get every AWS resource with that tag.
 
 ## Lego Details
-	aws_find_lambdas_not_using_arm_graviton2_processor(handle,region:str="")
+	aws_get_resources_with_tag(handle, region: str, tag:str)
 		handle: Object of type unSkript AWS Connector.
-		region: Optional, AWS Region
+
+	Please refer to README.md file of any existing lego and similarly add the description for your input parameters.
+
 
 ## Lego Input
-This Lego takes inputs handle, region
+This Lego takes inputs handle,
 
 ## Lego Output
 Here is a sample output.
