@@ -44,6 +44,7 @@ def k8s_delete_pod(handle, namespace: str, podname: str):
         resp = coreApiClient.delete_namespaced_pod(
             name=podname, namespace=namespace)
     except ApiException as e:
-        resp = 'An Exception occured while executing the command' + e.reason
+        resp = 'An Exception occurred while executing the command ' + e.reason
+        raise e
 
     return resp
