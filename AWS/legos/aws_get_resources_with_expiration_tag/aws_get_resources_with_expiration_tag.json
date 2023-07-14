@@ -3,9 +3,9 @@
   "action_description": "AWS Get all Resources with an expiration tag",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_get_resources_with_expiration_tag",
-  "action_needs_credential": "true",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
-  "action_is_check": "false",
-  "action_supports_iteration": "true",
-  "action_supports_poll": "true"
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true
 }
