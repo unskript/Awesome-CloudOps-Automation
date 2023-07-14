@@ -20,7 +20,9 @@ def gcp_get_unused_backend_services_printer(output):
     print(output)
 
 def gcp_get_unused_backend_services(handle, project: str) -> List:
-    """gcp_get_unused_backend_services Returns a list of unused backend services and their target groups which have 0 instances in the given project.
+    """
+    gcp_get_unused_backend_services Returns a list of unused backend services 
+    and their target groups which have 0 instances in the given project.
 
     :type handle: object
     :param handle: Object returned from Task Validate
@@ -30,25 +32,34 @@ def gcp_get_unused_backend_services(handle, project: str) -> List:
 
     :return: Status, List of unused Backend services
     """
-    result = []
-    Bclient = compute_v1.BackendServicesClient(credentials=handle)
-    backend_services = []
-    for page in Bclient.list(project=project):
-        service = page.backends[0].group.split('/')[-1]
-        backend_services.append({"backend_service_name": page.name, "backend_instance_group_name": service})
+    backendClient = compute_v1.BackendServicesClient(credentials=handle)
     instanceClient = compute_v1.InstanceGroupsClient(credentials=handle)
-    agg_list = instanceClient.aggregated_list(project=project)
-    for ser in backend_services:
-        for zone, response in agg_list:
-            if response.instance_groups:
-                for instance in response.instance_groups:
-                    if instance.size == 0:
-                        if ser["backend_instance_group_name"] == instance.name:
-                            if instance.name not in result:
-                                result.append({"backend_service_name": ser["backend_service_name"], "instance_group_name":instance.name})
-    if result:
-        return (False, result)
-    return(True, None)
+
+    backend_services = [
+        {
+            "backend_service_name": page.name, 
+            "backend_instance_group_name": page.backends[0].group.split('/')[-1]
+        } 
+        for page in backendClient.list(project=project)
+    ]
+
+    # Create a list for instance groups with instance size = 0
+    instance_groups = [
+        instance.name for zone, response in instanceClient.aggregated_list(project=project) 
+        for instance in response.instance_groups if instance.size == 0
+    ]
+
+    # Compare the backend service instance groups to the instance groups that have instance size = 0
+    result = [
+        {
+            "backend_service_name": ser["backend_service_name"], 
+            "instance_group_name": ser["backend_instance_group_name"]
+        }
+        for ser in backend_services if ser["backend_instance_group_name"] in instance_groups
+    ]
+
+    return (False, result) if result else (True, None)
+
 
 
 
