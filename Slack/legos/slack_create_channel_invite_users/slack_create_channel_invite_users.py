@@ -20,6 +20,7 @@ class InputSchema(BaseModel):
         ...,
         description='List of users to invite to the new channel.',
         title='user_list',
+        #list is slack user IDs, for example ['U046UH5F2HZ']
     )
 
 
