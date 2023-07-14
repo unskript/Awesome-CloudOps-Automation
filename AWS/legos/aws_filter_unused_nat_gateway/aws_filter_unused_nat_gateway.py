@@ -75,7 +75,7 @@ def aws_filter_unused_nat_gateway(handle, number_of_days: int = 7, region: str =
                 nat_gateway_info = {}
                 if not is_nat_gateway_used(cloudwatch, nat_gateway, start_time, end_time,number_of_days):
                     nat_gateway_info["nat_gateway_id"] = nat_gateway['NatGatewayId']
-                    nat_gateway_info["reg"] = reg
+                    nat_gateway_info["region"] = reg
                     result.append(nat_gateway_info)
         except Exception:
             pass

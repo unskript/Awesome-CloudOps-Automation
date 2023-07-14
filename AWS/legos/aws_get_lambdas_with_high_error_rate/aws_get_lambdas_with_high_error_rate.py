@@ -36,8 +36,8 @@ def aws_get_lambdas_with_high_error_rate_printer(output):
 
 def aws_get_lambdas_with_high_error_rate(
         handle,
-        error_rate_threshold:float,
-        days_back:int,
+        error_rate_threshold:float=0.1,
+        days_back:int=7,
         region:str=""
         ) -> Tuple:
     """aws_get_lambdas_with_high_error_rate finds AWS Lambda functions with high error rate
