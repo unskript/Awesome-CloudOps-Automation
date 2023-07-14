@@ -3,10 +3,10 @@
   "action_description": "Creates a new lifecycle configuration for the bucket or replaces an existing lifecycle configuration.",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_add_lifecycle_configuration_to_s3_bucket",
-  "action_needs_credential": "true",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
-  "action_is_check": "false",
-  "action_supports_iteration": "true",
-  "action_supports_poll": "true",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
   "action_categories":[ "CATEGORY_TYPE_CLOUDOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_S3" ]
 }

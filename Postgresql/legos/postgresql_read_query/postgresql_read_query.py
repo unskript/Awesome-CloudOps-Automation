@@ -66,7 +66,5 @@ def postgresql_read_query(handle, query: str, params: list = ()) -> List:
     cur.execute(query)
     cur.execute(prepared_query)
     res = cur.fetchall()
-    handle.commit()
     cur.close()
-    handle.close()
     return res

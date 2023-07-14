@@ -3,12 +3,12 @@
   "action_description": "This lego finds RDS instances are not utilizing their CPU resources to their full potential.",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_find_rds_instances_with_low_cpu_utilization",
-  "action_needs_credential": "true",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
-  "action_is_check": "true",
-  "action_supports_iteration": "true",
-  "action_supports_poll": "true",
+  "action_is_check": true,
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
   "action_next_hop":["655835b762ba634f02074a48e4bae12f7a3e29bb8e6776eb8d657ddbfe181a59"],
-  "action_next_hop_parameter_mapping":{"655835b762ba634f02074a48e4bae12f7a3e29bb8e6776eb8d657ddbfe181a59": {"name": "Delete RDS Instances with Low CPU Utilization", "region": ".[0].region", "db_identifiers":".[].instance"}},
+  "action_next_hop_parameter_mapping":{"655835b762ba634f02074a48e4bae12f7a3e29bb8e6776eb8d657ddbfe181a59": {"name": "Delete RDS Instances with Low CPU Utilization", "region": ".[0].region", "db_identifiers":"map(.instance)"}},
   "action_categories":[ "CATEGORY_TYPE_COST_OPT","CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS_RDS","CATEGORY_TYPE_AWS"]
 }
