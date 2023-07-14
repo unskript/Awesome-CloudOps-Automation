@@ -3,10 +3,10 @@
   "action_description": "Delete Classic Elastic Load Balancers",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_delete_classic_load_balancer",
-  "action_needs_credential": "true",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
-  "action_is_check": "false",
-  "action_supports_iteration": "true",
-  "action_supports_poll": "true",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
   "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS"]
 }
