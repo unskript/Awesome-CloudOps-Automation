@@ -12,5 +12,5 @@
     "action_is_check": true,
     "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SECOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS", "CATEGORY_TYPE_AWS_ACM"],
     "action_next_hop": ["76681732b20a69913f0d9248272271bf2f4ab6459498ec6d0ab055870e0db0bb"],
-    "action_next_hop_parameter_mapping": {"76681732b20a69913f0d9248272271bf2f4ab6459498ec6d0ab055870e0db0bb": {"name": "Renew AWS SSL Certificates that are close to expiration", "region": ".[0].region", "certificate_arns":".certificates"}}
+    "action_next_hop_parameter_mapping": {"76681732b20a69913f0d9248272271bf2f4ab6459498ec6d0ab055870e0db0bb": {"name": "Renew AWS SSL Certificates that are close to expiration", "region": ".[0].region", "certificate_arns":".[0].certificates"}}
 }

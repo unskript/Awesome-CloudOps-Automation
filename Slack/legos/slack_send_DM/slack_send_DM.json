@@ -1,0 +1,11 @@
+{
+  "action_title": "Slack Send DM",
+  "action_description": "Given a list of Slack IDs, this Action will create a DM (one user) or group chat (multiple users), and send a message to the chat",
+  "action_type": "LEGO_TYPE_SLACK",
+  "action_entry_function": "slack_send_DM",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}

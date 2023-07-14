@@ -68,9 +68,9 @@ def github_list_stale_issues(handle, owner:str, repository:str, age_to_stale:int
                 issue_details["title"] = issue.title
                 issue_details["issue_number"] = issue.number
                 if isinstance(issue.assignee, type(None)):
-                    issue_details["assignee"] = issue.assignee.login
+                    issue_details["assignee"] = "None"
                 else:
-                    issue_details["assignee"] = issue.assignee
+                    issue_details["assignee"] = issue.assignee.login
                 result.append(issue_details)
     except GithubException as e:
         if e.status == 403:
