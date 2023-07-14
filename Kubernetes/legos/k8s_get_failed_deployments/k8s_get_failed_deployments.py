@@ -2,10 +2,10 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
-from typing import Tuple
+from typing import List
 from pydantic import BaseModel, Field
-from kubernetes import client
 from kubernetes.client.rest import ApiException
+import json
 
 
 class InputSchema(BaseModel):
@@ -21,29 +21,45 @@ def k8s_get_failed_deployments_printer(output):
     print(output)
 
 
-def k8s_get_failed_deployments(handle, namespace: str = '') -> Tuple:
-    """k8s_get_failed_deployments Returns the list of all failed deployments across all namespaces
+def k8s_get_failed_deployments(handle, namespace: str = '') -> List:
+    """k8s_get_failed_deployments Returns all failed deployments across all namespaces
+    or within a specific namespace if provided. The deployments are considered
+    failed if the 'Available' condition is set to 'False'.
 
     :type handle: Object
     :param handle: Object returned from task.validate(...) function
 
-    :rtype: Tuple of the result
+    :type namespace: str
+    :param namespace: The specific namespace to filter the deployments. Defaults to ''.
+
+    :rtype: Status of result, list of dictionaries, each containing the 'name' and 'namespace' of the failed deployments.
     """
-    if handle.client_side_validation is not True:
-        raise ApiException(f"K8S Connector is invalid {handle}")
-    apps_client = client.AppsV1Api(api_client=handle)
-    if not namespace:
-        deployments = apps_client.list_deployment_for_all_namespaces().items
-    else:
-        deployments = apps_client.list_namespaced_deployment(namespace).items
-    retval = []
-    for deployment in deployments:
-        for i in deployment.status.conditions:
-            if i.type == 'Available' and i.status == 'False':
-                retval.append({
-                    'name': deployment.metadata.name,
-                    'namespace': deployment.metadata.namespace
+    # Construct the kubectl command based on whether a namespace is provided
+    kubectl_command = "kubectl get deployments --all-namespaces -o json"
+    if namespace:
+        kubectl_command = "kubectl get deployments -n " + namespace + " -o json"
+    # Execute kubectl command
+    response = handle.run_native_cmd(kubectl_command)
+    # Check if the response is None, which indicates an error
+    if response is None:
+        print(f"Error while executing command ({kubectl_command}) (empty response)")
+    if response.stderr:
+        raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
+
+    result = []
+    try:
+        deployments = json.loads(response.stdout)
+        # Iterate over each item in the deployments
+        for item in deployments["items"]:
+            # Check each condition of the deployment
+            for condition in item["status"]["conditions"]:
+                # If the 'Available' condition is set to 'False', add the deployment to the result
+                if condition["type"] == "Available" and condition["status"] == "False":
+                    result.append({
+                        'name': item["metadata"]["name"],
+                        'namespace': item["metadata"]["namespace"]
                     })
-    if retval:
-        return (False, retval)
-    return (True, None)
+    except Exception as e:
+        raise e
+
+    return (False, result) if result else (True, None)
