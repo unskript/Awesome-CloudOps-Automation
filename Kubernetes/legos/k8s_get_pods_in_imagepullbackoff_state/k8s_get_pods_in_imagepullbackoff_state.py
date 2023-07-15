@@ -42,11 +42,11 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str = '') -> Tuple
         print(f"K8S Connector is invalid: {handle}")
         return False, None
 
-    kubectl_command = ("kubectl get pods --all-namespaces | -e ImagePullBackOff -e ErrImagePull "
+    kubectl_command = ("kubectl get pods --all-namespaces | grep -e ImagePullBackOff -e ErrImagePull "
                        "| tr -s ' ' | cut -d ' ' -f 1,2")
     if namespace:
         kubectl_command = "kubectl get pods -n " + namespace + \
-            " | -e ImagePullBackOff -e ErrImagePull | cut -d' ' -f 1 | tr -d ' '"
+            " | grep -e ImagePullBackOff -e ErrImagePull | cut -d' ' -f 1 | tr -d ' '"
     response = handle.run_native_cmd(kubectl_command)
 
     if response is None:
