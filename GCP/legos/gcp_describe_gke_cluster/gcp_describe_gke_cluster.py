@@ -42,13 +42,25 @@ def gcp_describe_gke_cluster(handle, project_id: str, zone: str, cluster_name: s
     """
     # Create a client
     client = container_v1.ClusterManagerClient(credentials=handle)
+    name = f'projects/{project_id}/locations/{zone}/clusters/{cluster_name}'
     try:
-        res = client.get_cluster(project_id=project_id, zone=zone,
-                                        cluster_id=cluster_name)
-
-        response = MessageToDict(res._pb)
+        res = client.get_cluster(name=name)
+        response = {}
+        response['Name'] = cluster_name
+        response['CurrentNodeCount'] = res.current_node_count
+        response['NodePoolsCount'] = len(res.node_pools)
+        response['NodePoolDetails'] = []
+        for node_pool in res.node_pools:
+            nodePoolDetail = {}
+            nodePoolDetail['Name'] = node_pool.name
+            nodePoolDetail['NodeCount'] = node_pool.initial_node_count
+            nodePoolDetail['MachineType'] = node_pool.initial_node_count
+            nodePoolDetail['AutoscalingEnabled'] = node_pool.autoscaling.enabled
+            nodePoolDetail['MinNodes'] = node_pool.autoscaling.min_node_count
+            nodePoolDetail['MaxNodes'] = node_pool.autoscaling.max_node_count
+            response['NodePoolDetails'].append(nodePoolDetail)
 
     except Exception as error:
-        response = {"error":error}
+        raise error
 
     return response
