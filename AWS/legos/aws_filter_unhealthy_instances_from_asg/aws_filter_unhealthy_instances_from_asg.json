@@ -10,6 +10,6 @@
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ASG","CATEGORY_TYPE_AWS_EC2" ],
     "action_next_hop": ["680ad9d119afab5f647e1afe7826b88d89bf35304954c3328e65a2fcf470f930"],
-    "action_next_hop_parameter_mapping": {}
+    "action_next_hop_parameter_mapping": {"680ad9d119afab5f647e1afe7826b88d89bf35304954c3328e65a2fcf470f930": {"name": "AWS Detach EC2 Instance from ASG", "region": ".[0].region", "instance_ids":"map(.InstanceId)"}}
 }
 

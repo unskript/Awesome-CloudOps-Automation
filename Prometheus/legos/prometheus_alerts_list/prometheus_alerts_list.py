@@ -42,8 +42,8 @@ def prometheus_alerts_list(handle) -> List[dict]:
       }
       response = handle.all_alerts(params)
   except Exception as e:
-      print(f'Alerts failed,  {e.__str__()}')
-      return [{"error": e.__str__()}]
+      print(f'Alerts failed,  {str(e)}')
+      return [{"error": str(e)}]
 
   result = []
 

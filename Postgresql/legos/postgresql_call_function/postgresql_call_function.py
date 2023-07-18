@@ -2,11 +2,9 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from typing import Any
-from typing import List
-
-import psycopg2
+from typing import List, Any
 from pydantic import BaseModel, Field
+import psycopg2
 from tabulate import tabulate
 
 
@@ -56,7 +54,7 @@ def postgresql_call_function(handle, function_name: str, params: List = List[Any
         cur.close()
 
     except (Exception, psycopg2.DatabaseError) as error:
-        print("Error : {}".format(error))
+        print(f"Error : {error}")
     finally:
         if handle:
             handle.close()

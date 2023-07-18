@@ -10,6 +10,5 @@
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS"],
     "action_next_hop": ["2475714639442a9adcd0a87f7d193f6e8a6bbb9537d1eb6b03a6befb8ef84b19"],
-    "action_next_hop_parameter_mapping": {}
+    "action_next_hop_parameter_mapping": {"2475714639442a9adcd0a87f7d193f6e8a6bbb9537d1eb6b03a6befb8ef84b19": {"name": "Change AWS EBS Volume To GP3 Type", "region":".[0].region","ebs_volume_ids":"map(.volume_id)"}}
 }
-  

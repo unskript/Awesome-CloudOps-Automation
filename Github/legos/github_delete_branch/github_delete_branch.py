@@ -2,18 +2,17 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import Optional, List
+import pprint
 from pydantic import BaseModel, Field
 from github import GithubException
-import pprint
 
 class InputSchema(BaseModel):
     branch_name: str = Field(
-    description='Branch name. Eg:"dummy-branch-name"', 
+    description='Branch name. Eg:"dummy-branch-name"',
     title='Branch Name'
     )
     owner: str = Field(
-    description='Username of the GitHub user. Eg: "johnwick"', 
+    description='Username of the GitHub user. Eg: "johnwick"',
     title='Owner'
     )
     repository: str = Field(
@@ -44,7 +43,6 @@ def github_delete_branch(handle, owner:str, repository: str, branch_name: str)->
 
         :rtype: Deleted branch info
     """
-    result = []
     try:
         user = handle.get_user(login=owner)
         repo_name = user.login+"/"+repository
@@ -61,10 +59,10 @@ def github_delete_branch(handle, owner:str, repository: str, branch_name: str)->
             return [f"{branch_name} not found"]
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise Exception("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such username or repository")
+            raise Exception("No such username or repository") from e
         raise e.data
     except Exception as e:
         raise e
-
+    return None

@@ -2,11 +2,11 @@
 # Copyright (c) 2021 unSkript, Inc
 # All rights reserved.
 ##
-from typing import Optional, List, Tuple
-from kubernetes import client
+from typing import Optional, List
 from pydantic import BaseModel, Field
 from tabulate import tabulate
 from unskript.legos.kubernetes.k8s_kubectl_command.k8s_kubectl_command import k8s_kubectl_command
+from kubernetes import client
 
 
 class InputSchema(BaseModel):
@@ -19,12 +19,13 @@ class InputSchema(BaseModel):
         title='Config Map',
         description='Kubernetes Config Map Name')
 
+
 def k8s_get_config_map_kube_system_printer(output):
     if output is None:
         return
     for x in output:
-        for k,v in x.items():
-            if k=='details':
+        for k, v in x.items():
+            if k == 'details':
                 for config in v:
                     data_set_1 = []
                     data_set_1.append("Name:")
@@ -56,7 +57,7 @@ def k8s_get_config_map_kube_system_printer(output):
                     print(tabulate(tabular_config_map, tablefmt="github"))
 
 
-def k8s_get_config_map_kube_system(handle, config_map_name: str = '', namespace: str = None)->List:
+def k8s_get_config_map_kube_system(handle, config_map_name: str = '', namespace: str = '') -> List:
     """k8s_get_config_map_kube_system get kube system config map
 
         :type handle: object
@@ -71,10 +72,11 @@ def k8s_get_config_map_kube_system(handle, config_map_name: str = '', namespace:
         :rtype: List of system kube config maps for a given namespace
     """
     all_namespaces = [namespace]
-    cmd = f"kubectl get ns  --no-headers -o custom-columns=':metadata.name'"
-    if namespace is None or len(namespace)==0:
-        kubernetes_namespaces = k8s_kubectl_command(handle=handle,kubectl_command=cmd )
-        replaced_str = kubernetes_namespaces.replace("\n"," ")
+    cmd = "kubectl get ns  --no-headers -o custom-columns=':metadata.name'"
+    if namespace is None or len(namespace) == 0:
+        kubernetes_namespaces = k8s_kubectl_command(
+            handle=handle, kubectl_command=cmd)
+        replaced_str = kubernetes_namespaces.replace("\n", " ")
         stripped_str = replaced_str.strip()
         all_namespaces = stripped_str.split(" ")
     result = []
@@ -93,4 +95,3 @@ def k8s_get_config_map_kube_system(handle, config_map_name: str = '', namespace:
             config_map_dict["details"] = config_maps
             result.append(config_map_dict)
     return result
-

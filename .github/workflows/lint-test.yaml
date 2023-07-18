@@ -10,6 +10,9 @@ on:
     branches:
       - master
 
+#on:
+#  workflow_dispatch:
+
 jobs:
   run-linters:
     name: Run linters
@@ -17,7 +20,7 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
 
       - name: Set up Python
         uses: actions/setup-python@v1
@@ -31,4 +34,4 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           pylint: true
-          
+

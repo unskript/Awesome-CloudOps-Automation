@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
 from pprint import pprint
+from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     k8s_cli_string: str = Field(
@@ -22,7 +23,7 @@ def k8s_kubectl_get_logs_printer(data: str):
 
     print("Logs:")
 
-    pprint (data)
+    pprint(data)
 
 def k8s_kubectl_get_logs(handle, k8s_cli_string: str, pod_name: str, namespace:str) -> str:
     """k8s_kubectl_get_logs executes the given kubectl command
@@ -39,9 +40,18 @@ def k8s_kubectl_get_logs(handle, k8s_cli_string: str, pod_name: str, namespace:s
         :type namespace: str
         :param namespace: Namespace.
 
-        :rtype: String, Output of the command in python string format or Empty String in case of Error.
+        :rtype: String, Output of the command in python string format or
+        Empty String in case of Error.
     """
     k8s_cli_string = k8s_cli_string.format(pod_name=pod_name, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
+    if result is None:
+        print(
+            f"Error while executing command ({k8s_cli_string}) (empty response)")
+        return ""
+        
+    if result.stderr:
+        raise ApiException(f"Error occurred while executing command {k8s_cli_string} {result.stderr}")
+
     data = result.stdout
     return data

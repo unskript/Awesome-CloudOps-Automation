@@ -4,7 +4,6 @@
 ##
 import pprint
 from typing import List
-
 from pydantic import BaseModel, Field
 
 
@@ -42,8 +41,13 @@ def mongodb_add_new_field_in_collections_printer(output):
         pprint.pprint(output)
 
 
-def mongodb_add_new_field_in_collections(handle, database_name: str, collection_name: str, add_new_fields: dict,
-                                         upsert: bool = True) -> List:
+def mongodb_add_new_field_in_collections(
+        handle,
+        database_name: str,
+        collection_name: str,
+        add_new_fields: dict,
+        upsert: bool = True
+        ) -> List:
     """mongodb_add_new_field_in_collections Add new field to every document in a MongoDB collection.
 
         :type handle: object

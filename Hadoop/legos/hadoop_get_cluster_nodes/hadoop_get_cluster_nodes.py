@@ -4,7 +4,6 @@
 ##
 import pprint
 from typing import Optional, Dict
-
 from pydantic import BaseModel, Field
 
 pp = pprint.PrettyPrinter()
@@ -13,7 +12,9 @@ pp = pprint.PrettyPrinter()
 class InputSchema(BaseModel):
     states: Optional[str] = Field(
         title='States',
-        description='The states of the node, specified as a comma-separated list, valid values are: NEW, RUNNING, UNHEALTHY, DECOMMISSIONING, DECOMMISSIONED, LOST, REBOOTED, SHUTDOWN'
+        description=('The states of the node, specified as a comma-separated list, '
+                     'valid values are: NEW, RUNNING, UNHEALTHY, DECOMMISSIONING, '
+                     'DECOMMISSIONED, LOST, REBOOTED, SHUTDOWN')
     )
 
 

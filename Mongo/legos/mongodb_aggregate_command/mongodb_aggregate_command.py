@@ -3,7 +3,6 @@
 # All rights reserved.
 ##
 import pprint
-
 from typing import List
 from pydantic import BaseModel, Field
 
@@ -27,7 +26,8 @@ class InputSchema(BaseModel):
                             }
                         ]
                 In the above example, the documents are grouped on the basis of expression $user,
-                and then the field num_tutorial includes the accumulator operator $sum that calculates the number of tutorials of each user.
+                and then the field num_tutorial includes the accumulator operator $sum that 
+                calculates the number of tutorials of each user.
             '''
     )
 
@@ -41,8 +41,14 @@ def mongodb_aggregate_command_printer(output):
             pprint.pprint(output)
 
 
-def mongodb_aggregate_command(handle, database_name: str, collection_name: str, pipeline: List) -> List:
-    """mongodb_aggregate_command Retrieves the documents present in the collection and the count of the documents using count_documents().
+def mongodb_aggregate_command(
+        handle,
+        database_name: str,
+        collection_name: str,
+        pipeline: List
+        ) -> List:
+    """mongodb_aggregate_command Retrieves the documents present in the collection
+    and the count of the documents using count_documents().
 
         :type handle: object
         :param handle: Object returned from task.validate(...).

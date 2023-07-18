@@ -5,14 +5,14 @@
 ##
 
 import pprint
-from typing import Optional, List, Tuple
-from pydantic import BaseModel, Field
-from github import GithubException
+from typing import Tuple
 import datetime
+from pydantic import BaseModel, Field
+from github import GithubException, BadCredentialsException, UnknownObjectException
 
 class InputSchema(BaseModel):
     owner: str = Field(
-        description='Username of the GitHub user. Eg: "johnwick"', 
+        description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
     repository: str = Field(
@@ -20,7 +20,8 @@ class InputSchema(BaseModel):
         title='Repository',
     )
     age_to_stale: str = Field(
-        description='Age in days to check if the issue creation or updation dates are older and hence classify those issues as stale Eg:45',
+        description=('Age in days to check if the issue creation or updation dates are '
+                     'older and hence classify those issues as stale Eg:45'),
         title='Age to Stale',
     )
 
@@ -44,7 +45,8 @@ def github_list_stale_issues(handle, owner:str, repository:str, age_to_stale:int
         :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
         :type age_to_stale: int
-        :param age_to_stale: Age in days to check if the issue creation or updation dates are older and hence classify those issues as stale Eg:45',
+        :param age_to_stale: Age in days to check if the issue creation or updation dates 
+        are older and hence classify those issues as stale Eg:45',
 
         :rtype: List of stale issues
     """
@@ -65,21 +67,19 @@ def github_list_stale_issues(handle, owner:str, repository:str, age_to_stale:int
                 issue_details = {}
                 issue_details["title"] = issue.title
                 issue_details["issue_number"] = issue.number
-                if type(issue.assignee)=='NoneType':
-                    issue_details["assignee"] = issue.assignee.login
+                if isinstance(issue.assignee, type(None)):
+                    issue_details["assignee"] = "None"
                 else:
-                    issue_details["assignee"] = issue.assignee
+                    issue_details["assignee"] = issue.assignee.login
                 result.append(issue_details)
     except GithubException as e:
         if e.status == 403:
-            raise Exception("You need admin access")
+            raise BadCredentialsException("You need admin access") from e
         if e.status == 404:
-            raise Exception("No such pull number or repository or user found")
+            raise UnknownObjectException("No such pull number or repository or user found") from e
         raise e.data
     except Exception as e:
         raise e
     if len(result) != 0:
         return (False, result)
-    else:
-        return (True, None)
-
+    return (True, None)

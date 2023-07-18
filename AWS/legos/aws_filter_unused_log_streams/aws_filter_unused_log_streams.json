@@ -9,7 +9,7 @@
     "action_supports_iteration": true,
     "action_is_check": true,
     "action_next_hop":["64b6e7809ddfb1094901da74924ca3386510a1cd"],
-    "action_next_hop_parameter_mapping":{},
+    "action_next_hop_parameter_mapping":{"64b6e7809ddfb1094901da74924ca3386510a1cd": {"name":"Delete Unused AWS Log Streams", "region": ".[0].region", "log_stream_name": "map(.log_stream_name)", "log_group_name":".[0].log_stream_group"}},
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_SECOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_LOGS"  ]
 }
     

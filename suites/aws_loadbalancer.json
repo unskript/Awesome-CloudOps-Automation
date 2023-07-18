@@ -1,0 +1,8 @@
+{
+    "suite_name": "AWS Load Balancer NAT Gateway Health",
+    "suite_check_uuids":   
+        ["88c492263d4fe922035cc9cbb7d8f10aad735156835926d4c609e4f5d4a09b7f", 
+        "0f0c137beaf6a9246508393d1e868cea529d30a88631cd0f321799acbfbd47bb", 
+        "ed9c71d09866b0a019abe4f10951f32f9484504e0e274eb3d248e8bc321cb257",
+        "6d2964252c14fd1439bdefd224d147ac75fc7fe06036c6d0956081fa45505139"]
+  }

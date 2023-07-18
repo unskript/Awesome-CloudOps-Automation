@@ -4,10 +4,8 @@
 #
 import pprint
 import json
-
 from pydantic import BaseModel, Field
-from typing import Optional, Tuple
-from kubernetes import client
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     service_name: str = Field(
@@ -21,7 +19,7 @@ class InputSchema(BaseModel):
 
 def k8s_gather_data_for_service_troubleshoot_printer(output):
     if not output:
-        return 
+        return
     pprint.pprint(output)
 
 def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace: str) -> dict:
@@ -41,13 +39,23 @@ def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace
     """
     if not namespace or not servicename :
         raise Exception("Namespace and Servicename are mandatory parameter")
-    
+
     # Get Service Detail
     describe_cmd = f'kubectl describe svc {servicename} -n {namespace}'
     describe_output = handle.run_native_cmd(describe_cmd)
+
+    if describe_output is None:
+        print(
+            f"Error while executing command ({describe_cmd}) (empty response)")
+        return {}
+
+    if describe_output.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {describe_cmd} {describe_output.stderr}")
+
     retval = {}
     if not describe_output.stderr:
-        retval['describe'] = describe_output.stdout 
+        retval['describe'] = describe_output.stdout
 
     # To Get the Ingress rule, we first find out the name of the ingress
     # Find out the ingress rules in the given namespace, find out the
@@ -55,12 +63,13 @@ def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace
     # to the `ingress` key.
     rule_name = ''
     ingress_rules_for_service = []
-    ingress_rule_name_cmd = f"kubectl get ingress -n {namespace} -o name" 
+    ingress_rule_name_cmd = f"kubectl get ingress -n {namespace} -o name"
     ingress_rule_name_output = handle.run_native_cmd(ingress_rule_name_cmd)
     if not ingress_rule_name_output.stderr:
         rule_name = ingress_rule_name_output.stdout
-        
-    ingress_rules_cmd = f"kubectl get ingress -n {namespace}" + ' -o jsonpath="{.items[*].spec.rules}"'
+
+    ingress_rules_cmd = f"kubectl get ingress -n {namespace}" + \
+        ' -o jsonpath="{.items[*].spec.rules}"'
     ingress_rules_output = handle.run_native_cmd(ingress_rules_cmd)
     if not ingress_rules_output.stderr:
         rules = json.loads(ingress_rules_output.stdout)
@@ -68,17 +77,21 @@ def k8s_gather_data_for_service_troubleshoot(handle, servicename: str, namespace
             h = r.get('host')
             for s_p in r.get('http').get('paths'):
                 if s_p.get('backend').get('service').get('name') == servicename:
-                    ingress_rules_for_service.append([h, s_p.get('backend').get('service').get('port'), s_p.get('path')])
-    
+                    ingress_rules_for_service.append([
+                        h,
+                        s_p.get('backend').get('service').get('port'),
+                        s_p.get('path')
+                        ])
+
     if ingress_rules_for_service:
         retval['ingress'] = []
         for ir in ingress_rules_for_service:
             if len(ir) >= 3:
-                retval['ingress'].append({'name': rule_name, 
+                retval['ingress'].append({'name': rule_name,
                             'namespace': namespace, 
                             'host': ir[0],
                             'port': ir[1],
                             'path': ir[-1]})
-   
-    
+
+
     return retval

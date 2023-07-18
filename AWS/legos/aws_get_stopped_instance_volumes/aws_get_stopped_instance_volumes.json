@@ -9,7 +9,6 @@
     "action_supports_poll": true,
     "action_supports_iteration": true,
     "action_next_hop": ["a9d17f4c9feb963b6096290eedb21af43d89e803cdcb1238dc11a544a3071a1e"],
-    "action_next_hop_parameter_mapping": {},
+    "action_next_hop_parameter_mapping": {"a9d17f4c9feb963b6096290eedb21af43d89e803cdcb1238dc11a544a3071a1e": {"name": "Delete EBS Volume Attached to Stopped Instances", "region":".[0].region","volume_ids":"map(.volume_id)"}},
     "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2","CATEGORY_TYPE_AWS_EBS" ]
 }
-  

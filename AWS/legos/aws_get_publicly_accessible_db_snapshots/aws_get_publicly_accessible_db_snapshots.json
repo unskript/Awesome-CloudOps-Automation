@@ -12,5 +12,5 @@
     "action_nouns": ["aws","database","snapshots","public","accessible"],
     "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_SECOPS" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_RDS"  ],
     "action_next_hop":["7c0d143556a33b81d3fb1ff08dfdd59cebe5d58b00b55e8ae660df2e42f71bfe"],
-    "action_next_hop_parameter_mapping":{}
+    "action_next_hop_parameter_mapping":{"7c0d143556a33b81d3fb1ff08dfdd59cebe5d58b00b55e8ae660df2e42f71bfe": {"name": "Secure Publicly accessible Amazon RDS Snapshot","region": ".[0].region", "public_snapshot_ids":"map(.open_snapshot)"}}
 }

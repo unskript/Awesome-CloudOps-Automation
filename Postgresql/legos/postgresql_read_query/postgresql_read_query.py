@@ -4,8 +4,7 @@
 ##
 import random
 import string
-from typing import Any, List
-
+from typing import List
 from pydantic import BaseModel, Field
 from tabulate import tabulate
 
@@ -54,24 +53,18 @@ def postgresql_read_query(handle, query: str, params: list = ()) -> List:
     random_id = ''.join(
         [random.choice(string.ascii_letters + string.digits) for n in range(32)])
 
-    query = "PREPARE psycop_{random_id} AS {query};".format(
-        random_id=random_id, query=query)
+    query = f"PREPARE psycop_{random_id} AS {query};"
     if not params:
-        prepared_query = "EXECUTE psycop_{random_id};".format(
-            random_id=random_id)
+        prepared_query = f"EXECUTE psycop_{random_id};"
     else:
         parameters_tuple = tuple(params)
         ## If there is only one tuple element, remove the trailing comma before format
         if len(parameters_tuple) == 1:
             tuple_string = str(parameters_tuple)
             parameters_tuple = tuple_string[:-2] + tuple_string[-1]
-        prepared_query = "EXECUTE psycop_{random_id} {params};".format(
-            random_id=random_id, params=parameters_tuple)
-
+        prepared_query = f"EXECUTE psycop_{random_id} {params};"
     cur.execute(query)
     cur.execute(prepared_query)
     res = cur.fetchall()
-    handle.commit()
     cur.close()
-    handle.close()
     return res

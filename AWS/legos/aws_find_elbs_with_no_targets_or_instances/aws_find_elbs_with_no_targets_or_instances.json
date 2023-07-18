@@ -3,12 +3,12 @@
   "action_description": "Find AWS ELBs with no targets or instances attached to them.",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_find_elbs_with_no_targets_or_instances",
-  "action_needs_credential": "true",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
-  "action_is_check": "true",
-  "action_supports_iteration": "true",
+  "action_is_check": true,
+  "action_supports_iteration": true,
   "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_COST_OPT" ,"CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELB"],
-  "action_supports_poll": "true",
-  "action_next_hop": [],
-  "action_next_hop_parameter_mapping": {}
+  "action_supports_poll": true,
+  "action_next_hop": ["2aba76792cb2802cae55deb60d28820522aeba93865572a1e9c7ddc5309e1312"],
+  "action_next_hop_parameter_mapping": {"2aba76792cb2802cae55deb60d28820522aeba93865572a1e9c7ddc5309e1312": {"name": "Delete AWS ELBs With No Targets Or Instances", "region":".[0].region","elb_arns":"map(.elb_arn)","elb_names":"map(.elb_name)" }}
 }

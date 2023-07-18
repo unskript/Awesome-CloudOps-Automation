@@ -18,7 +18,7 @@ class InputSchema(BaseModel):
 def gcp_delete_bucket_printer(output):
     if output is None:
         return
-    print("Bucket {} deleted".format(output["deleted_bucket"]))
+    print(f"Bucket {output['deleted_bucket']} deleted")
 
 def gcp_delete_bucket(handle, bucket_name: str) -> Dict:
     """gcp_delete_bucket Returns a Dict of details of the deleted bucket

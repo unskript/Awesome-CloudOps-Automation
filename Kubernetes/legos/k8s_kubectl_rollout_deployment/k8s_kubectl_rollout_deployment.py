@@ -5,6 +5,7 @@
 
 from pydantic import BaseModel, Field
 from beartype import beartype
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     k8s_cli_string: str = Field(
@@ -31,9 +32,24 @@ def k8s_kubectl_rollout_deployment_printer(data: str):
     print (data)
 
 @beartype
-def k8s_kubectl_rollout_deployment(handle, k8s_cli_string: str, deployment: str, namespace: str) -> str:
+def k8s_kubectl_rollout_deployment(
+    handle,
+    k8s_cli_string: str,
+    deployment: str,
+    namespace: str
+    ) -> str:
     k8s_cli_string = k8s_cli_string.format(deployment=deployment, namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
-    if result is None or hasattr(result, "stderr") is False or result.stderr is None:
-        return None
+
+    if result is None:
+        print(
+            f"Error while executing command ({k8s_cli_string}) (empty response)")
+        return ""
+
+    if result.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {k8s_cli_string} {result.stderr}")
+
     return result.stdout
+
+## Duplicate code?

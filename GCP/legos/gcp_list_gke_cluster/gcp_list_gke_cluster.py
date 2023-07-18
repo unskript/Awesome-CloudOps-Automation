@@ -1,5 +1,5 @@
 import pprint
-from typing import List, Dict
+from typing import List
 from pydantic import BaseModel, Field
 from google.cloud import container_v1
 
@@ -34,10 +34,11 @@ def gcp_list_gke_cluster(handle, project_id: str, zone: str) -> List:
     cluster_list = []
     client = container_v1.ClusterManagerClient(credentials=handle)
     try:
-        response = client.list_clusters(project_id=project_id, zone=zone)
+        parent = f'projects/{project_id}/locations/{zone}'
+        response = client.list_clusters(parent=parent)
         for cluster in response.clusters:
             cluster_list.append(cluster.name)
     except Exception as error:
-        cluster_list.append(error)
-    
+        raise error
+
     return cluster_list

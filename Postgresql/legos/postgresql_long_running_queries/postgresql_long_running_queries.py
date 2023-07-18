@@ -3,8 +3,7 @@
 # All rights reserved.
 ##
 import pprint 
-
-from typing import List, Any, Optional, Tuple
+from typing import Optional, Tuple
 from tabulate import tabulate
 from pydantic import BaseModel, Field
 
@@ -39,9 +38,8 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
     # Hence concatinating it into a single line.
     query = "SELECT pid, user, pg_stat_activity.query_start, now() - " \
         "pg_stat_activity.query_start AS query_time, query, state " \
-        " FROM pg_stat_activity WHERE state = 'active' AND " \
-        "(now() - pg_stat_activity.query_start) > interval '%d seconds';" % interval
-
+        " FROM pg_stat_activity WHERE state = 'active' AND (now() - " \
+        f"pg_stat_activity.query_start) > interval '{interval} seconds';"
 
     cur = handle.cursor()
     cur.execute(query)
@@ -70,5 +68,4 @@ def postgresql_long_running_queries(handle, interval: int = 5) -> Tuple:
     handle.close()
     if len(output) != 0:
         return (False, output)
-    else:
-        return (True, None)
+    return (True, None)

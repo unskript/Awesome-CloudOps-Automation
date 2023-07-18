@@ -1,31 +1,45 @@
-##  Copyright (c) 2021 unSkript, Inc
+from __future__ import annotations
+
+##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List, Dict
-from pydantic import BaseModel, Field
-from unskript.connectors.aws import aws_get_paginator
 import pprint
+from typing import Dict
+from pydantic import BaseModel, Field
+
+
+
+from typing import List
+
+from pydantic import BaseModel, Field
+
 
 class InputSchema(BaseModel):
-    resource_arn: list = Field(
-        title='Resource ARN',
-        description='Resource ARNs.')
-    tag_key: str = Field(
-        title='Tag Key',
-        description='Resource Tag Key.')
-    tag_value: str = Field(
-        title='Tag Value',
-        description='Resource Tag Value.')
-    region: str = Field(
-        title='Region',
-        description='AWS Region.')
+    region: str = Field(..., description='AWS Region.', title='Region')
+    resource_arn: List = Field(..., description='Resource ARNs.', title='Resource ARN')
+    tag_key: str = Field(..., description='Resource Tag Key.', title='Tag Key')
+    tag_value: str = Field(..., description='Resource Tag Value.', title='Tag Value')
+
+
+# This API has a limit of 20 ARNs per api call...
+#we'll need to break up the list into chunks of 20
+def break_list(long_list, max_size):
+    return [long_list[i:i + max_size] for i in range(0, len(long_list), max_size)]
+
+
 
 def aws_attach_tags_to_resources_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
-def aws_attach_tags_to_resources(handle, resource_arn: list, tag_key: str, tag_value: str, region: str) -> Dict:
+def aws_attach_tags_to_resources(
+    handle,
+    resource_arn: list,
+    tag_key: str,
+    tag_value: str,
+    region: str
+    ) -> Dict:
     """aws_attach_tags_to_resources Returns an Dict of resource info.
 
         :type handle: object
@@ -47,18 +61,23 @@ def aws_attach_tags_to_resources(handle, resource_arn: list, tag_key: str, tag_v
     """
     ec2Client = handle.client('resourcegroupstaggingapi', region_name=region)
     result = {}
-    try:
-        response = ec2Client.tag_resources(
-            ResourceARNList=resource_arn,
-            Tags={tag_key: tag_value}
-            )
-        result = response
 
-    except Exception as error:
-        result["error"] = error
+    #break the ARN list into groups of 20 to send through the API
+    list_of_lists = break_list(resource_arn, 20)
+
+    for index, smallerList in enumerate(list_of_lists):
+
+        try:
+            response = ec2Client.tag_resources(
+                ResourceARNList=smallerList,
+                Tags={tag_key: tag_value}
+                )
+            result[index] = response
+
+        except Exception as error:
+            result[f"{index} error"] = error
 
     return result
 
 
 
-    

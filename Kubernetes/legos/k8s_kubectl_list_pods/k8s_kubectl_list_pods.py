@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-import pandas as pd
 import io
+import pandas as pd
+from pydantic import BaseModel, Field
+from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     k8s_cli_string: str = Field(
@@ -38,6 +39,15 @@ def k8s_kubectl_list_pods(handle, k8s_cli_string: str, namespace: str) -> list:
     """
     k8s_cli_string = k8s_cli_string.format(namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
+    if result is None:
+        print(
+            f"Error while executing command ({k8s_cli_string}) (empty response)")
+        return []
+
+    if result.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {k8s_cli_string} {result.stderr}")
+
     df = pd.read_fwf(io.StringIO(result.stdout))
     all_pods = []
     for index, row in df.iterrows():

@@ -10,5 +10,5 @@
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_IAM", "CATEGORY_TYPE_SECOPS","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELB" ],
     "action_next_hop": ["7d87da036fb983f7909a22a01529790dddc5179ebbb8f95517a66314d236555c"],
-    "action_next_hop_parameter_mapping": {}
+    "action_next_hop_parameter_mapping": {"7d87da036fb983f7909a22a01529790dddc5179ebbb8f95517a66314d236555c": {"name": "Enforce HTTP Redirection across all AWS ALB instances","region":".[0].region","alb_listener_arns":"map(.listener_arn)"}}
 }

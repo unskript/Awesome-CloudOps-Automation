@@ -9,60 +9,55 @@
 #
 #
 import os
-import nbformat
 import sys
 import glob
 import json
-import nbformat
 import pprint
-import yaml
 import re
 import uuid
-
-from tabulate import tabulate
 from datetime import datetime
-from nbclient import NotebookClient
-from nbclient.exceptions import CellExecutionError
-from unskript.legos.utils import CheckOutput, CheckOutputStatus
 from argparse import ArgumentParser, REMAINDER
 from db_utils import *
-
+import yaml
+import nbformat
+from tabulate import tabulate
+from nbclient import NotebookClient
+from nbclient.exceptions import CellExecutionError
+from unskript.legos.utils import CheckOutputStatus
 import ZODB
 import ZODB.FileStorage
 from ZODB import DB
 
-"""
-This python client can be used to
-1. List all available runbooks
-2. Run the Runbook and prints out result of the execution
+# This python client can be used to
+# 1. List all available runbooks
+# 2. Run the Runbook and prints out result of the execution
 
-Note:
-This program assumes the following
-* The Runbooks are located in $HOME/runbooks folder
-  This assumption is valid for unSkript docker use-case.
-* This script assumes the system has all the python dependent libraries
-  installed before using this script.
-"""
+# Note:
+# This program assumes the following
+# * The Runbooks are located in $HOME/runbooks folder
+#   This assumption is valid for unSkript docker use-case.
+# * This script assumes the system has all the python dependent libraries
+#   installed before using this script.
 
-"""
-LIST OF CONSTANTS USED IN THIS FILE
-"""
-GLOBAL_CONFIG_PATH = "/data/unskript_config.yaml"
-CREDENTIAL_DIR = "/.local/share/jupyter/metadata/credential-save"
-ZODB_DB_PATH = "/var/unskript/snippets.db"
-TBL_HDR_CHKS_NAME = "\033[36m Checks Name \033[0m"
-TBL_HDR_CHKS_PASS = "\033[32m Passed Checks \033[0m"
-TBL_HDR_CHKS_FAIL = "\033[35m Failed Checks \033[0m"
-TBL_HDR_CHKS_ERROR = "\033[31m Errored Checks \033[0m"
-TBL_HDR_RBOOK_NAME = "\033[36m Runbook Name \033[0m"
-TBL_HDR_CHKS_COUNT = "\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[0m"
-TBL_CELL_CONTENT_PASS = "\033[1m PASS \033[0m"
-TBL_CELL_CONTENT_FAIL = "\033[1m FAIL \033[0m"
-TBL_CELL_CONTENT_ERROR = "\033[1m ERROR \033[0m"
-TBL_HDR_DSPL_CHKS_NAME = "\033[35m Failed Check Name / TS \033[0m"
-TBL_HDR_DSPL_CHKS_UUID = "\033[1m Failed Check UUID \033[0m"
-TBL_HDR_CHKS_UUID = "\033[1m Check UUID \033[0m"
-TBL_HDR_LIST_CHKS_CONNECTOR = "\033[36m Connector Name \033[0m"
+# LIST OF CONSTANTS USED IN THIS FILE
+
+GLOBAL_CONFIG_PATH="/data/unskript_config.yaml"
+CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
+ZODB_DB_PATH="/var/unskript/snippets.db"
+TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
+TBL_HDR_CHKS_PASS="\033[32m Passed Checks \033[0m"
+TBL_HDR_CHKS_FAIL="\033[35m Failed Checks \033[0m"
+TBL_HDR_CHKS_ERROR="\033[31m Errored Checks \033[0m"
+TBL_HDR_RBOOK_NAME="\033[36m Runbook Name \033[0m"
+TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[0m"
+TBL_CELL_CONTENT_PASS="\033[1m PASS \033[0m"
+TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
+TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
+TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
+TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
+TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
+TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
+
 
 
 def load_or_create_global_configuration():
@@ -71,10 +66,11 @@ def load_or_create_global_configuration():
        :rpath: None
     """
     global_content = {}
-    if os.path.exists(GLOBAL_CONFIG_PATH) == True:
+    if os.path.exists(GLOBAL_CONFIG_PATH) is True:
         # READ EXISTING FILE AND SET ENV VARIABLES
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
             global_content = yaml.safe_load(f)
+
 
     for k, v in global_content.items():
         k = k.upper()
@@ -85,20 +81,21 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
     """insert_first_and_last_cell This function inserts the first cell (unskript internal)
            and the last cell to a given notebook and returns the NotebookNode object back.
 
-       :type nb: NotebookNode 
+       :type nb: NotebookNode
        :param nb: NotebookNode Object that has the runbook content in it
 
        :rtype: NotebookNode that has the first and the last cell inserted in it
     """
     if nb is None:
-        return
+        return None
+
     ids = get_code_cell_action_uuids(nb.dict())
     # Firstcell content. Here the workflow will take the UUIDS that we got from
     # get_code_cell_action_uuids
 
     # FIXME: NEED TO CREATE FIRST CELL VARIABLES BASED ON ENV VARIABLE SET IN THE CONFIG FILE
     runbook_params = {}
-    if os.environ.get('ACA_RUNBOOK_PARAMS') != None:
+    if os.environ.get('ACA_RUNBOOK_PARAMS') is not None:
         runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
     runbook_variables = ''
 
@@ -122,7 +119,7 @@ nbParamsObj = nbparams.NBParams(paramsJson)
 w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={ids})'''
 
     # Firstcell content. This is a static content
-    last_cell_content = f'''\
+    last_cell_content = '''\
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 
 
@@ -148,7 +145,8 @@ except Exception as e:
 
     if cells[0].get('cell_type') == 'code':
         tags = None
-        if cells[0].get('metadata').get('tags') != None:
+        if cells[0].get('metadata').get('tags') is not None:
+
             if len(cells[0].get('metadata').get('tags')) != 0:
                 tags = cells[0].get('metadata').get('tags')[0]
 
@@ -189,17 +187,17 @@ def list_runbooks():
                 'execution_data').get('runbook_name')
             filename = os.path.basename(runbook)
             table.append([filename, name])
-        except Exception as e:
+        except Exception:
             pass
 
     print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
 
 
-def run_ipynb(filename: str, status_list_of_dict: list = []):
+def run_ipynb(filename: str, status_list_of_dict: list = None):
     """run_ipynb This function takes the Runbook name and executes it
            using nbclient.execute()
 
-       :type filename: str 
+       :type filename: str
        :param filename: Runbook name
 
        :rtype: None, Runbook execution will be displayed
@@ -214,7 +212,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
         filename.strip() + '\x1B[0m'
     print(r_name)
 
-    if nb == None:
+
+    if nb is None:
         raise Exception("Unable to Run the Ipynb file, internal service error")
 
     nb = insert_first_and_last_cell(nb)
@@ -253,25 +252,48 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
 
         try:
             if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                result_table.append([get_action_name_from_id(
-                    ids[idx], nb.dict()), TBL_CELL_CONTENT_PASS, 0, 'N/A'])
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict(
-                )), ids[idx], get_connector_name_from_id(ids[idx], nb.dict()), 'PASS'])
+                result_table.append([
+                    get_action_name_from_id(ids[idx], nb.dict()),
+                    TBL_CELL_CONTENT_PASS,
+                    0,
+                    'N/A'
+                    ])
+                status_dict['result'].append([
+                    get_action_name_from_id(ids[idx], nb.dict()),
+                    ids[idx],
+                    get_connector_name_from_id(ids[idx], nb.dict()),
+                    'PASS']
+                    )
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
                 failed_objects = payload.get('objects')
-                failed_result[get_action_name_from_id(
-                    ids[idx], nb.dict())] = failed_objects
-                result_table.append([get_action_name_from_id(
-                    ids[idx], nb.dict()), TBL_CELL_CONTENT_FAIL, len(failed_objects), 'N/A'])
+                failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                result_table.append([
+                    get_action_name_from_id(ids[idx], nb.dict()),
+                    TBL_CELL_CONTENT_FAIL,
+                    len(failed_objects),
+                    'N/A'
+                    ])
                 failed_result_available = True
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict(
-                )), ids[idx], get_connector_name_from_id(ids[idx], nb.dict()), 'FAIL'])
+                status_dict['result'].append([
+                    get_action_name_from_id(ids[idx], nb.dict()),
+                    ids[idx],
+                    get_connector_name_from_id(ids[idx], nb.dict()),
+                    'FAIL'
+                    ])
             elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                result_table.append([get_action_name_from_id(
-                    ids[idx], nb.dict()), TBL_CELL_CONTENT_ERROR, 0, payload.get('error')])
-                status_dict['result'].append([get_action_name_from_id(ids[idx], nb.dict(
-                )), ids[idx], get_connector_name_from_id(ids[idx], nb.dict()), 'ERROR'])
-        except Exception as e:
+                result_table.append([
+                    get_action_name_from_id(ids[idx], nb.dict()),
+                    TBL_CELL_CONTENT_ERROR,
+                    0,
+                    payload.get('error')
+                    ])
+                status_dict['result'].append([
+                    get_action_name_from_id(ids[idx], nb.dict()),
+                    ids[idx],
+                    get_connector_name_from_id(ids[idx], nb.dict()),
+                    'ERROR'
+                    ])
+        except Exception:
             pass
         update_current_execution(payload.get('status'), ids[idx], nb.dict())
         update_check_run_trail(ids[idx],
@@ -285,7 +307,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
     print("")
     print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
 
-    if failed_result_available == True:
+    if failed_result_available is True:
         print("")
         print("FAILED RESULTS")
         for k, v in failed_result.items():
@@ -301,7 +323,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = []):
 
 def run_checks(filter: str):
     """run_checks This function takes the filter as an argument
-    and based on the filter, this function queries the DB and 
+    and based on the filter, this function queries the DB and
     creates a temporary runnable runbooks and run them, updates
     the audit results.
 
@@ -340,13 +362,13 @@ def run_checks(filter: str):
 
 def print_run_summary(status_list_of_dict):
     """print_run_summary This function is used to just print the Run Summary.
-       :type status_list_of_dict: list 
+       :type status_list_of_dict: list
        :param status_list_of_dict: List of dictionaries that contains result of the run
 
        :rtype: None
     """
-    all_result_table = [
-        [TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_PASS, TBL_HDR_CHKS_FAIL, TBL_HDR_CHKS_ERROR]]
+    all_result_table = [[TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_PASS,
+                         TBL_HDR_CHKS_FAIL, TBL_HDR_CHKS_ERROR]]
     summary_table = [[TBL_HDR_RBOOK_NAME, TBL_HDR_CHKS_COUNT]]
     for sd in status_list_of_dict:
         if sd == {}:
@@ -370,8 +392,10 @@ def print_run_summary(status_list_of_dict):
 
             else:
                 p = f = e = -1
-        summary_table.append([sd.get('runbook'), str(
-            str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e) + ' ) ')])
+        summary_table.append([
+            sd.get('runbook'),
+            str(str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e) + ' ) ')
+            ])
 
     s = '\x1B[1;20;46m' + "~~ Summary ~~" + '\x1B[0m'
     print(s)
@@ -386,10 +410,10 @@ def update_current_execution(status, id: str, content: dict):
        create a dynamic failed runbook. And update the execution_summary.yaml file
        to record the last failed run status
 
-       :type status: CheckOutputStatus 
+       :type status: CheckOutputStatus
        :param status: Enum of type CheckOutputStatus that has the current status
 
-       :type id: string 
+       :type id: string
        :param id: The Execution ID (Action UUID that failed)
 
        :type content: dict
@@ -401,19 +425,18 @@ def update_current_execution(status, id: str, content: dict):
         print("ERROR: Cannot Update Failed execution with No Content")
         return
 
-    failed_runbook = os.environ.get('EXECUTION_DIR').strip(
-        '"') + '/workspace/' + f"{id}.ipynb"
+    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + f"{id}.ipynb"
+
 
     # If failed directory does not exists, lets create it
-    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace') == False:
-        os.mkdir(os.makedirs(os.environ.get(
-            'EXECUTION_DIR').strip('"') + '/workspace'))
+    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace') is False:
+        os.mkdir(os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace'))
 
     prev_status = None
     es = {}
     try:
         es = get_pss_record('current_execution_status')
-    except:
+    except Exception:
         pass
     finally:
         if es != {}:
@@ -448,12 +471,12 @@ def update_current_execution(status, id: str, content: dict):
         for c in content.get('cells'):
             if c.get('metadata').get('action_uuid') == id:
                 nb['cells'].append(c)
-    except Exception as e:
+    except Exception:
         pass
     finally:
         nbformat.write(nb, failed_runbook)
 
-    if os.path.exists(failed_runbook) != True:
+    if os.path.exists(failed_runbook) is not True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
 
 
@@ -463,10 +486,10 @@ def create_jit_runbook(check_list: list):
        task lines... and used it create the jit runbook
 
        :type check_list: list
-       :param check_list: List of checks in the form of dictionary 
+       :param check_list: List of checks in the form of dictionary
 
-       :type id: str 
-       :param id: Action UUID 
+       :type id: str
+       :param id: Action UUID
 
        :rtype: None
     """
@@ -508,7 +531,13 @@ task.configure(credentialsJson=\'\'\'{
     return failed_notebook
 
 
-def update_check_run_trail(id: str, action_name: str, connector_type: str, result: CheckOutputStatus, data: dict = {}):
+def update_check_run_trail(
+        id: str,
+        action_name: str,
+        connector_type: str,
+        result: CheckOutputStatus,
+        data : dict = None
+        ):
     """update_check_run_trail This function updates PSS for checks_run_trail entry
 
        :type id: str
@@ -531,7 +560,7 @@ def update_check_run_trail(id: str, action_name: str, connector_type: str, resul
     content = {}
     try:
         content = get_pss_record('check_run_trail')
-    except:
+    except Exception:
         pass
     finally:
         k = str(datetime.now())
@@ -560,17 +589,16 @@ def update_audit_trail(status_dict_list: list):
     """update_audit_trail This function will update the status of each run of the runbook
 
        :type status_dict_list: list
-       :param status_dict: List of Python Dictionary that has the status for all the checks that 
+       :param status_dict: List of Python Dictionary that has the status for all the checks that
              were run for the given runbook run
 
        :rtype: None
     """
-    content = {}
     trail_data = {}
     id = ''
     try:
-        content = get_pss_record('audit_trail')
-    except:
+        get_pss_record('audit_trail')
+    except Exception:
         pass
     finally:
         k = str(datetime.now())
@@ -630,8 +658,8 @@ def display_failed_checks(connector: str = ''):
     pss_content = get_pss_record('current_execution_status')
     exec_status = pss_content.get('exec_status')
     failed_exec_list = []
-    if exec_status != None:
-        for k, v in exec_status.items():
+    if exec_status is not None:
+        for k,v in exec_status.items():
             if CheckOutputStatus(v.get('current_status')) == CheckOutputStatus.FAILED:
                 d = {}
                 d['check_name'] = v.get('check_name')
@@ -648,8 +676,10 @@ def display_failed_checks(connector: str = ''):
 
     failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_DSPL_CHKS_UUID]]
     for failed in failed_exec_list:
-        failed_checks_table.append([failed.get('check_name') + '\n' + '( Last Failed On: ' + failed.get('timestamp') + ' )',
-                                    failed.get('execution_id')])
+        failed_checks_table.append([
+            failed.get('check_name') + '\n' + '( Last Failed On: ' + failed.get('timestamp') +' )',
+            failed.get('execution_id')
+            ])
 
     print("")
     print(tabulate(failed_checks_table, headers='firstrow', tablefmt='fancy_grid'))
@@ -680,11 +710,10 @@ def display_failed_logs(exec_id: str = None):
 def show_audit_trail(filter: str = None):
     """show_audit_trail This function reads the failed logs for a given execution ID
        When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']/failed/<UUID>.log
-
     :type filter: string
     :param filter: filter used to query audit_trail to get logs used to serach logs
     """
-    if filter == None:
+    if filter is None:
         filter = 'all'
 
     pss_content = get_pss_record('audit_trail')
@@ -717,7 +746,7 @@ def show_audit_trail(filter: str = None):
     exec_content = {}
     try:
         exec_content = get_pss_record('check_run_trail')
-    except:
+    except Exception:
         pass
     finally:
         if exec_content == {}:
@@ -764,7 +793,7 @@ def show_audit_trail(filter: str = None):
                 flag = 3
                 exec_status = get_pss_record('current_execution_status')
                 if exec_status:
-                    if filter in e2c_mapping.keys():
+                    if filter in e2c_mapping:
                         for _f in e2c_mapping.get(filter):
                             c_name = exec_content.get(_f).get('check_name')
                             if not exec_content.get(_f).get('failed_objects') or not exec_content.get(_f).get('failed_objects').get(c_name):
@@ -791,16 +820,16 @@ def show_audit_trail(filter: str = None):
 
 def read_ipynb(filename: str) -> nbformat.NotebookNode:
     """read_ipynb This function takes the Runbook name and reads the content
-           using nbformat.read, Reads as Version 4.0 and returns the 
+           using nbformat.read, Reads as Version 4.0 and returns the
            notebooknode.
 
-       :type filename: str 
+       :type filename: str
        :param filename: Runbook name
 
-       :rtype: NotebookNode 
+       :rtype: NotebookNode
     """
     nb = None
-    if os.path.exists(filename) != True:
+    if os.path.exists(filename) is not True:
         print(f"File {filename} does not exists!")
         return nb
 
@@ -815,13 +844,13 @@ def read_ipynb(filename: str) -> nbformat.NotebookNode:
 
 def get_code_cell_action_uuids(content: dict) -> list:
     """get_code_cell_action_uuids This function takes in the notenode dictionary
-           iterates over it to find all the Action UUIds for the code-cells and 
+           iterates over it to find all the Action UUIds for the code-cells and
            returns it as a list
 
-       :type content: dict 
+       :type content: dict
        :param content: Notebook Node Dictionary
 
-       :rtype: List of Action UUIDs 
+       :rtype: List of Action UUIDs
     """
     retval = []
     if content in ('', None):
@@ -830,32 +859,31 @@ def get_code_cell_action_uuids(content: dict) -> list:
 
     for cell in content.get('cells'):
         if cell.get('cell_type') == 'code':
-            if cell.get('metadata').get('tags') != None:
+            if cell.get('metadata').get('tags') is not None:
                 tags = None
-                if (isinstance(cell.get('metadata').get('tags'), list)) == True:
+                if (isinstance(cell.get('metadata').get('tags'), list)) is True:
                     if len(cell.get('metadata').get('tags')) != 0:
                         tags = cell.get('metadata').get('tags')[0]
                 else:
                     tags = None
 
                 if "unSkript:nbParam" != tags:
-                    if cell.get('metadata').get('action_uuid') != None:
+                    if cell.get('metadata').get('action_uuid') is not None:
                         retval.append(cell.get('metadata').get('action_uuid'))
             else:
-                if cell.get('metadata').get('action_uuid') != None:
+                if cell.get('metadata').get('action_uuid') is not None:
                     retval.append(cell.get('metadata').get('action_uuid'))
 
     return retval
-
 
 def get_last_code_cell_output(content: dict) -> dict:
     """get_last_code_cell_output This function takes in the notenode dictionary
            finds out the last cell output and returns in the form of a dict
 
-       :type content: dict 
+       :type content: dict
        :param content: Notenode as Dictionary
 
-       :rtype: Last output in the form of Python dictionary  
+       :rtype: Last output in the form of Python dictionary
     """
     retval = {}
     if content in ('', None):
@@ -881,10 +909,10 @@ def get_action_name_from_id(action_uuid: str, content: dict) -> str:
        :type action_uuid: str
        :parm action_uuid: Action UUID as a String
 
-       :type content: dict 
+       :type content: dict
        :param content: Notenode as Dictionary
 
-       :rtype: Name of the Action that matches the given UUID, returns as string  
+       :rtype: Name of the Action that matches the given UUID, returns as string
     """
     retval = ''
     if content in ('', None):
@@ -903,19 +931,19 @@ def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
        that match the action_uuid and returns the action_type (connector_type).
 
        :type action_uuid: string
-       :param action_uuid: Action UUID 
+       :param action_uuid: Action UUID
 
        :type content: dict
        :param content: Notebooknode as Dictionary
 
-       :rtype: string: Name of the connector that matches the given UUID. 
+       :rtype: string: Name of the connector that matches the given UUID.
     """
     retval = ''
     if content in ('', None):
         return retval
     for cell in content.get('cells'):
         if cell.get('metadata').get('action_uuid') == action_uuid:
-            if cell.get('metadata').get('action_type') != None:
+            if cell.get('metadata').get('action_type') is not None:
                 retval = cell.get('metadata').get(
                     'action_type').replace('LEGO_TYPE_', '').lower()
 
@@ -928,7 +956,7 @@ def create_creds_mapping():
        be a list of dictionaries with {"name", "id"}
 
        This function reads the credentials directory for all the available credentials and updates
-       the ZoDB with the mapping. 
+       the ZoDB with the mapping.
 
        :rtype: None
     """
@@ -941,17 +969,20 @@ def create_creds_mapping():
             c_data = json.load(f)
             d[c_data.get('metadata').get('type')] = {"name": c_data.get(
                 'metadata').get('name'), "id": c_data.get('metadata').get('id')}
+            if not c_data.get('metadata').get('connectorData'):
+                print(f"ERROR: The Credential data for {c_data.get('metadata').get('type')} is empty!"
+                       " Please use unskript-ctl.sh -cc option to create the credential")
     upsert_pss_record('default_credential_id', d, False)
 
 
 def print_runbook_params(properties: dict, required: list, orderInputParameters: list = []):
-    """print_runbook_params This function prints the parameterSchema. It respects OrderInputParameters 
+    """print_runbook_params This function prints the parameterSchema. It respects OrderInputParameters
        and lists the Parameters in the same order as displayed in OrderInputParameters.
 
        :type properties: dict
        :param properties: Properties metadata read from the Runbook
 
-       :type required: list 
+       :type required: list
        :param required: List of required parameters read from the Runbook
 
        :type orderInputParameters: list
@@ -980,7 +1011,7 @@ def print_runbook_params(properties: dict, required: list, orderInputParameters:
         if k in required:
             k = '\033[1m' + k + '*' + '\033[0m'
         param_type = v.get('type')
-        if v.get('enum') != None:
+        if v.get('enum') is not None:
             param_type = "enum"
             param_type = param_type + "\n" + \
                 str(v.get('enum')).replace(',', ' |')
@@ -998,8 +1029,10 @@ def print_runbook_params(properties: dict, required: list, orderInputParameters:
 
 
 def get_runbook_metadata_contents(_runbook) -> dict:
-    """get_runbook_metadata_contents This function takes Runbook name as the input, reads the metadata content
-       of the Runbook and returns the content of the runbook in the form of python Dictionary.
+    """get_runbook_metadata_contents This function takes Runbook name as
+    the input, reads the metadata content
+       of the Runbook and returns the content of the runbook in the form of
+       python Dictionary.
 
        :type _runbook: str
        :param _runbook: Runbook Name as a string
@@ -1041,18 +1074,19 @@ def get_runbook_metadata_contents(_runbook) -> dict:
 
 
 def non_interactive_parse_runbook_param(args) -> dict:
-    """non_interactive_parse_runbook_param This function is called when --runbook_parmas are sent when running
-       the runbook. 
+    """non_interactive_parse_runbook_param This function is called when
+    --runbook_parmas are sent when running the runbook.
 
        :type args: list
-       :param args: Python List the arguments that were passed with the `-rr` option from command line.
+       :param args: Python List the arguments that were passed with the
+       `-rr` option from command line.
 
        :rtype: Python Dictionary of the Runbook Parameters with values and the Runbookname
     """
     # The syntax for running runbook would be
     # unskript-ctl.sh -rr <RUNBOOK_NAME> [-runbook_param1 value1] [-runbook_param2 value2]
 
-    if not len(args):
+    if not args:
         return {}
 
     retval = {}
@@ -1077,14 +1111,19 @@ def non_interactive_parse_runbook_param(args) -> dict:
 
         properties = mdata.get('parameterSchema').get('properties')
         required = mdata.get('parameterSchema').get('required')
-        # When we have the orderInputParameters implemented we need to read it in from metadata of runbook.
+        # When we have the orderInputParameters implemented we need to read it
+        # in from metadata of runbook.
         orderInputParameters = []
         arg_list = args[1:]
         if len(properties.keys()):
-            # FIXME: If properties.type is secretstring or password, how do we take that input from user?
+            # FIXME: If properties.type is secretstring or password, how do we
+            # take that input from user?
             if len(arg_list) < len(required) * 2:
                 print_runbook_params(
-                    properties=properties, required=required, orderInputParameters=orderInputParameters)
+                    properties=properties,
+                    required=required,
+                    orderInputParameters=orderInputParameters
+                    )
                 return {}
         else:
             print("\033[1m No Runbook Parameters required  \033[0m")
@@ -1095,10 +1134,13 @@ def non_interactive_parse_runbook_param(args) -> dict:
             return retval
         values = []
         keys = []
-        for idx, k in enumerate(arg_list):
-            if k == '-h' or k == '--h':
+        for idx,k in enumerate(arg_list):
+            if k in ('-h', '--h'):
                 print_runbook_params(
-                    properties=properties, required=required, orderInputParameters=orderInputParameters)
+                    properties=properties,
+                    required=required,
+                    orderInputParameters=orderInputParameters
+                    )
                 return {}
 
             if (idx+1) % 2 == 0:
@@ -1107,23 +1149,28 @@ def non_interactive_parse_runbook_param(args) -> dict:
             k = k.strip('--')
             if k not in properties.keys():
                 print_runbook_params(
-                    properties=properties, required=required, orderInputParameters=orderInputParameters)
-                print(
-                    f"\033[1m Runbook Parameter name does not match: '{k}' Does not match any parameter name. Available Values are {[ x for x in properties.keys()]} \033[0m")
+                    properties=properties,
+                    required=required,
+                    orderInputParameters=orderInputParameters
+                    )
+                print(f"\033[1m Runbook Parameter name does not match: '{k}' \
+                      Does not match any parameter name. Available Values are \
+                      {list(properties.keys())} \033[0m")
                 return {}
             keys.append(k)
         if len(values) != len(keys):
-            print_runbook_params(properties=properties, required=required,
-                                 orderInputParameters=orderInputParameters)
+            print_runbook_params(
+                properties=properties,
+                required=required,
+                orderInputParameters=orderInputParameters
+                )
             return {}
 
-        for i in range(len(values)):
-            retval['params'][keys[i]] = values[i]
+        for i, val in enumerate(values):
+            retval['params'][keys[i]] = val
 
         return retval
-    else:
-        raise Exception(
-            "Unable to Parse Runbook file, No Metadata present in the given runbook")
+    raise Exception("Unable to Parse Runbook file, No Metadata present in the given runbook")
 
 
 def interactive_parse_runbook_param(args) -> dict:
@@ -1131,13 +1178,14 @@ def interactive_parse_runbook_param(args) -> dict:
        that needs parameters to run the runbook.
 
        :type args: list
-       :param args: Python List the arguments that were passed with the `-rr` option from command line.
+       :param args: Python List the arguments that were passed with the `-rr`
+       option from command line.
 
        :rtype: Python Dictionary of the Runbook Parameters with values and the Runbookname
     """
     # The syntax for interactive running would be like this -
     # unskript-ctl.sh --rr <RUNBOOK>
-    if not len(args):
+    if not args:
         return {}
 
     retval = {}
@@ -1159,35 +1207,30 @@ def interactive_parse_runbook_param(args) -> dict:
         properties = mdata.get('parameterSchema').get('properties')
         required = mdata.get('parameterSchema').get('required')
 
-        all_param_names = [x for x in properties.keys()]
+        all_param_names = list(properties.keys())
         optional_params = []
         try:
-            optional_params = set(all_param_names.sort()
-                                  ) - set(required.sort())
-        except:
+            optional_params = set(all_param_names.sort()) - set(required.sort())
+        except Exception:
             if not required:
                 optional_params = all_param_names
 
         for param in required:
-            retval['params'][param] = input(
-                f"Input the Value or \033[1m  {param} \033[0m (Required): ")
+            retval['params'][param] = input(("Input the Value or \033[1m  "
+                                            f"{param} \033[0m (Required): "))
         for o_param in optional_params:
             default_string = ""
-            if properties.get(o_param).get('default') != None:
-                default_string = f"Defualt value: \033[1m {properties.get(o_param).get('default')} \033[0m"
-            temp = input(
-                f" Input the Value for \033[1m {o_param}  \033[0m  (OPTIONAL, {default_string} Hit enter to use default): ")
+            if properties.get(o_param).get('default') is not None:
+                default_string = fr"Defualt value: \033[1m \{properties.get(o_param).get('default')} \033[0m"
+            temp = input(fr" Input the Value for \033[1m {o_param} \033[0m \(OPTIONAL, {default_string} Hit enter to use default): ")
             if not temp.strip():
-                if properties.get(o_param).get('default') != None:
-                    retval['params'][o_param] = properties.get(
-                        o_param).get('default')
+                if properties.get(o_param).get('default') is not None:
+                    retval['params'][o_param] = properties.get(o_param).get('default')
                 continue
             retval['params'][o_param] = temp
 
         return retval
-    else:
-        raise Exception(
-            "Unable to Parse Runbook, No Metadata present in the given runbook")
+    raise Exception("Unable to Parse Runbook, No Metadata present in the given runbook")
 
 
 def parse_runbook_param(args):
@@ -1207,9 +1250,9 @@ def parse_runbook_param(args):
         retval = non_interactive_parse_runbook_param(args)
 
     if retval:
-        if retval.get('params') != None:
+        if retval.get('params') is not None:
             os.environ['ACA_RUNBOOK_PARAMS'] = json.dumps(retval.get('params'))
-        if retval.get('runbook_name') != None:
+        if retval.get('runbook_name') is not None:
             status_of_run = []
             run_ipynb(retval.get('runbook_name'), status_of_run)
             exec_id = update_audit_trail(status_of_run)
@@ -1233,16 +1276,99 @@ def parse_runbook_param(args):
 
     return
 
+def parse_creds(args):
+    """parse_creds parses the given arguments. Currently only
+       file based credential creation is supported via command options.
+       (K8S). For the rest of credentials, UI is prompted.
+
+       :type args: list
+       :param args: ParseArgs List that it returns for the given option
+
+       :rtype: None
+    """ 
+    # Check if creds that need to be created is for k8s, if yes
+    # read the given kubecofnig and create the credential of it. 
+    connector_type = args[0]
+    connector_type = connector_type.replace('-','')
+    if connector_type.lower() in ("k8s", "kubernetes"):
+        if len(args) == 1:
+            print("ERROR: Need a path for kubeconfig file as value for the k8s credential")
+            parser.print_help()
+            sys.exit(1)
+        if os.path.exists(args[1]) is False:
+            print(f"ERROR: Credential File {args[1]} does not exist, please check path")
+            parser.print_help()
+            sys.exit(1)
+        with open(args[1], 'r', encoding='utf-8') as f:
+            creds_data = f.read()
+        k8s_creds_file = os.environ.get('HOME') + CREDENTIAL_DIR + '/k8screds.json'
+        with open(k8s_creds_file, 'r', encoding='utf-8') as f:
+            k8s_creds_content = json.loads(f.read())
+        try:
+            k8s_creds_content['metadata']['connectorData'] = json.dumps({"kubeconfig": creds_data})
+            with open(k8s_creds_file, 'w', encoding='utf-8') as f:
+                f.write(json.dumps(k8s_creds_content, indent=2))
+        except:
+            print(f"ERROR: Updating K8S Credential. Please check if kubeconfig file exists")
+            sys.exit(1)
+        finally:
+            print("Successfully Created K8S Credential")
+
+    else:
+        # Currently only file based creds creation is supported, 
+        # for the rest, display UI.
+        display_creds_ui() 
+
+def display_creds_ui():
+    """display_creds_ui Display the npyscreen based UI for user to add creds
+    """
+    try:
+        from creds_ui import main as ui
+        ui()
+    except:
+        print("Required Python library creds_ui is not packaged, please raise an issue on Github")    
+
+
+def list_creds():
+    """list_creds Lists the credentials and their status (ACTIVE or INACTIVE) same as how
+       we display on the UI. ACTIVE means the credential data has been filled and ready to go
+       INACTIVE means the credential is not yet ready to be used.
+    """
+    creds_dir = os.environ.get('HOME') + CREDENTIAL_DIR
+    creds_files = glob.glob(creds_dir + '/*.json',recursive=True)
+    creds_data = [["#", "Connector Type", "Connector Name", "Status"]]
+    index = 0
+    for cf in creds_files:
+        with open(cf, 'r', encoding='utf-8') as f:
+            content = json.loads(f.read())
+        if content.get('type'):
+            c_type = content.get('type').replace('CONNECTOR_TYPE_', '')
+        else:
+            c_type = "UNDEFINED"
+        
+        if content.get('metadata') and content.get('metadata').get('connectorData') == "{}":
+            status = "Incomplete"
+        else:
+            status = "Active"
+        
+        if content.get('display_name'):
+            name = content.get('display_name')
+        else:
+            name = "UNDEFINED"
+        creds_data.append([index, c_type, name, status])
+        index += 1
+    print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
+    
 
 if __name__ == "__main__":
     try:
-        if os.environ.get('EXECUTION_DIR') == None:
-            os.environ['EXECUTION_DIR'] = '/unskript/execution'
+        if os.environ.get('EXECUTION_DIR') is None:
+          os.environ['EXECUTION_DIR'] = '/unskript/execution'
 
         create_creds_mapping()
         load_or_create_global_configuration()
-    except Exception as e:
-        raise e
+    except Exception as error:
+        raise error
 
     parser = ArgumentParser(prog='unskript-ctl')
     version_number = "0.1.0"
@@ -1251,6 +1377,7 @@ if __name__ == "__main__":
     description = description + str("\t  Welcome to unSkript CLI Interface \n")
     description = description + str(f"\t\t   VERSION: {version_number} \n")
     parser.description = description
+
     parser.add_argument('-lr', '--list-runbooks',
                         help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, nargs=REMAINDER,
@@ -1265,6 +1392,10 @@ if __name__ == "__main__":
                         help='Show audit trail [all | connector | execution_id]')
     parser.add_argument('-dl', '--display-failed-logs',
                         type=str, help='Display failed logs  [execution_id]')
+    parser.add_argument('-cc', '--create-credentials', type=str, nargs=REMAINDER, 
+                        help='Create Credential [-creds-type creds_file_path]')
+    parser.add_argument('-cl', '--credential-list', 
+                        help='Credential List', action='store_true')
 
     args = parser.parse_args()
 
@@ -1272,7 +1403,7 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    if args.list_runbooks == True:
+    if args.list_runbooks is True:
         list_runbooks()
     elif args.run_runbook not in ('', None):
         if len(args.run_runbook) == 0:
@@ -1291,5 +1422,12 @@ if __name__ == "__main__":
         show_audit_trail(args.show_audit_trail)
     elif args.display_failed_logs not in ('', None):
         display_failed_logs(args.display_failed_logs)
+    elif args.create_credentials not in ('', None):
+        if len(args.create_credentials) == 0:
+            display_creds_ui()
+        else:
+            parse_creds(args.create_credentials)
+    elif args.credential_list is True:
+        list_creds()
     else:
         parser.print_help()

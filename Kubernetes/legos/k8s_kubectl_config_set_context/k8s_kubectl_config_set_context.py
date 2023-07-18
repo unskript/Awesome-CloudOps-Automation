@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-import pandas as pd
-import io
+from kubernetes.client.rest import ApiException
+
 
 class InputSchema(BaseModel):
     k8s_cli_string: str = Field(
@@ -19,7 +19,7 @@ def k8s_kubectl_config_set_context_printer(data: list):
 
     print (data)
 
-def k8s_kubectl_config_set_context(handle, k8s_cli_string: str, namespace: str) -> list:
+def k8s_kubectl_config_set_context(handle, k8s_cli_string: str, namespace: str) -> str:
     """k8s_kubectl_config_set_context 
 
         :type handle: object
@@ -31,11 +31,17 @@ def k8s_kubectl_config_set_context(handle, k8s_cli_string: str, namespace: str) 
         :type namespace: str
         :param namespace: Namespace
 
-        :rtype: List
+        :rtype: str
     """
     k8s_cli_string = k8s_cli_string.format(namespace=namespace)
     result = handle.run_native_cmd(k8s_cli_string)
-    if result is None or hasattr(result, "stderr") is False or result.stderr is None:
-        return None
+
+    if result is None:
+        print(
+            f"Error while executing command ({k8s_cli_string}) (empty response)")
+        return ""
+        
+    if result.stderr:
+        raise ApiException(f"Error occurred while executing command {k8s_cli_string} {result.stderr}")
 
     return result.stdout
