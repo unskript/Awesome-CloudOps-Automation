@@ -3,12 +3,12 @@
   "action_description": "Find Idle EC2 instances",
   "action_type": "LEGO_TYPE_AWS",
   "action_entry_function": "aws_find_idle_instances",
-  "action_needs_credential": "true",
+  "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
-  "action_is_check": "true",
+  "action_is_check": true,
   "action_next_hop": ["c03babff32b83949e6ca20a49901d42a5a74ed3036de4609096390c9f6d0851a"],
-  "action_next_hop_parameter_mapping": {"c03babff32b83949e6ca20a49901d42a5a74ed3036de4609096390c9f6d0851a": {"name": "Secure Publicly accessible Amazon RDS Snapshot", "region": ".[0].region", "instance_ids":"map(.instance)"}},
-  "action_supports_iteration": "true",
-  "action_supports_poll": "true",
+  "action_next_hop_parameter_mapping": {"c03babff32b83949e6ca20a49901d42a5a74ed3036de4609096390c9f6d0851a": {"name": "Stop Idle EC2 Instances", "region": ".[0].region", "instance_ids":"map(.instance)"}},
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
   "action_categories": ["CATEGORY_TYPE_COST_OPT", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_EC2"]
 }

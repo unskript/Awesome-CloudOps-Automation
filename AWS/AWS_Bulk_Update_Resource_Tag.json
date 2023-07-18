@@ -1,0 +1,9 @@
+{
+    "name": "AWS Bulk Update Resource Tag",
+    "description": "This runbook will find all AWS Resources tagged with a given key:value tag.  It will then update the tag's value to a new value. This can be used to bulk update the owner of resources, or any other reason you might need to change the tag value for many AWS resources.",
+    "uuid": "32ce1935204c64d816fd1f01f4fe41e8d8bd47725b899535c6acee703a7bcf0d",
+    "icon": "CONNECTOR_TYPE_AWS",
+    "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_COST_OPT" ],
+    "connector_types": [ "CONNECTOR_TYPE_AWS" ],
+    "version": "1.0.0"
+  }
