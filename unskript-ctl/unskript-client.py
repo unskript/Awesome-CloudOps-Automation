@@ -1362,15 +1362,22 @@ def list_creds():
         index += 1
     print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
     
-def start_debug():
-    """start_debug Starts Debug session. This assumes that the remote
-       config is copied to /tmp as  /tmp/remoteconfig. If this file
-       does not exist, then this function will raise an exception.
+def start_debug(args):
+    """start_debug Starts Debug session. This function takes
+       the remote configuration as input and if valid, starts
+       the debug session. 
     """
-    if os.path.exists("/tmp/remoteconfig") is False:
-        raise Exception("Required Remote Configuration not present. Ensure /tmp/remoteconfig file is present.")
+    remote_config = args[0]
+    remote_config = remote_config.replace('-','')
+    
+    if remote_config != "config":
+        raise Exception(f"The Allowed Parameter is --config, Given Flag is not recognized, --{remote_config}")
+    
+    remote_config_file = args[1]
+    if os.path.exists(remote_config_file) is False:
+        raise Exception(f"Required Remote Configuration not present. Ensure {remote_config_file} file is present.")
 
-    command = ["openvpn --config /tmp/remoteconfig"]
+    command = [f"openvpn --config {remote_config_file}"]
     process = subprocess.Popen(command,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT,
@@ -1384,7 +1391,12 @@ def start_debug():
     for proc in psutil.process_iter(['pid', 'name']):
         # Search for openvpn process. 
         if proc.info['name'] == "openvpn":
-            running = True
+            # Lets make sure we ensure Tunnel Interface is Created and Up!
+            intf_up_result = subprocess.run(["ip", "link", "show", "tun0"],
+                                            stdout=subprocess.PIPE, 
+                                            stderr=subprocess.PIPE)
+            if intf_up_result.returncode == 0:
+                running = True
             break
 
     if running is True:
@@ -1442,7 +1454,7 @@ if __name__ == "__main__":
     parser.add_argument('-cl', '--credential-list', 
                         help='Credential List', action='store_true')
     parser.add_argument('--start-debug', 
-                        help='Start Debug Session. Make sure Remote configuration is copied as /tmp/remoteconfig', action='store_true')
+                        help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]', type=str, nargs=REMAINDER)
     parser.add_argument('--stop-debug', 
                         help='Stop Current Debug Session', action='store_true')
 
@@ -1478,8 +1490,8 @@ if __name__ == "__main__":
             parse_creds(args.create_credentials)
     elif args.credential_list is True:
         list_creds()
-    elif args.start_debug is True:
-        start_debug()
+    elif args.start_debug not in ('', None):
+        start_debug(args.start_debug)
     elif args.stop_debug is True:
         stop_debug()
     else:
