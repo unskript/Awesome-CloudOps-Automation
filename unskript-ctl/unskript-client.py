@@ -1415,7 +1415,7 @@ def stop_debug():
             process.terminate()
             process.wait()
 
-    print("Stoped Active Debug session successfully")
+    print("Stopped Active Debug session successfully")
 
 if __name__ == "__main__":
     try:
