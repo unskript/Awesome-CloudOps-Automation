@@ -3,7 +3,7 @@
   "action_description": "Get Opsgenie Handle",
   "action_type": "LEGO_TYPE_OPSGENIE",
   "action_entry_function": "opsgenie_get_handle",
-  "action_needs_credential": "true",
-  "action_supports_iteration": "false",
-  "action_supports_poll": "false"
+  "action_needs_credential": true,
+  "action_supports_iteration": false,
+  "action_supports_poll": false
 }
