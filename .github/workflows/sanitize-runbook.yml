@@ -7,9 +7,6 @@ on:
 env:
   PR_NUMBER: ${{ github.event.number }}
 
-permissions:
-  contents: write
-
 jobs:
   sanitize-runbooks:
     runs-on: ubuntu-latest
@@ -17,7 +14,7 @@ jobs:
       fail-fast: true
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
