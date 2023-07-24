@@ -50,5 +50,5 @@ def gcp_upload_file_to_bucket(handle,blob_name: str, bucket_name: str, data: str
         result["blob_name"] = blob_name
         result["bucket_name"] = bucket_name
     except Exception as e:
-        result["error"]= e
+        raise e
     return result

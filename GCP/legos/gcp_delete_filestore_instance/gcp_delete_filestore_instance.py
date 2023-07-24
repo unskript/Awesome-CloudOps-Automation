@@ -50,5 +50,5 @@ def gcp_delete_filestore_instance(handle, instance_id:str, project_name:str, loc
         operation.result()
         result_dict={"Message":"Filestore Instance deleted"}
     except Exception as e:
-        result_dict= {"Error": e}
+        raise e
     return result_dict

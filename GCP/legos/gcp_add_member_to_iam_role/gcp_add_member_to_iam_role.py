@@ -81,6 +81,6 @@ def gcp_add_member_to_iam_role(handle, project_id: str, role: str, member_email:
         result = add_member
 
     except Exception as error:
-        result = {"error": error}
+        raise error
 
     return result

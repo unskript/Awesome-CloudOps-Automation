@@ -75,6 +75,6 @@ def gcp_add_role_to_service_account(handle, project_id: str, role: str, member_e
         result = policy_output
 
     except Exception as error:
-        result = {"error": error}
+        raise error
 
     return result
