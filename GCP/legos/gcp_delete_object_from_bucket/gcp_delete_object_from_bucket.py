@@ -41,5 +41,5 @@ def gcp_delete_object_from_bucket(handle,blob_name: str, bucket_name: str) -> Di
         blob.delete()
         result["blob_name"]= blob_name
     except Exception as e:
-        result["error"]= e
+        raise e
     return result

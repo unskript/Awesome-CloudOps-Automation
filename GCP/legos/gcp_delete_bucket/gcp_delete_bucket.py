@@ -35,5 +35,5 @@ def gcp_delete_bucket(handle, bucket_name: str) -> Dict:
         result["deleted_bucket"]= bucket.name
         bucket.delete()
     except Exception as e:
-        result["error"]= e
+        raise e
     return result
