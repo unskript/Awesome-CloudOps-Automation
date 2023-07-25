@@ -81,15 +81,15 @@ def aws_get_ec2_instances_with_smaller_cpu_size(handle, instance_ids: list = [],
             # If neither instance_ids nor region are given
             regions = aws_list_all_regions(handle)
             all_instance_ids = []
-            for region in regions:
+            for reg in regions:
                 try:
-                    all_instance_ids.append({region:aws_get_all_ec2_instances(handle, region)})
+                    all_instance_ids.append({reg:aws_get_all_ec2_instances(handle, reg)})
                 except Exception:
                     pass
 
         for region_instances in all_instance_ids:
-            for region, instance_ids in region_instances.items():
-                ec2 = handle.client('ec2', region_name=region)
+            for selected_region, instance_ids in region_instances.items():
+                ec2 = handle.client('ec2', region_name=selected_region)
                 for instance_id in instance_ids:
                     # Get the instance details
                     resp = ec2.describe_instances(InstanceIds=[instance_id])
@@ -103,7 +103,7 @@ def aws_get_ec2_instances_with_smaller_cpu_size(handle, instance_ids: list = [],
                     # If the CPU size is less than the threshold, add to the list.
                     if cpu_size < threshold:
                         if region not in instances_with_low_cpu_size:
-                            instances_with_low_cpu_size = {"region":region, "instance_id": instance_id}
+                            instances_with_low_cpu_size = {"region":selected_region, "instance_id": instance_id}
                             result.append(instances_with_low_cpu_size)
 
     except Exception as e:
