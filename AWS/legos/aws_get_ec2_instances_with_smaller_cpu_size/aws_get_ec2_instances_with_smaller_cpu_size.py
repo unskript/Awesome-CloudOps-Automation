@@ -88,9 +88,9 @@ def aws_get_ec2_instances_with_smaller_cpu_size(handle, instance_ids: list = [],
                     pass
 
         for region_instances in all_instance_ids:
-            for selected_region, instance_ids in region_instances.items():
+            for selected_region, inst_ids in region_instances.items():
                 ec2 = handle.client('ec2', region_name=selected_region)
-                for instance_id in instance_ids:
+                for instance_id in inst_ids:
                     # Get the instance details
                     resp = ec2.describe_instances(InstanceIds=[instance_id])
                     # Get the instance type
