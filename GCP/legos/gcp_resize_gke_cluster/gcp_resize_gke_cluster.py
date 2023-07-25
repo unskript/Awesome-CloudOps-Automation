@@ -75,6 +75,6 @@ def gcp_resize_gke_cluster(
         response = MessageToDict(res._pb)
 
     except Exception as error:
-        response = {"error":error}
+        raise error
 
     return response

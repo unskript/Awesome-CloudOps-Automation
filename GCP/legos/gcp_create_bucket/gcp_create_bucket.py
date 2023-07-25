@@ -62,5 +62,5 @@ def gcp_create_bucket(handle, bucket_name: str, location: str, project_name: str
         result["location"]= new_bucket.location
         result["storage_class"]= new_bucket.storage_class
     except Exception as e:
-        result["error"]= e
+        raise e
     return result
