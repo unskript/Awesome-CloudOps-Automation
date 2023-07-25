@@ -41,7 +41,7 @@ def aws_find_s3_buckets_without_lifecycle_policies(handle, region: str="") -> Tu
             response = aws_get_s3_buckets(handle, region=reg)
             for bucket in response:
                 bucket_region = s3Session.meta.client.get_bucket_location(Bucket=bucket)['LocationConstraint']
-                if bucket_region == None:
+                if bucket_region is None:
                     bucket_region = 'us-east-1'
                 if bucket_region != reg:
                     continue
