@@ -39,6 +39,6 @@ def gcp_delete_service_account(handle, sa_id: str) -> Dict:
 
 
     except Exception as error:
-        result = {"error": error}
+        raise error
 
     return result

@@ -89,5 +89,5 @@ def gcp_create_filestore_instance(handle, instance_id:str, project_name:str, loc
         response = operation.result()
         result_dict = MessageToDict(response._pb)
     except Exception as e:
-        result_dict= {"Error": e}
+        raise e
     return result_dict
