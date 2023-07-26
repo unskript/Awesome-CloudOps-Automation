@@ -13,7 +13,7 @@ This action retrieves database metrics such as index size, disk size per collect
 
 
 ## Lego Input
-This Lego takes inputs handle,
+This Lego takes inputs handle, index_threshold, memory_threshold.
 
 ## Lego Output
 Here is a sample output.
