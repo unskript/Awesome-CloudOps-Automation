@@ -1,5 +1,5 @@
 {
-  "action_title": "Get Elasticsearch index health",
+  "action_title": "Get Elasticsearch index level health",
   "action_description": "This action checks the health of a given Elasticsearch index or all indices if no specific index is provided.",
   "action_type": "LEGO_TYPE_ELASTICSEARCH",
   "action_entry_function": "elasticsearch_get_index_health",
