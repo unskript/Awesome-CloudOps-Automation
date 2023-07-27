@@ -83,10 +83,11 @@ def elasticsearch_get_cluster_statistics(handle) -> Dict:
             elif 'gb' in size:
                 total_index_size += float(size.replace('gb', '')) * 1024
 
-        total_disk_size = sum([float(node['fs']['total']['total_in_bytes']) for node in nodes_stats['nodes'].values()])
+        total_disk_size = sum(float(node['fs']['total']['total_in_bytes']) for node in nodes_stats['nodes'].values())
+
         total_disk_size /= (1024 * 1024)  # convert from bytes to MB
 
-        total_memory = sum([float(node['jvm']['mem']['heap_used_percent']) for node in nodes_stats['nodes'].values()])
+        total_memory = sum(float(node['jvm']['mem']['heap_used_percent']) for node in nodes_stats['nodes'].values())
 
         # Adding additional metrics to the output
         output['total_index_size'] = total_index_size
