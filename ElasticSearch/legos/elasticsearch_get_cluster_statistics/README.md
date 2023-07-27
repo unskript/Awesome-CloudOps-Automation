@@ -1,5 +1,5 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">](https://unskript.com/assets/favicon.png) 
-<h1>Elasticsearch Cluster Statistics </h1>
+<h1>Get Elasticsearch cluster statistics </h1>
 
 ## Description
 This Lego checks fetches fetches total index size, disk size, and memory utilization and information about the current nodes and shards that form the cluster.
@@ -7,7 +7,7 @@ This Lego checks fetches fetches total index size, disk size, and memory utiliza
 
 ## Lego Details
 
-    elasticsearch_cluster_statistics(handle: object)
+    elasticsearch_get_cluster_statistics(handle: object)
 
         handle: Object of type unSkript Elasticsearch Connector
 

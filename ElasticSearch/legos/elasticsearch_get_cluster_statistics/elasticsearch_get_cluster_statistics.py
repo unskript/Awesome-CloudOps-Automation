@@ -14,7 +14,7 @@ class InputSchema(BaseModel):
     pass
 
 
-def elasticsearch_cluster_statistics_printer(output):
+def elasticsearch_get_cluster_statistics_printer(output):
     if output is None:
         return
     timestamp = datetime.fromtimestamp(output.get('timestamp')/1000)  # converting milliseconds to seconds
@@ -54,8 +54,8 @@ def elasticsearch_cluster_statistics_printer(output):
     print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
 
 
-def elasticsearch_cluster_statistics(handle) -> Dict:
-    """elasticsearch_cluster_statistics fetches total index size, disk size, and memory utilization 
+def elasticsearch_get_cluster_statistics(handle) -> Dict:
+    """elasticsearch_get_cluster_statistics fetches total index size, disk size, and memory utilization 
     and information about the current nodes and shards that form the cluster
 
             :type handle: object

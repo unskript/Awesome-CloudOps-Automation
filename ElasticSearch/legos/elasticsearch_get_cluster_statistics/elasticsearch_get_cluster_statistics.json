@@ -2,7 +2,7 @@
 "action_title": "Elasticsearch Cluster Statistics",
 "action_description": "Elasticsearch Cluster Statistics fetches total index size, disk size, and memory utilization and information about the current nodes and shards that form the cluster",
 "action_type": "LEGO_TYPE_ELASTICSEARCH",
-"action_entry_function": "elasticsearch_cluster_statistics",
+"action_entry_function": "elasticsearch_get_cluster_statistics",
 "action_needs_credential": true,
 "action_supports_poll": true,
 "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
