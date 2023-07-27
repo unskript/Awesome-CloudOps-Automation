@@ -1,67 +1,98 @@
 ##
-# Copyright (c) 2021 unSkript, Inc
+# Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-import subprocess
-import pprint
 from pydantic import BaseModel, Field
 from typing import List, Dict
-from subprocess import PIPE, run
-import json
 import matplotlib.pyplot as plt
 import pandas as pd
+from datetime import datetime
+from tabulate import tabulate
 
 
 class InputSchema(BaseModel):
     pass
 
 
-def plotData(output, keywords, docs, shards):
-    plot1 = plt.subplot2grid((3, 3), (0, 0), colspan=2, rowspan=2)
-    plot2 = plt.subplot2grid((3, 3), (0, 2), colspan=2, rowspan=2)
-    for idx, keyword in enumerate(keywords):
-        data = output.get(keyword)
-        names = list(data.keys())
-        values = list(data.values())
-        plot1.bar(range(len(data)), values, tick_label=names)
-        plot1.set_title("Nodes")
-    for i in docs:
-        x = list(docs.keys())
-        y = list(docs.values())
-        plot2.set_title("Docs")
-        plot2.bar(range(len(x)), y, tick_label=x)
-    plot2.set_xticklabels(x)
-    plot2.set_yticklabels([])
-    plot2.bar_label(plot2.containers[0], label_type='center')
-    df = pd.DataFrame(shards)
-    df.plot(kind="bar", stacked=True, title="Shards")
-    plt.show()
-
-
 def elasticsearch_cluster_statistics_printer(output):
     if output is None:
         return
-    print("Cluster Name: ", output.get('cluster_name'))
-    print("Timestamp: ", output.get('timestamp'))
+    timestamp = datetime.fromtimestamp(output.get('timestamp')/1000)  # converting milliseconds to seconds
+    print("\nCluster Name: ", output.get('cluster_name'))
+    print("Timestamp: ", timestamp)
     print("Status: ", output.get('status'))
-    for k, v in output.items():
-        if k == 'indices':
-            shards = output['indices']['shards']['index']
-            docs = output['indices']['docs']
 
-    plotData(output, ['_nodes'], docs, shards)
+    # Node Statistics
+    print("\nNode Statistics")
+    nodes = output.get('_nodes')
+    if nodes is not None:
+        df = pd.DataFrame.from_records([nodes])
+        print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+    else:
+        print("Nodes are None")
+
+    # Document Statistics
+    print("\nDocument Statistics")
+    df = pd.DataFrame.from_records([output.get('indices').get('docs')])
+    df.columns = [f'{i} (count)' for i in df.columns]
+    print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    # Shard Statistics
+    print("\nShard Statistics")
+    df = pd.DataFrame.from_records([output.get('indices').get('shards').get('index')])
+    df.columns = [f'{i} (shard count)' for i in df.columns]
+    print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    # Additional Metrics
+    print("\nAdditional Metrics")
+    additional_metrics = {
+        'total_index_size (MB)': output.get('total_index_size'),
+        'total_disk_size (MB)': output.get('total_disk_size'),
+        'total_memory_utilization (%)': output.get('total_memory_utilization'),
+    }
+    df = pd.DataFrame.from_records([additional_metrics])
+    print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
 
 
 def elasticsearch_cluster_statistics(handle) -> Dict:
-    """elasticsearch_cluster_statistics fetches basic index metrics and information about the current nodes that form the cluster.
+    """elasticsearch_cluster_statistics fetches total index size, disk size, and memory utilization 
+    and information about the current nodes and shards that form the cluster
+
             :type handle: object
             :param handle: Object returned from Task Validate
 
             :rtype: Result Dict of result
     """
-  
-    output = handle.web_request("/_cluster/stats?human&pretty&pretty",  # Path
-                                "GET",                      # Method
-                                None)                       # Data
+    try:
+        # Fetching cluster statistics
+        output = handle.web_request("/_cluster/stats?human&pretty", "GET", None)
 
+        # Fetching indices statistics
+        indices_stats = handle.web_request("/_cat/indices?format=json", "GET", None)
+
+        # Fetching nodes statistics
+        nodes_stats = handle.web_request("/_nodes/stats?human&pretty", "GET", None)
+
+        total_index_size = 0
+        for index in indices_stats:
+            size = index['store.size']
+            if 'kb' in size:
+                total_index_size += float(size.replace('kb', '')) / 1024
+            elif 'mb' in size:
+                total_index_size += float(size.replace('mb', ''))
+            elif 'gb' in size:
+                total_index_size += float(size.replace('gb', '')) * 1024
+
+        total_disk_size = sum([float(node['fs']['total']['total_in_bytes']) for node in nodes_stats['nodes'].values()])
+        total_disk_size /= (1024 * 1024)  # convert from bytes to MB
+
+        total_memory = sum([float(node['jvm']['mem']['heap_used_percent']) for node in nodes_stats['nodes'].values()])
+
+        # Adding additional metrics to the output
+        output['total_index_size'] = total_index_size
+        output['total_disk_size'] = total_disk_size
+        output['total_memory_utilization'] = total_memory
+
+    except Exception as e:
+        raise e
     return output

@@ -2,7 +2,7 @@
 <h1>Elasticsearch Cluster Statistics </h1>
 
 ## Description
-This Lego checks fetches basic index metrics and information about the current nodes that form the cluster.
+This Lego checks fetches fetches total index size, disk size, and memory utilization and information about the current nodes and shards that form the cluster.
 
 
 ## Lego Details
