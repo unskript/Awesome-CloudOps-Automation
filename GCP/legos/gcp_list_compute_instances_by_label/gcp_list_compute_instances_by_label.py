@@ -69,6 +69,6 @@ def gcp_list_compute_instances_by_label(
                 if value in result.labels.values():
                     output.append(result.name)
     except Exception as error:
-        output.append(error)
+        raise error
 
     return output

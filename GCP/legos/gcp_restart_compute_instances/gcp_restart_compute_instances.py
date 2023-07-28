@@ -58,6 +58,6 @@ def gcp_restart_compute_instances(
         output['name'] = result.name
         output['status'] = result.status
     except Exception as error:
-        output["error"] = error
+        raise error
 
     return output

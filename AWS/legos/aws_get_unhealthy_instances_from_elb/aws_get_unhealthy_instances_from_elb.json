@@ -10,5 +10,5 @@
     "action_supports_iteration": true,
     "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" , "CATEGORY_TYPE_AWS","CATEGORY_TYPE_AWS_ELB"],
     "action_next_hop": ["94707558cebedbcb77aabaec5d6d2d1bf3f4664db6e9e905d6d905a11a3ef8bc"],
-    "action_next_hop_parameter_mapping": {"94707558cebedbcb77aabaec5d6d2d1bf3f4664db6e9e905d6d905a11a3ef8bc": {"name": "AWS Get unhealthy EC2 instances from ELB", "region": ".[0].region", "elb_name":".[].load_balancer_name"}}
+    "action_next_hop_parameter_mapping": {"94707558cebedbcb77aabaec5d6d2d1bf3f4664db6e9e905d6d905a11a3ef8bc": {"name": "AWS Get unhealthy EC2 instances from ELB", "region": ".[0].region", "elb_name":"map(.load_balancer_name)"}}
 }

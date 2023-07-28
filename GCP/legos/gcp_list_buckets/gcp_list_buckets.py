@@ -29,5 +29,5 @@ def gcp_list_buckets(handle) -> List:
         for bucket in buckets:
             result.append(bucket.name)
     except Exception as e:
-        result["error"]= e
+        raise e
     return result

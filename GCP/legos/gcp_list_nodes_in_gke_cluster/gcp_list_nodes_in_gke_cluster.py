@@ -46,6 +46,6 @@ def gcp_list_nodes_in_gke_cluster(handle, project_id: str, zone: str, cluster_na
         for nodes in response.node_pools:
             node_list.append(nodes.name)
     except Exception as error:
-        node_list.append(error)
+        raise error
 
     return node_list

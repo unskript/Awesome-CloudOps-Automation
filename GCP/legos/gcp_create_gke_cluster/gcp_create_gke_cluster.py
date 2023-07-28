@@ -55,6 +55,6 @@ def gcp_create_gke_cluster(handle, project_id: str, zone: str, cluster_name: str
                                               'initial_node_count':node_count})
         response = MessageToDict(res._pb)
     except Exception as error:
-        response = {"error":error}
+        raise error
 
     return response

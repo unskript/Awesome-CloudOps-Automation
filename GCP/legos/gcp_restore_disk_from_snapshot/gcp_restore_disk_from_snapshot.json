@@ -1,0 +1,12 @@
+{
+  "action_title": "Restore GCP disk from a snapshot ",
+  "action_description": "Restore a GCP disk from a compute instance snapshot.",
+  "action_type": "LEGO_TYPE_GCP",
+  "action_entry_function": "gcp_restore_disk_from_snapshot",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_STR",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
+  "action_categories":[ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_GCP","CATEGORY_TYPE_GCP_VM"]
+}
