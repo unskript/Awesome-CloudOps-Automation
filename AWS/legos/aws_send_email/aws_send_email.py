@@ -9,7 +9,7 @@ from __future__ import annotations
 from pydantic import BaseModel, Field, SecretStr
 from typing import Dict, List
 import pprint
-
+from botocore.exceptions import ClientError
 
 
 from pydantic import BaseModel, Field
@@ -57,7 +57,7 @@ def aws_send_email(handle, Region:str, Sender:str, Receiver:str, Subject:str, Me
             },
             Message=message
         )
-    except Error as e:
+    except ClientError as e:
         response = e
         raise e
 
