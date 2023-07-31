@@ -74,7 +74,7 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
         # Get Node Status
         conditions = node.status.conditions
         for condition in conditions:
-            if condition.type == 'Ready' and condition.status != 'True':
+            if condition.type == 'Ready' and condition.status == 'False':
                 not_ready_nodes.append({
                     'name': node.metadata.name,
                     'status': condition,
