@@ -3,8 +3,7 @@
 # All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import List, Optional
-from tabulate import tabulate
+from typing import Tuple, Optional
 
 
 class InputSchema(BaseModel):
@@ -15,8 +14,10 @@ class InputSchema(BaseModel):
     )
 
 
-def elasticsearch_get_index_health_printer(outputs):
-    if outputs is None or len(outputs) == 0:
+def elasticsearch_get_index_health_printer(result):
+    success, outputs = result
+    if success or outputs is None or len(outputs) == 0:
+        print("No indices found with 'yellow' or 'red' health.")
         return
     for output in outputs:
         print(f"\nProcessing index: {output['index']}")
@@ -35,7 +36,8 @@ def elasticsearch_get_index_health_printer(outputs):
 
 
 
-def elasticsearch_get_index_health(handle, index_name="") -> List:
+
+def elasticsearch_get_index_health(handle, index_name="") -> Tuple:
     """
     elasticsearch_get_index_health checks the health of a given Elasticsearch index or all indices if no specific index is provided.
 
@@ -92,16 +94,16 @@ def elasticsearch_get_index_health(handle, index_name="") -> List:
             else:
                 settings = {}
             # Consolidate stats for the current index
-            index_stats = {
-                **health_output[0],
-                'settings': settings,
-                'stats': stats_output['_all']['total'],
-                'tasks': tasks_output['nodes']
-            }
-
-            all_indices_stats.append(index_stats)
-        return all_indices_stats
+            if health_output[0]['health'] in ['yellow', 'red']:
+                index_stats = {
+                    **health_output[0],
+                    'settings': settings,
+                    'stats': stats_output['_all']['total'],
+                    'tasks': tasks_output['nodes']
+                }
+                all_indices_stats.append(index_stats)
     except Exception as e:
         raise e
-
-
+    if len(all_indices_stats)!=0:
+        return (False, all_indices_stats)
+    return (True, None)
