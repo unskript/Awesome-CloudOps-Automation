@@ -6,12 +6,14 @@
 This action gets the Redis cluster health.
 
 ## Lego Details
-	redis_get_cluster_health(handle)
+	redis_get_cluster_health(handle, client_threshold: int = 100, memory_threshold: int = 80)
 		handle: Object of type unSkript REDIS Connector.
+		client_threshold: Threshold for the number of connected clients considered abnormal
+		memory_threshold: Threshold for the percentage of memory usage considered abnormal
 
 
 ## Lego Input
-This Lego takes inputs handle.
+This Lego takes inputs handle, client_threshold, memory_threshold.
 
 ## Lego Output
 Here is a sample output.

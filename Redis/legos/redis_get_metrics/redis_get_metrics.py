@@ -20,11 +20,9 @@ def redis_get_metrics_printer(output):
     data = list(output.items())
     print(tabulate(data, headers, tablefmt="pretty"))
 
-
 def bytes_to_human_readable(bytes, units=[' bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB']):
     # Return a human-readable string representation of bytes.
     return str(bytes) + units[0] if bytes < 1024 else bytes_to_human_readable(bytes >> 10, units[1:])
-
 
 def redis_get_metrics(handle) -> Dict:
     """
@@ -37,7 +35,7 @@ def redis_get_metrics(handle) -> Dict:
     """
     metrics = {}
     try:
-        # Getting the information about redis server
+        # Getting the information about the Redis server
         info = handle.info()
 
         # Initialize keys counter
@@ -47,12 +45,12 @@ def redis_get_metrics(handle) -> Dict:
         for key in info:
             if key.startswith('db'):
                 total_keys += info[key]['keys']
-        metrics['index_size'] = total_keys #Total number of keys.
-        metrics['memory_utilization'] = bytes_to_human_readable(info['used_memory'])
-        metrics['dataset_size'] = bytes_to_human_readable(info['used_memory_dataset'])
+        metrics['index_size'] = total_keys # Total number of keys.
+        metrics['memory_utilization'] = bytes_to_human_readable(int(info['used_memory']))
+        metrics['dataset_size'] = bytes_to_human_readable(int(info['used_memory_dataset']))
 
     except Exception as e:
-        metrics["error"] = str(e)
+        raise e
     return metrics
 
 
