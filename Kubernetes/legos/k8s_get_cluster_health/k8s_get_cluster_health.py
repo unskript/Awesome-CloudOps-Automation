@@ -60,57 +60,55 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
        :rtype: Tuple
        :param: Tuple that contains result and any errors   
     """
-    node_api = pods_api = client.CoreV1Api(api_client=handle)
 
-    nodes = node_api.list_node()
     retval = {}
+    not_ready_nodes = []
+    not_ready_pods = []
+    abnormal_nodes = []
+
+    node_api = pods_api = client.CoreV1Api(api_client=handle)
+    nodes = node_api.list_node()
     for node in nodes.items:
-        # Lets check Node Pressure, more than 80%, will need to to raise an exception
-        cpu_usage = normalize_cpu(node.status.allocatable['cpu'])
-        cpu_capacity = normalize_cpu(node.status.capacity['cpu'])
-        mem_usage = normalize_memory(node.status.allocatable['memory'])
-        mem_capacity = normalize_memory(node.status.capacity['memory'])
-        cpu_usage_percent = (cpu_usage / cpu_capacity) * 100
-        mem_usage_percent = (mem_usage / mem_capacity) * 100
-        #check if either is over trheshold. If so, add the node and failure to the return value
-        if (cpu_usage_percent >= threshold) or (mem_usage_percent >= threshold):
-            retval[node.metadata.name] = {}
-            if cpu_usage_percent >= threshold:
-                retval[node.metadata.name]['cpu_high'] = True
-            if mem_usage_percent >= threshold:
-                retval[node.metadata.name]['mem_high'] = True
+
+        skip_remaining_checks = False
+        # Get Node Status
+        conditions = node.status.conditions
+        for condition in conditions:
+            if condition.type == 'Ready' and condition.status == 'False':
+                not_ready_nodes.append({
+                    'name': node.metadata.name,
+                    'status': condition,
+                    })
+                skip_remaining_checks = True
+                break
+
+        # Node is not ready, no need to perform other checks
+        if skip_remaining_checks:
+            continue
 
         # Lets get abnormal events. Lets go with `warning` as the default level
         events = k8s_get_abnormal_events(node_api, node.metadata.name)
         if events != '':
-            retval['events'] = events
+            abnormal_nodes.append({'name': node.metadata.name, 'events': events})
 
-        # Get Node & Pod Condition
-        conditions = node.status.conditions
+    # Check the status of the Kubernetes pods
+    pods = pods_api.list_pod_for_all_namespaces()
+    for pod in pods.items:
+        conditions = pod.status.conditions
         for condition in conditions:
-
-            if condition.type == 'Ready' and condition.status == 'True':
-                retval['not_ready'] = False
+            if condition.type == 'Ready' and condition.status == 'False':
+                not_ready_pods.append({
+                    'name': pod.metadata.name,
+                    'namespace': pod.metadata.namespace,
+                    'status': condition
+                    })
                 break
-            retval['not_ready'] = True
-            retval['node_condition'] = condition
 
-
-        # Check the status of the Kubernetes pods
-        pods = pods_api.list_pod_for_all_namespaces()
-        retval['not_ready_pods'] = {}
-        for pod in pods.items:
-            conditions = pod.status.conditions
-            for condition in conditions:
-                if condition.type == 'Ready' and condition.status == 'True':
-                    break
-                else:
-                    retval['not_ready_pods'].update({
-                        'name': pod.metadata.name,
-                        'namespace': pod.metadata.namespace
-                        })
-
-    if retval:
+    # If any of the above checks have failed, raise an exception
+    if len(not_ready_nodes) > 0 or len(not_ready_pods) > 0 or len(abnormal_nodes) > 0:
+        retval['not_ready_nodes'] = not_ready_nodes
+        retval['not_ready_pods'] = not_ready_pods
+        retval['abnormal_nodes'] = abnormal_nodes
         return (False, [retval])
 
     return (True, [])
