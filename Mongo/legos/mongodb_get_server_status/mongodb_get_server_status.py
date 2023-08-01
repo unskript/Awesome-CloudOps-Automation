@@ -21,7 +21,7 @@ def mongodb_get_server_status_printer(output):
 
     for metric in essential_metrics:
         if metric in output:
-            if type(output[metric]) is dict:
+            if isinstance(output[metric], dict):  # Replacing type() with isinstance()
                 for submetric, value in output[metric].items():
                     pretty_output.append([f"{metric}.{submetric}", str(value)])
             else:

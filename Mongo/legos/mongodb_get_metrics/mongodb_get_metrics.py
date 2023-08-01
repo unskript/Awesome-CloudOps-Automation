@@ -33,6 +33,7 @@ def mongodb_get_metrics(handle) -> List:
     :param handle: Object returned from task.validate(...).
 
     :rtype: list of dictionaries with index size, storage size metrics and total memory usage in MB
+    
     """
     all_metrics = []
     try:
@@ -49,18 +50,18 @@ def mongodb_get_metrics(handle) -> List:
 
         for db_name in database_names:
             db = handle[db_name]
-            collection_names = db.list_collection_names()
+            collection_names = [coll['name'] for coll in db.list_collections() if not coll['options'].get('viewOn')]
             for coll_name in collection_names:
                 stats = db.command("collstats", coll_name)
 
-                index_size_MB = sum(stats.get('indexSizes', {}).values()) / 1024 / 1024 # Convert bytes to MB
-                storage_size_MB = stats.get('storageSize', 0) / 1024 / 1024 # Convert bytes to MB
+                index_size_KB = sum(stats.get('indexSizes', {}).values())/ 1024 # Convert bytes to KB
+                storage_size_KB = stats.get('storageSize', 0)/ 1024 # Convert bytes to KB
 
                 all_metrics.append({
                     'Database': db_name,
                     'Collection': coll_name,
-                    'Index Size (MB)': index_size_MB,
-                    'Storage Size (MB)': storage_size_MB,
+                    'Index Size (KB)': index_size_KB,
+                    'Storage Size (KB)': storage_size_KB,
                 })
 
     except Exception as e:
