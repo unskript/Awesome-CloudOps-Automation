@@ -1,9 +1,0 @@
-rule infer
-  command = /Users/abhishek/git/Awesome-CloudOps-Automation/bin/python3.11 -m pytype.single --imports_info $imports --module-name $module -V 3.11 -o $out --no-report-errors --nofail --quick $in
-  description = infer $module
-rule check
-  command = /Users/abhishek/git/Awesome-CloudOps-Automation/bin/python3.11 -m pytype.single --imports_info $imports --module-name $module -V 3.11 -o $out --analyze-annotated --nofail --quick $in
-  description = check $module
-build /Users/abhishek/git/Awesome-CloudOps-Automation/.pytype/pyi/Kubernetes/legos/k8s_change_pvc_size/k8s_change_pvc_size.pyi: check /Users/abhishek/git/Awesome-CloudOps-Automation/Kubernetes/legos/k8s_change_pvc_size/k8s_change_pvc_size.py
-  imports = /Users/abhishek/git/Awesome-CloudOps-Automation/.pytype/imports/Kubernetes.legos.k8s_change_pvc_size.k8s_change_pvc_size.imports
-  module = Kubernetes.legos.k8s_change_pvc_size.k8s_change_pvc_size
