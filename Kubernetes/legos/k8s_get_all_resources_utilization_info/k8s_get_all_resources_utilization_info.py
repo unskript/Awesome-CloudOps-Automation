@@ -14,17 +14,18 @@ class InputSchema(BaseModel):
     namespace: Optional[str] = Field('', description='k8s Namespace', title='Namespace')
 
 
-def k8s_get_pod_status_and_resources_utilization_printer(data):
+def k8s_get_all_resources_utilization_info_printer(data):
     # print the data
     for resource, rows in data.items():
         print(f"\n{resource.capitalize()}:")
         if resource == 'pods':
-            headers = ['Name', 'Status', 'CPU Usage', 'Memory Usage (MB)', 'Disk Usage (MB)']
+            headers = ['Namespace', 'Name', 'Status', 'CPU Usage (m)', 'Memory Usage (Mi)']
         else:
             headers = ['Name', 'Status']
         print(tabulate(rows, headers, tablefmt='pretty'))
 
-def k8s_get_pod_status_and_resources_utilization(handle, namespace:str="") -> Dict:
+
+def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
     """
     k8s_get_all_resources_utilization_info fetches the pod status and resource utilization of various Kubernetes resources like jobs, services, persistent volumes.
 
@@ -36,7 +37,6 @@ def k8s_get_pod_status_and_resources_utilization(handle, namespace:str="") -> Di
 
     :rtype: Status, Message
     """
-
     if handle.client_side_validation is not True:
         print(f"K8S Connector is invalid: {handle}")
         return False, "Invalid Handle"
@@ -45,6 +45,18 @@ def k8s_get_pod_status_and_resources_utilization(handle, namespace:str="") -> Di
 
     resources = ['pods', 'jobs', 'persistentvolumeclaims']
     data = {resource: [] for resource in resources}
+
+    # Fetch current utilization of pods
+    pod_utilization_cmd = f"kubectl top pods {namespace_option}"
+    pod_utilization = handle.run_native_cmd(pod_utilization_cmd)
+    pod_utilization_lines = pod_utilization.stdout.split('\n')[1:]  # Exclude header line
+
+    utilization_map = {}
+    for line in pod_utilization_lines:
+        parts = line.split()
+        if len(parts) < 4:  # Skip lines that do not contain enough information
+            continue
+        utilization_map[parts[1]] = (parts[0], parts[2], parts[3])  # Map pod name to (namespace, CPU, Memory)
 
     for resource in resources:
         cmd = f"kubectl get {resource} -o json {namespace_option}"
@@ -57,19 +69,14 @@ def k8s_get_pod_status_and_resources_utilization(handle, namespace:str="") -> Di
 
         for item in items:
             name = item['metadata']['name']
+            ns = item['metadata'].get('namespace', 'default')
             status = 'Unknown'
 
             if resource == 'pods':
                 status = item['status']['phase']
+                ns_from_util, cpu_usage, memory_usage = utilization_map.get(name, (ns, 'N/A', 'N/A'))
 
-                resources = item['spec']['containers'][0].get('resources', {})
-                requests = resources.get('requests', {})
-
-                cpu_usage = requests.get('cpu', 'N/A')
-                memory_usage = int(requests.get('memory', '0Ki').rstrip('Ki')) / 1024 if 'Ki' in requests.get('memory', '') else 'N/A' # if in KiB
-                disk_usage = int(requests.get('ephemeral-storage', '0Ki').rstrip('Ki')) / 1024 if 'Ki' in requests.get('ephemeral-storage', '') else 'N/A' # if in KiB
-
-                data[resource].append([name, status, cpu_usage, memory_usage, disk_usage])
+                data[resource].append([ns_from_util, name, status, cpu_usage, memory_usage])
             else:
                 if resource == 'jobs':
                     conditions = item['status'].get('conditions', [])
@@ -81,6 +88,3 @@ def k8s_get_pod_status_and_resources_utilization(handle, namespace:str="") -> Di
                 data[resource].append([name, status])
 
     return data
-
-
-
