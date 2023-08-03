@@ -3,7 +3,7 @@
 <h1>Get K8s Nod Status and Resource Utilization Info</h1>
 
 ## Description
-This action gathers Kubernetes node status and resource utilization information.
+This action gathers Kubernetes node status and CPU utilization information.
 
 ## Lego Details
 	k8s_get_node_status_and_resource_utilization(handle)

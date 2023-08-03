@@ -1,5 +1,5 @@
 {
-  "action_title": "Get K8s node status and resource itilization info",
+  "action_title": "Get K8s node status and CPU utilization",
   "action_description": "This action gathers Kubernetes node status and resource utilization information.",
   "action_type": "LEGO_TYPE_K8S",
   "action_entry_function": "k8s_get_node_status_and_resource_utilization",
