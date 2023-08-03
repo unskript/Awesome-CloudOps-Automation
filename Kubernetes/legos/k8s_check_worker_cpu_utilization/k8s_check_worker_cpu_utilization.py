@@ -46,7 +46,7 @@ def k8s_check_worker_cpu_utilization(handle, threshold: float=70) -> Tuple:
     response = handle.run_native_cmd(kubectl_command)
 
     if response is None or response.stderr:
-        return(f"Error while executing command ({kubectl_command}): {response.stderr if response else 'empty response'}")
+        return f"Error while executing command ({kubectl_command}): {response.stderr if response else 'empty response'}"
 
     lines = response.stdout.split('\n')
     for line in lines:
