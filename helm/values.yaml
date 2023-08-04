@@ -29,14 +29,14 @@ podSecurityContext: {}
   # fsGroup: 2000
 
 # Flag to indicate whether to use stateful-set or not
-useStatefulSet: true 
+useStatefulSet: true
 
 # This section is common variables defined
 # Which is used in the template/*.yaml files
 common:
   # Default namespace to be used. Change it as you see fit
   namespace: "awesome-ops"
-  # ContainerPort to listen on 
+  # ContainerPort to listen on
   port: 8888
   # Labels that should be attached to the POD
   labels: "app: awesome-runbooks"
@@ -48,28 +48,28 @@ common:
   timeoutSeconds: 15
   terminationGracePeriodSeconds: 30
 
-# Persistence 
+# Persistence
 persistence:
   # Flag to enable creation of PVC
   enabled: true
-  # Name of the PVC 
+  # Name of the PVC
   name: "awesome-runbooks-pvc"
   # PVC Storage Class, by default not set
   storageClassName: ""
-  # PV Access Mode. 
+  # PV Access Mode.
   accessModes:
-    - ReadWriteOnce 
+    - ReadWriteOnce
   # Size of the PV
   size: 1Gi
   # Any Annotations for the PVC
   annotations: {}
-  # MountPath that will be visible on the POD 
+  # MountPath that will be visible on the POD
   mountPath: /unskript
   # Any subdirectory under the mounthPath, default is at the root level
   subPath: ""
   # You can finetune volume template fields below
   volumeClaimTemplate:
-    selector: {} 
+    selector: {}
     requests: {}
     dataSource: {}
 
@@ -87,13 +87,13 @@ service:
   port: 8888
 
 resources:
-  # We recommend using 1vCPU and 400Mb of RAM to get the best performance
+  # We recommend using 1vCPU and 2Gb of RAM to get the best performance
   limits:
      cpu: "1.0"
-     memory: "400Mi"
+     memory: "2Gi"
   requests:
      cpu: "1.0"
-     memory: "400Mi"
+     memory: "2Gi"
 
 
 autoscaling:
