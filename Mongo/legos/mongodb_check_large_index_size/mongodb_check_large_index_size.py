@@ -23,7 +23,8 @@ def mongodb_check_large_index_size_printer(output):
 
     # Otherwise, print the alerts
     for alert in alerts:
-        print(f"Alert! Index size of {alert['indexSizeKB']} KB for database {alert['db']} in collection {alert['collection']} exceeds threshold of {alert['threshold']} KB.")
+        print(f"Alert! Index size of {alert['indexSizeKB']} KB for database '{alert['db']}' in collection '{alert['collection']}' exceeds threshold !")
+
 
 def mongodb_check_large_index_size(handle, threshold: float = 1000) -> Tuple:
     """
@@ -43,9 +44,7 @@ def mongodb_check_large_index_size(handle, threshold: float = 1000) -> Tuple:
     alerts = []
 
     try:
-        database_names = handle.list_database_names()
-        database_names = [db for db in database_names if db != 'local']
-
+        database_names = [db for db in handle.list_database_names() if db != 'local']
         for db_name in database_names:
             db = handle[db_name]
             collection_names = db.list_collection_names()
@@ -55,22 +54,23 @@ def mongodb_check_large_index_size(handle, threshold: float = 1000) -> Tuple:
                 # Skip views
                 if coll.options().get('viewOn'):
                     continue
+
                 stats = db.command("collstats", coll_name)
                 # Check each index's size
                 for index_name, index_size in stats['indexSizes'].items():
                     index_size_KB = index_size / 1024  # Convert to KB
+
                     if index_size_KB > threshold:
                         alerts.append({
                             'db': db_name,
                             'collection': coll_name,
                             'index': index_name,
-                            'indexSizeKB': index_size_KB,
-                            'threshold': threshold
+                            'indexSizeKB': index_size_KB
                         })
-
+    
     except Exception as e:
         raise e
-    
+        
     if len(alerts) != 0:
         return (False, alerts)
     return (True, None)
