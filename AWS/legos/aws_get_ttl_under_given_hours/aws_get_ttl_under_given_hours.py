@@ -36,25 +36,33 @@ def aws_get_ttl_under_given_hours(handle, threshold: int = 1) -> Tuple:
 
         :rtype: List of details with the record type, record name and record TTL.
     """
+    if handle is None:
+        raise ValueError("Handle must not be None.")
+
     result = []
     try:
         route_client = handle.client('route53')
         seconds = threshold * 3600
         hosted_zones = aws_get_paginator(route_client, "list_hosted_zones", "HostedZones")
         for zone in hosted_zones:
-            record_ttl_data = aws_get_ttl_for_route53_records(handle, zone['Id'])
+            zone_id = zone.get('Id')
+            if not zone_id:
+                continue
+            
+            record_ttl_data = aws_get_ttl_for_route53_records(handle, zone_id)
             for record_ttl in record_ttl_data:
-                if isinstance(record_ttl['record_ttl'], str):
+                if 'record_ttl' not in record_ttl or isinstance(record_ttl['record_ttl'], str):
                     continue
                 elif record_ttl['record_ttl'] < seconds:
-                    records = {}
-                    records["hosted_zone_id"] = zone['Id']
-                    records["record_name"] = record_ttl['record_name']
-                    records["record_type"] = record_ttl['record_type']
-                    records["record_ttl"] = record_ttl['record_ttl']
+                    records = {
+                        "hosted_zone_id": zone_id,
+                        "record_name": record_ttl.get('record_name', ''),
+                        "record_type": record_ttl.get('record_type', ''),
+                        "record_ttl": record_ttl['record_ttl'],
+                    }
                     result.append(records)
-    except Exception:
-        pass
+    except Exception as e:
+        raise e
 
     if len(result) != 0:
         return (False, result)

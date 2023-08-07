@@ -32,6 +32,10 @@ def aws_get_nlbs_without_targets(handle, region: str = "") -> Tuple:
 
         :rtype: lists Network loadbalancers ARNs without targets.
     """
+    if handle is None:
+        raise ValueError("Handle must not be None.")
+    if region and region not in aws_list_all_regions(handle):
+        raise ValueError(f"Invalid region: {region}.")
     result = []
     all_regions = [region]
     if not region:

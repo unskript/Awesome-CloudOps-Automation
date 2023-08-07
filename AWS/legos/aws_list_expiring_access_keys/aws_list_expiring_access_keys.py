@@ -4,7 +4,7 @@
 import pprint
 from typing import Tuple
 import datetime
-import dateutil
+import dateutil.tz
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_iam_users.aws_list_all_iam_users import aws_list_all_iam_users
 
@@ -33,8 +33,8 @@ def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
 
         :rtype: Status, List of expiring access keys and Error if any 
     """
-    result =[]
-    all_users=[]
+    result = []
+    all_users = []
     try:
         all_users = aws_list_all_iam_users(handle=handle)
     except Exception as error:
@@ -43,22 +43,21 @@ def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
     for each_user in all_users:
         try:
             iamClient = handle.client('iam')
-            final_result={}
             response = iamClient.list_access_keys(UserName=each_user)
             for x in response["AccessKeyMetadata"]:
-                if len(response["AccessKeyMetadata"])!= 0:
-                    create_date = x["CreateDate"]
-                    right_now = datetime.datetime.now(dateutil.tz.tzlocal())
-                    diff = right_now-create_date
-                    days_remaining = diff.days
-                    if days_remaining > threshold_days:
-                        final_result["username"] = x["UserName"]
-                        final_result["access_key_id"] = x["AccessKeyId"]
-            if len(final_result)!=0:
-                result.append(final_result)
+                create_date = x["CreateDate"]
+                right_now = datetime.datetime.now(dateutil.tz.tzlocal())
+                diff = right_now - create_date
+                days_remaining = threshold_days - diff.days
+                if days_remaining >= 0 and days_remaining <= threshold_days:
+                    final_result = {
+                        "username": x["UserName"],
+                        "access_key_id": x["AccessKeyId"]
+                    }
+                    result.append(final_result)
         except Exception as e:
             raise e
 
-    if len(result) != 0:
+    if result:
         return (False, result)
     return (True, None)
