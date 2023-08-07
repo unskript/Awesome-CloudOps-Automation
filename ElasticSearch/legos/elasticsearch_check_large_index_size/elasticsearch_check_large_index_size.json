@@ -1,0 +1,15 @@
+{
+  "action_title": "Get large Elasticsearch Index size",
+  "action_description": "This action checks the sizes of all indices in the Elasticsearch cluster and compares them to a given threshold.",
+  "action_type": "LEGO_TYPE_ELASTICSEARCH",
+  "action_entry_function": "elasticsearch_check_large_index_size",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}

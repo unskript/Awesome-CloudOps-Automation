@@ -1,0 +1,15 @@
+{
+  "action_title": "Get MongoDB large databases",
+  "action_description": "This action compares the total disk size used by MongoDB to a given threshold.",
+  "action_type": "LEGO_TYPE_MONGODB",
+  "action_entry_function": "mongodb_compare_disk_size_to_threshold",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}
