@@ -34,39 +34,45 @@ def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
     pprint.pprint(output)
 
 def fetch_instances_from_valid_region(res,r, termination_tag_name, lifetime_tag_name):
-    result=[]
-    instances_dict={}
+    result = []
+    right_now = date.today()
     for reservation in res:
-            for instance in reservation['Instances']:
-                try:
+        for instance in reservation['Instances']:
+            try:
+                if 'Tags' in instance:
                     tagged_instance = instance['Tags']
                     tag_keys = [tags['Key'] for tags in tagged_instance]
-                    if termination_tag_name not in tag_keys or lifetime_tag_name not in tag_keys:
-                        result.append(instance['InstanceId'])
-                    elif termination_tag_name not in tag_keys and lifetime_tag_name not in tag_keys:
-                        result.append(instance['InstanceId'])
-                    if termination_tag_name in tag_keys:
-                        for x in instance['Tags']:
-                            if x['Key'] == termination_tag_name:
-                                right_now = date.today()
-                                date_object = datetime.strptime(x['Value'], '%d-%m-%Y').date()
-                                if date_object < right_now:
-                                    result.append(instance['InstanceId'])
-                            elif x['Key'] == lifetime_tag_name:
-                                launch_time = instance['LaunchTime']
-                                convert_to_datetime = launch_time.strftime("%d-%m-%Y")
-                                launch_date = datetime.strptime(convert_to_datetime,'%d-%m-%Y').date()
-                                if x['Value'] != 'INDEFINITE':
-                                    if launch_date < right_now:
-                                        result.append(instance['InstanceId'])
-                except Exception as e:
-                        if len(instance['InstanceId'])!=0:
-                            result.append(instance['InstanceId'])
-    if len(result)!=0:
-        instances_dict['region']= r
-        instances_dict['instances']= result
-    return instances_dict
 
+                    if termination_tag_name not in tag_keys or lifetime_tag_name not in tag_keys:
+                        if 'InstanceId' in instance:
+                            result.append(instance['InstanceId'])
+                        continue  # Skip to next instance if tags not found
+
+                    for x in instance['Tags']:
+                        if x['Key'] == termination_tag_name:
+                            date_object = datetime.strptime(x['Value'], '%d-%m-%Y').date()
+                            if date_object < right_now:
+                                result.append(instance['InstanceId'])
+
+                        elif x['Key'] == lifetime_tag_name:
+                            launch_time = instance['LaunchTime']
+                            convert_to_datetime = launch_time.strftime("%d-%m-%Y")
+                            launch_date = datetime.strptime(convert_to_datetime,'%d-%m-%Y').date()
+                            if x['Value'] != 'INDEFINITE' and launch_date < right_now:
+                                result.append(instance['InstanceId'])
+
+                else:
+                    if 'InstanceId' in instance:
+                        result.append(instance['InstanceId'])
+
+            except Exception as e:
+                if 'InstanceId' in instance:
+                    result.append(instance['InstanceId'])
+                print(f"Error processing instance {instance['InstanceId']}: {e}")
+
+    instances_dict = {'region': r, 'instances': result} if result else {}
+    return instances_dict
+    
 def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None, termination_tag_name:str='terminationDateTag', lifetime_tag_name:str='lifetimeTag') -> Tuple:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
 

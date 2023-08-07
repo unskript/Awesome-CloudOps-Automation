@@ -24,7 +24,7 @@ def aws_get_schedule_to_retire_instances_printer(output):
 
     pprint.pprint(output)
 
-def aws_get_schedule_to_retire_instances( handle, region: str=None) -> Tuple:
+def aws_get_schedule_to_retire_instances( handle, region: str="") -> Tuple:
     """aws_get_schedule_to_retire_instances Returns a tuple of instances scheduled to retire.
 
         :type region: string
@@ -34,35 +34,29 @@ def aws_get_schedule_to_retire_instances( handle, region: str=None) -> Tuple:
     """
     retiring_instances = {}
     result = []
-    all_instances = []
-    all_regions = [region]
-    if region is None or not region:
-         all_regions = aws_list_all_regions(handle=handle)
+    all_regions = [region] if region else aws_list_all_regions(handle)
+
     for r in all_regions:
         try:
             ec2client = handle.client('ec2', region_name=r)
-            output = aws_filter_ec2_instances(handle=handle,region=r)
-            if len(output)!=0:
+            output = aws_filter_ec2_instances(handle=handle, region=r)
+            if output:
                 for o in output:
-                    all_instances_dict = {}
-                    all_instances_dict["region"]=r
-                    all_instances_dict["instance"]=o
-                    all_instances.append(all_instances_dict)
+                    all_instances_dict = {"region": r, "instance": o}
+                    try:
+                        response = ec2client.describe_instance_status(
+                            Filters=[{'Name': 'event.code', 'Values': ['instance-retirement']}],
+                            InstanceIds=[all_instances_dict['instance']]
+                        )
+                        instance_statuses = response.get('InstanceStatuses', [])
+                        for res in instance_statuses:
+                            retiring_instances = {'instance': res['InstanceId'], 'region': r}
+                            result.append(retiring_instances)
+                    except Exception as e:
+                        print(f"An error occurred while describing instance status for instance {o} in region {r}: {e}")
         except Exception:
             pass
-    for each_instance in all_instances:
-        try:
-            ec2client = handle.client('ec2', region_name=each_instance['region'])
-            response = ec2client.describe_instance_status(
-                Filters=[{'Name': 'event.code','Values': ['instance-retirement']}],
-                InstanceIds=each_instance['instance']
-                )
-            for res in response['InstanceStatuses']:
-                retiring_instances['instance'] = res['InstanceId']
-                retiring_instances['region'] = each_instance['region']
-                result.append(retiring_instances)
-        except Exception:
-            pass
-    if len(result)!=0:
+
+    if result:
         return (False, result)
     return (True, None)

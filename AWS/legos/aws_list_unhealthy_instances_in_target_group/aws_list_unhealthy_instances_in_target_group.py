@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
             return
         pprint.pprint(output)
 
-    def get_all_target_groups(handle, r):
+    def get_all_target_groups(self, handle, r):
         target_arns_list = []
         elbv2Client = handle.client('elbv2', region_name=r)
         try:

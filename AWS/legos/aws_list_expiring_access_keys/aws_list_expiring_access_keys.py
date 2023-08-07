@@ -49,7 +49,7 @@ def aws_list_expiring_access_keys(handle, threshold_days: int = 90)-> Tuple:
                 right_now = datetime.datetime.now(dateutil.tz.tzlocal())
                 diff = right_now - create_date
                 days_remaining = threshold_days - diff.days
-                if days_remaining >= 0 and days_remaining <= threshold_days:
+                if 0 <= days_remaining <= threshold_days:
                     final_result = {
                         "username": x["UserName"],
                         "access_key_id": x["AccessKeyId"]

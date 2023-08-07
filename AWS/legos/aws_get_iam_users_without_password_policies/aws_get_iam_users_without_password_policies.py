@@ -27,14 +27,19 @@ def aws_get_iam_users_without_password_policies(handle) -> Tuple:
         :rtype: Status, List of IAM users without any password policy
     """
     result = []
-    iamClient = handle.client('iam')
-    response = aws_list_all_iam_users(handle)
-    for user in response:
-        try:
-            iamClient.get_account_password_policy()
-        except iamClient.exceptions.NoSuchEntityException:
-            result.append(user)
-    if len(result) != 0:
-        return (False, result)
-    return (True, None)
-
+    iam_client = handle.client('iam')
+    paginator = iam_client.get_paginator('list_users')
+    for response in paginator.paginate():
+        for user in response['Users']:
+            user_name = user['UserName']
+            try:
+                # Check for user-managed policies attached to the user
+                user_policies = iam_client.list_user_policies(UserName=user_name)
+                # Check for AWS-managed policies attached to the user
+                attached_policies = iam_client.list_attached_user_policies(UserName=user_name)
+                # If the user has no policies, add to result
+                if not user_policies['PolicyNames'] and not attached_policies['AttachedPolicies']:
+                    result.append(user_name)
+            except Exception as e:
+                print(f"An error occurred while processing user {user_name}: {e}")
+    return (False, result) if result else (True, None)
