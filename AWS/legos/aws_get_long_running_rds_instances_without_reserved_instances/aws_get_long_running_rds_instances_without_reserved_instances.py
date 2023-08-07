@@ -44,7 +44,7 @@ def aws_get_long_running_rds_instances_without_reserved_instances(handle, region
     for reg in all_regions:
         try:
             rdsClient = handle.client('rds', region_name=reg)
-            response = rdsClient.describe_reserved_nodes()
+            response = rdsClient.describe_reserved_db_instances() 
             reservedInstancesPerType = {}
             if response['ReservedDBInstances']:
                 for ins in response['ReservedDBInstances']:
@@ -60,6 +60,8 @@ def aws_get_long_running_rds_instances_without_reserved_instances(handle, region
             response = aws_get_paginator(rdsClient, "describe_db_instances", "DBInstances")
             for instance in response:
                 if instance['DBInstanceStatus'] == 'available':
+                    # Check for existence of keys before using them
+                    if 'InstanceCreateTime' in instance and 'DBInstanceClass' in instance:
                         uptime = datetime.now(timezone.utc) - instance['InstanceCreateTime']
                         if uptime > timedelta(days=threshold):
                             # Check if the cluster node type is present in the reservedInstancesPerRegion map.

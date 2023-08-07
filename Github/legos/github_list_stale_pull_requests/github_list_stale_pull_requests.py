@@ -50,21 +50,37 @@ def github_list_stale_pull_requests(handle, owner:str, repository:str, threshold
 
         :rtype: Status, List of stale pull requests
     """
+    if handle is None or not owner or not repository or threshold_days is None or threshold_days <= 0:
+        raise ValueError("Invalid input parameters")
+
     result = []
     age = int(threshold_days)
     try:
-        owner = handle.get_user(owner)
-        repo_name = owner.login+'/'+repository
+        owner_user = handle.get_user(owner)
+        if owner_user is None:
+            raise UnknownObjectException("No such user found")
+
+        repo_name = owner_user.login + '/' + repository
         repo = handle.get_repo(repo_name)
+        if repo is None:
+            raise UnknownObjectException("No such repository found")
+
         prs = repo.get_pulls()
+        if prs.totalCount == 0:
+            return (True, None)
+
         for pr in prs:
             prs_dict = {}
             creation_date = pr.created_at
+            if creation_date is None:
+                continue
+
             today = datetime.datetime.now()
             diff = (today - creation_date).days
             if diff >= age:
                 prs_dict[pr.number] = pr.title
                 result.append(prs_dict)
+
     except GithubException as e:
         if e.status == 403:
             raise BadCredentialsException("You need admin access") from e
@@ -73,6 +89,7 @@ def github_list_stale_pull_requests(handle, owner:str, repository:str, threshold
         raise e.data
     except Exception as e:
         raise e
+
     if len(result) != 0:
         return (False, result)
     return (True, None)
