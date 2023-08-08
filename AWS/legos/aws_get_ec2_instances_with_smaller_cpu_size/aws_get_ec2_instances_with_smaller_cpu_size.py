@@ -4,6 +4,7 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 import pprint
+import json
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
 from unskript.legos.aws.aws_get_all_ec2_instances.aws_get_all_ec2_instances import aws_get_all_ec2_instances
 
@@ -41,33 +42,37 @@ def aws_get_ec2_instances_with_smaller_cpu_size(handle, instance_ids: list = [],
 
     :rtype: Status, List of dicts of instance IDs with CPU size less than the threshold
     """
-    size_to_cpu_map = {
-    "nano": 2,
-    "micro": 2,
-    "small": 1,
-    "medium": 1,
-    "large": 2,
-    "xlarge": 4,
-    "2xlarge": 8,
-    "3xlarge": 12,
-    "4xlarge": 16,
-    "6xlarge": 24,
-    "8xlarge": 32,
-    "9xlarge": 36,
-    "10xlarge": 40,
-    "12xlarge": 48,
-    "16xlarge": 64,
-    "18xlarge": 72,
-    "24xlarge": 96,
-    "32xlarge": 128,
-    "metal": 96
+    size_to_cpu_map_str = """
+    {
+        "nano": 2,
+        "micro": 2,
+        "small": 1,
+        "medium": 1,
+        "large": 2,
+        "xlarge": 4,
+        "2xlarge": 8,
+        "3xlarge": 12,
+        "4xlarge": 16,
+        "6xlarge": 24,
+        "8xlarge": 32,
+        "9xlarge": 36,
+        "10xlarge": 40,
+        "12xlarge": 48,
+        "16xlarge": 64,
+        "18xlarge": 72,
+        "24xlarge": 96,
+        "32xlarge": 128,
+        "metal": 96
     }
+    """
+
+    size_to_cpu_map = json.loads(size_to_cpu_map_str)
     result = []
     instances_with_low_cpu_size = {}
 
     try:
         if instance_ids and not region:
-            raise SystemError("Region must be specified when instance IDs are given.")
+            raise ValueError("Region must be specified when instance IDs are given.")
 
         if instance_ids and region:
             # If instance_ids and region are given

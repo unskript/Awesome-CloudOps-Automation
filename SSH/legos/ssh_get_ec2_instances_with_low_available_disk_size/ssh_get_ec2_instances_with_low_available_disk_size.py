@@ -17,6 +17,9 @@ class InputSchema(BaseModel):
     threshold: Optional[float] = Field(
         default = 5, description='The disk size threshold in GB. Default- 5GB', title='Threshold(in GB)'
     )
+    command: Optional[str] = Field(
+        default = "df -h /dev/xvda1", description='Command to get disk size. Default- df -h /dev/xvda1', title='Command to get disk size.'
+    )
 
 
 def ssh_get_ec2_instances_with_low_available_disk_size_printer(output):
@@ -24,7 +27,7 @@ def ssh_get_ec2_instances_with_low_available_disk_size_printer(output):
         return
     pprint.pprint(output)
 
-def ssh_get_ec2_instances_with_low_available_disk_size(handle, hosts: list, threshold: float = 5)-> List:
+def ssh_get_ec2_instances_with_low_available_disk_size(handle, hosts: list, threshold: float = 5, command:str = "df -h /dev/xvda1")-> List:
     """Checks the available root disk size and compares it with the threshold.
 
     :type handle: SSH Client object
@@ -36,10 +39,12 @@ def ssh_get_ec2_instances_with_low_available_disk_size(handle, hosts: list, thre
     :type threshold: float
     :param threshold: The disk size threshold in GB.
 
+    :type command: str
+    :param command: Command to get disk size. Default- df -h /dev/xvda1
+
     :rtype: Status, list of dicts of hosts with available disk size less than the threshold
     """
-    command = "df -h /dev/xvda1"
-    output = ssh_get_ec2_instances_with_low_available_disk_size(handle, hosts, command)
+    output = ssh_execute_remote_command(handle, hosts, command)
     result = []
     hosts_with_less_space = {}
     for host, host_output in output.items():
