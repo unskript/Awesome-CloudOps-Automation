@@ -137,7 +137,7 @@ def check_sanity(ipynbFile: str = '') -> bool:
 
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
         skip_pattern = 'task.configure(credentialsJson='
-        ok_pattern = "task.configure(credentialsJson='''{\"credential_type\": \"" + action_type + "\",}''')"
+        ok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\",}''')"
         for line in cell.get('source'):
             if skip_pattern in line and ok_pattern not in line:
                 print(f"Failed credentialsJson/code check for cell {cell.get('metadata').get('name')}")
