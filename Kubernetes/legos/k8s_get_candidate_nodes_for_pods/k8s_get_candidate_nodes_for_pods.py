@@ -12,10 +12,6 @@ from kubernetes import client
 pp = pprint.PrettyPrinter(indent=2)
 
 class InputSchema(BaseModel):
-    attachable_volumes_aws_ebs: Optional[int] = Field(
-        default=0,
-        title='EBS Volume Limit (Gb)',
-        description='EBS Volume limit in Gb. Eg 25')
     cpu_limit: Optional[int] = Field(
         default=0,
         title='CPU Limit',
@@ -39,7 +35,6 @@ def k8s_get_candidate_nodes_for_pods_printer(output):
     print("\n")
     print(tabulate(data, tablefmt="grid", headers=[
         "Name",
-        "attachable-volumes-aws-ebs",
         "cpu",
         "ephemeral-storage",
         "hugepages-1Gi",
@@ -49,7 +44,6 @@ def k8s_get_candidate_nodes_for_pods_printer(output):
         ]))
 
 def k8s_get_candidate_nodes_for_pods(handle,
-                                     attachable_volumes_aws_ebs: int = 0,
                                      cpu_limit: int = 0,
                                      memory_limit: str = "",
                                      pod_limit: int = 0) -> Tuple:
@@ -59,14 +53,11 @@ def k8s_get_candidate_nodes_for_pods(handle,
         :type handle: object
         :param handle: Object returned from the Task validate method
 
-        :type attachable_volumes_aws_ebs: int
-        :param attachable_volumes_aws_ebs: EBS Volume limit in Gb.
-
         :type cpu_limit: int
         :param cpu_limit: CPU Limit.
 
         :type memory_limit: string
-        :param memory_limit: Limits and requests for memory are measured in bytes. 
+        :param memory_limit: Limits and requests for memory are measured in bytes.
 
         :type pod_limit: int
         :param pod_limit: Pod Limit.
@@ -78,7 +69,6 @@ def k8s_get_candidate_nodes_for_pods(handle,
 
     nodes = coreApiClient.list_node()
     match_nodes = [node for node in nodes.items if
-                   (attachable_volumes_aws_ebs < int(node.status.capacity.get("attachable-volumes-aws-ebs", 0))) and
                    (cpu_limit < int(node.status.capacity.get("cpu", 0))) and
                    (pod_limit < int(node.status.capacity.get("pods", 0))) and
                    int(memory_limit.split("Mi")[0]) < (int(node.status.capacity.get("memory").split("Ki")[0]) / 1024)]
