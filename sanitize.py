@@ -122,10 +122,26 @@ def check_sanity(ipynbFile: str = '') -> bool:
             print("Failed outputs check for cell")
             rc = False
 
-        skip_pattern = "task.configure(credentialsJson="
-        if skip_pattern in cell.get('source'):
-            print("Failed credentialsJson/code check for cell")
-            rc = False
+        # Look for this pattern
+        # "task.configure(credentialsJson='''{\n",
+        # "    \"credential_name\": abc,
+        # "    \"credential_type\": def",
+        # "    \"credential_id\": ghi",
+        # "}''')\n",
+
+        # This pattern is ok
+        # "task.configure(credentialsJson='''{\"credential_type\": \"" + md.action_type + "\",}''')"
+
+        if cell.get('metadata').get('legotype') is None:
+            continue
+
+        action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
+        skip_pattern = 'task.configure(credentialsJson='
+        ok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\",}''')"
+        for line in cell.get('source'):
+            if skip_pattern in line and ok_pattern not in line:
+                print(f"Failed credentialsJson/code check for cell {cell.get('metadata').get('name')}")
+                rc = False
 
     return rc
 
@@ -153,32 +169,45 @@ def sanitize(ipynbFile: str = '') -> bool:
     new_cells = []
     cells = nb.get("cells")
     for cell in cells:
+
+        cell_type = cell.get('cell_type')
+        if cell_type != 'code':
+            new_cells.append(cell)
+            continue
+
+        if cell.get('metadata').get('legotype') is None:
+            print(f"Skipping cell without legotype {cell.get('metadata').get('name')}")
+            new_cells.append(cell)
+            continue
+
         # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
         if cell.get('metadata').get('tags') and 'unSkript:nbParam' in cell.get('metadata').get('tags'):
             print("SKIPPING FIRST CELL")
             continue
 
-        cell_type = cell.get('cell_type')
-        if cell_type == 'code':
-            # Reset CredntialsJson
-            cell['metadata']['credentialsJson'] = {}
 
-            # Cleanout output
-            cell['outputs'] = []
+        # Reset CredentialsJson
+        cell['metadata']['credentialsJson'] = {}
 
-            # Delete source CredntialsJson
-            skip_pattern = "task.configure(credentialsJson="
-            cell_source = []
-            skip = False
-            for line in cell.get('source'):
-                if skip_pattern in line:
-                    skip = True
-                elif skip and line.strip() == "}''')":
-                    skip = False
-                elif not skip:
-                    cell_source.append(line)
+        # Cleanout output
+        cell['outputs'] = []
 
-            cell['source'] = cell_source
+        # Delete CredentialsJson from source
+        skip_pattern = "task.configure(credentialsJson="
+        action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
+        new_creds_line = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\",}''')"
+
+        cell_source = []
+        skip = False
+        for line in cell.get('source'):
+            if skip_pattern in line and new_creds_line not in line:
+                cell_source.append(new_creds_line)
+                skip = True
+            elif skip and line.strip() == "}''')":
+                skip = False
+            elif not skip:
+                cell_source.append(line)
+        cell['source'] = cell_source
 
         new_cells.append(cell)
 
@@ -188,8 +217,8 @@ def sanitize(ipynbFile: str = '') -> bool:
         # Reset Environment & Tenant Information
         nb_new['metadata']['execution_data'] = execution_data
 
-    except Exception:
-        pass
+    except Exception as e:
+        raise e
 
     with open(ipynbFile, 'w') as f:
         json.dump(nb_new, f, indent=1)
