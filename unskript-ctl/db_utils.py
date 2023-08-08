@@ -26,7 +26,7 @@ PSS_DB_DIR="/unskript/db"
 PSS_DB_PATH="/unskript/db/unskript_pss.db"
 CS_DB_PATH="/var/unskript/snippets.db"
 SNIPPETS_FILE="/var/unskript/code_snippets.json"
-CUSTOM_SNIPPETS="/data/custom/custom_snippets.json"
+CUSTOM_SNIPPETS="/unskript/data/custom/custom_snippets.json"
 
 def init_pss_db() -> DB:
     """init_pss_db This function initializes PSS db. 
