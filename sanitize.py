@@ -122,21 +122,24 @@ def check_sanity(ipynbFile: str = '') -> bool:
             print("Failed outputs check for cell")
             rc = False
 
-        # Look for these
+        # Look for this pattern
         # "task.configure(credentialsJson='''{\n",
         # "    \"credential_name\": abc,
         # "    \"credential_type\": def",
         # "    \"credential_id\": ghi",
         # "}''')\n",
 
-        # this is ok
+        # This pattern is ok
         # "task.configure(credentialsJson='''{\"credential_type\": \"" + md.action_type + "\",}''')"
 
-        skip_pattern = "task.configure(credentialsJson="
-        ok_pattern = "credential_type"
+        action_type = cell.get('metadata').get('legotype')
+        if action_type is None:
+            continue
+        skip_pattern = 'task.configure(credentialsJson='
+        ok_pattern = "task.configure(credentialsJson='''{\"credential_type\": \"" + action_type + "\",}''')"
         for line in cell.get('source'):
             if skip_pattern in line and ok_pattern not in line:
-                print("Failed credentialsJson/code check for cell")
+                print(f"Failed credentialsJson/code check for cell {cell.get('metadata').get('name')}")
                 rc = False
 
     return rc
