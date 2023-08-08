@@ -132,9 +132,10 @@ def check_sanity(ipynbFile: str = '') -> bool:
         # This pattern is ok
         # "task.configure(credentialsJson='''{\"credential_type\": \"" + md.action_type + "\",}''')"
 
-        action_type = cell.get('metadata').get('legotype')
-        if action_type is None:
+        if cell.get('metadata').get('legotype') is None:
             continue
+
+        action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
         skip_pattern = 'task.configure(credentialsJson='
         ok_pattern = "task.configure(credentialsJson='''{\"credential_type\": \"" + action_type + "\",}''')"
         for line in cell.get('source'):
