@@ -42,8 +42,8 @@ cd Awesome-CloudOps-Automation
 
 ```
 docker run -it -p 8888:8888 \
- -v $HOME/Awesome-CloudOps-Automation/custom:/data \
- -v $HOME/.unskript:/unskript \
+ -v $HOME/Awesome-CloudOps-Automation/custom:/unskript/data \
+ -v $HOME/.unskript:/unskript/credentials \
  -e ACA_AWESOME_MODE=1 \
  -e OPENAI_ORGANIZATION_ID=<your openAI org> \
  -e OPENAI_API_KEY=<your API key> \
