@@ -122,7 +122,7 @@ def check_sanity(ipynbFile: str = '') -> bool:
             print("Failed outputs check for cell")
             rc = False
 
-        skip_pattern = "task.configure(credentialsJson="
+        skip_pattern = "task.configure(credentialsJson='''{"
         if skip_pattern in cell.get('source'):
             print("Failed credentialsJson/code check for cell")
             rc = False
