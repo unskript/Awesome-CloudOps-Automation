@@ -145,6 +145,20 @@ def check_sanity(ipynbFile: str = '') -> bool:
 
     return rc
 
+def replace_default_string_values_with_extra_quotes(inputDict: dict)-> dict:
+    for k, v in inputDict.get('properties').items():
+        if 'default' in v.keys():
+            if v.get('type') != 'string':
+                continue
+
+            defaultValue = v.get('default')
+            if defaultValue.startswith("\"") and defaultValue.endswith("\""):
+                continue
+
+            if len(defaultValue) > 0:
+                newDefaultValue = "\"" + defaultValue + "\""
+                v['default'] = newDefaultValue
+    return inputDict
 
 ## returns True is everything is ok 
 def sanitize(ipynbFile: str = '') -> bool:
@@ -185,6 +199,9 @@ def sanitize(ipynbFile: str = '') -> bool:
             print("SKIPPING FIRST CELL")
             continue
 
+        if cell.get('metadata').get('inputschema') is not None:
+            cell['metadata']['inputschema'] = \
+                [ replace_default_string_values_with_extra_quotes(cell.get('metadata').get('inputschema')[0]) ]
 
         # Reset CredentialsJson
         cell['metadata']['credentialsJson'] = {}
@@ -195,7 +212,7 @@ def sanitize(ipynbFile: str = '') -> bool:
         # Delete CredentialsJson from source
         skip_pattern = "task.configure(credentialsJson="
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
-        new_creds_line = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\",}''')"
+        new_creds_line = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
 
         cell_source = []
         skip = False
