@@ -19,6 +19,8 @@ This Lego takes inputs handle, services, namespace, threshold.
 ## Lego Output
 Here is a sample output.
 <img src="./1.png">
+<img src="./2.png">
+<img src="./3.png">
 
 ## See it in Action
 
