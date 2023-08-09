@@ -112,9 +112,9 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
 
     exceeding_services = []
 
-    for namespace in namespaces:
+    for nmspace in namespaces:
         if not services:
-            kubectl_command = f"kubectl get pods -n {namespace} -o=jsonpath='{{.items[*].metadata.name}}'"
+            kubectl_command = f"kubectl get pods -n {nmspace} -o=jsonpath='{{.items[*].metadata.name}}'"
             response = handle.run_native_cmd(kubectl_command)
             if response is None or response.stderr:
                 raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
@@ -124,16 +124,16 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
 
         for service in services_to_check:
             # Get the memory request for the service
-            kubectl_command = f"kubectl get pod {service} -n {namespace} -o=jsonpath='{{.spec.containers[0].resources.requests.memory}}'"
+            kubectl_command = f"kubectl get pod {service} -n {nmspace} -o=jsonpath='{{.spec.containers[0].resources.requests.memory}}'"
             response = handle.run_native_cmd(kubectl_command)
             memory_request = response.stdout
 
             memory_request = memory_request.strip() if memory_request else '0'
             memory_request_milli = convert_memory_to_milli(memory_request)
             if memory_request_milli == 0:
-                print(f"Warning: Memory request usage not set for '{service}' in '{namespace}' namespace")
+                print(f"Warning: Memory request usage not set for '{service}' in '{nmspace}' namespace")
             # Get the memory usage for the service
-            kubectl_command = f"kubectl top pod {service} -n {namespace} --containers | awk '{{print $3}}' | tail -n +2"
+            kubectl_command = f"kubectl top pod {service} -n {nmspace} --containers | awk '{{print $3}}' | tail -n +2"
             response = handle.run_native_cmd(kubectl_command)
             memory_usage_values = response.stdout.strip().split('\n')
             memory_usage_values = [int(value.replace('m', '')) * 1024 if 'm' in value else int(value) for value in memory_usage_values if value.strip()]
@@ -142,7 +142,7 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
             for memory_usage in memory_usage_values:
                 utilization_percentage = (memory_usage / memory_request_milli) * 100 if memory_request_milli > 0 else 0
                 if utilization_percentage > threshold:
-                    exceeding_services.append({"service": service, "namespace": namespace,"message": "Memory request usage not set", "utilization_percentage": utilization_percentage})
+                    exceeding_services.append({"service": service, "namespace": nmspace,"message": "Memory request usage not set", "utilization_percentage": utilization_percentage})
 
     if exceeding_services:
         return (False, exceeding_services)
