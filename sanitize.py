@@ -199,9 +199,10 @@ def sanitize(ipynbFile: str = '') -> bool:
             print("SKIPPING FIRST CELL")
             continue
 
-        if cell.get('metadata').get('inputschema') is not None:
-            cell['metadata']['inputschema'] = \
-                [ replace_default_string_values_with_extra_quotes(cell.get('metadata').get('inputschema')[0]) ]
+        # Reset InputSchema
+        # if cell.get('metadata').get('inputschema') is not None:
+        #     cell['metadata']['inputschema'] = \
+        #         [ replace_default_string_values_with_extra_quotes(cell.get('metadata').get('inputschema')[0]) ]
 
         # Reset CredentialsJson
         cell['metadata']['credentialsJson'] = {}
