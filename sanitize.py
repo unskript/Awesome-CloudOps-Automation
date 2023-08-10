@@ -181,22 +181,23 @@ def sanitize(ipynbFile: str = '') -> bool:
 
 
     new_cells = []
-    cells = nb.get("cells")
-    for cell in cells:
+    old_cells = nb.get("cells")
+    for cell in old_cells:
 
         cell_type = cell.get('cell_type')
         if cell_type != 'code':
             new_cells.append(cell)
             continue
 
+        # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
+        if cell.get('metadata').get('tags') is not None and 'unSkript:nbParam' in cell.get('metadata').get('tags'):
+            print(f"SKIPPING FIRST CELL with {len(cell.get('source'))} lines")
+            print(cell.get('source'))
+            continue
+
         if cell.get('metadata').get('legotype') is None:
             print(f"Skipping cell without legotype {cell.get('metadata').get('name')}")
             new_cells.append(cell)
-            continue
-
-        # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
-        if cell.get('metadata').get('tags') and 'unSkript:nbParam' in cell.get('metadata').get('tags'):
-            print("SKIPPING FIRST CELL")
             continue
 
         # Reset InputSchema
@@ -216,8 +217,12 @@ def sanitize(ipynbFile: str = '') -> bool:
         new_creds_line = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
 
         cell_source = []
+        if isinstance(cell.get('source'), str):
+            old_cell_source = cell.get('source').split("\n")
+        else:
+            old_cell_source = cell.get('source')
         skip = False
-        for line in cell.get('source'):
+        for line in old_cell_source:
             if skip_pattern in line and new_creds_line not in line:
                 cell_source.append(new_creds_line)
                 skip = True
@@ -239,7 +244,7 @@ def sanitize(ipynbFile: str = '') -> bool:
         raise e
 
     with open(ipynbFile, 'w') as f:
-        json.dump(nb_new, f, indent=1)
+        json.dump(nb_new, f, indent=nb.get('indent', 4))
         print(u'\u2713', f"Updated Notebook {ipynbFile}")
         retVal = True
 
