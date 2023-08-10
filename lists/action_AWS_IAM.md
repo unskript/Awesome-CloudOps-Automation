@@ -14,6 +14,8 @@
 
 * [AWS Get Generated Policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_generated_policy/README.md): Given a Region and the ID of a policy generation job, this Action will return the policy (once it has been completed).
 
+* [AWS List IAM users without password policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_iam_users_without_password_policies/README.md): Get a list of all IAM users that have no password policy attached to them.
+
 * [AWS Get IAM Users with Old Access Keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_users_with_old_access_keys/README.md): This Lego collects the access keys that have never been used or the access keys that have been used but are older than the threshold.
 
 * [AWS List Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_access_keys/README.md): List all Access Keys for the User

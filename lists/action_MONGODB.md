@@ -4,6 +4,10 @@
 
 * [MongoDB Atlas cluster cloud backup](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_atlas_cluster_backup/README.md): Trigger on-demand Atlas cloud backup
 
+* [Get large MongoDB indices](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_check_large_index_size/README.md): This action compares the size of each index with a given threshold and returns any indexes that exceed the threshold.
+
+* [Get MongoDB large databases](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_compare_disk_size_to_threshold/README.md): This action compares the total disk size used by MongoDB to a given threshold.
+
 * [MongoDB Count Documents](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_count_documents/README.md): MongoDB Count Documents
 
 * [MongoDB Create Collection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_create_collection/README.md): MongoDB Create Collection
@@ -24,7 +28,9 @@
 
 * [Get MongoDB Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_handle/README.md): Get MongoDB Handle
 
-* [Get Mongo Server Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_server_status/README.md): Get Mongo Server Status
+* [MongoDB get metrics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_metrics/README.md): This action retrieves various metrics such as index size, disk size per collection for all databases and collections.
+
+* [Get Mongo Server Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_server_status/README.md): Get Mongo Server Status and check for any abnormalities.
 
 * [MongoDB Insert Document](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_insert_document/README.md): MongoDB Insert Document
 

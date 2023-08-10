@@ -24,6 +24,8 @@
 
 * [AWS Delete RDS Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_rds_instance/README.md): Delete AWS RDS Instance
 
+* [AWS Delete Redshift Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_redshift_cluster/README.md): Delete AWS Redshift Cluster
+
 * [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
 
 * [AWS Delete Secret](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_secret/README.md): AWS Delete Secret
@@ -140,6 +142,8 @@
 
 * [Get AWS ECS Service Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ecs_services_status/README.md): Get the Status of an AWS ECS Service
 
+* [AWS List IAM users without password policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_iam_users_without_password_policies/README.md): Get a list of all IAM users that have no password policy attached to them.
+
 * [Get AWS Instance Details with Matching Private DNS Name](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_detail_with_private_dns_name/README.md): Use this action to get details of an AWS EC2 Instance that matches a Private DNS Name
 
 * [Get AWS Instances Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_details/README.md): Get AWS Instances Details
@@ -161,6 +165,12 @@
 * [AWS Get Redshift Result](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_result/README.md): Given a QueryId, Get the Query Result, and format into a List
 
 * [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
+
+* [AWS Get Resources Missing Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_missing_tag/README.md): Gets a list of all AWS resources that are missing the tag in the input parameters.
+
+* [AWS Get Resources With Expiration Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_expiration_tag/README.md): AWS Get all Resources with an expiration tag
+
+* [AWS Get Resources With Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_tag/README.md): For a given tag and region, get every AWS resource with that tag.
 
 * [Get AWS S3 Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_s3_buckets/README.md): Get AWS S3 Buckets
 
@@ -248,7 +258,7 @@
 
 * [AWS Register/Unregister Instances from a Target Group.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group
 
-* [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
+* [Terminate AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): This Action will Terminate AWS EC2 Instances
 
 * [AWS Update Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
 
@@ -265,8 +275,6 @@
 * [Airflow trigger DAG run](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Airflow/legos/airflow_trigger_dag_run/README.md): Airflow trigger DAG run
 
 * [Get Azure Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Azure/legos/azure_get_handle/README.md): Get Azure Handle
-
-* [ChatGPT Get Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ChatGPT/legos/chatgpt_get_handle/README.md): Get ChatGPT Handle
 
 * [Datadog delete incident](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Datadog/legos/datadog_delete_incident/README.md): Delete an incident given its id
 
@@ -298,7 +306,9 @@
 
 * [Elasticsearch Cluster Health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_check_health_status/README.md): Elasticsearch Check Health Status
 
-* [Elasticsearch Cluster Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_cluster_statistics/README.md): Elasticsearch Cluster Statistics fetches basic index metrics and information about the current nodes that form the cluster
+* [Get large Elasticsearch Index size](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_check_large_index_size/README.md): This action checks the sizes of all indices in the Elasticsearch cluster and compares them to a given threshold.
+
+* [Check Elasticsearch cluster disk size](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_compare_cluster_disk_size_to_threshold/README.md): This action compares the disk usage percentage of the Elasticsearch cluster to a given threshold.
 
 * [Elasticsearch Delete Unassigned Shards](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_delete_unassigned_shards/README.md): Elasticsearch Delete Corrupted/Lost Shards
 
@@ -306,7 +316,11 @@
 
 * [Elasticsearch Enable Shard Allocation](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_enable_shard_allocation/README.md): Elasticsearch Enable Shard Allocation for any shards for any indices
 
+* [Elasticsearch Cluster Statistics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_get_cluster_statistics/README.md): Elasticsearch Cluster Statistics fetches total index size, disk size, and memory utilization and information about the current nodes and shards that form the cluster
+
 * [Get Elasticsearch Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_get_handle/README.md): Get Elasticsearch Handle
+
+* [Get Elasticsearch index level health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_get_index_health/README.md): This action checks the health of a given Elasticsearch index or all indices if no specific index is provided.
 
 * [Elasticsearch List Allocations](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_list_allocations/README.md): Elasticsearch List Allocations in a Cluster
 
@@ -314,7 +328,11 @@
 
 * [Elasticsearch search](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/ElasticSearch/legos/elasticsearch_search_query/README.md): Elasticsearch Search
 
+* [Add lifecycle policy to GCP storage bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_lifecycle_policy_to_bucket/README.md): The action adds a lifecycle policy to a Google Cloud Platform (GCP) storage bucket.
+
 * [Create GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_bucket/README.md): Create a new GCP bucket in the given location
+
+* [Create a GCP disk snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_disk_snapshot/README.md): Create a GCP disk snapshot.
 
 * [Create GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_filestore_instance/README.md): Create a new GCP Filestore Instance in the given location
 
@@ -334,13 +352,20 @@
 
 * [Fetch Objects from GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_fetch_objects_from_bucket/README.md): List all Objects in a GCP bucket
 
+* [Get GCP storage buckets without lifecycle policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_buckets_without_lifecycle_policies/README.md): The action retrieves a list of Google Cloud Platform (GCP) storage buckets that do not have any lifecycle policies applied.
+
+* [Get details of GCP forwarding rules](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_forwarding_rules_details/README.md): Get details of forwarding rules associated with a backend service.
+
 * [Get GCP Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_handle/README.md): Get GCP Handle
 
 * [Get List of GCP compute instance without label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_instances_without_label/README.md): Get List of GCP compute instance without label
 
+* [Get unused GCP backend services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_unused_backend_services/README.md): Get unused backend service for an application load balancer that has no instances in it's target group.
+
+
 * [List all GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_buckets/README.md): List all GCP buckets
 
-* [Get list  compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances/README.md): Get list compute instance
+* [Get GCP compute instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances/README.md): Get GCP compute instances
 
 * [Get List of GCP compute instance by label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_label/README.md): Get List of GCP compute instance by label
 
@@ -359,6 +384,8 @@
 * [GCP Resize a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_resize_gke_cluster/README.md): GCP Resize a GKE cluster by modifying nodes
 
 * [GCP Restart compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_restart_compute_instances/README.md): GCP Restart compute instance
+
+* [Restore GCP disk from a snapshot ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_restore_disk_from_snapshot/README.md): Restore a GCP disk from a compute instance snapshot.
 
 * [Save CSV to Google Sheets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_save_csv_to_google_sheets_v1/README.md): Saves your CSV (see notes) into a prepared Google Sheet.
 
@@ -466,7 +493,15 @@
 
 * [Kafka Check Replicas Available](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_check_replicas_available/README.md): Checks if the number of replicas not available for communication is equal to zero.
 
+* [Kafka get cluster health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_get_cluster_health/README.md): Fetches the health of the Kafka cluster including brokers, topics, and partitions.
+
+* [Kafka get count of committed messages](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_get_committed_messages_count/README.md): Fetches the count of committed messages (consumer offsets) for a specific consumer group and its topics.
+
 * [Get Kafka Producer Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_get_handle/README.md): Get Kafka Producer Handle
+
+* [Kafka get topic health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_get_topic_health/README.md): This action fetches the health and total number of messages for the specified topics.
+
+* [Kafka get topics with lag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_get_topics_with_lag/README.md): This action fetches the topics with lag in the Kafka cluster.
 
 * [Kafka Publish Message](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kafka/legos/kafka_publish_message/README.md): Publish Kafka Message
 
@@ -475,6 +510,10 @@
 * [Add Node in a Kubernetes Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_add_node_to_cluster/README.md): Add Node in a Kubernetes Cluster
 
 * [Change size of Kubernetes PVC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_change_pvc_size/README.md): Change size of Kubernetes PVC
+
+* [Check K8s services endpoint health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_check_service_status/README.md): This action checks the health status of the provided Kubernetes services.
+
+* [Check K8s worker CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_check_worker_cpu_utilization/README.md): Retrieves the CPU utilization for all worker nodes in the cluster and compares it to a given threshold.
 
 * [Delete a Kubernetes POD in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_delete_pod/README.md): Delete a Kubernetes POD in a given Namespace
 
@@ -486,6 +525,8 @@
 
 * [Kubernetes Execute a command on a POD in a given namespace and filter](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_exec_command_on_pods_and_filter/README.md): Execute a command on Kubernetes POD in a given namespace and filter output
 
+* [Execute local script on a pod](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_execute_local_script_on_a_pod/README.md): Execute local script on a pod in a namespace
+
 * [Gather Data for POD Troubleshoot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_gather_data_for_pod_troubleshoot/README.md): Gather Data for POD Troubleshoot
 
 * [Gather Data for K8S Service Troubleshoot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_gather_data_for_service_troubleshoot/README.md): Gather Data for K8S Service Troubleshoot
@@ -493,6 +534,8 @@
 * [Get All Evicted PODS From Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_evicted_pods_from_namespace/README.md): This action get all evicted PODS from given namespace. If namespace not given it will get all the pods from all namespaces.
 
 * [ Get All Kubernetes PODS with state in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_pods/README.md):  Get All Kubernetes PODS with state in a given Namespace
+
+* [Get K8s pods status and resource utilization info](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_resources_utilization_info/README.md): This action gets the pod status and resource utilization of various Kubernetes resources like jobs, services, persistent volumes.
 
 * [Get candidate k8s nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_candidate_nodes_for_pods/README.md): Get candidate k8s nodes for given configuration
 
@@ -502,19 +545,35 @@
 
 * [Get Kubernetes Deployment For a Pod in a Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_deployment/README.md): Get Kubernetes Deployment for a POD in a Namespace
 
-* [Get Deployment Rollout Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_deployment_rollout_status/README.md): This action search for failed deployment rollout status and returns list.
-
 * [Get Deployment Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_deployment_status/README.md): This action search for failed deployment status and returns list.
 
+* [Get Kubernetes Error PODs from All Jobs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_error_pods_from_all_jobs/README.md): Get Kubernetes Error PODs from All Jobs
+
+* [Get expiring K8s certificates](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_expiring_certificates/README.md): Get the expiring certificates for a K8s cluster.
+
 * [Get Kubernetes Failed Deployments](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_failed_deployments/README.md): Get Kubernetes Failed Deployments
+
+* [Get frequently restarting K8s pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_frequently_restarting_pods/README.md): Get Kubernetes pods from all namespaces that are restarting too often.
 
 * [Get Kubernetes Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_handle/README.md): Get Kubernetes Handle
 
 * [Get All Kubernetes Healthy PODS in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_healthy_pods/README.md): Get All Kubernetes Healthy PODS in a given Namespace
 
+* [Get memory utilization for K8s services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_memory_utilization_of_services/README.md): This action executes the given kubectl commands to find the memory utilization of the specified services in a particular namespace and compares it with a given threshold.
+
+* [Get K8s node status and CPU utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_node_status_and_resource_utilization/README.md): This action gathers Kubernetes node status and resource utilization information.
+
 * [Get Kubernetes Nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_nodes/README.md): Get Kubernetes Nodes
 
+* [Get K8s nodes disk and memory pressure](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_nodes_pressure/README.md): This action fetches the memory and disk pressure status of each node in the cluster
+
 * [Get Kubernetes Nodes that have insufficient resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_nodes_with_insufficient_resources/README.md): Get Kubernetes Nodes that have insufficient resources
+
+* [Get K8s offline nodes](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_offline_nodes/README.md): This action checks if any node in the Kubernetes cluster is offline.
+
+* [Get K8S OOMKilled Pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_oomkilled_pods/README.md): Get K8S Pods which are OOMKilled from the container last states.
+
+* [Get K8s get pending pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pending_pods/README.md): This action checks if any pod in the Kubernetes cluster is in 'Pending' status.
 
 * [Get Kubernetes POD Configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pod_config/README.md): Get Kubernetes POD Configuration
 
@@ -592,6 +651,10 @@
 
 * [MongoDB Atlas cluster cloud backup](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_atlas_cluster_backup/README.md): Trigger on-demand Atlas cloud backup
 
+* [Get large MongoDB indices](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_check_large_index_size/README.md): This action compares the size of each index with a given threshold and returns any indexes that exceed the threshold.
+
+* [Get MongoDB large databases](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_compare_disk_size_to_threshold/README.md): This action compares the total disk size used by MongoDB to a given threshold.
+
 * [MongoDB Count Documents](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_count_documents/README.md): MongoDB Count Documents
 
 * [MongoDB Create Collection](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_create_collection/README.md): MongoDB Create Collection
@@ -612,7 +675,9 @@
 
 * [Get MongoDB Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_handle/README.md): Get MongoDB Handle
 
-* [Get Mongo Server Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_server_status/README.md): Get Mongo Server Status
+* [MongoDB get metrics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_metrics/README.md): This action retrieves various metrics such as index size, disk size per collection for all databases and collections.
+
+* [Get Mongo Server Status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_get_server_status/README.md): Get Mongo Server Status and check for any abnormalities.
 
 * [MongoDB Insert Document](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Mongo/legos/mongodb_insert_document/README.md): MongoDB Insert Document
 
@@ -658,6 +723,8 @@
 
 * [Nomad List Jobs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Nomad/legos/nomad_list_jobs/README.md): List all Nomad jobs
 
+* [Get Opsgenie Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Opsgenie/legos/opsgenie_get_handle/README.md): Get Opsgenie Handle
+
 * [Create new maintenance window.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_create_new_maintenance_window/README.md): Create new maintenance window.
 
 * [Perform Pingdom single check](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Pingdom/legos/pingdom_do_single_check/README.md): Perform Pingdom Single Check
@@ -696,6 +763,8 @@
 
 * [PostgreSQL Get Index Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_index_usage/README.md): The action result shows the data for table name, the percentage of times an index was used for that table, and the number of live rows in the table.
 
+* [PostgreSQL get service status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_server_status/README.md): This action checks the status of each database.
+
 * [Execute commands in a PostgreSQL transaction.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_handling_transaction/README.md): Given a set of PostgreSQL commands, this actions run them inside a transaction.
 
 * [Long Running PostgreSQL Queries](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_long_running_queries/README.md): Long Running PostgreSQL Queries
@@ -722,9 +791,13 @@
 
 * [Delete Redis Unused keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_delete_stale_keys/README.md): Delete Redis Unused keys given a time threshold in seconds
 
+* [Get Redis cluster health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_get_cluster_health/README.md): This action gets the Redis cluster health.
+
 * [Get Redis Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_get_handle/README.md): Get Redis Handle
 
 * [Get Redis keys count](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_get_keys_count/README.md): Get Redis keys count matching pattern (default: '*')
+
+* [Get Redis metrics](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_get_metrics/README.md): This action fetched redis metrics like index size, memory utilization.
 
 * [ List Redis Large keys](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Redis/legos/redis_list_large_keys/README.md): Find Redis Large keys given a size threshold in bytes
 
@@ -760,11 +833,18 @@
 
 * [Update Salesforce Case](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/SalesForce/legos/salesforce_update_case/README.md): Update a Salesforce case
 
+* [Create Slack Channel and Invite Users](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_create_channel_invite_users/README.md): Create a Slack Channel with given name, and invite a list of userIds to the channel.
+
 * [Get Slack SDK Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_get_handle/README.md): Get Slack SDK Handle
+
+* [Slack Lookup User by Email](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_lookup_user_by_email/README.md): Given an email address, find the slack user in the workspace.
+ You can the extract their Profile picture, or retrieve their userid (which you can use to send messages) from the output.
 
 * [Post Slack Image](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_post_image/README.md): Post Slack Image
 
 * [Post Slack Message](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_post_message/README.md): Post Slack Message
+
+* [Slack Send DM](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Slack/legos/slack_send_DM/README.md): Given a list of Slack IDs, this Action will create a DM (one user) or group chat (multiple users), and send a message to the chat
 
 * [Snowflake Read Query](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Snowflake/legos/snowflake_read_query/README.md): Snowflake Read Query
 
