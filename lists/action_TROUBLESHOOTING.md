@@ -2,6 +2,10 @@
 
 * [AWS List Unhealthy Instances in a Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_list_unhealthy_instances_in_target_group/README.md): List Unhealthy Instances in a target group
 
+* [Get Kubernetes Error PODs from All Jobs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_error_pods_from_all_jobs/README.md): Get Kubernetes Error PODs from All Jobs
+
+* [Get K8S OOMKilled Pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_oomkilled_pods/README.md): Get K8S Pods which are OOMKilled from the container last states.
+
 * [Get all K8s Pods in CrashLoopBackOff State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_crashloopbackoff_state/README.md): Get all K8s pods in CrashLoopBackOff State
 
 * [Get all K8s Pods in ImagePullBackOff State](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pods_in_imagepullbackoff_state/README.md): Get all K8s pods in ImagePullBackOff State
