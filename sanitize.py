@@ -137,9 +137,9 @@ def check_sanity(ipynbFile: str = '') -> bool:
 
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
         skip_pattern = 'task.configure(credentialsJson='
-        ok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
+        nok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
         for line in cell.get('source'):
-            if skip_pattern in line and ok_pattern not in line:
+            if nok_pattern in line or skip_pattern in line:
                 print(f"Failed credentialsJson/code check for cell {cell.get('metadata').get('name')}")
                 rc = False
 
@@ -228,8 +228,9 @@ def sanitize(ipynbFile: str = '') -> bool:
         skip = False
         cell_source = []
         for line in old_cell_source:
-            if skip_pattern in line and new_creds_line not in line:
-                cell_source.append(new_creds_line)
+            if new_creds_line in line:
+                continue
+            elif skip_pattern in line and new_creds_line not in line:
                 skip = True
             elif skip and line.strip() == "}''')":
                 skip = False
