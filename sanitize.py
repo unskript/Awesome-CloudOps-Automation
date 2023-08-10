@@ -207,6 +207,8 @@ def sanitize(ipynbFile: str = '') -> bool:
 
         # Reset CredentialsJson
         cell['metadata']['credentialsJson'] = {}
+        cell['metadata']['execution_data'] = {}
+        cell['metadata']['execution_count'] = {}
 
         # Cleanout output
         cell['outputs'] = []
@@ -216,12 +218,15 @@ def sanitize(ipynbFile: str = '') -> bool:
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
         new_creds_line = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
 
-        cell_source = []
+        # source code be a list or a string (delimited by \n)
+        # we prefer the list version with \n to make it readable in code reviews
         if isinstance(cell.get('source'), str):
-            old_cell_source = cell.get('source').split("\n")
+            old_cell_source = cell.get('source').split("\n") # [ l+"\n" for l in cell.get('source').split("\n") ]
         else:
             old_cell_source = cell.get('source')
+
         skip = False
+        cell_source = []
         for line in old_cell_source:
             if skip_pattern in line and new_creds_line not in line:
                 cell_source.append(new_creds_line)
@@ -239,6 +244,7 @@ def sanitize(ipynbFile: str = '') -> bool:
     try:
         # Reset Environment & Tenant Information
         nb_new['metadata']['execution_data'] = execution_data
+        nb_new['metadata']['parameterValues'] = {}
 
     except Exception as e:
         raise e
