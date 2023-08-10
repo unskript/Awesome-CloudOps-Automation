@@ -1,5 +1,7 @@
 * [Attach a webhook endpoint to AWS Cloudwatch alarm](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_cloudwatch_attach_webhook_notification_to_alarm/README.md): Attach a webhook endpoint to one of the SNS attached to the AWS Cloudwatch alarm.
 
+* [AWS Find Redshift Clusters with low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_clusters_with_low_cpu_utilization/README.md): Find underutilized Redshift clusters in terms of CPU utilization.
+
 * [Get AWS CloudWatch Alarms List](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_alarms_list/README.md): Get AWS CloudWatch Alarms List
 
 * [Get AWS EBS Metrics from Cloudwatch](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_ebs/README.md): Get AWS CloudWatch Statistics for EBS volumes

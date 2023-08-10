@@ -26,6 +26,8 @@
 
 * [AWS Find RDS Instances with low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_rds_instances_with_low_cpu_utilization/README.md): This lego finds RDS instances are not utilizing their CPU resources to their full potential.
 
+* [AWS Find Redshift Clusters with low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_clusters_with_low_cpu_utilization/README.md): Find underutilized Redshift clusters in terms of CPU utilization.
+
 * [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
 
 * [AWS Get AWS Account Number](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_acount_number/README.md): Some AWS functions require the AWS Account number. This programmatically retrieves it.
@@ -42,6 +44,8 @@
 
 * [AWS Get Generated Policy](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_generated_policy/README.md): Given a Region and the ID of a policy generation job, this Action will return the policy (once it has been completed).
 
+* [Find AWS Lambdas Not Using ARM64 Graviton2 Processor](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_not_using_arm_graviton2_processor/README.md): Find all AWS Lambda functions that are not using the Arm-based AWS Graviton2 processor for their runtime architecture
+
 * [Get AWS Lambdas With High Error Rate](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_with_high_error_rate/README.md): Get AWS Lambda Functions that exceed a given threshold error rate.
 
 * [AWS Get Long Running RDS Instances Without Reserved Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_long_running_rds_instances_without_reserved_instances/README.md): This action gets information about long running instances and their status, and checks if they have any reserved nodes associated with them.
@@ -51,6 +55,14 @@
 * [AWS Get Older Generation RDS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_older_generation_rds_instances/README.md): AWS Get Older Generation RDS Instances action retrieves information about RDS instances using older generation instance types.
 
 * [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
+
+* [AWS Get Resources Missing Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_missing_tag/README.md): Gets a list of all AWS resources that are missing the tag in the input parameters.
+
+* [AWS Get Resources With Expiration Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_expiration_tag/README.md): AWS Get all Resources with an expiration tag
+
+* [AWS Get Resources With Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_tag/README.md): For a given tag and region, get every AWS resource with that tag.
+
+* [Get Timed Out AWS Lambdas](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_timed_out_lambdas/README.md): Get AWS Lambda functions that have exceeded the maximum amount of time in seconds that a Lambda function can run.
 
 * [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 

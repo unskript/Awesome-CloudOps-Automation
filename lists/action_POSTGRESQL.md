@@ -14,6 +14,8 @@
 
 * [PostgreSQL Get Index Usage](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_index_usage/README.md): The action result shows the data for table name, the percentage of times an index was used for that table, and the number of live rows in the table.
 
+* [PostgreSQL get service status](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_get_server_status/README.md): This action checks the status of each database.
+
 * [Execute commands in a PostgreSQL transaction.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_handling_transaction/README.md): Given a set of PostgreSQL commands, this actions run them inside a transaction.
 
 * [Long Running PostgreSQL Queries](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Postgresql/legos/postgresql_long_running_queries/README.md): Long Running PostgreSQL Queries

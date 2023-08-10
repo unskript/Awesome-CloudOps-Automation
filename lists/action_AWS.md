@@ -50,6 +50,8 @@
 
 * [AWS Delete RDS Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_rds_instance/README.md): Delete AWS RDS Instance
 
+* [AWS Delete Redshift Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_redshift_cluster/README.md): Delete AWS Redshift Cluster
+
 * [AWS Delete Route 53 HealthCheck](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_route53_health_check/README.md): AWS Delete Route 53 HealthCheck
 
 * [Delete AWS Default Encryption for S3 Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_delete_s3_bucket_encryption/README.md): Delete AWS Default Encryption for S3 Bucket
@@ -158,6 +160,8 @@
 
 * [AWS Find Redshift Cluster without Pause Resume Enabled](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_cluster_without_pause_resume_enabled/README.md): Use This Action to AWS find redshift cluster for which paused resume are not Enabled
 
+* [AWS Find Redshift Clusters with low CPU Utilization](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_redshift_clusters_with_low_cpu_utilization/README.md): Find underutilized Redshift clusters in terms of CPU utilization.
+
 * [AWS Find S3 Buckets without Lifecycle Policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_find_s3_buckets_without_lifecycle_policies/README.md): S3 lifecycle policies enable you to automatically transition objects to different storage classes or delete them when they are no longer needed. This action finds all S3 buckets without lifecycle policies. 
 
 * [Finding Redundant Trails in AWS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_finding_redundant_trails/README.md): This action will find a redundant cloud trail if the attribute IncludeGlobalServiceEvents is true, and then we need to find multiple duplications.
@@ -228,6 +232,8 @@
 
 * [Get AWS boto3 handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_handle/README.md): Get AWS boto3 handle
 
+* [AWS List IAM users without password policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_iam_users_without_password_policies/README.md): Get a list of all IAM users that have no password policy attached to them.
+
 * [AWS Get Idle EMR Clusters](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_idle_emr_clusters/README.md): This action list of EMR clusters that have been idle for more than the specified time.
 
 * [Get AWS Instance Details with Matching Private DNS Name](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instance_detail_with_private_dns_name/README.md): Use this action to get details of an AWS EC2 Instance that matches a Private DNS Name
@@ -237,6 +243,8 @@
 * [List All AWS EC2 Instances Under the ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_instances/README.md):  Get a list of all AWS EC2 Instances from given ELB
 
 * [AWS Get Internet Gateway by VPC ID](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_internet_gateway_by_vpc/README.md): AWS Get Internet Gateway by VPC ID
+
+* [Find AWS Lambdas Not Using ARM64 Graviton2 Processor](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_not_using_arm_graviton2_processor/README.md): Find all AWS Lambda functions that are not using the Arm-based AWS Graviton2 processor for their runtime architecture
 
 * [Get AWS Lambdas With High Error Rate](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_lambdas_with_high_error_rate/README.md): Get AWS Lambda Functions that exceed a given threshold error rate.
 
@@ -262,11 +270,19 @@
 
 * [AWS Get Publicly Accessible DB Snapshots in RDS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_snapshots/README.md): AWS Get Publicly Accessible DB Snapshots in RDS
 
+* [Get AWS RDS automated db snapshots above retention period](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_rds_automated_snapshots_above_retention_period/README.md): This Action gets the snapshots above a certain retention period.
+
 * [AWS Get Redshift Query Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_query_details/README.md): Given an QueryId, this Action will give you the status of the Query, along with other data like  the number of lines/
 
 * [AWS Get Redshift Result](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_redshift_result/README.md): Given a QueryId, Get the Query Result, and format into a List
 
 * [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
+
+* [AWS Get Resources Missing Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_missing_tag/README.md): Gets a list of all AWS resources that are missing the tag in the input parameters.
+
+* [AWS Get Resources With Expiration Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_expiration_tag/README.md): AWS Get all Resources with an expiration tag
+
+* [AWS Get Resources With Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_tag/README.md): For a given tag and region, get every AWS resource with that tag.
 
 * [Get AWS S3 Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_s3_buckets/README.md): Get AWS S3 Buckets
 
@@ -289,6 +305,8 @@
 * [Get STS Caller Identity](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_sts_caller_identity/README.md): Get STS Caller Identity
 
 * [AWS Get Tags of All Resources](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_tags_of_all_resources/README.md): AWS Get Tags of All Resources
+
+* [Get Timed Out AWS Lambdas](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_timed_out_lambdas/README.md): Get AWS Lambda functions that have exceeded the maximum amount of time in seconds that a Lambda function can run.
 
 * [AWS Get TTL For Route53 Records](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_ttl_for_route53_records/README.md): Get TTL for Route53 records for a hosted zone.
 
@@ -384,7 +402,7 @@
 
 * [AWS Register/Unregister Instances from a Target Group.](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_register_unregister_instances/README.md): Register/Unregister AWS Instance from a Target Group
 
-* [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
+* [Terminate AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): This Action will Terminate AWS EC2 Instances
 
 * [AWS Update Access Key](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_update_access_key/README.md): Update status of the Access Key
 
