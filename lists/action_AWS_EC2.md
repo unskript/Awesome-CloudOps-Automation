@@ -70,6 +70,12 @@
 
 * [AWS Get EC2 Instances About To Retired](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_reserved_instances_about_to_retired/README.md): AWS Get EC2 Instances About To Retired
 
+* [AWS Get Resources Missing Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_missing_tag/README.md): Gets a list of all AWS resources that are missing the tag in the input parameters.
+
+* [AWS Get Resources With Expiration Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_expiration_tag/README.md): AWS Get all Resources with an expiration tag
+
+* [AWS Get Resources With Tag](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_resources_with_tag/README.md): For a given tag and region, get every AWS resource with that tag.
+
 * [Get Schedule To Retire AWS EC2 Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_schedule_to_retire_instances/README.md): Get Schedule To Retire AWS EC2 Instance
 
 * [Get AWS Security Group Details](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_security_group_details/README.md): Get details about a security group, given its ID.
@@ -102,5 +108,5 @@
 
 * [AWS List Instances in a ELBV2 Target Group](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_target_group_list_instances/README.md): List AWS Instance in a ELBv2 Target Group
 
-* [Terminate AWS Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): Terminate AWS Instances
+* [Terminate AWS EC2 Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_terminate_ec2_instances/README.md): This Action will Terminate AWS EC2 Instances
 
