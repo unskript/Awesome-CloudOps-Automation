@@ -6,17 +6,29 @@
 
 * [Kubernetes Execute a command on a POD in a given namespace and filter](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_exec_command_on_pods_and_filter/README.md): Execute a command on Kubernetes POD in a given namespace and filter output
 
+* [Execute local script on a pod](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_execute_local_script_on_a_pod/README.md): Execute local script on a pod in a namespace
+
 * [Gather Data for POD Troubleshoot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_gather_data_for_pod_troubleshoot/README.md): Gather Data for POD Troubleshoot
 
 * [Get All Evicted PODS From Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_evicted_pods_from_namespace/README.md): This action get all evicted PODS from given namespace. If namespace not given it will get all the pods from all namespaces.
 
 * [ Get All Kubernetes PODS with state in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_pods/README.md):  Get All Kubernetes PODS with state in a given Namespace
 
+* [Get K8s pods status and resource utilization info](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_all_resources_utilization_info/README.md): This action gets the pod status and resource utilization of various Kubernetes resources like jobs, services, persistent volumes.
+
 * [Get candidate k8s nodes for given configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_candidate_nodes_for_pods/README.md): Get candidate k8s nodes for given configuration
 
 * [Get K8S Cluster Health](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_cluster_health/README.md): Get K8S Cluster Health
 
+* [Get Kubernetes Error PODs from All Jobs](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_error_pods_from_all_jobs/README.md): Get Kubernetes Error PODs from All Jobs
+
 * [Get All Kubernetes Healthy PODS in a given Namespace](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_healthy_pods/README.md): Get All Kubernetes Healthy PODS in a given Namespace
+
+* [Get memory utilization for K8s services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_memory_utilization_of_services/README.md): This action executes the given kubectl commands to find the memory utilization of the specified services in a particular namespace and compares it with a given threshold.
+
+* [Get K8S OOMKilled Pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_oomkilled_pods/README.md): Get K8S Pods which are OOMKilled from the container last states.
+
+* [Get K8s get pending pods](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pending_pods/README.md): This action checks if any pod in the Kubernetes cluster is in 'Pending' status.
 
 * [Get Kubernetes POD Configuration](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_get_pod_config/README.md): Get Kubernetes POD Configuration
 
