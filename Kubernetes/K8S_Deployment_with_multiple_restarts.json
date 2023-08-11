@@ -1,0 +1,9 @@
+{
+  "name": "k8s: Deployment with multiple restarts",
+  "description": "Kubernetes deployment has experienced multiple restarts within a certain timeframe, which is usually indicative of a problem. When a deployment experiences multiple restarts, it can impact the availability and performance of the application, and can be a sign of underlying issues that need to be addressed.",
+  "uuid": "b138b716b87b7707424b3558b3b007a17d310d73c2fe9308f8702859e8c6a3a7",
+  "icon": "CONNECTOR_TYPE_K8S",
+  "categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE" ],
+  "connector_types": [ "CONNECTOR_TYPE_K8S" ],
+  "version": "1.0.0"
+}

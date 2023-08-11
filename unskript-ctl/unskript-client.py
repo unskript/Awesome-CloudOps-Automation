@@ -44,7 +44,9 @@ from ZODB import DB
 
 # LIST OF CONSTANTS USED IN THIS FILE
 
-GLOBAL_CONFIG_PATH="/data/unskript_config.yaml"
+if os.environ.get('GLOBAL_CONFIG_PATH') is None:
+    GLOBAL_CONFIG_PATH="/unskript/data/unskript_config.yaml"
+
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"

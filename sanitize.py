@@ -137,14 +137,28 @@ def check_sanity(ipynbFile: str = '') -> bool:
 
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
         skip_pattern = 'task.configure(credentialsJson='
-        ok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\",}''')"
+        nok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
         for line in cell.get('source'):
-            if skip_pattern in line and ok_pattern not in line:
+            if nok_pattern in line or skip_pattern in line:
                 print(f"Failed credentialsJson/code check for cell {cell.get('metadata').get('name')}")
                 rc = False
 
     return rc
 
+def replace_default_string_values_with_extra_quotes(inputDict: dict)-> dict:
+    for k, v in inputDict.get('properties').items():
+        if 'default' in v.keys():
+            if v.get('type') != 'string':
+                continue
+
+            defaultValue = v.get('default')
+            if defaultValue.startswith("\"") and defaultValue.endswith("\""):
+                continue
+
+            if len(defaultValue) > 0:
+                newDefaultValue = "\"" + defaultValue + "\""
+                v['default'] = newDefaultValue
+    return inputDict
 
 ## returns True is everything is ok 
 def sanitize(ipynbFile: str = '') -> bool:
@@ -167,12 +181,18 @@ def sanitize(ipynbFile: str = '') -> bool:
 
 
     new_cells = []
-    cells = nb.get("cells")
-    for cell in cells:
+    old_cells = nb.get("cells")
+    for cell in old_cells:
 
         cell_type = cell.get('cell_type')
         if cell_type != 'code':
             new_cells.append(cell)
+            continue
+
+        # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
+        if cell.get('metadata').get('tags') is not None and 'unSkript:nbParam' in cell.get('metadata').get('tags'):
+            print(f"SKIPPING FIRST CELL with {len(cell.get('source'))} lines")
+            print(cell.get('source'))
             continue
 
         if cell.get('metadata').get('legotype') is None:
@@ -180,14 +200,15 @@ def sanitize(ipynbFile: str = '') -> bool:
             new_cells.append(cell)
             continue
 
-        # Lets make sure Cell Metadata has tags, only then check if it matches the first cell
-        if cell.get('metadata').get('tags') and 'unSkript:nbParam' in cell.get('metadata').get('tags'):
-            print("SKIPPING FIRST CELL")
-            continue
-
+        # Reset InputSchema
+        # if cell.get('metadata').get('inputschema') is not None:
+        #     cell['metadata']['inputschema'] = \
+        #         [ replace_default_string_values_with_extra_quotes(cell.get('metadata').get('inputschema')[0]) ]
 
         # Reset CredentialsJson
         cell['metadata']['credentialsJson'] = {}
+        cell['metadata']['execution_data'] = {}
+        cell['metadata']['execution_count'] = {}
 
         # Cleanout output
         cell['outputs'] = []
@@ -195,13 +216,21 @@ def sanitize(ipynbFile: str = '') -> bool:
         # Delete CredentialsJson from source
         skip_pattern = "task.configure(credentialsJson="
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
-        new_creds_line = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\",}''')"
+        new_creds_line = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
 
-        cell_source = []
+        # source code be a list or a string (delimited by \n)
+        # we prefer the list version with \n to make it readable in code reviews
+        if isinstance(cell.get('source'), str):
+            old_cell_source = cell.get('source').split("\n") # [ l+"\n" for l in cell.get('source').split("\n") ]
+        else:
+            old_cell_source = cell.get('source')
+
         skip = False
-        for line in cell.get('source'):
-            if skip_pattern in line and new_creds_line not in line:
-                cell_source.append(new_creds_line)
+        cell_source = []
+        for line in old_cell_source:
+            if new_creds_line in line:
+                continue
+            elif skip_pattern in line and new_creds_line not in line:
                 skip = True
             elif skip and line.strip() == "}''')":
                 skip = False
@@ -216,12 +245,13 @@ def sanitize(ipynbFile: str = '') -> bool:
     try:
         # Reset Environment & Tenant Information
         nb_new['metadata']['execution_data'] = execution_data
+        nb_new['metadata']['parameterValues'] = {}
 
     except Exception as e:
         raise e
 
     with open(ipynbFile, 'w') as f:
-        json.dump(nb_new, f, indent=1)
+        json.dump(nb_new, f, indent=nb.get('indent', 4))
         print(u'\u2713', f"Updated Notebook {ipynbFile}")
         retVal = True
 
