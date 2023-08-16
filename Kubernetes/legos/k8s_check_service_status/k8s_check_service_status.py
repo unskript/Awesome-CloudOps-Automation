@@ -5,6 +5,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Tuple, Optional
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from kubernetes.client.rest import ApiException
 import requests
 import json
 
@@ -89,7 +90,7 @@ def k8s_check_service_status(handle, services: list = "", namespace: str = "") -
         kubectl_command = "kubectl get namespace -o=jsonpath='{.items[*].metadata.name}'"
         response = handle.run_native_cmd(kubectl_command)
         if response is None or response.stderr:
-            raise ValueError(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
+            raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
         namespaces = response.stdout.strip().split(' ')
     else:
         namespaces = [namespace]
@@ -103,7 +104,7 @@ def k8s_check_service_status(handle, services: list = "", namespace: str = "") -
             kubectl_command = f"kubectl get services -n {ns} -o=jsonpath='{{.items[*].metadata.name}}'"
             response = handle.run_native_cmd(kubectl_command)
             if response is None or response.stderr:
-                print(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
+                raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
                 continue
             services_to_check = response.stdout.strip().split(' ')
 
