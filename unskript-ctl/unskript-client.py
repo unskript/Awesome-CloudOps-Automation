@@ -516,7 +516,13 @@ task.configure(credentialsJson=\'\'\'{
         try:
             c = check.get('code')
             idx = c.index("task = Task(Workflow())")
-            c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
+            if c[idx+1].startswith("task.configure(credentialsJson"):
+                # With credential caching now packged in, we need to
+                # Skip the credential line and let the normal credential
+                # logic work.
+                c = c[:idx+1] + task_lines.split('\n') + c[idx+2:]
+            else:
+                c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
             check['code'] = []
             for line in c[:]:
                 check['code'].append(str(line + "\n"))
