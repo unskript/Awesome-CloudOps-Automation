@@ -6,10 +6,10 @@
 This action checks the health status of the provided Kubernetes services.
 
 ## Lego Details
-	k8s_check_service_status(handle, services:list, namespace:str)
+	k8s_check_service_status(handle, services:list="", namespace:str="")
 		handle: Object of type unSkript K8S Connector.
-		services: List of service names to be checked.
-		namespace: Namespace where the services reside.
+		services: Optional, List of service names to be checked.
+		namespace:Optional,  Namespace where the services reside.
 
 
 ## Lego Input
