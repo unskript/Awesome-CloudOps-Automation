@@ -16,6 +16,8 @@
 
 * [Get AWS CloudWatch Metrics for AWS/NetworkELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_cloudwatch_metrics_network_elb/README.md): Get AWS CloudWatch Metrics for Network Loadbalancer
 
+* [Get Timed Out AWS Lambdas](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_timed_out_lambdas/README.md): Get AWS Lambda functions that have exceeded the maximum amount of time in seconds that a Lambda function can run.
+
 * [Get UnHealthy EC2 Instances for Classic ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances/README.md): Get UnHealthy EC2 Instances for Classic ELB
 
 * [Get Unhealthy instances from ELB](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_unhealthy_instances_from_elb/README.md): Get Unhealthy instances from Elastic Load Balancer

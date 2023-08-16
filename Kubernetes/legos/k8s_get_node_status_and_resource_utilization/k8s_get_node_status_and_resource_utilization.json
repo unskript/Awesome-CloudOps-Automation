@@ -1,0 +1,12 @@
+{
+  "action_title": "Get K8s node status and CPU utilization",
+  "action_description": "This action gathers Kubernetes node status and resource utilization information.",
+  "action_type": "LEGO_TYPE_K8S",
+  "action_entry_function": "k8s_get_node_status_and_resource_utilization",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": false,
+  "action_supports_poll": true,
+  "action_supports_iteration": true,
+  "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_K8S","CATEGORY_TYPE_K8S_NODE" ]
+}
