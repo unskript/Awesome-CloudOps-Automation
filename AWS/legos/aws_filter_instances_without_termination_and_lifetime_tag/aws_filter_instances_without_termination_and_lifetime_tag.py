@@ -33,6 +33,7 @@ def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
     
     pprint.pprint(output)
 
+
 def fetch_instances_from_valid_region(reservations, aws_region, termination_tag_name, lifetime_tag_name):
     result = []
     right_now = date.today()
