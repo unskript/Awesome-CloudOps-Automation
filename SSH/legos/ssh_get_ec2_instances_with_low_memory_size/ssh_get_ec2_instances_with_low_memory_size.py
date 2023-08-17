@@ -3,7 +3,7 @@
 # All rights reserved.
 ##
 import pprint
-from typing import List, Optional, Dict
+from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 from unskript.legos.ssh.ssh_execute_remote_command.ssh_execute_remote_command import ssh_execute_remote_command
 
@@ -26,7 +26,7 @@ def ssh_get_ec2_instances_with_low_memory_size_printer(output):
         return
     pprint.pprint(output)
 
-def ssh_get_ec2_instances_with_low_memory_size(handle, hosts: list, threshold: float = 400) -> List:
+def ssh_get_ec2_instances_with_low_memory_size(handle, hosts: list, threshold: float = 400) -> Tuple:
     """Get EC2 instances with free memory size less than a given threshold.
 
     :type handle: SSH Client object
