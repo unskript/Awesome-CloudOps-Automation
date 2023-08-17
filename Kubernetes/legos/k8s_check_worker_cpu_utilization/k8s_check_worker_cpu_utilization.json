@@ -1,0 +1,16 @@
+{
+  "action_title": "Check K8s worker CPU Utilization",
+  "action_description": "Retrieves the CPU utilization for all worker nodes in the cluster and compares it to a given threshold.",
+  "action_type": "LEGO_TYPE_K8S",
+  "action_entry_function": "k8s_check_worker_cpu_utilization",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
+  "action_categories":[ "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_K8S","CATEGORY_TYPE_K8S_NODE"]
+}
