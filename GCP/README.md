@@ -1,8 +1,10 @@
 
 # GCP Actions
+* [Add lifecycle policy to GCP storage bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_lifecycle_policy_to_bucket/README.md): The action adds a lifecycle policy to a Google Cloud Platform (GCP) storage bucket.
 * [GCP Add Member to IAM Role](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_member_to_iam_role/README.md): Adding member to the IAM role which already available
 * [GCP Add Role to Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_add_role_to_service_account/README.md): Adding role and member to the service account
 * [Create GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_bucket/README.md): Create a new GCP bucket in the given location
+* [Create a GCP disk snapshot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_disk_snapshot/README.md): Create a GCP disk snapshot.
 * [Create GCP Filestore Instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_filestore_instance/README.md): Create a new GCP Filestore Instance in the given location
 * [Create GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_gke_cluster/README.md): Create GKE Cluster
 * [GCP Create Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_create_service_account/README.md): GCP Create Service Account
@@ -12,10 +14,14 @@
 * [GCP Delete Service Account](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_delete_service_account/README.md): GCP Delete Service Account
 * [GCP Describe a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_describe_gke_cluster/README.md): GCP Describe a GKE cluster
 * [Fetch Objects from GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_fetch_objects_from_bucket/README.md): List all Objects in a GCP bucket
+* [Get GCP storage buckets without lifecycle policies](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_buckets_without_lifecycle_policies/README.md): The action retrieves a list of Google Cloud Platform (GCP) storage buckets that do not have any lifecycle policies applied.
+* [Get details of GCP forwarding rules](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_forwarding_rules_details/README.md): Get details of forwarding rules associated with a backend service.
 * [Get GCP Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_handle/README.md): Get GCP Handle
 * [Get List of GCP compute instance without label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_instances_without_label/README.md): Get List of GCP compute instance without label
+* [Get unused GCP backend services](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_unused_backend_services/README.md): Get unused backend service for an application load balancer that has no instances in it's target group.
+
 * [List all GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_buckets/README.md): List all GCP buckets
-* [Get list  compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances/README.md): Get list compute instance
+* [Get GCP compute instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances/README.md): Get GCP compute instances
 * [Get List of GCP compute instance by label](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_label/README.md): Get List of GCP compute instance by label
 * [Get list  compute instance by VPC](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_compute_instances_by_vpc/README.md): Get list  compute instance by VPC
 * [GCP List GKE Cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_gke_cluster/README.md): GCP List GKE Cluster
@@ -29,6 +35,7 @@
 * [Remove role from user](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_remove_user_role/README.md): GCP lego for removing a role from a user (default: 'viewer')
 * [GCP Resize a GKE cluster](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_resize_gke_cluster/README.md): GCP Resize a GKE cluster by modifying nodes
 * [GCP Restart compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_restart_compute_instances/README.md): GCP Restart compute instance
+* [Restore GCP disk from a snapshot ](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_restore_disk_from_snapshot/README.md): Restore a GCP disk from a compute instance snapshot.
 * [Save CSV to Google Sheets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_save_csv_to_google_sheets_v1/README.md): Saves your CSV (see notes) into a prepared Google Sheet.
 * [GCP Stop compute instance](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_stop_compute_instances/README.md): GCP Stop compute instance
 * [Upload an Object to GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_upload_file_to_bucket/README.md): Upload an Object/Blob in a GCP bucket

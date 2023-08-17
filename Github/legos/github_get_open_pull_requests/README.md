@@ -8,15 +8,14 @@ This Lego gets checks if a PR is merged
 
 ## Lego Details
 
-    github_check_if_pull_request_is_merged(handle, owner:str, repository:str, pull_request_number: int)
+    github_get_open_pull_requests(handle, repository: str, owner: str = "")
 
         handle: Object of type unSkript Github Connector
-        owner: String, Username of the GitHub user. Eg: "johnwick"
+        owner: String, Username of the GitHub user. Eg: "johnwick" (optional)
         repository: String, Full name of the GitHub repository. Eg: "unskript/Awesome-CloudOps-Automation"
-        pull_request_number: Integer, Pull request number. Eg: 167
 
 ## Lego Input
-This Lego take 4 inputs handle, owner, repository, pull_request_number
+This Lego take 3 inputs handle, owner (optional), repository.
 
 ## Lego Output
 Here is a sample output.
