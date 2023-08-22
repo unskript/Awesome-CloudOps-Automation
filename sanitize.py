@@ -31,7 +31,7 @@ def extract_links_from_notebook(notebook_path, extractor):
 
 def validate_link(link):
 
-    if link in ("unSkript.com", "us.app.unskript.io"):
+    if link.lower().find("unskript.com") != -1 or link.lower().find("us.app.unskript.io") != -1:
         return True
 
     try:
@@ -114,8 +114,8 @@ def check_sanity(ipynbFile: str = '') -> bool:
             print("Failed first cell check for cell")
             rc = False
 
-        if cell.get('metadata').get('credentialsJson') != {}:
-            print(f"Failed credentialJson/md check for cell, found {cell.get('metadata').get('credentialsJson')}")
+        if cell.get('metadata').get('credentialsJson') != {} and cell.get('metadata').get('credentialsJson') is not None:
+            print(f"Failed credentialJson/md check for cell '{cell.get('metadata').get('title')}', found {cell.get('metadata').get('credentialsJson')}")
             rc = False
 
         if cell.get('outputs') != []:
@@ -137,10 +137,11 @@ def check_sanity(ipynbFile: str = '') -> bool:
 
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
         skip_pattern = 'task.configure(credentialsJson='
-        nok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
+        ok_pattern = "task.configure(credentialsJson='''{\\\"credential_type\\\": \\\"" + action_type + "\\\"}''')"
         for line in cell.get('source'):
-            if nok_pattern in line or skip_pattern in line:
-                print(f"Failed credentialsJson/code check for cell {cell.get('metadata').get('name')}")
+            if skip_pattern in line and ok_pattern not in line:
+                print(f"Failed credentialsJson/code check for cell '{cell.get('metadata').get('name')}'")
+                print(line)
                 rc = False
 
     return rc
@@ -302,7 +303,7 @@ if __name__ == '__main__':
         filelist.append(f)
 
     failedlist = []
-    print('List of files:', filelist)
+    print(f'Processing {len(filelist)} files')
 
     for f in filelist:
         # To handle file delete case, check if the file exists.
@@ -313,6 +314,7 @@ if __name__ == '__main__':
             rc = sanitize(f)
 
         if rc is False:
+            print(f"Sanity failures found in {f}")
             failedlist.append(f)
 
     if len(failedlist) > 0:
