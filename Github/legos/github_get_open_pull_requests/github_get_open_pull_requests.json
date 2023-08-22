@@ -1,8 +1,8 @@
 {
-  "action_title": "Github List Stale Pull Requests",
-  "action_description": "Check for any Pull requests over a certain age. ",
+  "action_title": "Github get open pull requests",
+  "action_description": "This action gets details of open pull requests",
   "action_type": "LEGO_TYPE_GITHUB",
-  "action_entry_function": "github_list_stale_pull_requests",
+  "action_entry_function": "github_get_open_pull_requests",
   "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
   "action_is_check": true,
