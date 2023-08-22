@@ -6,6 +6,7 @@ from typing import Tuple
 from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
+from tabulate import tabulate
 
 try:
     from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory
@@ -20,9 +21,43 @@ class InputSchema(BaseModel):
     )
 
 def k8s_get_cluster_health_printer(output):
-    if not output:
+    status, details_list = output
+    details = details_list[0]
+    
+    # Print overall status
+    if status:
+        print("Cluster Health: OK\n")
         return
-    print(output)
+
+    # If there are any issues, tabulate and print them
+    print("Cluster Health: NOT OK\n")
+
+    # Print Not Ready Nodes
+    if details['not_ready_nodes']:
+        headers = ["Name", "Type", "Status", "Reason", "Message"]
+        table = [[node['name'], node['condition_type'], node['condition_status'], node['condition_reason'], node['condition_message']] 
+                 for node in details['not_ready_nodes']]
+        print("Not Ready Nodes:")
+        print(tabulate(table, headers=headers, tablefmt='grid', numalign="left"))
+        print()
+
+    # Print Not Ready Pods
+    if details['not_ready_pods']:
+        headers = ["Name", "Namespace", "Type", "Status", "Reason", "Message"]
+        table = [[pod['name'], pod['namespace'], pod['condition_type'], pod['condition_status'], pod['condition_reason'], pod['condition_message']] 
+                 for pod in details['not_ready_pods']]
+        print("Not Ready Pods:")
+        print(tabulate(table, headers=headers, tablefmt='grid', numalign="left"))
+        print()
+
+    # Print Abnormal Nodes
+    if details['abnormal_nodes']:
+        headers = ["Name", "Events"]
+        table = [[node['name'], node['events']] for node in details['abnormal_nodes']]
+        print("Nodes with Abnormal Events:")
+        print(tabulate(table, headers=headers, tablefmt='grid', numalign="left"))
+        print()
+
 
 
 def k8s_get_abnormal_events(node_api, node_name: str, security_level: str = "Warning") -> str:
@@ -68,8 +103,8 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
 
     node_api = pods_api = client.CoreV1Api(api_client=handle)
     nodes = node_api.list_node()
+    
     for node in nodes.items:
-
         skip_remaining_checks = False
         # Get Node Status
         conditions = node.status.conditions
@@ -77,8 +112,11 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
             if condition.type == 'Ready' and condition.status == 'False':
                 not_ready_nodes.append({
                     'name': node.metadata.name,
-                    'status': condition,
-                    })
+                    'condition_type': condition.type,
+                    'condition_status': condition.status,
+                    'condition_reason': condition.reason,
+                    'condition_message': condition.message
+                })
                 skip_remaining_checks = True
                 break
 
@@ -100,8 +138,11 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
                 not_ready_pods.append({
                     'name': pod.metadata.name,
                     'namespace': pod.metadata.namespace,
-                    'status': condition
-                    })
+                    'condition_type': condition.type,
+                    'condition_status': condition.status,
+                    'condition_reason': condition.reason,
+                    'condition_message': condition.message
+                })
                 break
 
     # If any of the above checks have failed, raise an exception
@@ -111,4 +152,4 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
         retval['abnormal_nodes'] = abnormal_nodes
         return (False, [retval])
 
-    return (True, [])
+    return (True, None)

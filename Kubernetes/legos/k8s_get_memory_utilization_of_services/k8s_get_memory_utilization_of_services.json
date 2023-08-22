@@ -1,5 +1,5 @@
 {
-  "action_title": "Get memory utilization for K8s services",
+  "action_title": "Get K8s services exceeding memory utilization",
   "action_description": "This action executes the given kubectl commands to find the memory utilization of the specified services in a particular namespace and compares it with a given threshold.",
   "action_type": "LEGO_TYPE_K8S",
   "action_entry_function": "k8s_get_memory_utilization_of_services",
