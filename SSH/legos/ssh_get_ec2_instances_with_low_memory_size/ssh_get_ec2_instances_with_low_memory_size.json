@@ -1,0 +1,14 @@
+{
+  "action_title": "Get AWS EC2 with low free memory size",
+  "action_description": "This action uses SSH to identify AWS EC2 instances with low available memory.",
+  "action_type": "LEGO_TYPE_SSH",
+  "action_entry_function": "ssh_get_ec2_instances_with_low_memory_size",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_supports_iteration": true,
+  "action_supports_poll": true,
+  "action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE", "CATEGORY_TYPE_AWS", "CATEGORY_TYPE_AWS_EC2", "CATEGORY_TYPE_SSH"],
+  "action_next_hop": [""],
+  "action_next_hop_parameter_mapping": {}
+}
