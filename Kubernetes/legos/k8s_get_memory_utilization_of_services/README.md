@@ -1,6 +1,6 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">]
 (https://unskript.com/assets/favicon.png)
-<h1>Get memory utilization for K8s services</h1>
+<h1>Get K8s services exceeding memory utilizations</h1>
 
 ## Description
 This action executes the given kubectl commands to find the memory utilization of the specified services in a particular namespace and compares it with a given threshold.
@@ -19,6 +19,8 @@ This Lego takes inputs handle, services, namespace, threshold.
 ## Lego Output
 Here is a sample output.
 <img src="./1.png">
+<img src="./2.png">
+<img src="./3.png">
 
 ## See it in Action
 
