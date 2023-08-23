@@ -9,7 +9,7 @@ from unskript.legos.ssh.ssh_execute_remote_command.ssh_execute_remote_command im
 
 
 class InputSchema(BaseModel):
-    hosts: list[str] = Field(
+    hosts: list = Field(
         ...,
         description='List of hosts to connect to. For eg. ["host1", "host2"].',
         title='Hosts',
