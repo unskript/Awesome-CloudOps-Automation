@@ -60,17 +60,17 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
 
     if namespace is None or len(namespace) == 0:
         response = handle.run_native_cmd(cmd)
-    if response is None:
-        print(
-            f"Error while executing command ({cmd}) (empty response)")
+        if response is None:
+            print(
+                f"Error while executing command ({cmd}) (empty response)")
 
-    if response.stderr:
-        raise ApiException(
-            f"Error occurred while executing command {cmd} {response.stderr}")
-    kubernetes_namespaces = response.stdout
-    replaced_str = kubernetes_namespaces.replace("\n", " ")
-    stripped_str = replaced_str.strip()
-    all_namespaces = stripped_str.split(" ")
+        if response.stderr:
+            raise ApiException(
+                f"Error occurred while executing command {cmd} {response.stderr}")
+        kubernetes_namespaces = response.stdout
+        replaced_str = kubernetes_namespaces.replace("\n", " ")
+        stripped_str = replaced_str.strip()
+        all_namespaces = stripped_str.split(" ")
 
     coreApiClient = client.CoreV1Api(api_client=handle)
     for n in all_namespaces:
