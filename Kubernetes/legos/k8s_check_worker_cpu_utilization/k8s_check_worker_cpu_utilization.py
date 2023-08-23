@@ -12,7 +12,7 @@ from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     threshold: Optional[float] = Field(
-        70,
+        70.0,
         description='Threshold for CPU utilization in percentage.',
         title='Threshold (in %)',
     )
@@ -30,7 +30,7 @@ def k8s_check_worker_cpu_utilization_printer(output):
         print(f"Node: {node_info['node']} - CPU Utilization: {node_info['cpu']}%")
     print("-" * 40)
 
-def k8s_check_worker_cpu_utilization(handle, threshold: float=70) -> Tuple:
+def k8s_check_worker_cpu_utilization(handle, threshold: float=70.0) -> Tuple:
     """
     k8s_check_worker_cpu_utilization Retrieves the CPU utilization for all worker nodes in the cluster and compares it to a given threshold.
 
