@@ -41,14 +41,14 @@ def get_expiry_date(pem_data: str) -> datetime.datetime:
     return cert.not_valid_after
 
 
-def k8s_get_expiring_certificates(handle, namespace: str = '', expiring_threshold: int = 90) -> Tuple:
+def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:int=90) -> Tuple:
     """
     Get the expiring certificates for a K8s cluster.
 
     Args:
         handle: Object of type unSkript K8S Connector
         namespace (str): The Kubernetes namespace where the certificates are stored.
-        expiring_threshold (int): The threshold (in days) for considering a certificate as expiring soon.
+        expiration_threshold (int): The threshold (in days) for considering a certificate as expiring soon.
 
     Returns:
         tuple: Status, a list of expiring certificate names.
@@ -73,8 +73,6 @@ def k8s_get_expiring_certificates(handle, namespace: str = '', expiring_threshol
         all_namespaces = stripped_str.split(" ")
 
     coreApiClient = client.CoreV1Api(api_client=handle)
-    expiration_threshold = timedelta(days=expiring_threshold)
-
     for n in all_namespaces:
         coreApiClient.read_namespace_status(n, pretty=True)
         secrets = coreApiClient.list_namespaced_secret(n, watch=False, limit=200).items
