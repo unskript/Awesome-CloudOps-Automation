@@ -36,8 +36,7 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
         :rtype: Tuple of status result and list of evicted pods
     """
     if handle.client_side_validation is not True:
-        print(f"K8S Connector is invalid: {handle}")
-        return False, None
+        raise ApiException(f"K8S Connector is invalid: {handle}")
 
     # Define the kubectl command based on the namespace input
     kubectl_command = "kubectl get pods --all-namespaces -o json"
@@ -48,11 +47,11 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
         response = handle.run_native_cmd(kubectl_command)
     except Exception as e:
         print(f"Error occurred while executing command {kubectl_command}: {str(e)}")
-        raise e
+        raise
 
     if response is None:
         print(f"Error while executing command ({kubectl_command}) (empty response)")
-        raise e
+        raise ApiException("Empty response from kubectl command")
 
     if response.stderr:
         raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
@@ -61,14 +60,14 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
     try:
         pod_details = json.loads(response.stdout)
         for pod in pod_details.get('items', []):
-            if pod['status']['phase'] == 'Failed' and any(cs.get('reason') == 'Evicted' for cs in pod['status']['conditions']):
+            if pod['status']['phase'] == 'Failed' and any(cs.get('reason') == 'Evicted' for cs in pod['status'].get('conditions', [])):
                 pod_dict = {
                     "pod_name": pod["metadata"]["name"],
                     "namespace": pod["metadata"]["namespace"]
                 }
                 result.append(pod_dict)
-    except Exception as e:
-        raise e
+    except Exception:
+        raise
 
     if result:
         return (False, result)

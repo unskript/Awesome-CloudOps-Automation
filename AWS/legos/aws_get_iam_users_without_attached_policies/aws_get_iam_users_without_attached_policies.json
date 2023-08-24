@@ -1,8 +1,8 @@
 {
-  "action_title": "AWS List IAM users without password policies",
-  "action_description": "Get a list of all IAM users that have no password policy attached to them.",
+  "action_title": "AWS list IAM users without attached policies",
+  "action_description": "Get a list of all IAM users that do not have any user-managed or AWS-managed policies attached to them",
   "action_type": "LEGO_TYPE_AWS",
-  "action_entry_function": "aws_get_iam_users_without_password_policies",
+  "action_entry_function": "aws_get_iam_users_without_attached_policies",
   "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
   "action_is_check": true,

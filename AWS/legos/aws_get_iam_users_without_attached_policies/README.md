@@ -1,12 +1,12 @@
 [<img align="left" src="https://unskript.com/assets/favicon.png" width="100" height="100" style="padding-right: 5px">]
 (https://unskript.com/assets/favicon.png)
-<h1>AWS List IAM users without password policies</h1>
+<h1>AWS list IAM users without attached policies</h1>
 
 ## Description
-Get a list of all IAM users that have no password policy attached to them.
+Get a list of all IAM users that do not have any user-managed or AWS-managed policies attached to them.
 
 ## Lego Details
-	aws_get_iam_users_without_password_policies(handle)
+	aws_get_iam_users_without_attached_policies(handle)
 		handle: Object of type unSkript AWS Connector.
 
 ## Lego Input

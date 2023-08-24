@@ -12,19 +12,23 @@ class InputSchema(BaseModel):
 
 
 
-def aws_get_iam_users_without_password_policies_printer(output):
+def aws_get_iam_users_without_attached_policies(output):
     if output is None:
         return
-    pprint.pprint(output)
+    status, res = output
+    if status:
+        print("There are no IAM users that do not have any user-managed or AWS-managed policies attached to them")
+    else:
+        print("IAM users that do not have any user-managed or AWS-managed policies attached to them: ",res)
 
 
-def aws_get_iam_users_without_password_policies(handle) -> Tuple:
-    """aws_get_iam_users_without_password_policies lists all the IAM users no password policy.
+def aws_get_iam_users_without_attached_policies(handle) -> Tuple:
+    """aws_get_iam_users_without_attached_policies lists all the IAM users that do not have any user-managed or AWS-managed policies attached to them
 
         :type handle: object
         :param handle: Object returned from Task Validate
 
-        :rtype: Status, List of IAM users without any password policy
+        :rtype: Status, List os all IAM users that do not have any user-managed or AWS-managed policies attached to them
     """
     result = []
     iam_client = handle.client('iam')
