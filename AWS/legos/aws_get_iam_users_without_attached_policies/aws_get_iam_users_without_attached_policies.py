@@ -12,7 +12,7 @@ class InputSchema(BaseModel):
 
 
 
-def aws_get_iam_users_without_attached_policies(output):
+def aws_get_iam_users_without_attached_policies_printer(output):
     if output is None:
         return
     status, res = output
