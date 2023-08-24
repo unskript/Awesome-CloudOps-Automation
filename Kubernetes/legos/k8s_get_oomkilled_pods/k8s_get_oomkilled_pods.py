@@ -36,6 +36,7 @@ def k8s_get_oomkilled_pods(handle, namespace: str = "") -> Tuple:
     :rtype: Status, List of objects of pods, namespaces, and containers that are in OOMKilled state
     """
     result = []
+
     if handle.client_side_validation is not True:
         raise ApiException(f"K8S Connector is invalid {handle}")
 
@@ -44,23 +45,37 @@ def k8s_get_oomkilled_pods(handle, namespace: str = "") -> Tuple:
     # Check whether a namespace is provided, if not fetch all namespaces
     try:
         if namespace:
-            pods = v1.list_namespaced_pod(namespace).items
+            response = v1.list_namespaced_pod(namespace)
         else:
-            pods = v1.list_pod_for_all_namespaces().items
+            response = v1.list_pod_for_all_namespaces()
+        
+        if response is None or not hasattr(response, 'items'):
+            raise ApiException("Unexpected response from the Kubernetes API. 'items' not found in the response.")
+
+        pods = response.items
+
     except ApiException as e:
         raise e
+
+    # Check if pods is None or not
+    if pods is None:
+        raise ApiException("No pods returned from the Kubernetes API.")
 
     for pod in pods:
         pod_name = pod.metadata.name
         namespace = pod.metadata.namespace
-    # Check each pod for OOMKilled state
-        for container_status in pod.status.container_statuses:
+
+        # Ensure container_statuses is not None before iterating
+        container_statuses = pod.status.container_statuses
+        if container_statuses is None:
+            continue
+
+        # Check each pod for OOMKilled state
+        for container_status in container_statuses:
             container_name = container_status.name
             last_state = container_status.last_state
             if last_state and last_state.terminated and last_state.terminated.reason == "OOMKilled":
                 result.append({"pod": pod_name, "namespace": namespace, "container": container_name})
 
     return (False, result) if result else (True, None)
-
-
 

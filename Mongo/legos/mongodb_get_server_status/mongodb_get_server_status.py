@@ -112,7 +112,7 @@ def mongodb_get_server_status(handle, connection_threshold: int = 100, memory_th
             server_status_info['abnormal_metrics'] = abnormal_metrics
             return False, server_status_info
 
-        return True, server_status_info
+        return True, None
 
     except Exception as e:
         raise e
