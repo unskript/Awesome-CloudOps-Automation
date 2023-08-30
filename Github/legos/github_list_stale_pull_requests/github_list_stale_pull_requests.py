@@ -1,17 +1,16 @@
-
 ##
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
-from typing import Tuple
+from typing import Tuple, Optional
 import datetime
 from pydantic import BaseModel, Field
+from tabulate import tabulate
 from github import GithubException, BadCredentialsException, UnknownObjectException
 
 
 class InputSchema(BaseModel):
-    owner: str = Field(
+    owner: Optional[str] = Field(
         description='Username of the GitHub user. Eg: "johnwick"',
         title='Owner'
     )
@@ -19,60 +18,65 @@ class InputSchema(BaseModel):
         description='Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"',
         title='Repository'
     )
-    threshold_days: int = Field(
+    threshold: Optional[int] = Field(
         description=("Threshold number of days to check for a stale PR. Eg: 45 -> "
                      "All PR's older than 45 days will be displayed"),
-        title='Threshold Days'
+        title='Threshold (in Days)'
     )
 
 
-
-def github_list_stale_pull_requests_printer(output):
-    if output is None:
+def github_list_stale_pull_requests_printer(output_tuple):
+    if output_tuple is None or output_tuple[1] is None:
         return
-    pprint.pprint(output)
+    success, output = output_tuple
+    if not success:
+        headers = ["PR Number", "Title"]
+        table = [[pr["number"], pr["title"]] for pr in output]
+        print(tabulate(table, headers, tablefmt="grid"))
+    else:
+        print("No stale pull requests found.")
 
 
-def github_list_stale_pull_requests(handle, owner:str, repository:str, threshold_days:int) -> Tuple:
+def github_list_stale_pull_requests(handle, repository: str, threshold: int = 14,  owner:str = "") -> Tuple:
     """github_list_stale_pull_requests returns stale pull requests
 
         :type handle: object
         :param handle: Object returned from task.validate(...).
 
-        :type owner: string
-        :param owner: Username of the GitHub user. Eg: "johnwick"
-
         :type repository: string
         :param repository: Name of the GitHub repository. Eg: "Awesome-CloudOps-Automation"
 
-        :type threshold_days: int
-        :param threshold_days: Threshold number of days to find stale PR's
+        :type owner: string (Optional)
+        :param owner: Username of the GitHub user. Eg: "johnwick"
+
+        :type threshold: int (Optional)
+        :param threshold: Threshold number of days to find stale PR's
 
         :rtype: Status, List of stale pull requests
     """
     result = []
-    age = int(threshold_days)
     try:
-        owner = handle.get_user(owner)
-        repo_name = owner.login+'/'+repository
-        repo = handle.get_repo(repo_name)
+        if len(owner)==0 or owner is None:
+            owner = handle.get_user().login
+        owner = handle.get_user().login
+        repo = handle.get_repo(f"{owner}/{repository}")
         prs = repo.get_pulls()
-        for pr in prs:
-            prs_dict = {}
+
+        # Check if there are no open pull requests
+        if prs.get_page(0) == []:
+            print("No pull requests are open at the moment.")
+            return (True, None)
+
+        today = datetime.datetime.now()
+
+        for pr in repo.get_pulls():
+            print(pr)
             creation_date = pr.created_at
-            today = datetime.datetime.now()
             diff = (today - creation_date).days
-            if diff >= age:
-                prs_dict[pr.number] = pr.title
-                result.append(prs_dict)
-    except GithubException as e:
-        if e.status == 403:
-            raise BadCredentialsException("You need admin access") from e
-        if e.status == 404:
-            raise UnknownObjectException("No such repository or user found") from e
-        raise e.data
+            if diff >= threshold:
+                result.append({"number": pr.number, "title": pr.title})
+
     except Exception as e:
         raise e
-    if len(result) != 0:
-        return (False, result)
-    return (True, None)
+
+    return (False, result) if result else (True, None)

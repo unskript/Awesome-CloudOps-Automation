@@ -44,7 +44,9 @@ from ZODB import DB
 
 # LIST OF CONSTANTS USED IN THIS FILE
 
-GLOBAL_CONFIG_PATH="/data/unskript_config.yaml"
+if os.environ.get('GLOBAL_CONFIG_PATH') is None:
+    GLOBAL_CONFIG_PATH="/unskript/data/unskript_config.yaml"
+
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
@@ -514,7 +516,13 @@ task.configure(credentialsJson=\'\'\'{
         try:
             c = check.get('code')
             idx = c.index("task = Task(Workflow())")
-            c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
+            if c[idx+1].startswith("task.configure(credentialsJson"):
+                # With credential caching now packged in, we need to
+                # Skip the credential line and let the normal credential
+                # logic work.
+                c = c[:idx+1] + task_lines.split('\n') + c[idx+2:]
+            else:
+                c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
             check['code'] = []
             for line in c[:]:
                 check['code'].append(str(line + "\n"))

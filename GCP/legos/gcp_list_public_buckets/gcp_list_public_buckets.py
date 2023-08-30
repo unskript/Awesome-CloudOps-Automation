@@ -33,5 +33,5 @@ def gcp_list_public_buckets(handle) -> List:
                 if binding['members']=={'allUsers'}:
                         result.append(bucket.name)
     except Exception as e:
-        result["error"]= e
+        raise e
     return result

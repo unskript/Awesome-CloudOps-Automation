@@ -1,3 +1,5 @@
+* [Execute local script on a pod](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_execute_local_script_on_a_pod/README.md): Execute local script on a pod in a namespace
+
 * [Gather Data for POD Troubleshoot](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_gather_data_for_pod_troubleshoot/README.md): Gather Data for POD Troubleshoot
 
 * [Kubectl command](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/Kubernetes/legos/k8s_kubectl_command/README.md): Execute kubectl command.

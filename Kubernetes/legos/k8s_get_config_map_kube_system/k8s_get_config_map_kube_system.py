@@ -11,7 +11,7 @@ from kubernetes import client
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(
-        default=" ",
+        default="",
         title='Namespace',
         description='Kubernetes namespace')
     config_map_name: str = Field(
