@@ -1,11 +1,14 @@
 {
 "action_title": "Get Mongo Server Status",
-"action_description": "Get Mongo Server Status",
+"action_description": "Get Mongo Server Status and check for any abnormalities.",
 "action_type": "LEGO_TYPE_MONGODB",
 "action_entry_function": "mongodb_get_server_status",
 "action_needs_credential": true,
 "action_supports_poll": true,
-"action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+"action_is_check": true,
+"action_output_type": "ACTION_OUTPUT_TYPE_LIST",
 "action_supports_iteration": true,
-"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_MONGODB"]
+"action_categories": [ "CATEGORY_TYPE_CLOUDOPS", "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_MONGODB"],
+"action_next_hop": [""],
+"action_next_hop_parameter_mapping": {}
 }

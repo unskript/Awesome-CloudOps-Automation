@@ -53,6 +53,6 @@ def gcp_stop_compute_instances(handle, project_name: str, zone:str, instance_nam
         output['name'] = result.name
         output['status'] = result.status
     except Exception as error:
-        output["error"] = error
+        raise error
 
     return output

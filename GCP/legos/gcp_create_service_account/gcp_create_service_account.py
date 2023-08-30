@@ -57,6 +57,6 @@ def gcp_create_service_account(handle, project_id: str, accountId: str, display_
         result = response
 
     except Exception as error:
-        result = {"error": error}
+        raise error
 
     return result

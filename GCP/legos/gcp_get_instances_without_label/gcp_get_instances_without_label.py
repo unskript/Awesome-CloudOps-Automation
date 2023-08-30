@@ -48,6 +48,6 @@ def gcp_get_instances_without_label(handle, project: str, zone:str) -> List:
             if not result.labels:
                 output.append(instance_name)
     except Exception as error:
-        output.append(error)
+        raise error
 
     return output

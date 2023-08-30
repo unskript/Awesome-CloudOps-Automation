@@ -36,5 +36,5 @@ def gcp_fetch_objects_from_bucket(handle, bucket_name: str) -> List:
         for blob in blobs:
             result.append(blob)
     except Exception as e:
-        result["error"]= e
+        raise e
     return result

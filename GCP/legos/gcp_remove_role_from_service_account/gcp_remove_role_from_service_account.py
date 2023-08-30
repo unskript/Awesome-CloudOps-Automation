@@ -65,6 +65,6 @@ def gcp_remove_role_from_service_account(
         policy_output = set_policy.execute()
         result = policy_output
     except Exception as error:
-        result = {"error": error}
+        raise error
 
     return result

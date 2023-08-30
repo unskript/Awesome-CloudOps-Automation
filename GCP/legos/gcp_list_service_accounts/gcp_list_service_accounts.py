@@ -38,6 +38,6 @@ def gcp_list_service_accounts(handle, project_id: str) -> List:
             result.append(account["name"])
 
     except Exception as error:
-        result.append(error)
+        raise error
 
     return result

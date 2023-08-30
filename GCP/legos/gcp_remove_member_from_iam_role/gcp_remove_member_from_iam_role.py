@@ -78,6 +78,6 @@ def gcp_remove_member_from_iam_role(
         result = remove_member
 
     except Exception as error:
-        result = {"error": error}
+        raise error
 
     return result

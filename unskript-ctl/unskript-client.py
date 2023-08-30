@@ -13,8 +13,11 @@ import sys
 import glob
 import json
 import pprint
+import time
 import re
 import uuid
+import psutil
+import subprocess
 from datetime import datetime
 from argparse import ArgumentParser, REMAINDER
 from db_utils import *
@@ -41,7 +44,9 @@ from ZODB import DB
 
 # LIST OF CONSTANTS USED IN THIS FILE
 
-GLOBAL_CONFIG_PATH="/data/unskript_config.yaml"
+if os.environ.get('GLOBAL_CONFIG_PATH') is None:
+    GLOBAL_CONFIG_PATH="/unskript/data/unskript_config.yaml"
+
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
@@ -511,7 +516,13 @@ task.configure(credentialsJson=\'\'\'{
         try:
             c = check.get('code')
             idx = c.index("task = Task(Workflow())")
-            c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
+            if c[idx+1].startswith("task.configure(credentialsJson"):
+                # With credential caching now packged in, we need to
+                # Skip the credential line and let the normal credential
+                # logic work.
+                c = c[:idx+1] + task_lines.split('\n') + c[idx+2:]
+            else:
+                c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
             check['code'] = []
             for line in c[:]:
                 check['code'].append(str(line + "\n"))
@@ -1359,6 +1370,60 @@ def list_creds():
         index += 1
     print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
     
+def start_debug(args):
+    """start_debug Starts Debug session. This function takes
+       the remote configuration as input and if valid, starts
+       the debug session. 
+    """
+    remote_config = args[0]
+    remote_config = remote_config.replace('-','')
+    
+    if remote_config != "config":
+        raise Exception(f"The Allowed Parameter is --config, Given Flag is not recognized, --{remote_config}")
+    
+    remote_config_file = args[1]
+    if os.path.exists(remote_config_file) is False:
+        raise Exception(f"Required Remote Configuration not present. Ensure {remote_config_file} file is present.")
+
+    command = [f"openvpn --config {remote_config_file}"]
+    process = subprocess.Popen(command,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=True)
+
+    # Lets give few seconds for the subprocess to spawn
+    time.sleep(5)
+
+    # Lets verify if the openvpn process is really running
+    running = False
+    for proc in psutil.process_iter(['pid', 'name']):
+        # Search for openvpn process. 
+        if proc.info['name'] == "openvpn":
+            # Lets make sure we ensure Tunnel Interface is Created and Up!
+            intf_up_result = subprocess.run(["ip", "link", "show", "tun0"],
+                                            stdout=subprocess.PIPE, 
+                                            stderr=subprocess.PIPE)
+            if intf_up_result.returncode == 0:
+                running = True
+            break
+
+    if running is True:
+        print ("Successfully Started the Debug Session")
+    else:
+        print (f"Error Occured while starting the Debug Session {process}")
+
+def stop_debug():
+    """stop_debug Stops the Actiev Debug session.
+    """
+    for proc in psutil.process_iter(['pid', 'name']):
+        # Search for openvpn process. On Docker, we dont expect
+        # Multiple process of openvpn to run. 
+        if proc.info['name'] == "openvpn":
+            process = psutil.Process(proc.info['pid'])
+            process.terminate()
+            process.wait()
+
+    print("Stopped Active Debug session successfully")
 
 if __name__ == "__main__":
     try:
@@ -1396,6 +1461,10 @@ if __name__ == "__main__":
                         help='Create Credential [-creds-type creds_file_path]')
     parser.add_argument('-cl', '--credential-list', 
                         help='Credential List', action='store_true')
+    parser.add_argument('--start-debug', 
+                        help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]', type=str, nargs=REMAINDER)
+    parser.add_argument('--stop-debug', 
+                        help='Stop Current Debug Session', action='store_true')
 
     args = parser.parse_args()
 
@@ -1429,5 +1498,9 @@ if __name__ == "__main__":
             parse_creds(args.create_credentials)
     elif args.credential_list is True:
         list_creds()
+    elif args.start_debug not in ('', None):
+        start_debug(args.start_debug)
+    elif args.stop_debug is True:
+        stop_debug()
     else:
         parser.print_help()

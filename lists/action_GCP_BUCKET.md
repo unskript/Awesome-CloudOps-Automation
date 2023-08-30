@@ -6,8 +6,6 @@
 
 * [Fetch Objects from GCP Bucket](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_fetch_objects_from_bucket/README.md): List all Objects in a GCP bucket
 
-* [Get GCP Handle](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_get_handle/README.md): Get GCP Handle
-
 * [List all GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_buckets/README.md): List all GCP buckets
 
 * [List all Public GCP Buckets](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/GCP/legos/gcp_list_public_buckets/README.md): List all publicly available GCP buckets
