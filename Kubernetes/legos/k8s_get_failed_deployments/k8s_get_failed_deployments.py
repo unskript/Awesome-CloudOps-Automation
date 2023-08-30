@@ -2,7 +2,7 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
-from typing import List
+from typing import Tuple
 from pydantic import BaseModel, Field
 from kubernetes.client.rest import ApiException
 import json
@@ -21,7 +21,7 @@ def k8s_get_failed_deployments_printer(output):
     print(output)
 
 
-def k8s_get_failed_deployments(handle, namespace: str = '') -> List:
+def k8s_get_failed_deployments(handle, namespace: str = '') -> Tuple:
     """k8s_get_failed_deployments Returns all failed deployments across all namespaces
     or within a specific namespace if provided. The deployments are considered
     failed if the 'Available' condition is set to 'False'.

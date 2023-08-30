@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 ##
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
@@ -7,10 +5,7 @@ from __future__ import annotations
 import json
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from unskript.legos.kubernetes.k8s_kubectl_command.k8s_kubectl_command import k8s_kubectl_command
-
-
-
+from kubernetes.client.rest import ApiException
 
 
 
@@ -22,11 +17,11 @@ class InputSchema(BaseModel):
     )
 
 
-
 def k8s_get_frequently_restarting_pods_printer(output):
     if output is None:
         return
     print(output)
+
 
 def k8s_get_frequently_restarting_pods(handle, restart_threshold:int=90) -> Tuple:
     """k8s_get_frequently_restarting_pods finds any K8s pods that have restarted more number of times than a given threshold
@@ -41,17 +36,29 @@ def k8s_get_frequently_restarting_pods(handle, restart_threshold:int=90) -> Tupl
     """
     result = []
     cmd = "kubectl get pods --all-namespaces --sort-by='.status.containerStatuses[0].restartCount' -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,RESTART_COUNT:.status.containerStatuses[0].restartCount' -o json"
-    res = k8s_kubectl_command(handle=handle, kubectl_command=cmd)
-    all_pods_data = json.loads(res)
+    response = handle.run_native_cmd(cmd)
+    if response is None:
+        print(
+            f"Error while executing command ({cmd}) (empty response)")
+
+    if response.stderr:
+        raise ApiException(
+            f"Error occurred while executing command {cmd} {response.stderr}")
+
+    all_pods_data = json.loads(response.stdout)
     for pod_data in all_pods_data['items']:
         pod = pod_data['metadata']['name']
         nmspace = pod_data['metadata']['namespace']
-        restart_count = pod_data['status']['containerStatuses'][0]['restartCount']
-        if restart_count > restart_threshold:
-            pods_dict = {}
-            pods_dict['pod'] = pod
-            pods_dict['namespace'] = nmspace
-            result.append(pods_dict)
+
+        # Check if 'containerStatuses' is present and if it's not empty
+        if 'containerStatuses' in pod_data['status'] and pod_data['status']['containerStatuses']:
+            restart_count = pod_data['status']['containerStatuses'][0]['restartCount']
+            if restart_count > restart_threshold:
+                pods_dict = {
+                    'pod': pod,
+                    'namespace': nmspace
+                }
+                result.append(pods_dict)
     if len(result) != 0:
         return (False, result)
     return (True, None)
