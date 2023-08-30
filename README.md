@@ -11,6 +11,65 @@
 **[Explore our docs](https://docs.unskript.com)**   
 *[Visit our blog](https://unskript.com/blog)* . *[Report Bug](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&template=bug_report.md&title=)* . *[Request Feature](https://github.com/unskript/Awesome-CloudOps-Automation/issues/new?assignees=&labels=&template=feature_request.md&title=)*
 
+# 🚀 Quick Start Guide
+
+We recommend using our docker setup which comes with Jupyter runtime along with pre-built actions and runbooks. Build your own actions and runbooks with ease!
+
+### Get Started
+
+1. Launch Docker
+```
+docker run -it -p 8888:8888 --user root unskript/awesome-runbooks:latest
+```
+2. Point your browser to http://127.0.0.1:8888/awesome.
+
+### Additional configurations (Optional)
+
+1. Clone this repository to your local machine.
+
+```
+git clone https://github.com/unskript/Awesome-CloudOps-Automation
+cd Awesome-CloudOps-Automation
+```
+
+2. Launch Docker 
+  - Use this command to create custom runbooks and actions. (update the first -v line if you used a different directory in step 1).
+
+```
+docker run -it -p 8888:8888 \
+ -v $HOME/Awesome-CloudOps-Automation/custom:/unskript/data \
+ -v $HOME/.unskript:/unskript/credentials \
+ -e ACA_AWESOME_MODE=1 \
+ --user root \
+ docker.io/unskript/awesome-runbooks:latest
+```
+
+  - Use this command with OpenAI parameters to create custom GenAI actions(update the first -v line if you used a different directory in step 1).
+
+```
+docker run -it -p 8888:8888 \
+ -v $HOME/Awesome-CloudOps-Automation/custom:/unskript/data \
+ -v $HOME/.unskript:/unskript/credentials \
+ -e ACA_AWESOME_MODE=1 \
+ -e OPENAI_ORGANIZATION_ID=<your openAI org> \
+ -e OPENAI_API_KEY=<your API key> \
+ -e OPENAI_MODEL=GPT-4 \
+ --user root \
+ docker.io/unskript/awesome-runbooks:latest
+
+```
+
+The OPENAI parameters are used to initialize Generative AI creation with ChatGPT. They can be omitted from the command, but the generativeAI features will not be available.  For a list of models, visit [openAI](https://platform.openai.com/docs/models/overview).
+
+3. Point your browser to http://127.0.0.1:8888/awesome.
+
+
+### Messing around
+You can find more information around how to use and play with our runbooks in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
+
+## 📚 Documentation
+Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
+
 # About the Project
 Runbooks.sh is a powerful, community-driven, open-source runbook automation platform designed to simplify cloud infrastructure management and streamline operations across diverse environments. Few of the highlighting features:
 
@@ -26,41 +85,6 @@ Our mission is to simplify CloudOps automation for DevOps and SRE teams by provi
 
 ## 👁️ Vision 
 Our vision is to be the one-stop solution for all CloudOps automation needs, allowing DevOps and SRE teams to automate their workflows with ease, improve efficiency, and minimize toil.
-
-## 🚀 Quick Start Guide
-
-We recommend using our docker setup which comes with Jupyter runtime along with pre-built actions and runbooks. Build your own actions and runbooks with ease!
-
-### Get Started
-1. Clone this repository to your local machine.
-
-```
-git clone https://github.com/unskript/Awesome-CloudOps-Automation
-cd Awesome-CloudOps-Automation
-```
-2. Launch Docker (update the first -v line if you used a different directory in step 1).
-
-```
-docker run -it -p 8888:8888 \
- -v $HOME/Awesome-CloudOps-Automation/custom:/unskript/data \
- -v $HOME/.unskript:/unskript/credentials \
- -e ACA_AWESOME_MODE=1 \
- -e OPENAI_ORGANIZATION_ID=<your openAI org> \
- -e OPENAI_API_KEY=<your API key> \
- -e OPENAI_MODEL=GPT-4 \
- --user root \
- docker.io/unskript/awesome-runbooks:latest
-```
-
-The OPENAI parameters are used to initialize Generative AI creation with ChatGPT. They can be omitted from the command, but the generativeAI features will not be available.  For a list of models, visit [openAI](https://platform.openai.com/docs/models/overview).
-
-3. Point your browser to http://127.0.0.1:8888/awesome.
-
-### Messing around
-You can find more information around how to use and play with our runbooks in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
-
-## 📚 Documentation
-Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
 
 ## 🤝 Contributing
 We welcome contributions from developers of all skill levels! Check out our [Contribution Guidelines](.github/CONTRIBUTING.md) to learn how you can contribute.
