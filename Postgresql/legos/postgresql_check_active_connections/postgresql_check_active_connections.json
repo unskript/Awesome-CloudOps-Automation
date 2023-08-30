@@ -1,0 +1,15 @@
+{
+  "action_title": "PostgreSQL check active connections",
+  "action_description": "Check if the active number of connections are exceeding threshold",
+  "action_type": "LEGO_TYPE_POSTGRESQL",
+  "action_entry_function": "postgresql_check_active_connections",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}
