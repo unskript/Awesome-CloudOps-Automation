@@ -6,6 +6,7 @@ from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 import json
 from kubernetes.client.rest import ApiException
+from tabulate import tabulate
 
 
 class InputSchema(BaseModel):
@@ -14,9 +15,14 @@ class InputSchema(BaseModel):
 
 
 def k8s_get_pending_pods_printer(output):
-    if output is None:
+    status, data = output
+
+    if status:
+        print("There are no pending pods.")
         return
-    print(output)
+    else:
+        headers = ["Pod Name", "Namespace"]
+        print(tabulate(data, headers=headers, tablefmt="grid"))
 
 
 def k8s_get_pending_pods(handle, namespace:str="") -> Tuple:

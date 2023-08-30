@@ -21,30 +21,39 @@ def kafka_get_cluster_health(handle: KafkaProducer) -> Dict:
     :rtype: Dictionary containing the brokers, topics, and partitions.
     """
 
-    cluster_health = {}
+    result = []
 
-    # Get the list of available brokers
-    cluster_health['brokers'] = handle.bootstrap_connected()
-
+    # Check the brokers
+    connected_to_brokers = handle.bootstrap_connected()
+    if not connected_to_brokers:
+        result.append({
+            'issue_type': 'Broker',
+            'description': 'Unable to connect to bootstrap brokers.'
+        })
 
     # Now, using KafkaConsumer to get topic details
     consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'])
-    topics_details_consumer = {}
-    for topic in consumer.topics(): # Notice the parentheses here
+    for topic in consumer.topics():
         partitions = consumer.partitions_for_topic(topic)
-        topics_details_consumer[topic] = {
-            "partitions": len(partitions),
-        }
+        if not partitions or len(partitions) == 0:
+            result.append({
+                'issue_type': f'Topic: {topic}',
+                'description': 'No partitions available.'
+            })
 
     consumer.close()
 
-    # Adding the details from consumer to cluster health
-    cluster_health["topics"] = topics_details_consumer
+    if result:
+        return (False, result)
+    return (True, None)
 
-    return cluster_health
+def kafka_get_cluster_health_printer(output):
+    status, issues = output
 
-def kafka_get_cluster_health_printer(cluster_health: Dict):
-    print("Brokers available:", cluster_health['brokers'])
-    print("\nTopics:")
-    for topic, details in cluster_health["topics"].items():
-        print(f"  {topic}: {details['partitions']} partitions")
+    if status:
+        print("Kafka cluster is healthy!")
+    else:
+        print("Issues detected in the Kafka cluster:\n")
+        for issue in issues:
+            print(f"Issue Type: {issue['issue_type']}")
+            print(f"Description: {issue['description']}\n")
