@@ -52,7 +52,7 @@ def mongodb_get_server_status_printer(output):
                 print(f"{key}: {value}")
 
 
-def mongodb_get_server_status(handle, connection_threshold: int = 100, memory_threshold: int = 2048, cache_usage_threshold: int = 80) -> Tuple:
+def mongodb_get_server_status(handle, connection_threshold: int = 1000, memory_threshold: int = 2048, cache_usage_threshold: int = 80) -> Tuple:
     """Returns the status of the MongoDB instance.
 
     :type handle: object
