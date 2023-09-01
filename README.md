@@ -13,7 +13,7 @@
 
 # 🚀 Quick Start Guide
 
-We recommend using our docker setup which comes with Jupyter runtime along with pre-built actions and runbooks. Build your own actions and runbooks with ease!
+We recommend using our docker setup which comes with Jupyter runtime along with pre-built [actions](https://docs.unskript.com/unskript-product-documentation/actions/what-is-an-action) and [runbooks](https://docs.unskript.com/unskript-product-documentation/readme/what-is-a-runbook). Build your own actions and runbooks with ease!
 
 ### Get Started
 
@@ -23,7 +23,11 @@ docker run -it -p 8888:8888 --user root unskript/awesome-runbooks:latest
 ```
 2. Point your browser to http://127.0.0.1:8888/awesome.
 
-### Additional configurations (Optional)
+
+
+### Messing around
+
+You can find some additional configurations in this section which you can use to create custom actions and GenAI actions.
 
 1. Clone this repository to your local machine.
 
@@ -64,11 +68,10 @@ The OPENAI parameters are used to initialize Generative AI creation with ChatGPT
 3. Point your browser to http://127.0.0.1:8888/awesome.
 
 
-### Messing around
 You can find more information around how to use and play with our runbooks in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
 
 ## 📚 Documentation
-Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
+Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
 
 # About the Project
 Runbooks.sh is a powerful, community-driven, open-source runbook automation platform designed to simplify cloud infrastructure management and streamline operations across diverse environments. Few of the highlighting features:
