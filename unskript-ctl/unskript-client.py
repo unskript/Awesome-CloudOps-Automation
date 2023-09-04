@@ -1389,6 +1389,9 @@ def start_debug(args):
        the debug session. 
     """
 
+
+    os.chdir(os.environ.get('EXEC_PATH'))
+
     if len(args) != 3:
         raise Exception(f"Parameters for start debug command are incorrect. Should be [--start-debug --config /tmp/config.ovpn f4efaf9a-403e-4f99-a11c-c91290c73eac]")
     cliend_id = args[2]
