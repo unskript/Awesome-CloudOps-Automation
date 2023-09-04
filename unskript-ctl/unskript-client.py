@@ -1370,17 +1370,32 @@ def list_creds():
         index += 1
     print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
     
+def stop_process_on_port(port):
+    for proc in psutil.process_iter(['pid', 'name']):
+        try:
+            connections = proc.connections()
+            for conn in connections:
+                if conn.laddr.port == port:
+                    process = psutil.Process(proc.info['pid'])
+                    process.terminate()
+                    print(f"Terminated process on port {port}")
+                    return
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+
 def start_debug(args):
     """start_debug Starts Debug session. This function takes
        the remote configuration as input and if valid, starts
        the debug session. 
     """
-    remote_config = args[0]
-    remote_config = remote_config.replace('-','')
-    
-    if remote_config != "config":
-        raise Exception(f"The Allowed Parameter is --config, Given Flag is not recognized, --{remote_config}")
-    
+
+    if len(args) != 3:
+        raise Exception(f"Parameters for start debug command are incorrect. Should be [--start-debug --config /tmp/config.ovpn f4efaf9a-403e-4f99-a11c-c91290c73eac]")
+    cliend_id = args[2]
+
+    if args[0] != '--config':
+        raise Exception(f"First parameter for start debug command should be \"--config\"")
+
     remote_config_file = args[1]
     if os.path.exists(remote_config_file) is False:
         raise Exception(f"Required Remote Configuration not present. Ensure {remote_config_file} file is present.")
@@ -1408,22 +1423,48 @@ def start_debug(args):
             break
 
     if running is True:
-        print ("Successfully Started the Debug Session")
+        print ("Connection successfully established for Debug Session")
     else:
         print (f"Error Occured while starting the Debug Session {process}")
+        return
+
+    # Stop existing processes on port 18888
+    stop_process_on_port(18888)
+
+    # Run the Jupyter Lab command with the provided identifier
+    jupyter_command = [
+        "/opt/conda/bin/jupyter",
+        "lab",
+        f"--ServerApp.base_url='/{cliend_id}'",
+        "--ServerApp.allow_origin='*'",
+        "--ServerApp.allow_remote_access=True",
+        "--ServerApp.default_url='/awesome'",
+        "--allow-root",
+        "--ServerApp.token=''",
+        "--port=18888",
+    ]
+
+    subprocess.Popen(jupyter_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    print(f"Jupyter Lab started successfully with baseurl /{cliend_id}")
+
+def log_subprocess_output(pipe):
+    for line in iter(pipe.readline, b''): # b'\n'-separated lines
+        print('got line from subprocess: %r', line)
 
 def stop_debug():
     """stop_debug Stops the Actiev Debug session.
     """
     for proc in psutil.process_iter(['pid', 'name']):
         # Search for openvpn process. On Docker, we dont expect
-        # Multiple process of openvpn to run. 
+        # Multiple process of openvpn or jupyter-lab to run. 
         if proc.info['name'] == "openvpn":
             process = psutil.Process(proc.info['pid'])
             process.terminate()
             process.wait()
+            print(f"{proc.info['name']} stopped.")
 
-    print("Stopped Active Debug session successfully")
+    stop_process_on_port(18888)
 
 if __name__ == "__main__":
     try:
