@@ -6,7 +6,7 @@ replicaCount: 1
 
 # Identifier which ca be used to differentiate between multiple instances.
 # Will use the value to run server with base_url. If empty then no base_url applied
-clientId: "customer-client-1"
+clientId: ""
 
 image:
   repository: unskript/awesome-runbooks
