@@ -34,13 +34,16 @@ spec:
           protocol: TCP
           name: jupyterlab-http
         livenessProbe:
-            httpGet:
-              path: /api/kernelspecs
-              port: jupyterlab-http
+          httpGet:
+            path: {{ if .Values.clientId }}/{{ .Values.clientId }}{{ end }}/api/kernelspecs
+            port: jupyterlab-http
+          initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
+          periodSeconds: {{ .Values.common.periodSeconds }}
+          timeoutSeconds: {{ .Values.common.timeoutSeconds }}
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /api/kernelspecs
+            path: {{ if .Values.clientId }}/{{ .Values.clientId }}{{ end }}/api/kernelspecs
             port: jupyterlab-http
           initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
           periodSeconds: {{ .Values.common.periodSeconds }}
