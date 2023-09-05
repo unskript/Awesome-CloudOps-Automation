@@ -46,6 +46,9 @@ spec:
           periodSeconds: {{ .Values.common.periodSeconds }}
           successThreshold: {{ .Values.common.successThreshold }}
           timeoutSeconds: {{ .Values.common.timeoutSeconds }}
+        env:
+          - name: CLIENT_ID
+            value: {{ .Values.clientId }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:

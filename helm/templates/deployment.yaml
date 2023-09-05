@@ -40,16 +40,19 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/kernelspecs
+              path: {{ .Values.clientId }}/api/kernelspecs
               port: http
           readinessProbe:
             httpGet:
-              path: /api/kernelspecs
+              path: {{ .Values.clientId }}/api/kernelspecs
               port: http
             initialDelaySeconds: 5
             periodSeconds: 30
             successThreshold: 3
             timeoutSeconds: 15
+          env:
+            - name: CLIENT_ID
+              value: {{ .Values.clientId }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
