@@ -30,10 +30,10 @@ def save_custom_cell_contents_to_file(runbook, output_file="./custom_cell_conten
     globals_inserted = False
     for cell in notebook_content['cells'][1:]:
         if cell.get('cell_type') == "code":
-            if cell.get('metadata').get('customAction') == True:
+            if cell.get('metadata').get('customAction') is True:
                 # Get only custom cells putput
                 custom_cells.append(cell)
-            if cell.get('metadata').get('outputParams') != None:
+            if cell.get('metadata').get('outputParams') is not None:
                 output_name = cell.get('metadata').get('outputParams').get('output_name')
                 globals_list.append(output_name)
         else:
@@ -67,7 +67,7 @@ def run_pyflakes(script):
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 shell=True)
-    if process.stdout == None:
+    if process.stdout is None:
         return process.stderr.decode('utf-8')
     else:
         return process.stdout.decode('utf-8')
