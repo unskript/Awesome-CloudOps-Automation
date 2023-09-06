@@ -3,12 +3,12 @@
 <h1>PostgreSQL check active connections</h1>
 
 ## Description
-Check if the active number of connections are exceeding threshold
+Checks if the percentage of active connections to the database exceeds the provided threshold.
 
 ## Lego Details
-	postgresql_check_active_connections(handle, threshold_connections: int = 100)
+	postgresql_check_active_connections(handle, threshold_percentage: int = 85)
 		handle: Object of type unSkript POSTGRESQL Connector.
-		threshold_connections: Optional, number of connections to consider as the threshold.
+		threshold_percentage: Optional, percentage of connections to consider as the threshold.
 
 
 ## Lego Input

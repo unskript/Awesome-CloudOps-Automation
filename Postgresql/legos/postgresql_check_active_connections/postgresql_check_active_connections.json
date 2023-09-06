@@ -1,6 +1,6 @@
 {
   "action_title": "PostgreSQL check active connections",
-  "action_description": "Check if the active number of connections are exceeding threshold",
+  "action_description": "Checks if the percentage of active connections to the database exceeds the provided threshold.",
   "action_type": "LEGO_TYPE_POSTGRESQL",
   "action_entry_function": "postgresql_check_active_connections",
   "action_needs_credential": true,
