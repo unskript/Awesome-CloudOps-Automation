@@ -51,7 +51,6 @@ def postgresql_check_active_connections(handle, threshold_percentage: int = 85) 
         # Fetch the total pool count
         cur.execute(query_pool_count)
         total_pool_count = cur.fetchone()[0]
-        print(total_pool_count)
 
         # Calculate the threshold from the total pool count
         threshold = int((total_pool_count * threshold_percentage)/100)
