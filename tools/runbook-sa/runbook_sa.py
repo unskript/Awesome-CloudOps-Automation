@@ -80,6 +80,7 @@ def main(category: str = 'all', runbooks: list = []):
     for idx,runbook in enumerate(runbooks):
         if not os.path.exists(runbook):
             print(f"Unable to find {runbook}...")
+            continue
         print(f"Analyzing {runbook}")
         if category == 'custom':
             save_custom_cell_contents_to_file(runbook, f"./custom_cell_contents_{idx}.py")
