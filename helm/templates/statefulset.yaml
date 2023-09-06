@@ -54,6 +54,8 @@ spec:
             value: {{ .Values.clientId }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
         volumeMounts:
           - mountPath: {{ .Values.persistence.mountPath }}
             name: {{ .Values.persistence.name }}

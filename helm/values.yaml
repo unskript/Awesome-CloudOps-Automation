@@ -77,8 +77,11 @@ persistence:
     requests: {}
     dataSource: {}
 
-
-securityContext: {}
+securityContext:
+  capabilities:
+    add:
+      - NET_ADMIN
+  privileged: true
   # capabilities:
   #   drop:
   #   - ALL
