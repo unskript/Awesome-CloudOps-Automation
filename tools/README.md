@@ -8,7 +8,7 @@
 
 # Static analysis on Runbooks
 
-This tool can be used to run Static analysis on given given runbook. 
+This tool can be used to run Static analysis on given runbook. 
 
 Here are the options to run the tool. You can either run static analysis on all the cells in a given runbook or just custom cells in the given runbook. (A custom cell is a code cell that is not created using unSkript Actions)
 ```
