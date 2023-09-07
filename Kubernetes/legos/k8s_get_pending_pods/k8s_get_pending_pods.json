@@ -1,0 +1,14 @@
+{
+  "action_title": "Get K8s get pending pods",
+  "action_description": "This action checks if any pod in the Kubernetes cluster is in 'Pending' status.",
+  "action_type": "LEGO_TYPE_K8S",
+  "action_entry_function": "k8s_get_pending_pods",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_supports_poll": true,
+  "action_supports_iteration": true,
+  "action_categories": [  "CATEGORY_TYPE_DEVOPS", "CATEGORY_TYPE_SRE","CATEGORY_TYPE_K8S","CATEGORY_TYPE_K8S_POD" ],
+  "action_next_hop": [""],
+  "action_next_hop_parameter_mapping": {}
+}

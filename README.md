@@ -16,6 +16,7 @@ Runbooks.sh is a powerful, community-driven, open-source runbook automation plat
 
 - **Extensive Library**: Access hundreds of pre-built actions and runbooks to kickstart your automation journey.
 - **Customization**: Create and modify actions and runbooks tailored to your unique requirements.
+- **Generative AI Action Creation** Fully integrated with ChatGPT to create custom Actions in minutes.
 - **Diverse Compatibility**: Seamlessly integrate with various cloud providers, platforms, and tools.
 - **User-friendly Interface**: A Jupyter-based environment that simplifies runbook creation and execution.
 - **Active Community**: Join a vibrant community of users and contributors committed to improving the project.
@@ -41,12 +42,18 @@ cd Awesome-CloudOps-Automation
 
 ```
 docker run -it -p 8888:8888 \
- -v $HOME/Awesome-CloudOps-Automation/custom:/data \
- -v $HOME/.unskript:/unskript \
+ -v $HOME/Awesome-CloudOps-Automation/custom:/unskript/data \
+ -v $HOME/.unskript:/unskript/credentials \
  -e ACA_AWESOME_MODE=1 \
+ -e OPENAI_ORGANIZATION_ID=<your openAI org> \
+ -e OPENAI_API_KEY=<your API key> \
+ -e OPENAI_MODEL=GPT-4 \
  --user root \
  docker.io/unskript/awesome-runbooks:latest
 ```
+
+The OPENAI parameters are used to initialize Generative AI creation with ChatGPT. They can be omitted from the command, but the generativeAI features will not be available.  For a list of models, visit [openAI](https://platform.openai.com/docs/models/overview).
+
 3. Point your browser to http://127.0.0.1:8888/awesome.
 
 ### Messing around

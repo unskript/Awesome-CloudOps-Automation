@@ -20,6 +20,8 @@
 
 * [AWS Get Publicly Accessible DB Snapshots in RDS](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_publicly_accessible_db_snapshots/README.md): AWS Get Publicly Accessible DB Snapshots in RDS
 
+* [Get AWS RDS automated db snapshots above retention period](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_get_rds_automated_snapshots_above_retention_period/README.md): This Action gets the snapshots above a certain retention period.
+
 * [AWS Modify Publicly Accessible RDS Snapshots](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_modify_public_db_snapshots/README.md): AWS Modify Publicly Accessible RDS Snapshots
 
 * [AWS Purchase RDS Reserved Instances](https://github.com/unskript/Awesome-CloudOps-Automation/tree/master/AWS/legos/aws_purchase_rds_reserved_instance/README.md): This action purchases a reserved DB instance offering.
