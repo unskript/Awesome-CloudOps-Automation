@@ -38,11 +38,19 @@ kubectl port-forward pod/<AWESOME_POD_NAME> -n <NAMESPACE> 8888:8888
 
 6. Now copy the custom actions from the PVC to your local machine so you can bundle into your custom Docker for re-distribution
 ```
-kubectl cp <AWESOME_POD_NAME>:/unskript/data/custom -n <NAMESPACE> /path/to/Awesome_CloudOps_Automation/custom folder
+kubectl cp <AWESOME_POD_NAME>:/unskript/data/runbooks -n <NAMESPACE> /path/to/your/work/directory/runbooks
+kubectl cp <AWESOME_POD_NAME>:/unskript/data/actions -n <NAMESPACE> /path/to/your/work/directory/actions
+cd /path/to/your/work/directory
+git clone https://github.com/unskript/Awesome-CloudOps-Automation.git
 
 Example:
 
-kubectl cp awesome-runbooks-0:/unskript/data/custom -n awesome-ops $HOME/Awesome-CloudOps-Automation/custom 
+kubectl cp awesome-runbooks-0:/unskript/data/actions -n awesome-ops $HOME/Workspace/actions 
+kubectl cp awesome-runbooks-0:/unskript/data/runbooks -n awesome-ops $HOME/Workspace/runbooks 
+cd $HOME/Workspace
+git clone https://github.com/unskript/Awesome-CloudOps-Automation.git
+export ACA_ROOTDIR=$PWD
+
 ```
 
 7. Next step is to build your custom docker from the Awesome-CloudOps-Automation directory
@@ -50,8 +58,10 @@ kubectl cp awesome-runbooks-0:/unskript/data/custom -n awesome-ops $HOME/Awesome
    ```
    export CUSTOM_DOCKER_NAME=my-awesome-docker
    export CUSTOM_DOCKER_VERSION='0.1.0'
-   cp ./build/templates/Dockerfile.template Dockerfile
-   docker build -t $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_VERSION .
+   cd $ACA_ROOTDIR
+   cp Awesome-CloudOps-Automation/build/templates/Dockerfile.template Dockerfile
+   cp Awesome-CloudOps-Automation/build/templates/Makefile.extend-docker.template Makefile
+   make -f Makefile build
    ```
 
    It may take a few minutes to build the docker, once built, you can verify it using 
@@ -75,36 +85,33 @@ Then follow these steps
 
 
 #### Steps for local Docker deployment
-1. If you have not already done, please check-out the Awesome-CloudOps-Automation repo with this command
-
-   ```
-   git clone https://github.com/unskript/Awesome-CloudOps-Automation
-   export ACA_ROOTDIR=$PWD/Awesome-CloudOps-Automation
-   ``` 
-
-2. Lets assume that all your development will be done in a directory called `custom` under the Awesome-CloudOps-Automation directory. You could set up `custom` using any of the following methods.
-    1. Create directory under Awesome-CloudOps-Automation by name `custom`
+You can add Awesome-CloudOps-Automation as a submodule to your existing Git repo so that you can include
+your custom Actions and/or runbooks and build a custom Docker image.
+1. 
+    1. Here we assume $HOME/Workspace is where you have your Git repo cloned
        ```
-       cd $ACA_ROOTDIR
-       mkdir custom
+       cd $HOME/Workspace  # Please change this directory whereever your Git repo is cloned
+       export $ACA_ROOTDIR=$PWD
        ```
     2. Submodule your Git repo that has your custom Actions in it. 
        ```
        cd $ACA_ROOTDIR
-       git submodule add https://<YOUR REPO LOCATION> custom
+       git submodule add https://github.com/unskript/Awesome-CloudOps-Automation Awesome-CloudOps-Automation
        ```
 
-3. Next, lets setup an environment variable to the custom directory. Set an environment variable to point to the name of the custom directory.
-   
+2. If you have not already done, please check-out the Awesome-CloudOps-Automation repo with this command
+
    ```
-   export ACA_CUSTOM_DIR_NAME=$ACA_ROOTDIR/custom
+   mkdir $HOME/Workspace  # Change this to any other location where you want to build the docker
+   mkdir -p actions runbooks 
    ```
 
 4. Launch the Awesome CloudOps Docker. 
       ```
       docker run -it -p 8888:8888 \
              -v $HOME/.unskript:/unskript/credentials  \
-             -v $ACA_CUSTOM_DIR_NAME:/unskript/data \
+             -v $ACA_ROOTDIR/actions:/unskript/data/actions \
+             -v $ACA_ROOTDIR/runbooks:/unskript/data/runbooks \
              -e ACA_AWESOME_MODE=1 \
              --user root \
              unskript/awesome-runbooks:latest
@@ -114,10 +121,7 @@ Then follow these steps
       > in the above command with the tag number. You can find the tags [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)
 
     * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing credentials.   
-    * The second mount point `$ACA_CUSTOM_DIR_NAME` is where we save custom Actions or custom Runbooks. 
     
-       > Note: This means any content that is created will survive Docker reboots.
-
     * You would see a Welcome Message once the Docker starts. At this juncture point your browser to `http://127.0.0.1:8888/lab/tree/GetStarted.ipynb` (We recommend Google Chrome or MS Edge or Chromium)
     
 5. Once the page is loaded, Search for any pre-built actions by typing keywords like `aws`, `kubernetes` `kubectl`,  `postgresql`, `mongo` etc. To pick the Action that you want to extend, drag-n-drop it to the main notebook area. You can refer [to this](https://docs.unskript.com) to get familiar with the UI.
@@ -132,8 +136,10 @@ Then follow these steps
    ```
    export CUSTOM_DOCKER_NAME=my-awesome-docker
    export CUSTOM_DOCKER_VERSION='0.1.0'
-   cp ./build/templates/Dockerfile.template Dockerfile
-   docker build -t $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_VERSION .
+   cd $ACA_ROOTDIR
+   cp Awesome-CloudOps-Automation/build/templates/Dockerfile.template Dockerfile
+   cp Awesome-CloudOps-Automation/build/templates/Makefile.extend-docker.template Makefile
+   make -f Makefile build
    ```
 
    It may take a few minutes to build the docker, once built, you can verify it using 
@@ -147,4 +153,3 @@ Then follow these steps
 
 8. Push your `custom docker` to any docker registry for redistribution.
 <br/>
-
