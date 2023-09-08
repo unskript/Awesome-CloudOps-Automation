@@ -60,7 +60,7 @@ The OPENAI parameters are used to initialize Generative AI creation with ChatGPT
 You can find more information around how to use and play with our runbooks in the documentation here. You can find a list of all the runbooks along with links in the [repository page](/xrunbooks-directory.md) or simply use [unSkript CLI](unskript-ctl/README.md). 
 
 ## 📚 Documentation
-Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/open-source/cloudops-automation-with-unskript). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
+Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/guides/getting-started). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
 
 ## 🤝 Contributing
 We welcome contributions from developers of all skill levels! Check out our [Contribution Guidelines](.github/CONTRIBUTING.md) to learn how you can contribute.
