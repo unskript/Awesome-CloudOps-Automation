@@ -94,48 +94,4 @@ Lets consider two scenarios as starting point for extending Awesome docker
 
 ### How to create Custom Actions
 
-#### Steps for awesome-runbooks deployed as K8S POD
-
-1. First port-forward the docker instance's port `8888` to your local host
-```
-kubectl port-forward pod/<AWESOME_POD_NAME> -n <NAMESPACE> 8888:8888
-```
-2. Launch your browser and point to `http://127.0.0.1:8888/awesome` 
-3. Click on any of the Runbook that is of interest to open it in a new browser tab.
-4. Once the page is loaded, Search for any pre-built actions by typing keywords like `aws`, `kubernetes` `kubectl`,  `postgresql`, `mongo` etc. To pick the Action that you want to extend, drag-n-drop it to the main notebook area. You can refer [to this](https://docs.unskript.com) to get familiar with the UI.
-
-5. After you are done with the modifications, you can use the `Save-As` option to save your custom Action. You can refer  [to this](https://docs.unskript.com) on how to save custom Action.
-
-   > Tip: If you want to verify the modification, you can create a credential for the given connector and test your modification to make sure
-   > you are satisfied with the changes.
-
-<br/>
-
-
-#### Steps for awesome-runbooks deployed as docker
-
-1. Launch the Awesome CloudOps Docker. 
-      ```
-      docker run -it -p 8888:8888 \
-             -v $HOME/.unskript:/unskript/credentials  \
-             -v $YOUR_REPO_DIRECTORY/actions:/unskript/data/actions \
-             -v $YOUR_REPO_DIRECTORY/runbooks:/unskript/data/runbooks \
-             -e ACA_AWESOME_MODE=1 \
-             --user root \
-             unskript/awesome-runbooks:latest
-      ```
-      
-      > Tip: If you are interested in building your custom docker image off of a Tag, you can replace the `latest` keyword
-      > in the above command with the tag number. You can find the tags [Here](https://hub.docker.com/r/unskript/awesome-runbooks/tags)
-
-    * Here you may notice we have two `-v` mount point. The first one `$HOME/.unskript` is for storing credentials.   
-    
-    * You would see a Welcome Message once the Docker starts. At this juncture point your browser to `http://127.0.0.1:8888/lab/tree/GetStarted.ipynb` (We recommend Google Chrome or MS Edge or Chromium)
-    
-2. Once the page is loaded, Search for any pre-built actions by typing keywords like `aws`, `kubernetes` `kubectl`,  `postgresql`, `mongo` etc. To pick the Action that you want to extend, drag-n-drop it to the main notebook area. You can refer [to this](https://docs.unskript.com) to get familiar with the UI.
-
-3. After you are done with the modifications, you can use the `Save-As` option to save your custom Action. You can refer  [to this](https://docs.unskript.com) on how to save custom Action.
-
-   > Tip: If you want to verify the modification, you can create a credential for the given connector and test your modification to make sure
-   > you are satisfied with the changes.
-<br/>
+You can refer to [this link](https://docs.unskript.com/unskript-product-documentation/actions/create-custom-actions) on how to create custom Action
