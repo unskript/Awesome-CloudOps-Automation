@@ -1,6 +1,6 @@
 FROM unskript/awesome-runbooks:latest as base 
-RUN mkdir -p /data
-RUN mkdir -p /unskript
-ADD custom /data/custom
+COPY custom/actions /unskript/data
+COPY custom/runbooks /unskript/data
 
 CMD ["./start.sh"]
+
