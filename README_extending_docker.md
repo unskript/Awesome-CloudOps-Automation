@@ -15,7 +15,7 @@ You can use our base docker to extend the functionality to fit your need. The st
    Git repo.
    ```
    cd $YOUR_REPO_DIRECTORY
-   git submodule add http://github.com/Awesome-CloudOps-Automation.git Awesome-CloudOps-Automation
+   git submodule add https://github.com/Awesome-CloudOps-Automation.git Awesome-CloudOps-Automation
    ```
 2. In same directory, you will need to create two sub-folders.
    ```
