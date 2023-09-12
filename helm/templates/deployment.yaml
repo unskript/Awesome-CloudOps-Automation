@@ -40,16 +40,22 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/kernelspecs
+              path: {{ if .Values.clientId }}/{{ .Values.clientId }}{{ end }}/api/kernelspecs
               port: http
+            initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
+            periodSeconds: {{ .Values.common.periodSeconds }}
+            timeoutSeconds: {{ .Values.common.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /api/kernelspecs
+              path: {{ if .Values.clientId }}/{{ .Values.clientId }}{{ end }}/api/kernelspecs
               port: http
-            initialDelaySeconds: 5
-            periodSeconds: 30
-            successThreshold: 3
-            timeoutSeconds: 15
+            initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
+            periodSeconds: {{ .Values.common.periodSeconds }}
+            successThreshold: {{ .Values.common.successThreshold }}
+            timeoutSeconds: {{ .Values.common.timeoutSeconds }}
+          env:
+            - name: CLIENT_ID
+              value: {{ .Values.clientId }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
