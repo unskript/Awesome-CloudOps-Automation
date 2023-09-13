@@ -18,17 +18,18 @@ import re
 import uuid
 import psutil
 import subprocess
+import yaml
+import nbformat
+import ZODB
+import ZODB.FileStorage
+from pathlib import Path
 from datetime import datetime
 from argparse import ArgumentParser, REMAINDER
 from db_utils import *
-import yaml
-import nbformat
 from tabulate import tabulate
 from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutputStatus
-import ZODB
-import ZODB.FileStorage
 from ZODB import DB
 
 # This python client can be used to
@@ -43,9 +44,9 @@ from ZODB import DB
 #   installed before using this script.
 
 # LIST OF CONSTANTS USED IN THIS FILE
-
+UNSKRIPT_GLOBALS = {}
 if os.environ.get('GLOBAL_CONFIG_PATH') is None:
-    GLOBAL_CONFIG_PATH="/unskript/data/unskript_config.yaml"
+    GLOBAL_CONFIG_PATH="/unskript/data/actions/unskript_config.yaml"
 
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
@@ -70,16 +71,18 @@ def load_or_create_global_configuration():
        and sets os.env variables which we shall use it in the subsequent functions.
        :rpath: None
     """
-    global_content = {}
+    global UNSKRIPT_GLOBALS
     if os.path.exists(GLOBAL_CONFIG_PATH) is True:
         # READ EXISTING FILE AND SET ENV VARIABLES
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
-            global_content = yaml.safe_load(f)
+            UNSKRIPT_GLOBALS = yaml.safe_load(f)
 
-
-    for k, v in global_content.items():
-        k = k.upper()
-        os.environ[k] = json.dumps(v)
+        if UNSKRIPT_GLOBALS.get('globals'):
+            for k, v in UNSKRIPT_GLOBALS.get('globals').items():
+                os.environ[k] = json.dumps(v)
+    else:
+        _f_path = Path(GLOBAL_CONFIG_PATH)
+        _f_path.touch()
 
 
 def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNode:
@@ -104,6 +107,7 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
         runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
     runbook_variables = ''
 
+    
     if runbook_params:
         for k, v in runbook_params.items():
             runbook_variables = runbook_variables + \
@@ -121,6 +125,14 @@ paramDict = {runbook_params}
 paramsJson = json.dumps(paramDict)
 nbParamsObj = nbparams.NBParams(paramsJson)
 {runbook_variables}
+'''
+    for k,v in UNSKRIPT_GLOBALS.get('globals').items():
+        if isinstance(v,str) == True:
+            first_cell_content += f'{k} = \"{v}\"' + '\n'
+        else:
+            first_cell_content += f'{k} = {v}' + '\n'
+
+    first_cell_content += f'''
 w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={ids})'''
 
     # Firstcell content. This is a static content
@@ -226,6 +238,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     client = NotebookClient(nb=nb, kernel_name="python3")
 
     try:
+ 
         execution = client.execute()
     except CellExecutionError as e:
         raise e
@@ -241,8 +254,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
     if len(outputs) == 0:
-        raise Exception(
-            "Unable to execute Runbook. Last cell content is empty")
+        print("OUTPUT for the Check Action is Empty")
+        return
 
     results = outputs[0]
     idx = 0
@@ -250,6 +263,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     failed_result_available = False
     failed_result = {}
 
+    print(r)
     for result in r.split('\n'):
         if result == '':
             continue
@@ -353,6 +367,37 @@ def run_checks(filter: str):
                         check_list.append(tc)
     else:
         check_list = get_checks_by_connector(filter, True)
+
+    if len(check_list) > 0:
+        runbooks.append(create_jit_runbook(check_list))
+
+    status_of_runs = []
+    for rb in runbooks:
+        run_ipynb(rb, status_of_runs)
+
+    update_audit_trail(status_of_runs)
+    print_run_summary(status_of_runs)
+
+
+def run_suites(suite_name: str):
+    """run_suites This function takes the suite_name as an argument
+    and queries the DB and with given UUIDs and creates a temporary 
+    runnable runbooks and run them, updates the audit results.
+
+    :type suite_name: string
+    :param suite_name: Suite Name string, suite name should match the
+            content under `suites` section of the unskript_config.yaml
+
+    :rtype: None
+    """
+    if suite_name in ("", None):
+        raise Exception("Run Suite needs suite_name to be specified.")
+
+    runbooks = []
+
+    check_list = []
+    if UNSKRIPT_GLOBALS.get('suites') and UNSKRIPT_GLOBALS.get('suites').get(suite_name):
+        check_list = get_checks_by_uuid(UNSKRIPT_GLOBALS.get('suites').get(suite_name))
 
     if len(check_list) > 0:
         runbooks.append(create_jit_runbook(check_list))
@@ -484,6 +529,29 @@ def update_current_execution(status, id: str, content: dict):
     if os.path.exists(failed_runbook) is not True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
 
+def replace_input_with_globals(inputSchema: str):
+    if not inputSchema:
+        return None
+    
+    input_json_start_line = '''
+task.configure(inputParamsJson=\'\'\'{
+    '''
+    input_json_end_line = '''}\'\'\')
+    '''
+    input_json_line = ''
+    try:
+        schema = inputSchema[0]
+        if schema.get('properties'):
+            for key in schema.get('properties').keys():
+                if key in UNSKRIPT_GLOBALS.get('globals').keys():
+                    input_json_line += f"\"{key}\":  \"{key}\" ,"
+    except Exception as e:
+        print(f"EXCEPTION {e}")
+        pass 
+
+    retval = input_json_start_line + input_json_line.rstrip(',') + '\n' + input_json_end_line
+    return retval 
+
 
 def create_jit_runbook(check_list: list):
     """create_jit_runbook This function creates Just In Time runbook
@@ -499,20 +567,26 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    failed_notebook = os.environ.get(
-        'EXECUTION_DIR', '/unskript').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
+    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
         cred_name, cred_id = get_creds_by_connector(s_connector)
+        # No point proceeding further if the Credential is incomplete
+        if cred_name is None or cred_id is None:
+            print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} {cred_name} {cred_id} ~~" + '\x1B[0m')
+            continue 
+
+
         task_lines = '''
 task.configure(printOutput=True)
 task.configure(credentialsJson=\'\'\'{
         \"credential_name\":''' + f" \"{cred_name}\"" + ''',
-        \"credential_type\":''' + f" \"{s_connector}\"" + ''',
-        \"credential_id\":''' + f" \"{cred_id}\"" + '''}\'\'\')
+        \"credential_type\":''' + f" \"{s_connector}\"" + '''}\'\'\')
         '''
-
+        input_json = replace_input_with_globals(check.get('inputschema'))
+        if input_json:
+            task_lines += input_json 
         try:
             c = check.get('code')
             idx = c.index("task = Task(Workflow())")
@@ -526,7 +600,7 @@ task.configure(credentialsJson=\'\'\'{
             check['code'] = []
             for line in c[:]:
                 check['code'].append(str(line + "\n"))
-
+            
             check['metadata']['action_uuid'] = check['uuid']
             check['metadata']['name'] = check['name']
             cc = nbformat.v4.new_code_cell(check.get('code'))
@@ -698,7 +772,7 @@ def display_failed_checks(connector: str = ''):
 
 
 def display_failed_logs(exec_id: str = None):
-    output = os.environ.get('EXECUTION_DIR', '/unskript/execution').strip(
+    output = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip(
         '"') + '/workspace/' + f"{exec_id}_output.ipynb"
     if not os.path.exists(output):
         print(
@@ -971,18 +1045,18 @@ def create_creds_mapping():
 
        :rtype: None
     """
-    creds_files = os.environ.get('HOME').strip(
-        '"') + CREDENTIAL_DIR + '/*.json'
+    creds_files = os.environ.get('HOME').strip('"') + CREDENTIAL_DIR + '/*.json'
     list_of_creds = glob.glob(creds_files)
     d = {}
     for creds in list_of_creds:
         with open(creds, 'r') as f:
             c_data = json.load(f)
-            d[c_data.get('metadata').get('type')] = {"name": c_data.get(
-                'metadata').get('name'), "id": c_data.get('metadata').get('id')}
-            if not c_data.get('metadata').get('connectorData'):
-                print(f"ERROR: The Credential data for {c_data.get('metadata').get('type')} is empty!"
+            if c_data.get('metadata').get('connectorData') == "{}":
+                print(f"WARNING: The Credential data for {c_data.get('metadata').get('type')} is empty!"
                        " Please use unskript-ctl.sh -cc option to create the credential")
+                continue
+            d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
+                  "id": c_data.get('id')}
     upsert_pss_record('default_credential_id', d, False)
 
 
@@ -1428,7 +1502,7 @@ def stop_debug():
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') is None:
-          os.environ['EXECUTION_DIR'] = '/unskript/execution'
+          os.environ['EXECUTION_DIR'] = '/unskript/data/execution'
 
         create_creds_mapping()
         load_or_create_global_configuration()
@@ -1449,6 +1523,8 @@ if __name__ == "__main__":
                         help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
     parser.add_argument('-rc', '--run-checks', type=str,
                         help='Run all available checks [all | connector | failed]')
+    parser.add_argument('-rs', '--run-suites', type=str,
+                        help='Run Health Check Suites (as defined in the unskript_config.yaml file)')
     parser.add_argument('-df', '--display-failed-checks',
                         help='Display Failed Checks [all | connector]')
     parser.add_argument('-lc', '--list-checks', type=str,
@@ -1483,6 +1559,8 @@ if __name__ == "__main__":
             parse_runbook_param(args.run_runbook)
     elif args.run_checks not in ('', None):
         run_checks(args.run_checks)
+    elif args.run_suites not in ('', None):
+        run_suites(args.run_suites)
     elif args.display_failed_checks not in ('', None):
         display_failed_checks(args.display_failed_checks)
     elif args.list_checks not in ('', None):
@@ -1504,3 +1582,4 @@ if __name__ == "__main__":
         stop_debug()
     else:
         parser.print_help()
+
