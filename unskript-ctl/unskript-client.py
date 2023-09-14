@@ -127,7 +127,7 @@ nbParamsObj = nbparams.NBParams(paramsJson)
 {runbook_variables}
 '''
     for k,v in UNSKRIPT_GLOBALS.get('globals').items():
-        if isinstance(v,str) == True:
+        if isinstance(v,str) is True:
             first_cell_content += f'{k} = \"{v}\"' + '\n'
         else:
             first_cell_content += f'{k} = {v}' + '\n'
