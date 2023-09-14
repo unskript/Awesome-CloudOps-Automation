@@ -3,6 +3,6 @@ COPY custom/actions/. /unskript/data/actions/
 COPY custom/runbooks/. /unskript/data/runbooks/
 
 # The creds directory is the directory you mentioned while running the creds_app.py with the -o option
-COPY <CREDS_DIRECTORY>/. /unskript/credential/.local/share/jupyter/metadata/credential-save/
+COPY <CREDS_DIRECTORY>/. /unskript/credentials/.local/share/jupyter/metadata/credential-save/
 
 CMD ["./start.sh"]
