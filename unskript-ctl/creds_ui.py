@@ -53,7 +53,7 @@ for row in range(num_rows):
 
 # This variable is used to hold the Credential directory
 # Where all the creds are saved
-if os.environ.get('CREDS_DIR') != None:
+if os.environ.get('CREDS_DIR') is not None:
     CREDS_DIR = os.environ.get('CREDS_DIR')
 else:
     CREDS_DIR = os.environ.get('HOME') + "/.local/share/jupyter/metadata/credential-save/"
