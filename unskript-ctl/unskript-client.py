@@ -1523,8 +1523,8 @@ if __name__ == "__main__":
                         help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
     parser.add_argument('-rc', '--run-checks', type=str,
                         help='Run all available checks [all | connector | failed]')
-    parser.add_argument('-rs', '--run-suites', type=str,
-                        help='Run Health Check Suites (as defined in the unskript_config.yaml file)')
+    # parser.add_argument('-rs', '--run-suites', type=str,
+    #                     help='Run Health Check Suites (as defined in the unskript_config.yaml file)')
     parser.add_argument('-df', '--display-failed-checks',
                         help='Display Failed Checks [all | connector]')
     parser.add_argument('-lc', '--list-checks', type=str,
@@ -1559,8 +1559,8 @@ if __name__ == "__main__":
             parse_runbook_param(args.run_runbook)
     elif args.run_checks not in ('', None):
         run_checks(args.run_checks)
-    elif args.run_suites not in ('', None):
-        run_suites(args.run_suites)
+    # elif args.run_suites not in ('', None):
+    #     run_suites(args.run_suites)
     elif args.display_failed_checks not in ('', None):
         display_failed_checks(args.display_failed_checks)
     elif args.list_checks not in ('', None):

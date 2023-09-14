@@ -5,9 +5,3 @@ globals:
   services: ["calendar", "audit"]
 
 
-suites:
-  awesome-suite: [
-    "588e9f61ddf3343d359958ae195a3d912a7fe4d4341d098c62c2ffa0c6a1814f",
-    "134d70d8685769e42fdf3b014e948b88e3d0efd0b9da0f5a2e60cf6f62069aad"
-  ]
-
