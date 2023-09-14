@@ -173,6 +173,45 @@ def delete_pss_record(record_name: str, document_name: str) -> bool:
     return True
 
 
+def get_checks_by_uuid(check_uuid_list: list):
+    """get_checks_by_uuid This function queries the snippets DB for
+       checks that match the give UUID and returns the checks.
+
+       :type check_uuid_list: list
+       :param check_uuid_list: List of Check UUIDs
+
+       :rtype: List of checks that match uuids
+    """
+    if not check_uuid_list:
+        return None
+    
+    try:
+        db = DB(CS_DB_PATH)
+    except Exception as e:
+        raise e
+    tm = transaction.TransactionManager()
+    connection = db.open(tm)
+    root = connection.root()
+    cs = root.get('unskript_cs')
+    list_checks = []
+    if cs is None:
+        raise Exception("Code Snippets Are missing")
+    for s in cs:
+        d = s
+
+        if d.get('metadata').get('action_is_check') is False:
+            continue
+        c_uuid = d.get('uuid')
+        if c_uuid and c_uuid in check_uuid_list:
+            list_checks.append(d)
+    
+    tm.commit()
+    del root
+    connection.close()
+    db.close()
+    return list_checks
+
+
 def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
     """get_checks_by_connector This function queries the snippets DB for
        checks of type connect and returns the checks.
@@ -251,3 +290,4 @@ def get_creds_by_connector(connector_type: str):
         retval = (None, None)
 
     return retval
+
