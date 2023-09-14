@@ -908,7 +908,7 @@ def main():
         print(f"Exception occured {e}")
         return
   
-    parser = ArgumentParser(prog='unskript-ctl')
+    parser = ArgumentParser(prog='creds-app')
     description = ""
     description = description + str("\n")
     description = description + str("\t  Credential App \n")
