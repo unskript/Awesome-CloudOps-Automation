@@ -1,0 +1,217 @@
+[
+  {
+    "display_name": "awscreds",
+    "metadata": {
+      "id": "e29374b4-1edd-4098-88e2-0da2a290dbb8",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_AWS",
+      "name": "awscreds"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_AWS",
+    "id": "ebca9178-aadc-478d-bc87-7c895874d3ab"
+  },
+  {
+    "display_name": "chatgptcreds",
+    "metadata": {
+      "name": "chatgptcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_CHATGPT"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_CHATGPT",
+    "id": "7ab97aa6-3016-4818-afde-1a9eb3cb32cb"
+  },
+  {
+    "display_name": "escreds",
+    "metadata": {
+      "id": "025e0bcd-1ddf-426c-bf24-864dfe3adf9a",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_ELASTICSEARCH",
+      "name": "escreds"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_ELASTICSEARCH",
+    "id": "d287cf62-ad4e-40c1-a595-ee1b52454b1d"
+  },
+  {
+    "display_name": "gcpcreds",
+    "metadata": {
+      "id": "ab1d3ae1-70cc-4d8f-8fa1-3a1f6de63b9e",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_GCP",
+      "name": "gcpcreds"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_GCP",
+    "id": "794371b5-3c1c-4f3b-87e9-4aa0cdb43011"
+  },
+  {
+    "display_name": "githubcreds",
+    "metadata": {
+      "name": "githubcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_GITHUB"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_GITHUB",
+    "id": "95f1aa88-c661-4525-b536-56d627395e92"
+  },
+  {
+    "display_name": "grafanacreds",
+    "metadata": {
+      "name": "grafanacreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_GRAFANA"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_GRAFANA",
+    "id": "582673a2-e493-4c37-bda7-118aeeb715b5"
+  },
+  {
+    "display_name": "jenkinscreds",
+    "metadata": {
+      "name": "jenkinscreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_JENKINS"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_JENKINS",
+    "id": "6dc1dd1d-b616-4c89-a88f-0f23bd6ad408"
+  },
+  {
+    "display_name": "jiracreds",
+    "metadata": {
+      "name": "jiracreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_JIRA"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_JIRA",
+    "id": "486460a4-72b9-4759-8f8f-5a3ccb0096f9"
+  },
+  {
+    "display_name": "k8screds",
+    "metadata": {
+      "name": "k8screds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_K8S",
+      "env": "Global",
+      "service_id": ""
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_K8S",
+    "id": "e5e22603-9586-4b8a-9635-4dcc3058c465"
+  },
+  {
+    "display_name": "kafkacreds",
+    "metadata": {
+      "name": "kafkacreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_KAFKA"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_KAFKA",
+    "id": "9c7e58e1-a7d6-4211-8b0c-ac5b5a6b951b"
+  },
+  {
+    "display_name": "mongodbcreds",
+    "metadata": {
+      "name": "mongodbcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_MONGODB"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_MONGODB",
+    "id": "8af91554-f190-48f6-8407-43cf4d3a2eaa"
+  },
+  {
+    "display_name": "mysqlcreds",
+    "metadata": {
+      "name": "mysqlcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_MYSQL"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_MYSQL",
+    "id": "9751cb50-6660-4ad3-b2ae-14f894de638f"
+  },
+  {
+    "display_name": "netboxcreds",
+    "metadata": {
+      "name": "netboxcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_NETBOX"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_NETBOX",
+    "id": "ca137fd8-5a1d-48d0-8d49-57576179e550"
+  },
+  {
+    "display_name": "nomadcreds",
+    "metadata": {
+      "name": "nomadcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_NOMAD"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_NOMAD",
+    "id": "907fcd0c-df0e-44b6-bc98-e97fe898cfcf"
+  },
+  {
+    "display_name": "postgrescreds",
+    "metadata": {
+      "name": "postgrescreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_POSTGRESQL"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_POSTGRESQL",
+    "id": "8c537a0c-bfd8-4333-8cf1-9c933cdd2d7e"
+  },
+  {
+    "display_name": "rediscreds",
+    "metadata": {
+      "id": "383f0a57-cbc9-4dab-959f-d762a4d736c6",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_REDIS",
+      "name": "rediscreds"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_REDIS",
+    "id": "454026ef-d6bc-426b-b9f9-5d67c74c60bb"
+  },
+  {
+    "display_name": "restcreds",
+    "metadata": {
+      "name": "restcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_REST"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_REST",
+    "id": "75dafeae-b46d-45dc-9614-a58ba94187be"
+  },
+  {
+    "display_name": "slackcreds",
+    "metadata": {
+      "name": "slackcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_SLACK"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_SLACK",
+    "id": "3adb23af-4207-441c-ad3a-4737aa0e8635"
+  },
+  {
+    "display_name": "sshcreds",
+    "metadata": {
+      "name": "sshcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_SSH"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_SSH",
+    "id": "d27208f2-ff71-4ff6-bedc-6403add8b184"
+  }
+]

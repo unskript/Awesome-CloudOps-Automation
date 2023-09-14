@@ -53,7 +53,10 @@ for row in range(num_rows):
 
 # This variable is used to hold the Credential directory
 # Where all the creds are saved
-CREDS_DIR = os.environ.get('HOME') + "/.local/share/jupyter/metadata/credential-save/"
+if os.environ.get('CREDS_DIR') != None:
+    CREDS_DIR = os.environ.get('CREDS_DIR')
+else:
+    CREDS_DIR = os.environ.get('HOME') + "/.local/share/jupyter/metadata/credential-save/"
 
 def read_existing_creds(creds_file: str) -> dict:
     """read_existing_creds This is a utility function that simply
@@ -149,6 +152,17 @@ class CredsApp(npyscreen.NPSAppManaged):
     def change_form(self, name):
         self.switchForm(name)
         self.resetHistory()
+    
+    def set_schemas(self, schema_json):
+        if not schema_json:
+            return
+        try:
+            self.schema_json = schema_json
+        except Exception as e:
+            print(f"Unable to store the Json Schema, please check Schema Json content: {e}")
+            return 
+        
+
 
 
 # This is a custom class that inherits from npyscreen.ActionForm. This is
@@ -1047,8 +1061,16 @@ class SalesforceCreds(CredsForm):
 # from the unskript-client.py. It can also
 # be used as a standalone application too.
 
-def main():
+def main(schema_json: str = None, creds_dir: str = None):
+    global CREDS_DIR
     creds_app = CredsApp()
+    if schema_json:
+        creds_app.set_schemas(schema_json=schema_json)
+    if creds_dir:
+        if creds_dir.endswith('/'):
+            CREDS_DIR = creds_dir 
+        else:
+            CREDS_DIR = creds_dir + '/'
     creds_app.run()
 
 

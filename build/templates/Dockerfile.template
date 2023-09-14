@@ -1,6 +1,8 @@
 FROM unskript/awesome-runbooks:latest as base 
-COPY custom/actions /unskript/data
-COPY custom/runbooks /unskript/data
+COPY custom/actions/. /unskript/data/actions/
+COPY custom/runbooks/. /unskript/data/runbooks/
+
+# The creds directory is the directory you mentioned while running the creds_app.py with the -o option
+COPY <CREDS_DIRECTORY>/. /unskript/credential/.local/share/jupyter/metadata/credential-save/
 
 CMD ["./start.sh"]
-
