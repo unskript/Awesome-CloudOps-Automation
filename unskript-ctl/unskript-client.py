@@ -55,7 +55,7 @@ TBL_HDR_CHKS_PASS="\033[32m Passed Checks \033[0m"
 TBL_HDR_CHKS_FAIL="\033[35m Failed Checks \033[0m"
 TBL_HDR_CHKS_ERROR="\033[31m Errored Checks \033[0m"
 TBL_HDR_RBOOK_NAME="\033[36m Runbook Name \033[0m"
-TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[0m"
+TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks run) / (Skipped checks) \033[0m"
 TBL_CELL_CONTENT_PASS="\033[1m PASS \033[0m"
 TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
@@ -63,7 +63,6 @@ TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
 TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
 TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
-
 
 
 def load_or_create_global_configuration():
@@ -157,7 +156,7 @@ except Exception as e:
     cells = nb.dict().get('cells')
     if len(cells) == 0:
         # Empty runbook, nothing to be done. return back
-        print("ERROR: Runbook seems empty, nothing to run")
+        #print("ERROR: Runbook seems empty, nothing to run")
         return nb
 
     if cells[0].get('cell_type') == 'code':
@@ -254,72 +253,92 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
     if len(outputs) == 0:
-        print("OUTPUT for the Check Action is Empty")
-        return
-
-    results = outputs[0]
+        if UNSKRIPT_GLOBALS.get('skipped'):
+            for check_name,connector in UNSKRIPT_GLOBALS.get('skipped'):
+                result_table.append([
+                    check_name,
+                    "SKIPPED",
+                    "N/A",
+                    "Credential Not Valid"
+                ])
+                status_dict['result'].append([
+                    check_name,
+                    "",
+                    connector,
+                    'ERROR'
+                    ])
+    results = {}
+    if ids:
+        results = outputs[0]
     idx = 0
     r = results.get('text')
     failed_result_available = False
     failed_result = {}
 
-    for result in r.split('\n'):
-        if result == '':
-            continue
-        payload = json.loads(result)
+    if ids:
+        for result in r.split('\n'):
+            if result == '':
+                continue
+            payload = json.loads(result)
 
-        try:
-            if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                result_table.append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    TBL_CELL_CONTENT_PASS,
-                    0,
-                    'N/A'
-                    ])
-                status_dict['result'].append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    ids[idx],
-                    get_connector_name_from_id(ids[idx], nb.dict()),
-                    'PASS']
-                    )
-            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
-                failed_objects = payload.get('objects')
-                failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
-                result_table.append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    TBL_CELL_CONTENT_FAIL,
-                    len(failed_objects),
-                    'N/A'
-                    ])
-                failed_result_available = True
-                status_dict['result'].append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    ids[idx],
-                    get_connector_name_from_id(ids[idx], nb.dict()),
-                    'FAIL'
-                    ])
-            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                result_table.append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    TBL_CELL_CONTENT_ERROR,
-                    0,
-                    payload.get('error')
-                    ])
-                status_dict['result'].append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    ids[idx],
-                    get_connector_name_from_id(ids[idx], nb.dict()),
-                    'ERROR'
-                    ])
-        except Exception:
-            pass
-        update_current_execution(payload.get('status'), ids[idx], nb.dict())
-        update_check_run_trail(ids[idx],
-                               get_action_name_from_id(ids[idx], nb.dict()),
-                               get_connector_name_from_id(ids[idx], nb.dict()),
-                               CheckOutputStatus(payload.get('status')),
-                               failed_result)
-        idx += 1
+            try:
+                if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
+                    result_table.append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        TBL_CELL_CONTENT_PASS,
+                        0,
+                        'N/A'
+                        ])
+                    status_dict['result'].append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        ids[idx],
+                        get_connector_name_from_id(ids[idx], nb.dict()),
+                        'PASS']
+                        )
+                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
+                    failed_objects = payload.get('objects')
+                    failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                    result_table.append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        TBL_CELL_CONTENT_FAIL,
+                        len(failed_objects),
+                        'N/A'
+                        ])
+                    failed_result_available = True
+                    status_dict['result'].append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        ids[idx],
+                        get_connector_name_from_id(ids[idx], nb.dict()),
+                        'FAIL'
+                        ])
+                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
+                    result_table.append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        TBL_CELL_CONTENT_ERROR,
+                        0,
+                        payload.get('error')
+                        ])
+                    status_dict['result'].append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        ids[idx],
+                        get_connector_name_from_id(ids[idx], nb.dict()),
+                        'ERROR'
+                        ])
+                else:
+                    print("ELSE STATEMENT")
+            except Exception:
+                pass
+            if ids:
+                update_current_execution(payload.get('status'), ids[idx], nb.dict())
+                update_check_run_trail(ids[idx],
+                                    get_action_name_from_id(ids[idx], nb.dict()),
+                                    get_connector_name_from_id(ids[idx], nb.dict()),
+                                    CheckOutputStatus(payload.get('status')),
+                                    failed_result)
+            idx += 1
+    else:
+        print("")
+        print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
 
     if failed_result_available is True:
         print("")
@@ -418,7 +437,7 @@ def print_run_summary(status_list_of_dict):
     for sd in status_list_of_dict:
         if sd == {}:
             continue
-        p = f = e = 0
+        p = f = e = s = 0
         for st in sd.get('result'):
             status = st[-1]
             check_name = st[0]
@@ -434,13 +453,16 @@ def print_run_summary(status_list_of_dict):
                 e += 1
                 all_result_table.append(
                     [check_name, 'N/A', 'N/A', TBL_CELL_CONTENT_ERROR])
-
             else:
                 p = f = e = -1
-        summary_table.append([
-            sd.get('runbook'),
-            str(str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e) + ' ) ')
-            ])
+    
+    if UNSKRIPT_GLOBALS.get('skipped'):
+        s = len(UNSKRIPT_GLOBALS.get('skipped'))
+    
+    summary_table.append([
+        sd.get('runbook'),
+        str(str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e)  + ' ) / ( ' + str(s) + ' )')
+        ])
 
     s = '\x1B[1;20;46m' + "~~ Summary ~~" + '\x1B[0m'
     print(s)
@@ -569,7 +591,10 @@ def create_jit_runbook(check_list: list):
         cred_name, cred_id = get_creds_by_connector(s_connector)
         # No point proceeding further if the Credential is incomplete
         if cred_name is None or cred_id is None:
-            print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} {cred_name} {cred_id} ~~" + '\x1B[0m')
+            print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} As {cred_name} Credential is Not Active ~~" + '\x1B[0m')
+            if UNSKRIPT_GLOBALS.get('skipped') == None:
+                UNSKRIPT_GLOBALS['skipped'] = []
+            UNSKRIPT_GLOBALS['skipped'].append([check.get('name'), s_connector])
             continue 
 
 
@@ -606,7 +631,6 @@ task.configure(credentialsJson=\'\'\'{
 
         except Exception as e:
             raise e
-
     # The Recent Version of Docker, the unskript-ctl spews a lot of errors like this:
     #
     # ERROR:traitlets:Notebook JSON is invalid: Additional properties are not allowed ('orderProperties', 'description', 
@@ -615,7 +639,7 @@ task.configure(credentialsJson=\'\'\'{
     #
     # This is because the nbformat.write() complains about unknown attributes that are present
     # in the IPYNB file. We dont need these attributes when we run the notebook via the Command Line.
-    # So we surgically eliminate these keys from the NB dictionary. 
+    # So we surgically eliminate these keys from the NB dictionary.
     unknown_attrs = ['description', 'uuid', 'name', 'type', 'inputschema', 'version', 'orderProperties', 'tags', 'language']
     for cell in nb.get('cells'):
         if cell.get('cell_type') == "code":
@@ -625,7 +649,10 @@ task.configure(credentialsJson=\'\'\'{
         for attr in unknown_attrs:
             del cell[attr]
     nbformat.write(nb, failed_notebook)
+
+
     return failed_notebook
+
 
 
 def update_check_run_trail(
@@ -1592,4 +1619,3 @@ if __name__ == "__main__":
         stop_debug()
     else:
         parser.print_help()
-
