@@ -13,13 +13,13 @@ import os
 import sys
 import json
 
-from creds_ui import main as ui
+#from creds_ui import main as ui
 from argparse import ArgumentParser, REMAINDER
 
 # CONSTANTS USED IN THIS FILE
 STUB_FILE = "stub_creds.json"
 
-# Note: Any change in credential_schema should also be followed by 
+# Note: Any change in credential_schema should also be followed by
 # the corresponding change in creds-ui too.
 credential_schemas = '''
 [
@@ -887,11 +887,11 @@ def create_stub_cred_files(dirname: str):
     # Lets read the Stubs Creds file and create placeholder files
     if not os.path.exists(STUB_FILE):
         print("Credential placeholder file JSON is missing. Please run this at unskript-ctl directory!")
-        sys.exit(0) 
-    
+        sys.exit(0)
+
     with open(STUB_FILE, 'r') as f:
         stub_creds_json = json.load(f)
-    
+
     for cred in stub_creds_json:
         f_name = os.path.join(dirname, cred.get('display_name'))
         f_name = f_name + '.json'
@@ -900,47 +900,227 @@ def create_stub_cred_files(dirname: str):
             with open(f_name, 'w') as f:
                 f.write(json.dumps(cred, indent=4))
 
-def main():
-    """main: This is the Main function that interfaces with the creds-ui"""
-    try:
+#CREDS_DIR = os.environ.get('HOME') + "/.local/share/jupyter/metadata/credential-save/"
+CREDS_DIR = os.environ.get('HOME') + "/creds/"
+
+class CredentialsAdd():
+    def __init__(self):
+      create_stub_cred_files(CREDS_DIR)
+      try:
         schema_json = json.loads(credential_schemas)
-    except Exception as e:
+      except Exception as e:
         print(f"Exception occured {e}")
         return
-  
-    parser = ArgumentParser(prog='creds-app')
-    description = ""
-    description = description + str("\n")
-    description = description + str("\t  Credential App \n")
-    parser.description = description
+      mainParser = ArgumentParser(prog='add_creds')
+      description = ""
+      description = description + str("\n")
+      description = description + str("\t  Add credentials \n")
+      mainParser.description = description
+      mainParser.add_argument('-c', '--credential-type', choices=[
+         'AWS',
+         'K8S',
+         'GCP',
+         'Elasticsearch',
+         'Redis',
+         'PostGRES',
+         'MongoDB',
+         'Kafka'
+         ], help='Credential type')
 
-    parser.add_argument('-o', '--output-directory', type=str, required=True,
-                        help="Output Directory to store credentials, should be absolute path")
-    
+      args = mainParser.parse_args(sys.argv[1:3])
+      if len(sys.argv) == 1:
+          mainParser.print_help()
+          sys.exit(0)
 
-    args = parser.parse_args()
+      getattr(self, args.credential_type)()
 
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(0)
-    
-    if args.output_directory not in ('', None):
-        if os.path.exists(args.output_directory):
-            if os.path.isdir(args.output_directory):
-                os.environ['CREDS_DIR'] = args.output_directory
-            else:
-                print(f"ERROR: Given Path {args.output_directory} is not a directory. A File by that name already exists!")
-                sys.exit(0)
-        else:
-            print(f"CREATING DIRECTORY: {args.output_directory}")
-            os.makedirs(args.output_directory)
-            os.environ['CREDS_DIR'] = args.output_directory
-    else:
-        print(f"Output Directory Name is empty {args.output_directory}")
-        sys.exit(0)
-    
-    create_stub_cred_files(args.output_directory)
-    ui(schema_json=schema_json, creds_dir=args.output_directory) 
+    def write_creds_to_file(self, json_file_name, data):
+      creds_file = CREDS_DIR + json_file_name
+      if os.path.exists(creds_file) is False:
+          raise AssertionError(f"credential file {json_file_name} missing")
+
+      with open(creds_file, 'r', encoding="utf-8") as f:
+          contents = json.loads(f.read())
+      if not contents:
+          raise AssertionError(f"credential file {json_file_name} is invalid")
+
+      contents['metadata']['connectorData'] = data
+
+      with open(creds_file, 'w', encoding="utf-8") as f:
+          f.write(json.dumps(contents, indent=2))
+
+    def AWS(self):
+      parser = ArgumentParser(description='Add AWS credential')
+      parser.add_argument('-a', '--access-key', required=True, help='AWS Access Key')
+      parser.add_argument('-s', '--secret-access-key', required=True, help='AWS Secret Access Key')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) != 4:
+         parser.print_help()
+         sys.exit(0)
+
+      if args.access_key is None or args.secret_access_key is None:
+          raise AssertionError('Access Key or Secret Access Key missing')
+
+      d = {}
+      d['authentication'] = {}
+      d['authentication']['auth_type'] = "Access Key"
+      d['authentication']['access_key'] =  args.access_key
+      d['authentication']['secret_access_key'] = args.secret_access_key
+      self.write_creds_to_file('awscreds.json', json.dumps(d))
+
+    def K8S(self):
+      parser = ArgumentParser(description='Add K8S credential')
+      parser.add_argument('-k', '--kubeconfig', required=True, help='Contents of the kubeconfig file')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) != 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['kubeconfig'] = args.kubeconfig
+      self.write_creds_to_file('k8screds.json', json.dumps(d))
+
+    def GCP(self):
+      parser = ArgumentParser(description='Add GCP credential')
+      parser.add_argument('-g', '--gcp-credentials', help='Contents of the GCP credentials json file')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) != 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['credentials'] = args.gcp_credentials
+      self.write_creds_to_file('gcpcreds.json', json.dumps(d))
+
+    def Elasticsearch(self):
+      parser = ArgumentParser(description='Add Elasticsearch credential')
+      parser.add_argument('-s', '--host', required=True, help='''
+                          Elasticsearch Node URL. For eg: https://localhost:9200.
+                          NOTE: Please ensure that this is the Elastisearch URL and NOT Kibana URL.
+                          ''')
+      parser.add_argument('-a', '--api-key', help='API key')
+      parser.add_argument('--no-verify-certs', action='store_true', help='Not verify server ssl certs. This can be set to true when working with private certs.')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['host'] = args.host
+      if args.api_key is not None:
+         d['api_key'] = args.api_key
+
+      if args.no_verify_certs == True:
+         d['verify_certs'] = False
+      else:
+         d['verify_certs'] = True
+
+      self.write_creds_to_file('escreds.json', json.dumps(d))
+
+    def Redis(self):
+      parser = ArgumentParser(description='Add Redis credential')
+      parser.add_argument('-s', '--host', required=True, help='Hostname of the redis server')
+      parser.add_argument('-p', '--port', help='Port on which redis server is listening', type=int, default=6379)
+      parser.add_argument('-u', '--username', help='Username')
+      parser.add_argument('-pa', '--password', help='Password')
+      parser.add_argument('-db', '--database', help='ID of the database to connect to', type=int)
+      parser.add_argument('--use-ssl', action='store_false', help='Use SSL to connect to redis host')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['host'] = args.host
+      d['port'] = args.port
+      if args.username is not None:
+         d['username'] = args.username
+      if args.password is not None:
+         d['password'] = args.password
+      if args.database is not None:
+         d['db'] = args.database
+      d['use_ssl'] = args.use_ssl
+      self.write_creds_to_file('rediscreds.json', json.dumps(d))
+
+    def PostGRES(self):
+      parser = ArgumentParser(description='Add POSTGRES credential')
+      parser.add_argument('-s', '--host', required=True, help='Hostname of the PostGRES server')
+      parser.add_argument('-p', '--port', help='Port on which PostGRES server is listening', type=int, default=5432)
+      parser.add_argument('-db', '--database-name', help='Name of the database to connect to', required=True)
+      parser.add_argument('-u', '--username', help='Username')
+      parser.add_argument('-pa', '--password', help='Password')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 4:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['Host'] = args.host
+      d['Port'] = args.port
+      d['DBName'] = args.database_name
+      if args.username is not None:
+         d['User'] = args.username
+      if args.password is not None:
+         d['Password'] = args.password
+      self.write_creds_to_file('postgrescreds.json', json.dumps(d))
+
+    def MongoDB(self):
+      parser = ArgumentParser(description='Add MongoDB credential')
+      parser.add_argument('-s', '--host', required=True, help='Full MongoDB URI, in addition to simple hostname. It also supports mongodb+srv:// URIs"')
+      parser.add_argument('-p', '--port', help='Port on which MongoDB server is listening', type=int, default=27017)
+      parser.add_argument('-u', '--username', help='Username')
+      parser.add_argument('-pa', '--password', help='Password')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['host'] = args.host
+      d['port'] = args.port
+      #TBD: Add support for atlas
+      d['authentication'] = {}
+      d['authentication']['auth_type'] = "Basic Auth"
+      if args.username is not None:
+        d['authentication']['user_name'] = args.username
+      if args.password is not None:
+        d['authentication']['password'] = args.password
+
+      self.write_creds_to_file('mongodbcreds.json', json.dumps(d))
+
+    def Kafka(self):
+      parser = ArgumentParser(description='Add Kafka credential')
+      parser.add_argument('-b', '--broker', required=True, help='''
+                          host[:port] that the producer should contact to bootstrap initial cluster metadata. Default port is 9092.
+                          ''')
+      parser.add_argument('-u', '--sasl-username', help='Username for SASL PlainText Authentication.')
+      parser.add_argument('-p', '--sasl-password', help='Password for SASL PlainText Authentication.')
+      parser.add_argument('-z', '--zookeeper', help='Zookeeper connection string. This is needed to do health checks. Eg: host[:port]. The default port is 2182')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['broker'] = args.broker
+      if args.sasl_username is not None:
+         d['sasl_username'] = args.sasl_username
+
+      if args.sasl_password is not None:
+         d['sasl_password'] = args.sasl_password
+
+      if args.zookeeper is not None:
+         d['zookeeper'] = args.zookeeper
+
+      self.write_creds_to_file('kafkacreds.json', json.dumps(d))
 
 if __name__ == '__main__':
-    main()
+    CredentialsAdd()
