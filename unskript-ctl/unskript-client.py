@@ -263,7 +263,6 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
     failed_result_available = False
     failed_result = {}
 
-    print(r)
     for result in r.split('\n'):
         if result == '':
             continue
@@ -321,10 +320,6 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
                                CheckOutputStatus(payload.get('status')),
                                failed_result)
         idx += 1
-
-    # New Line to make the output clear to see
-    print("")
-    print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
 
     if failed_result_available is True:
         print("")
