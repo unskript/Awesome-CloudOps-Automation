@@ -612,6 +612,23 @@ task.configure(credentialsJson=\'\'\'{
         except Exception as e:
             raise e
 
+    # The Recent Version of Docker, the unskript-ctl spews a lot of errors like this:
+    #
+    # ERROR:traitlets:Notebook JSON is invalid: Additional properties are not allowed ('orderProperties', 'description', 
+    # 'version', 'name', 'inputschema', 'uuid', 'tags', 'type', 'language' were unexpected)
+    # This Failed validating 'additionalProperties' in code_cell:
+    #
+    # This is because the nbformat.write() complains about unknown attributes that are present
+    # in the IPYNB file. We dont need these attributes when we run the notebook via the Command Line.
+    # So we surgically eliminate these keys from the NB dictionary. 
+    unknown_attrs = ['description', 'uuid', 'name', 'type', 'inputschema', 'version', 'orderProperties', 'tags', 'language']
+    for cell in nb.get('cells'):
+        if cell.get('cell_type') is "code":
+            # This check is needed because the ID value is by default saved
+            # as integer in our code-snippets to enable drag-and-drop
+            cell['id'] = str(cell.get('id'))
+        for attr in unknown_attrs:
+            del cell[attr]
     nbformat.write(nb, failed_notebook)
     return failed_notebook
 
@@ -1052,8 +1069,6 @@ def create_creds_mapping():
         with open(creds, 'r') as f:
             c_data = json.load(f)
             if c_data.get('metadata').get('connectorData') == "{}":
-                print(f"WARNING: The Credential data for {c_data.get('metadata').get('type')} is empty!"
-                       " Please use unskript-ctl.sh -cc option to create the credential")
                 continue
             d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
                   "id": c_data.get('id')}
