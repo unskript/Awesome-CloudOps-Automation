@@ -623,7 +623,7 @@ task.configure(credentialsJson=\'\'\'{
     # So we surgically eliminate these keys from the NB dictionary. 
     unknown_attrs = ['description', 'uuid', 'name', 'type', 'inputschema', 'version', 'orderProperties', 'tags', 'language']
     for cell in nb.get('cells'):
-        if cell.get('cell_type') is "code":
+        if cell.get('cell_type') == "code":
             # This check is needed because the ID value is by default saved
             # as integer in our code-snippets to enable drag-and-drop
             cell['id'] = str(cell.get('id'))
