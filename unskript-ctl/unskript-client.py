@@ -57,6 +57,7 @@ TBL_HDR_CHKS_ERROR="\033[31m Errored Checks \033[0m"
 TBL_HDR_RBOOK_NAME="\033[36m Runbook Name \033[0m"
 TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks run) / (Skipped checks) \033[0m"
 TBL_CELL_CONTENT_PASS="\033[1m PASS \033[0m"
+TBL_CELL_CONTENT_SKIPPED="\033[1m SKIPPED \033[0m"
 TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
@@ -253,21 +254,20 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
 
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
-    if len(outputs) == 0:
-        if UNSKRIPT_GLOBALS.get('skipped'):
-            for check_name,connector in UNSKRIPT_GLOBALS.get('skipped'):
-                result_table.append([
-                    check_name,
-                    "SKIPPED",
-                    "N/A",
-                    "Credential Incomplete"
+    if UNSKRIPT_GLOBALS.get('skipped'):
+        for check_name,connector in UNSKRIPT_GLOBALS.get('skipped'):
+            result_table.append([
+                check_name,
+                TBL_CELL_CONTENT_SKIPPED,
+                "N/A",
+                "Credential Incomplete"
+            ])
+            status_dict['result'].append([
+                check_name,
+                "",
+                connector,
+                'ERROR'
                 ])
-                status_dict['result'].append([
-                    check_name,
-                    "",
-                    connector,
-                    'ERROR'
-                    ])
     results = {}
     if ids:
         results = outputs[0]
