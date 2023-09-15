@@ -25,6 +25,10 @@ CUSTOM_DIRECTORY = custom
 CUSTOM_DOCKER_NAME ?= my-awesome-docker
 CUSTOM_DOCKER_VERSION ?= 0.1.0
 
+copy:
+	@echo "Copying Docker file"
+	@cp $(AWESOME_DIRECTORY)/build/templates/Dockerfile.template Dockerfile
+
 pre-build:
 	@echo "Preparing To create custom Docker build"
 	if [ ! -d "$(ACTION_DIRECTORY)" ]; then\
@@ -43,7 +47,6 @@ pre-build:
 	@mkdir -p $(CUSTOM_DIRECTORY)
 	@cp -Rf $(ACTION_DIRECTORY)  $(CUSTOM_DIRECTORY)/actions
 	@cp -Rf $(RUNBOOK_DIRECTORY)  $(CUSTOM_DIRECTORY)/runbooks
-	@cp $(AWESOME_DIRECTORY)/build/templates/Dockerfile.template Dockerfile
 
 
 build:	pre-build
