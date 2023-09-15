@@ -260,7 +260,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
                     check_name,
                     "SKIPPED",
                     "N/A",
-                    "Credential Not Valid"
+                    "Credential Incomplete"
                 ])
                 status_dict['result'].append([
                     check_name,
@@ -610,7 +610,7 @@ def create_jit_runbook(check_list: list):
         cred_name, cred_id = get_creds_by_connector(s_connector)
         # No point proceeding further if the Credential is incomplete
         if cred_name is None or cred_id is None:
-            print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} As {cred_name} Credential is Not Active ~~" + '\x1B[0m')
+            #print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} As {cred_name} Credential is Not Active ~~" + '\x1B[0m')
             if UNSKRIPT_GLOBALS.get('skipped') is None:
                 UNSKRIPT_GLOBALS['skipped'] = []
             UNSKRIPT_GLOBALS['skipped'].append([check.get('name'), s_connector])
