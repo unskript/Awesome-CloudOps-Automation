@@ -1014,7 +1014,7 @@ class CredentialsAdd():
       if args.api_key is not None:
          d['api_key'] = args.api_key
 
-      if args.no_verify_certs == True:
+      if args.no_verify_certs is True:
          d['verify_certs'] = False
       else:
          d['verify_certs'] = True
