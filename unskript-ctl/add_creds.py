@@ -900,8 +900,8 @@ def create_stub_cred_files(dirname: str):
             with open(f_name, 'w') as f:
                 f.write(json.dumps(cred, indent=4))
 
-#CREDS_DIR = os.environ.get('HOME') + "/.local/share/jupyter/metadata/credential-save/"
-CREDS_DIR = os.environ.get('HOME') + "/creds/"
+CREDS_DIR = os.environ.get('HOME') + "/.local/share/jupyter/metadata/credential-save/"
+#CREDS_DIR = os.environ.get('HOME') + "/creds/"
 
 class CredentialsAdd():
     def __init__(self):
