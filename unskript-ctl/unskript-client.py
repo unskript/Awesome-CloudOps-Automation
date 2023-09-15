@@ -313,7 +313,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
                         'FAIL'
                         ])
                 elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                    if payload.get('error') != None:
+                    if payload.get('error') is not None:
                         failed_objects = payload.get('error')
                         failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
                     result_table.append([
@@ -600,7 +600,7 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    if os.path.exists(os.environ.get('EXECUTION_DIR') + '/workspace') == False:
+    if os.path.exists(os.environ.get('EXECUTION_DIR') + '/workspace') is False:
         os.makedirs(os.environ.get('EXECUTION_DIR') + '/workspace')
 
     failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
@@ -611,7 +611,7 @@ def create_jit_runbook(check_list: list):
         # No point proceeding further if the Credential is incomplete
         if cred_name is None or cred_id is None:
             print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} As {cred_name} Credential is Not Active ~~" + '\x1B[0m')
-            if UNSKRIPT_GLOBALS.get('skipped') == None:
+            if UNSKRIPT_GLOBALS.get('skipped') is None:
                 UNSKRIPT_GLOBALS['skipped'] = []
             UNSKRIPT_GLOBALS['skipped'].append([check.get('name'), s_connector])
             continue 
@@ -1559,7 +1559,7 @@ if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') is None:
             os.environ['EXECUTION_DIR'] = '/unskript/data/execution'
-            if os.path.exists(os.environ.get('EXECUTION_DIR')) == False:
+            if os.path.exists(os.environ.get('EXECUTION_DIR')) is False:
                 os.makedirs(os.environ.get('EXECUTION_DIR'))        
 
         load_or_create_global_configuration()
