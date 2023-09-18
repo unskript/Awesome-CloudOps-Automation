@@ -82,6 +82,11 @@ def load_or_create_global_configuration():
                 os.environ[k] = json.dumps(v)
     else:
         _f_path = Path(GLOBAL_CONFIG_PATH)
+
+        # Check if the 'actions' directory exists and if not, create it
+        actions_dir = _f_path.parent
+        actions_dir.mkdir(parents=True, exist_ok=True)
+        
         _f_path.touch()
         with open(GLOBAL_CONFIG_PATH, 'w') as f:
             f.write('globals:')
