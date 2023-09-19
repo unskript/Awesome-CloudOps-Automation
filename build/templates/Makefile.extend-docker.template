@@ -45,14 +45,14 @@ pre-build:
 	fi
 	@echo "Verified all pre-requisites are met, proceeding to build custom docker image"
 	@mkdir -p $(CUSTOM_DIRECTORY)
-	@cp -Rf $(ACTION_DIRECTORY)  $(CUSTOM_DIRECTORY)/actions
-	@cp -Rf $(RUNBOOK_DIRECTORY)  $(CUSTOM_DIRECTORY)/runbooks
+	@cp -Rf $(ACTION_DIRECTORY)  $(CUSTOM_DIRECTORY)
+	@cp -Rf $(RUNBOOK_DIRECTORY)  $(CUSTOM_DIRECTORY)
 
 
 build:	pre-build
 	@echo "Using \n Custom Docker Name: $(CUSTOM_DOCKER_NAME) Custom Docker Version: $(CUSTOM_DOCKER_VERSION)"
 	@docker build -t $(CUSTOM_DOCKER_NAME):$(CUSTOM_DOCKER_VERSION) -f Dockerfile .
 
-clean: 
+clean:
 	@echo "Cleaning up the directories"
 	@rm -rf $(CUSTOM_DIRECTORY)
