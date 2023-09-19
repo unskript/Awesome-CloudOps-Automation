@@ -1,0 +1,13 @@
+from pydantic import BaseModel, Field
+from typing import Optional, Tuple
+import pprint
+
+
+class InputSchema(BaseModel):
+    pass
+
+def {{ check_function_name }}_printer(output):
+    pass
+
+def {{ check_function_name }}(handle) -> Tuple:
+    pass
