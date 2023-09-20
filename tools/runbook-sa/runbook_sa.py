@@ -17,8 +17,7 @@ import subprocess
 import argparse
 
 from nbformat import read
-from datetime import datetime
-from argparse import ArgumentParser, REMAINDER
+from argparse import ArgumentParser
 
 
 def save_custom_cell_contents_to_file(runbook, output_file="./custom_cell_contents.py"):
@@ -90,7 +89,7 @@ def main(category: str = 'all', runbooks: list = []):
                 raise e
         elif category == 'all':
             command = [f"jupyter nbconvert --to script {runbook}"]
-            process = subprocess.run(command,
+            _ = subprocess.run(command,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 shell=True)
