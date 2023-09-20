@@ -4,9 +4,11 @@
 #
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
-from kubernetes import client
 from tabulate import tabulate
+
+from kubernetes import client
 from kubernetes.client.rest import ApiException
+
 
 
 class InputSchema(BaseModel):
