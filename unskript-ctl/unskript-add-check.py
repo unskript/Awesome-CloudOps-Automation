@@ -42,18 +42,15 @@ class CreateCheck():
 
         args = mainParser.parse_args()
         json_data = {}
-        try:
-            json_data['action_title'] = args.name
-            json_data['action_description'] = args.description
-            json_data['action_type'] = "LEGO_TYPE_" + args.type
-            json_data['action_entry_function'] = args.name
-            json_data['action_needs_credential'] = True
-            json_data['action_output_type'] = "ACTION_OUTPUT_TYPE_LIST"
-            json_data['action_is_check'] = True
-            json_data['action_supports_iteration'] = True
-            json_data['action_supports_poll'] = True
-        except:
-            pass
+        json_data['action_title'] = args.name
+        json_data['action_description'] = args.description
+        json_data['action_type'] = "LEGO_TYPE_" + args.type
+        json_data['action_entry_function'] = args.name
+        json_data['action_needs_credential'] = True
+        json_data['action_output_type'] = "ACTION_OUTPUT_TYPE_LIST"
+        json_data['action_is_check'] = True
+        json_data['action_supports_iteration'] = True
+        json_data['action_supports_poll'] = True
 
         custom_dir = action_dir_path + "/" + args.name
         Path(custom_dir).mkdir(parents=True, exist_ok=True)
