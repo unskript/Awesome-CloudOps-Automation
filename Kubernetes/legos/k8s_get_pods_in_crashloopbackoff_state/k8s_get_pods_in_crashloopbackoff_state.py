@@ -4,10 +4,9 @@
 #
 
 import pprint
-import re
 from typing import Optional, Tuple
-from collections import defaultdict
 from pydantic import BaseModel, Field
+from kubernetes import client
 from kubernetes.client.rest import ApiException
 
 
@@ -25,62 +24,39 @@ def k8s_get_pods_in_crashloopbackoff_state_printer(output):
 
 
 def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '') -> Tuple:
-    """k8s_get_pods_in_crashloopbackoff_state executes the given kubectl
-    command to find pods in CrashLoopBackOff State
-
-        :type handle: object
-        :param handle: Object returned from the Task validate method
-
-        :type namespace: Optional[str]
-        :param namespace: Namespace to get the pods from. Eg:"logging",
-        if not given all namespaces are considered
-
-        :rtype: Status, List of pods in CrashLoopBackOff State
     """
+    k8s_get_pods_in_crashloopbackoff_state returns the pods that have CrashLoopBackOff state in their container statuses.
 
-    if handle.client_side_validation is False:
-        raise ApiException(f"K8S Connector is invalid: {handle}")
+    :type handle: Object
+    :param handle: Object returned from the task.validate(...) function
 
-    kubectl_command = ("kubectl get pods --all-namespaces | grep CrashLoopBackOff "
-                       "| tr -s ' ' | cut -d ' ' -f 1,2")
-    if namespace:
-        kubectl_command = "kubectl get pods -n " + namespace + \
-        " | grep CrashLoopBackOff | cut -d' ' -f 1 | tr -d ' '"
-    response = handle.run_native_cmd(kubectl_command)
+    :type namespace: str
+    :param namespace: (Optional) String, K8S Namespace as python string
 
-    if response is None:
-        print(
-            f"Error while executing command ({kubectl_command}) (empty response)")
-        return False, None
-
-    if response.stderr:
-        raise ApiException(
-            f"Error occurred while executing command {kubectl_command} {response.stderr}")
-
-    temp = response.stdout
+    :rtype: Status, List of objects of pods, namespaces, and containers that are in CrashLoopBackOff state
+    """
     result = []
-    res = []
-    unhealthy_pods = []
-    unhealthy_pods_tuple = ()
-    if not namespace:
-        all_namespaces = re.findall(r"(\S+).*", temp)
-        all_unhealthy_pods = re.findall(r"\S+\s+(.*)", temp)
-        unhealthy_pods = list(zip(all_namespaces, all_unhealthy_pods))
-        res = defaultdict(list)
-        for key, val in unhealthy_pods:
-            res[key].append(val)
-    elif namespace:
-        all_pods = []
-        all_unhealthy_pods = []
-        all_pods = re.findall(r"(\S+).*", temp)
-        for p in all_pods:
-            unhealthy_pods_tuple = (namespace, p)
-            unhealthy_pods.append(unhealthy_pods_tuple)
-        res = defaultdict(list)
-        for key, val in unhealthy_pods:
-            res[key].append(val)
-    if len(res) != 0:
-        result.append(dict(res))
-    if len(result) != 0:
-        return (False, result)
-    return (True, None)
+    if handle.client_side_validation is not True:
+        raise ApiException(f"K8S Connector is invalid {handle}")
+
+    v1 = client.CoreV1Api(api_client=handle)
+
+    # Check whether a namespace is provided, if not fetch all namespaces
+    try:
+        if namespace:
+            pods = v1.list_namespaced_pod(namespace).items
+        else:
+            pods = v1.list_pod_for_all_namespaces().items
+    except ApiException as e:
+        raise e
+
+    for pod in pods:
+        pod_name = pod.metadata.name
+        namespace = pod.metadata.namespace
+        # Check each pod for CrashLoopBackOff state
+        for container_status in pod.status.container_statuses:
+            container_name = container_status.name
+            if container_status.state and container_status.state.waiting and container_status.state.waiting.reason == "CrashLoopBackOff":
+                result.append({"pod": pod_name, "namespace": namespace, "container": container_name})
+
+    return (False, result) if result else (True, None)

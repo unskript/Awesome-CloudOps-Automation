@@ -54,6 +54,8 @@ def aws_get_lambdas_with_high_error_rate(
     :rtype: Tuple with status result and list of Lambda functions with high error rate
 
     """
+    if not handle or (region and region not in aws_list_all_regions(handle)):
+        raise ValueError("Invalid input parameters provided.")
     result = []
     all_regions = [region]
     if not region:
@@ -87,19 +89,16 @@ def aws_get_lambdas_with_high_error_rate(
                     Period=3600,
                     Statistics=['Sum']
                 )
-                # Calculate the error rate for the function
-                if errors_response['Datapoints']:
-                    errors_sum = errors_response['Datapoints'][0]['Sum']
+                datapoints = errors_response.get('Datapoints')
+                if datapoints and 'Sum' in datapoints[0]:
+                    errors_sum = datapoints[0]['Sum']
                     invocations = config_response.get('NumberOfInvocations', 0)
-                    error_rate = errors_sum / invocations
-                    # Check if the error rate is greater than the threshold
-                    if error_rate > error_rate_threshold:
-                        lambda_func = {}
-                        lambda_func['function_name'] = function['FunctionName']
-                        lambda_func['region'] = reg
-                        result.append(lambda_func)
-                else:
-                    continue
+                    if invocations > 0:
+                        error_rate = errors_sum / invocations
+                         # Check if the error rate is greater than the threshold
+                        if error_rate > error_rate_threshold:
+                            lambda_func = {'function_name': function['FunctionName'], 'region': reg}
+                            result.append(lambda_func)
         except Exception:
             pass
     if len(result) != 0:

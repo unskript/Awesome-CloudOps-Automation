@@ -50,6 +50,8 @@ def aws_find_rds_instances_with_low_cpu_utilization(handle, utilization_threshol
 
         :rtype: status, list of instances and their region.
     """
+    if not handle or utilization_threshold < 0 or utilization_threshold > 100 or duration_minutes <= 0:
+        raise ValueError("Invalid input parameters provided.")
     result = []
     all_regions = [region]
     if not region:
