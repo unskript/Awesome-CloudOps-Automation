@@ -34,20 +34,28 @@ spec:
           protocol: TCP
           name: jupyterlab-http
         livenessProbe:
-            httpGet:
-              path: /api/kernelspecs
-              port: jupyterlab-http
+          httpGet:
+            path: {{ if .Values.clientId }}/{{ .Values.clientId }}{{ end }}/api/kernelspecs
+            port: jupyterlab-http
+          initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
+          periodSeconds: {{ .Values.common.periodSeconds }}
+          timeoutSeconds: {{ .Values.common.timeoutSeconds }}
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /api/kernelspecs
+            path: {{ if .Values.clientId }}/{{ .Values.clientId }}{{ end }}/api/kernelspecs
             port: jupyterlab-http
           initialDelaySeconds: {{ .Values.common.initialDelaySeconds }}
           periodSeconds: {{ .Values.common.periodSeconds }}
           successThreshold: {{ .Values.common.successThreshold }}
           timeoutSeconds: {{ .Values.common.timeoutSeconds }}
+        env:
+          - name: CLIENT_ID
+            value: {{ .Values.clientId }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
         volumeMounts:
           - mountPath: {{ .Values.persistence.mountPath }}
             name: {{ .Values.persistence.name }}

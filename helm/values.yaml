@@ -4,6 +4,10 @@
 
 replicaCount: 1
 
+# Identifier which ca be used to differentiate between multiple instances.
+# Will use the value to run server with base_url. If empty then no base_url applied
+clientId: ""
+
 image:
   repository: unskript/awesome-runbooks
   pullPolicy: Always
@@ -73,8 +77,11 @@ persistence:
     requests: {}
     dataSource: {}
 
-
-securityContext: {}
+securityContext:
+  capabilities:
+    add:
+      - NET_ADMIN
+  privileged: true
   # capabilities:
   #   drop:
   #   - ALL
