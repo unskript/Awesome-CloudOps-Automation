@@ -4,11 +4,9 @@
 #
 
 import pprint
-import re
 from typing import Optional, Tuple
-from collections import defaultdict
 from pydantic import BaseModel, Field
-from unskript.legos.utils import CheckOutput
+from kubernetes import client
 from kubernetes.client.rest import ApiException
 
 
@@ -22,68 +20,41 @@ class InputSchema(BaseModel):
 def k8s_get_pods_in_terminating_state_printer(output):
     if output is None:
         return
-    if isinstance(output, CheckOutput):
-        print(output.json())
-    else:
-        pprint.pprint(output)
+    pprint.pprint(output)
 
 
 def k8s_get_pods_in_terminating_state(handle, namespace: str = '') -> Tuple:
-    """k8s_get_pods_in_terminating_state executes the given kubectl
-    command to find pods in Terminating State
-
-        :type handle: object
-        :param handle: Object returned from the Task validate method
-
-        :type namespace: Optional[str]
-        :param namespace: Namespace to get the pods from. Eg:"logging", if not
-        given all namespaces are considered
-
-        :rtype: Status, List of pods in Terminating State
     """
-    if handle.client_side_validation is not True:
-        print(f"K8S Connector is invalid: {handle}")
-        return False, None
-    kubectl_command = ("kubectl get pods --all-namespaces | grep Terminating "
-                       "| tr -s ' ' | cut -d ' ' -f 1,2")
-    if namespace:
-        kubectl_command = ("kubectl get pods -n " + namespace + " | grep Terminating "
-                           "| cut -d' ' -f 1 | tr -d ' '")
-    response = handle.run_native_cmd(kubectl_command)
+    This function returns the pods that are in the Terminating state.
 
-    if response is None:
-        print(
-            f"Error while executing command ({kubectl_command}) (empty response)")
-        return False, None
+    :type handle: Object
+    :param handle: Object returned from the task.validate(...) function
 
-    if response.stderr:
-        raise ApiException(
-            f"Error occurred while executing command {kubectl_command} {response.stderr}")
+    :type namespace: str
+    :param namespace: (Optional) String, K8S Namespace as python string
 
-    temp = response.stdout
+    :rtype: Status, List of objects of pods, namespaces, and containers that are in Terminating state
+    """
     result = []
-    res = []
-    unhealthy_pods = []
-    unhealthy_pods_tuple = ()
-    if not namespace:
-        all_namespaces = re.findall(r"(\S+).*", temp)
-        all_unhealthy_pods = re.findall(r"\S+\s+(.*)", temp)
-        unhealthy_pods = list(zip(all_namespaces, all_unhealthy_pods))
-        res = defaultdict(list)
-        for key, val in unhealthy_pods:
-            res[key].append(val)
-    elif namespace:
-        all_pods = []
-        all_unhealthy_pods = []
-        all_pods = re.findall(r"(\S+).*", temp)
-        for p in all_pods:
-            unhealthy_pods_tuple = (namespace, p)
-            unhealthy_pods.append(unhealthy_pods_tuple)
-        res = defaultdict(list)
-        for key, val in unhealthy_pods:
-            res[key].append(val)
-    if len(res) != 0:
-        result.append(dict(res))
-    if len(result) != 0:
-        return (False, result)
-    return (True, None)
+    if handle.client_side_validation is not True:
+        raise ApiException(f"K8S Connector is invalid {handle}")
+
+    v1 = client.CoreV1Api(api_client=handle)
+
+    # Check whether a namespace is provided, if not fetch all namespaces
+    try:
+        if namespace:
+            pods = v1.list_namespaced_pod(namespace).items
+        else:
+            pods = v1.list_pod_for_all_namespaces().items
+    except ApiException as e:
+        raise e
+
+    for pod in pods:
+        pod_name = pod.metadata.name
+        namespace = pod.metadata.namespace
+        # Check each pod for Terminating state
+        if pod.metadata.deletion_timestamp is not None:
+            result.append({"pod": pod_name, "namespace": namespace})
+
+    return (False, result) if result else (True, None)

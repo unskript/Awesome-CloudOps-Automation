@@ -32,14 +32,14 @@ def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Tu
     result = []
     unhealthy_instances_list = []
     all_target_groups = []
-    unhealhthy_instances_dict ={}
+    unhealhthy_instances_dict = {}
     all_regions = [region]
-    if region is None or len(region)==0:
+    if region is None or len(region) == 0:
         all_regions = aws_list_all_regions(handle=handle)
     for r in all_regions:
         try:
-            output = get_all_target_groups(handle,r)
-            if len(output)!=0:
+            output = get_all_target_groups(handle, r)
+            if len(output) != 0:
                 all_target_groups.append(output)
         except Exception:
             pass
@@ -51,14 +51,15 @@ def aws_list_unhealthy_instances_in_target_group(handle, region: str=None) -> Tu
             try:
                 targetHealthResponse = elbv2Client.describe_target_health(TargetGroupArn=o)
             except Exception as e:
-                raise e
+                print(f"An error occurred while describing target health: {e}") # Log an error message
+                continue
             for ins in targetHealthResponse["TargetHealthDescriptions"]:
                 if ins['TargetHealth']['State'] in ['unhealthy']:
                     unhealthy_instances_list.append(ins['Target']['Id'])
-    if len(unhealthy_instances_list)!=0:
+    if len(unhealthy_instances_list) != 0 and region_name is not None:
         unhealhthy_instances_dict['instance'] = unhealthy_instances_list
         unhealhthy_instances_dict['region'] = region_name
         result.append(unhealhthy_instances_dict)
-    if len(result)!=0:
-        return (False,result)
+    if len(result) != 0:
+        return (False, result)
     return (True, None)

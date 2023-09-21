@@ -43,11 +43,13 @@ def aws_get_long_running_redshift_clusters_without_reserved_nodes(handle, region
 
         :rtype: status, list of clusters, nodetype and their region.
     """
+    if not handle or threshold < 0:
+        raise ValueError("Invalid input parameters provided.")
+
     result = []
     reservedNodesPerRegion = {}
-    all_regions = [region]
-    if not region:
-        all_regions = aws_list_all_regions(handle)
+    all_regions = [region] if region else aws_list_all_regions(handle)
+
     for reg in all_regions:
         try:
             redshiftClient = handle.client('redshift', region_name=reg)
@@ -56,30 +58,29 @@ def aws_get_long_running_redshift_clusters_without_reserved_nodes(handle, region
             if response['ReservedNodes']:
                 for node in response['ReservedNodes']:
                     reservedNodesPerType[node['NodeType']] = True
-            else:
-                continue
-            reservedNodesPerRegion[reg] = reservedNodesPerType
+                reservedNodesPerRegion[reg] = reservedNodesPerType
         except Exception:
             pass
+
     for reg in all_regions:
         try:
             redshiftClient = handle.client('redshift', region_name=reg)
-            for cluster in redshiftClient.describe_clusters()['Clusters']:
+            clusters = redshiftClient.describe_clusters()['Clusters']
+            for cluster in clusters:
                 cluster_age = datetime.now(timezone.utc) - cluster['ClusterCreateTime']
-            if cluster['ClusterStatus'] == 'available' and cluster_age > timedelta(days=threshold):
-                # Check if the cluster node type is present in the reservedNodesPerRegion map.
-                reservedNodes = reservedNodesPerRegion.get(reg)
-                if reservedNodes is not None:
-                    if reservedNodes.get(cluster['NodeType']) is True:
-                        continue
-                cluster_dict = {}
-                cluster_dict["region"] = reg
-                cluster_dict["cluster"] = cluster['ClusterIdentifier']
-                cluster_dict["node_type"] = cluster['NodeType']
-                result.append(cluster_dict)
-        except Exception:
+                if cluster['ClusterStatus'] == 'available' and cluster_age.days > threshold:
+                    reservedNodes = reservedNodesPerRegion.get(reg, {})
+                    if not reservedNodes.get(cluster['NodeType']):
+                        cluster_dict = {
+                            "region": reg,
+                            "cluster": cluster['ClusterIdentifier'],
+                            "node_type": cluster['NodeType']
+                        }
+                        result.append(cluster_dict)
+        except Exception as error:
             pass
-    if len(result) != 0:
+
+    if result:
         return (False, result)
     else:
         return (True, None)
