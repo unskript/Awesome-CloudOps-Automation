@@ -15,12 +15,18 @@ class InputSchema(BaseModel):
     '''
     pass
 
-def {{ check_function_name }}_printer(output):
+def {{ check_function_name }}_printer(output:Tuple):
     '''
     This is the printer function, which prints the output of the check.
-    You can chose to print the output as it is or put it in tabular format, for eg.
+    A basic print of the failed objects is provided here.
+    Feel free to modify it to print the output in whatever format you want, for eg. tabular
     '''
-    pass
+    if output[0] is True:
+        print(f'Check passed')
+        return
+
+    print("Failed objects")
+    pprint.pprint(output[1])
 
 def {{ check_function_name }}(handle) -> Tuple:
     '''
