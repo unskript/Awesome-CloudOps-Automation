@@ -43,6 +43,9 @@ def aws_get_rds_automated_snapshots_above_retention_period(handle, region: str="
 
         :rtype: List of manual database snapshots.
     """
+    if not handle or threshold <= 0: # Input validation
+        raise ValueError("Invalid handle or threshold must be a positive integer.")
+
     result = []
     all_regions = [region]
     if not region:
@@ -54,14 +57,14 @@ def aws_get_rds_automated_snapshots_above_retention_period(handle, region: str="
             response = aws_get_paginator(rdsClient, "describe_db_snapshots","DBSnapshots",
                                          SnapshotType='automated')
             for snapshot in response:
-                snapshot_time = snapshot['SnapshotCreateTime'].replace(tzinfo=pytz.UTC)
-                if snapshot_time < min_creation_time:
-                    result.append({"db_identifier": snapshot['DBSnapshotIdentifier'], "region": reg})
-        except Exception:
+                if 'SnapshotCreateTime' in snapshot: # Check if the key exists
+                    snapshot_time = snapshot['SnapshotCreateTime'].replace(tzinfo=pytz.UTC)
+                    if snapshot_time < min_creation_time:
+                        result.append({"db_identifier": snapshot['DBSnapshotIdentifier'], "region": reg})
+        except Exception as e:
             pass
     if len(result) != 0:
         return (False, result)
     else:
         return (True, None)
-
 

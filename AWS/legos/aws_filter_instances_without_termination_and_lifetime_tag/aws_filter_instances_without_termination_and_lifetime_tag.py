@@ -33,39 +33,41 @@ def aws_filter_instances_without_termination_and_lifetime_tag_printer(output):
     
     pprint.pprint(output)
 
-def fetch_instances_from_valid_region(res,r, termination_tag_name, lifetime_tag_name):
-    result=[]
-    instances_dict={}
-    for reservation in res:
-            for instance in reservation['Instances']:
-                try:
-                    tagged_instance = instance['Tags']
-                    tag_keys = [tags['Key'] for tags in tagged_instance]
-                    if termination_tag_name not in tag_keys or lifetime_tag_name not in tag_keys:
-                        result.append(instance['InstanceId'])
-                    elif termination_tag_name not in tag_keys and lifetime_tag_name not in tag_keys:
-                        result.append(instance['InstanceId'])
-                    if termination_tag_name in tag_keys:
-                        for x in instance['Tags']:
-                            if x['Key'] == termination_tag_name:
-                                right_now = date.today()
-                                date_object = datetime.strptime(x['Value'], '%d-%m-%Y').date()
-                                if date_object < right_now:
-                                    result.append(instance['InstanceId'])
-                            elif x['Key'] == lifetime_tag_name:
-                                launch_time = instance['LaunchTime']
-                                convert_to_datetime = launch_time.strftime("%d-%m-%Y")
-                                launch_date = datetime.strptime(convert_to_datetime,'%d-%m-%Y').date()
-                                if x['Value'] != 'INDEFINITE':
-                                    if launch_date < right_now:
-                                        result.append(instance['InstanceId'])
-                except Exception as e:
-                        if len(instance['InstanceId'])!=0:
-                            result.append(instance['InstanceId'])
-    if len(result)!=0:
-        instances_dict['region']= r
-        instances_dict['instances']= result
-    return instances_dict
+
+def fetch_instances_from_valid_region(reservations, aws_region, termination_tag_name, lifetime_tag_name):
+    result = []
+    right_now = date.today()
+    
+    for reservation in reservations:
+        for instance in reservation.get('Instances', []):
+            instance_id = instance.get('InstanceId')
+            tagged_instance = instance.get('Tags', [])
+            
+            tag_keys = {tag['Key'] for tag in tagged_instance}
+            tag_values = {tag['Key']: tag['Value'] for tag in tagged_instance}
+
+            if not (termination_tag_name in tag_keys and lifetime_tag_name in tag_keys):
+                if instance_id:
+                    result.append(instance_id)
+                continue  # Skip to next instance if tags not found
+
+            try:
+                termination_date = datetime.strptime(tag_values.get(termination_tag_name, ''), '%d-%m-%Y').date()
+                if termination_date < right_now:
+                    result.append(instance_id)
+
+                lifetime_value = tag_values.get(lifetime_tag_name)
+                launch_date = datetime.strptime(instance.get('LaunchTime').strftime("%d-%m-%Y"),'%d-%m-%Y').date()
+                
+                if lifetime_value != 'INDEFINITE' and launch_date < right_now:
+                    result.append(instance_id)
+
+            except Exception as e:
+                if instance_id:
+                    result.append(instance_id)
+                print(f"Error processing instance {instance_id}: {e}")
+
+    return {'region': aws_region, 'instances': result} if result else {}
 
 def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: str=None, termination_tag_name:str='terminationDateTag', lifetime_tag_name:str='lifetimeTag') -> Tuple:
     """aws_filter_ec2_without_lifetime_tag Returns an List of instances which not have lifetime tag.
@@ -87,20 +89,21 @@ def aws_filter_instances_without_termination_and_lifetime_tag(handle, region: st
 
         :rtype: Tuple of status, instances which dont having terminationDateTag and lifetimeTag, and error
     """
-    final_list=[]
-    all_regions = [region]
-    if region is None or len(region) == 0:
-        all_regions = aws_list_all_regions(handle=handle)
+    final_list = []
+    all_regions = [region] if region else aws_list_all_regions(handle=handle)
+
     for r in all_regions:
         try:
             ec2Client = handle.client('ec2', region_name=r)
             all_reservations = aws_get_paginator(ec2Client, "describe_instances", "Reservations")
             instances_without_tags = fetch_instances_from_valid_region(all_reservations, r, termination_tag_name, lifetime_tag_name)
-            if len(instances_without_tags)!=0:
+            
+            if instances_without_tags:
                 final_list.append(instances_without_tags)
         except Exception as e:
             pass
-    if len(final_list)!=0:
+    
+    if final_list:
         return (False, final_list)
     else:
         return (True, None)

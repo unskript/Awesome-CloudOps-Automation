@@ -2,7 +2,7 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-import pprint
+from tabulate import tabulate
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from datetime import datetime,timedelta, timezone
@@ -19,22 +19,32 @@ class InputSchema(BaseModel):
 
 def aws_get_long_running_rds_instances_without_reserved_instances_printer(output):
     if output is None:
+        print("Output is None.")
         return
-    pprint.pprint(output)
+    status, res = output
+    if status:
+        print("There are no DB instances that have been running for longer than the specified threshold and do not have corresponding reserved instances.")
+    else:
+        print("DB instances that have been running for longer than the specified threshold and do not have corresponding reserved instances:")
+        table_data = [[item['region'], item['instance_type'], item['instance']] for item in res]
+        headers = ['Region', 'Instance Type', 'Instance']
+        table = tabulate(table_data, headers=headers, tablefmt='grid')
+        print(table)
 
-def aws_get_long_running_rds_instances_without_reserved_instances(handle, region: str = "", threshold:int=10) -> Tuple:
-    """aws_get_long_running_rds_instances_without_reserved_instances Gets all DB instances that are not m5 or t3.
 
-        :type handle: object
-        :param handle: Object returned from task.validate(...).
+def aws_get_long_running_rds_instances_without_reserved_instances(handle, region: str = "", threshold: float = 10.0) -> Tuple:
+    """aws_get_long_running_rds_instances_without_reserved_instances Gets all DB instances that have been running for longer than the specified threshold and do not have corresponding reserved instances.
 
-        :type region: string
-        :param region: AWS Region.
+    :type handle: object
+    :param handle: Object returned from task.validate(...).
 
-        :type threshold: int
-        :param threshold: Threshold(in days) to find long running RDS instances. Eg: 30, This will find all the instances that have been created a month ago.
+    :type region: string
+    :param region: AWS Region.
 
-        :rtype: A tuple with a Status,and list of DB instances that don't have reserved instances
+    :type threshold: int
+    :param threshold: Threshold(in days) to find long running RDS instances. Eg: 30, This will find all the instances that have been created a month ago.
+
+    :rtype: A tuple with a Status,and list of DB instances that don't have reserved instances
     """
     result = []
     all_regions = [region]
@@ -44,13 +54,11 @@ def aws_get_long_running_rds_instances_without_reserved_instances(handle, region
     for reg in all_regions:
         try:
             rdsClient = handle.client('rds', region_name=reg)
-            response = rdsClient.describe_reserved_nodes()
+            response = rdsClient.describe_reserved_db_instances()
             reservedInstancesPerType = {}
-            if response['ReservedDBInstances']:
+            if 'ReservedDBInstances' in response:
                 for ins in response['ReservedDBInstances']:
-                    reservedInstancesPerRegion[ins['DBInstanceClass']] = True
-            else:
-                continue
+                    reservedInstancesPerType[ins['DBInstanceClass']] = True
             reservedInstancesPerRegion[reg] = reservedInstancesPerType
         except Exception:
             pass
@@ -60,18 +68,19 @@ def aws_get_long_running_rds_instances_without_reserved_instances(handle, region
             response = aws_get_paginator(rdsClient, "describe_db_instances", "DBInstances")
             for instance in response:
                 if instance['DBInstanceStatus'] == 'available':
+                    # Check for existence of keys before using them
+                    if 'InstanceCreateTime' in instance and 'DBInstanceClass' in instance:
                         uptime = datetime.now(timezone.utc) - instance['InstanceCreateTime']
                         if uptime > timedelta(days=threshold):
-                            # Check if the cluster node type is present in the reservedInstancesPerRegion map.
-                            reservedInstances = reservedInstancesPerRegion.get(reg)
-                            if reservedInstances is not None:
-                                if reservedInstances.get(instance['DBInstanceClass']) is True:
-                                    continue
-                            db_instance_dict = {}
-                            db_instance_dict["region"] = reg
-                            db_instance_dict["instance_type"] = instance['DBInstanceClass']
-                            db_instance_dict["instance"] = instance['DBInstanceIdentifier']
-                            result.append(db_instance_dict)
+                            # Check if the DB instance type is present in the reservedInstancesPerRegion map.
+                            reservedInstances = reservedInstancesPerRegion.get(reg, {})
+                            if not reservedInstances.get(instance['DBInstanceClass']):
+                                db_instance_dict = {
+                                    "region": reg,
+                                    "instance_type": instance['DBInstanceClass'],
+                                    "instance": instance['DBInstanceIdentifier']
+                                }
+                                result.append(db_instance_dict)
         except Exception:
             pass
 
@@ -79,5 +88,3 @@ def aws_get_long_running_rds_instances_without_reserved_instances(handle, region
         return (False, result)
     else:
         return (True, None)
-
-
