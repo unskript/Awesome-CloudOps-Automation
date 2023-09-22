@@ -217,7 +217,7 @@ def list_runbooks():
     print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
 
 
-def run_ipynb(filename: str, status_list_of_dict: list = None):
+def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = None):
     """run_ipynb This function takes the Runbook name and executes it
            using nbclient.execute()
 
@@ -226,6 +226,13 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
 
        :rtype: None, Runbook execution will be displayed
     """
+    hardcoded_checks = [
+    "Get Unscheduled K8s Pods due to Node",
+    "Get Node-affinity related failures",
+    "Get Failed Readiness Probes",
+    "Get Failed Liveness Probes",
+    "Get K8s DaemonSets Missing on Node"
+]
     nb = read_ipynb(filename)
 
     # We store the Status of runbook execution in status_dict
@@ -343,6 +350,9 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
                                     CheckOutputStatus(payload.get('status')),
                                     failed_result)
             idx += 1
+    if filter == 'k8s':
+        for check in hardcoded_checks:
+            result_table.append([check, "Coming soon", "Coming soon", "Coming soon"])
     print("")
     print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
 
@@ -386,7 +396,7 @@ def run_checks(filter: str):
 
     status_of_runs = []
     for rb in runbooks:
-        run_ipynb(rb, status_of_runs)
+        run_ipynb(rb, status_of_runs, filter)
 
     update_audit_trail(status_of_runs)
     #print_run_summary(status_of_runs)
