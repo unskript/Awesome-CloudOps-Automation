@@ -68,7 +68,7 @@ class CreateCheck():
         except Exception as e:
             print(f"Unable to create __init__.py File {e}")
 
-        AWESOME_DIRECTORY = "Awesome-CloudOps-Automation"
+        AWESOME_DIRECTORY = "awesome"
         environment = Environment(loader=FileSystemLoader(current_directory + "/" + AWESOME_DIRECTORY + "/unskript-ctl/templates/"))
         template = environment.get_template("check.py.template")
 
@@ -84,7 +84,7 @@ class CreateCheck():
         content = template.render({
             "check_function_name": args.name,
             "check_type_upper_case": args.type.upper(),
-            "check_type": args.type,
+            "check_type": args.type.lower(),
             })
         try:
             with open(custom_dir + "/" + "test_" + args.name + ".py", "w") as f:
