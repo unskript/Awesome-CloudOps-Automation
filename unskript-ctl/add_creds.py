@@ -12,6 +12,7 @@
 import os
 import sys
 import json
+from pathlib import Path
 
 #from creds_ui import main as ui
 from argparse import ArgumentParser, REMAINDER
@@ -882,7 +883,8 @@ credential_schemas = '''
 def create_stub_cred_files(dirname: str):
     """create_stub_cred_files This function creates the stub files needed by creds-ui"""
     if not os.path.exists(dirname):
-        os.mkdir(CREDS_DIR)
+        path = Path(CREDS_DIR)
+        path.mkdir(parents=True)
 
     # Lets read the Stubs Creds file and create placeholder files
     if not os.path.exists(STUB_FILE):

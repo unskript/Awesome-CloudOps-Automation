@@ -1,0 +1,104 @@
+************* Module validator
+validator.py:66:11: C0121: Comparison 'v == False' should be 'v is False' if checking for the singleton value False, or 'not v' if testing for falsiness (singleton-comparison)
+validator.py:130:11: C0121: Comparison 'r == False' should be 'r is False' if checking for the singleton value False, or 'not r' if testing for falsiness (singleton-comparison)
+validator.py:119:0: R1711: Useless return at end of function or method (useless-return)
+************* Module Pingdom.legos.pingdom_traceroute.pingdom_traceroute
+Pingdom/legos/pingdom_traceroute/pingdom_traceroute.py:48:27: R0124: Redundant comparison - probeid != probeid (comparison-with-itself)
+************* Module GCP.legos.gcp_delete_filestore_instance.gcp_delete_filestore_instance
+GCP/legos/gcp_delete_filestore_instance/gcp_delete_filestore_instance.py:9:0: C0412: Imports from package google are not grouped (ungrouped-imports)
+************* Module GCP.legos.gcp_create_filestore_instance.gcp_create_filestore_instance
+GCP/legos/gcp_create_filestore_instance/gcp_create_filestore_instance.py:8:0: C0412: Imports from package google are not grouped (ungrouped-imports)
+************* Module GCP.legos.gcp_create_bucket.gcp_create_bucket
+GCP/legos/gcp_create_bucket/gcp_create_bucket.py:36:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module GCP.legos.gcp_delete_bucket.gcp_delete_bucket
+GCP/legos/gcp_delete_bucket/gcp_delete_bucket.py:21:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module GCP.legos.gcp_add_role_to_service_account.gcp_add_role_to_service_account
+GCP/legos/gcp_add_role_to_service_account/gcp_add_role_to_service_account.py:32:4: E1102: pprint is not callable (not-callable)
+GCP/legos/gcp_add_role_to_service_account/gcp_add_role_to_service_account.py:54:19: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module GCP.legos.gcp_create_service_account.gcp_create_service_account
+GCP/legos/gcp_create_service_account/gcp_create_service_account.py:28:4: E1102: pprint is not callable (not-callable)
+************* Module GCP.legos.gcp_delete_service_account.gcp_delete_service_account
+GCP/legos/gcp_delete_service_account/gcp_delete_service_account.py:21:4: E1102: pprint is not callable (not-callable)
+GCP/legos/gcp_delete_service_account/gcp_delete_service_account.py:40:28: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+GCP/legos/gcp_delete_service_account/gcp_delete_service_account.py:40:78: E0602: Undefined variable 'email' (undefined-variable)
+************* Module GCP.legos.gcp_delete_object_from_bucket.gcp_delete_object_from_bucket
+GCP/legos/gcp_delete_object_from_bucket/gcp_delete_object_from_bucket.py:23:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module GCP.legos.gcp_add_member_to_iam_role.gcp_add_member_to_iam_role
+GCP/legos/gcp_add_member_to_iam_role/gcp_add_member_to_iam_role.py:32:4: E1102: pprint is not callable (not-callable)
+************* Module SSH.legos.ssh_restart_service_using_sysctl.ssh_restart_service_using_sysctl
+SSH/legos/ssh_restart_service_using_sysctl/ssh_restart_service_using_sysctl.py:68:18: R1721: Unnecessary use of a comprehension, use list(host_output.stdout) instead. (unnecessary-comprehension)
+************* Module unskript-client
+unskript-ctl/unskript-client.py:1221:61: E0001: Parsing failed: 'EOL while scanning string literal (<unknown>, line 1221)' (syntax-error)
+************* Module db_utils
+unskript-ctl/db_utils.py:239:11: E0601: Using variable 'creds_dict' before assignment (used-before-assignment)
+************* Module MySQL.legos.mysql_kill_query.mysql_kill_query
+MySQL/legos/mysql_kill_query/mysql_kill_query.py:35:16: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_eks_get_deployments_name.aws_eks_get_deployments_name
+AWS/legos/aws_eks_get_deployments_name/aws_eks_get_deployments_name.py:58:27: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_ecs_describe_task_definition.aws_ecs_describe_task_definition
+AWS/legos/aws_ecs_describe_task_definition/aws_ecs_describe_task_definition.py:46:20: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_eks_get_pod_status.aws_eks_get_pod_status
+AWS/legos/aws_eks_get_pod_status/aws_eks_get_pod_status.py:73:19: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_purchase_redshift_reserved_node.aws_purchase_redshift_reserved_node
+AWS/legos/aws_purchase_redshift_reserved_node/aws_purchase_redshift_reserved_node.py:11:0: C0412: Imports from package typing are not grouped (ungrouped-imports)
+************* Module AWS.legos.aws_eks_get_nodes.aws_eks_get_nodes
+AWS/legos/aws_eks_get_nodes/aws_eks_get_nodes.py:59:0: C0325: Unnecessary parens after '=' keyword (superfluous-parens)
+AWS/legos/aws_eks_get_nodes/aws_eks_get_nodes.py:57:18: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+AWS/legos/aws_eks_get_nodes/aws_eks_get_nodes.py:66:20: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_eks_get_node_cpu_memory.aws_eks_get_node_cpu_memory
+AWS/legos/aws_eks_get_node_cpu_memory/aws_eks_get_node_cpu_memory.py:57:31: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+AWS/legos/aws_eks_get_node_cpu_memory/aws_eks_get_node_cpu_memory.py:65:39: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_cloudwatch_attach_webhook_notification_to_alarm.aws_cloudwatch_attach_webhook_notification_to_alarm
+AWS/legos/aws_cloudwatch_attach_webhook_notification_to_alarm/aws_cloudwatch_attach_webhook_notification_to_alarm.py:79:7: R1714: Consider merging these comparisons with 'in' by using 'parsedURL.scheme not in ('http', 'https')'. Use a set instead if elements are hashable. (consider-using-in)
+************* Module AWS.legos.aws_ebs_modify_volume.aws_ebs_modify_volume
+AWS/legos/aws_ebs_modify_volume/aws_ebs_modify_volume.py:104:7: R1714: Consider merging these comparisons with 'in' by using 'state in ('completed', None)'. Use a set instead if elements are hashable. (consider-using-in)
+AWS/legos/aws_ebs_modify_volume/aws_ebs_modify_volume.py:104:31: C0121: Comparison 'state == None' should be 'state is None' (singleton-comparison)
+************* Module AWS.legos.aws_get_long_running_redshift_clusters_without_reserved_nodes.aws_get_long_running_redshift_clusters_without_reserved_nodes
+AWS/legos/aws_get_long_running_redshift_clusters_without_reserved_nodes/aws_get_long_running_redshift_clusters_without_reserved_nodes.py:72:19: C0121: Comparison 'reservedNodes != None' should be 'reservedNodes is not None' (singleton-comparison)
+AWS/legos/aws_get_long_running_redshift_clusters_without_reserved_nodes/aws_get_long_running_redshift_clusters_without_reserved_nodes.py:73:23: C0121: Comparison 'reservedNodes.get(cluster['NodeType']) == True' should be 'reservedNodes.get(cluster['NodeType']) is True' if checking for the singleton value True, or 'reservedNodes.get(cluster['NodeType'])' if testing for truthiness (singleton-comparison)
+************* Module AWS.legos.aws_eks_copy_pod_logs_to_bucket.aws_eks_copy_pod_logs_to_bucket
+AWS/legos/aws_eks_copy_pod_logs_to_bucket/aws_eks_copy_pod_logs_to_bucket.py:68:14: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+AWS/legos/aws_eks_copy_pod_logs_to_bucket/aws_eks_copy_pod_logs_to_bucket.py:73:51: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+AWS/legos/aws_eks_copy_pod_logs_to_bucket/aws_eks_copy_pod_logs_to_bucket.py:76:14: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+AWS/legos/aws_eks_copy_pod_logs_to_bucket/aws_eks_copy_pod_logs_to_bucket.py:78:23: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_get_long_running_elasticcache_clusters_without_reserved_nodes.aws_get_long_running_elasticcache_clusters_without_reserved_nodes
+AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/aws_get_long_running_elasticcache_clusters_without_reserved_nodes.py:81:23: C0121: Comparison 'reservedNodes != None' should be 'reservedNodes is not None' (singleton-comparison)
+AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/aws_get_long_running_elasticcache_clusters_without_reserved_nodes.py:82:27: C0121: Comparison 'reservedNodes.get(cluster['CacheNodeType']) == True' should be 'reservedNodes.get(cluster['CacheNodeType']) is True' if checking for the singleton value True, or 'reservedNodes.get(cluster['CacheNodeType'])' if testing for truthiness (singleton-comparison)
+AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/aws_get_long_running_elasticcache_clusters_without_reserved_nodes.py:13:0: C0412: Imports from package typing are not grouped (ungrouped-imports)
+AWS/legos/aws_get_long_running_elasticcache_clusters_without_reserved_nodes/aws_get_long_running_elasticcache_clusters_without_reserved_nodes.py:15:0: C0412: Imports from package pydantic are not grouped (ungrouped-imports)
+************* Module AWS.legos.aws_ecs_service_restart.aws_ecs_service_restart
+AWS/legos/aws_ecs_service_restart/aws_ecs_service_restart.py:63:20: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_eks_get_pod_cpu_memory.aws_eks_get_pod_cpu_memory
+AWS/legos/aws_eks_get_pod_cpu_memory/aws_eks_get_pod_cpu_memory.py:64:30: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module AWS.legos.aws_get_long_running_rds_instances_without_reserved_instances.aws_get_long_running_rds_instances_without_reserved_instances
+AWS/legos/aws_get_long_running_rds_instances_without_reserved_instances/aws_get_long_running_rds_instances_without_reserved_instances.py:67:31: C0121: Comparison 'reservedInstances != None' should be 'reservedInstances is not None' (singleton-comparison)
+AWS/legos/aws_get_long_running_rds_instances_without_reserved_instances/aws_get_long_running_rds_instances_without_reserved_instances.py:68:35: C0121: Comparison 'reservedInstances.get(instance['DBInstanceClass']) == True' should be 'reservedInstances.get(instance['DBInstanceClass']) is True' if checking for the singleton value True, or 'reservedInstances.get(instance['DBInstanceClass'])' if testing for truthiness (singleton-comparison)
+************* Module AWS.legos.aws_get_bucket_size.aws_get_bucket_size
+AWS/legos/aws_get_bucket_size/aws_get_bucket_size.py:64:19: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module Mongo.legos.mongodb_find_document.mongodb_find_document
+Mongo/legos/mongodb_find_document/mongodb_find_document.py:127:19: E1133: Non-iterable value sort_by is used in an iterating context (not-an-iterable)
+************* Module Kubernetes.legos.k8s_get_pods_in_terminating_state.k8s_get_pods_in_terminating_state
+Kubernetes/legos/k8s_get_pods_in_terminating_state/k8s_get_pods_in_terminating_state.py:62:26: R1721: Unnecessary use of a comprehension, use list(zip(all_namespaces, all_unhealthy_pods)) instead. (unnecessary-comprehension)
+************* Module Kubernetes.legos.k8s_get_pods_in_imagepullbackoff_state.k8s_get_pods_in_imagepullbackoff_state
+Kubernetes/legos/k8s_get_pods_in_imagepullbackoff_state/k8s_get_pods_in_imagepullbackoff_state.py:57:26: R1721: Unnecessary use of a comprehension, use list(zip(all_namespaces, all_unhealthy_pods)) instead. (unnecessary-comprehension)
+************* Module Kubernetes.legos.k8s_remove_pod_from_deployment.k8s_remove_pod_from_deployment
+Kubernetes/legos/k8s_remove_pod_from_deployment/k8s_remove_pod_from_deployment.py:26:0: R1711: Useless return at end of function or method (useless-return)
+************* Module Kubernetes.legos.k8s_get_pods_in_crashloopbackoff_state.k8s_get_pods_in_crashloopbackoff_state
+Kubernetes/legos/k8s_get_pods_in_crashloopbackoff_state/k8s_get_pods_in_crashloopbackoff_state.py:59:26: R1721: Unnecessary use of a comprehension, use list(zip(all_namespaces, all_unhealthy_pods)) instead. (unnecessary-comprehension)
+************* Module sanitize
+sanitize.py:34:7: R1714: Consider merging these comparisons with 'in' by using 'link in ('unSkript.com', 'us.app.unskript.io')'. Use a set instead if elements are hashable. (consider-using-in)
+sanitize.py:66:7: C0121: Comparison 'os.path.exists(jsonFile) == False' should be 'os.path.exists(jsonFile) is False' if checking for the singleton value False, or 'not os.path.exists(jsonFile)' if testing for falsiness (singleton-comparison)
+sanitize.py:73:7: C0121: Comparison 'nb.get('metadata') == None' should be 'nb.get('metadata') is None' (singleton-comparison)
+sanitize.py:77:7: C0121: Comparison 'nb.get('metadata').get('execution_data') == None' should be 'nb.get('metadata').get('execution_data') is None' (singleton-comparison)
+sanitize.py:86:7: C0121: Comparison 'exec_data.get('runbook_name') == None' should be 'exec_data.get('runbook_name') is None' (singleton-comparison)
+sanitize.py:95:7: C0121: Comparison 'nb.get('metadata').get('parameterSchema') == None' should be 'nb.get('metadata').get('parameterSchema') is None' (singleton-comparison)
+sanitize.py:105:11: C0121: Comparison 'cell.get('metadata') == None' should be 'cell.get('metadata') is None' (singleton-comparison)
+sanitize.py:109:11: C0121: Comparison 'cell.get('metadata').get('tags') == None' should be 'cell.get('metadata').get('tags') is None' (singleton-comparison)
+************* Module ElasticSearch.legos.elasticsearch_search_query.elasticsearch_search_query
+ElasticSearch/legos/elasticsearch_search_query/elasticsearch_search_query.py:74:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+************* Module Rest.legos.rest_methods.rest_methods
+Rest/legos/rest_methods/rest_methods.py:14:0: E0102: class already defined line 8 (function-redefined)
+
+-----------------------------------
+Your code has been rated at 9.93/10
+

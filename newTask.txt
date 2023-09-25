@@ -1,0 +1,106 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "srv-c6f92800018f",
+      "image": "100498623390.dkr.ecr.us-west-2.amazonaws.com/jupyterlab:base",
+      "cpu": 0,
+      "links": [],
+      "portMappings": [
+        {
+          "containerPort": 8888,
+          "hostPort": 8888,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "entryPoint": [],
+      "command": [
+        "init.sh"
+      ],
+      "environment": [
+        {
+          "name": "JUPYTER_ENABLE_LAB",
+          "value": "true"
+        },
+        {
+          "name": "UNSKRIPT_CONNECTOR_TOKEN",
+          "value": "5c4a5754-0600-11ec-9a03-0242ac130003"
+        },
+        {
+          "name": "UNSKRIPT_MODE",
+          "value": "true"
+        },
+        {
+          "name": "JUPYTER_S3_PREFIX",
+          "value": "a86321b0-e9a9-4e3e-987c-e57fc08a18bc/1499f27c-6406-4fbd-bd1b-c6f92800018f/workflows"
+        },
+        {
+          "name": "UNSKRIPT_PROXY_ID",
+          "value": "1499f27c-6406-4fbd-bd1b-c6f92800018f"
+        },
+        {
+          "name": "KERNEL_LAUNCH_TIMEOUT",
+          "value": "600"
+        },
+        {
+          "name": "JUPYTER_EG_URL",
+          "value": "https://nginx.alpha.unskript.io/52c2429a-9ee0-4789-8a19-bc86f9e8f255/"
+        },
+        {
+          "name": "UNSKRIPT_ENVIRONMENT_ID",
+          "value": "1499f27c-6406-4fbd-bd1b-c6f92800018f"
+        },
+        {
+          "name": "JUPYTER_BUCKET",
+          "value": "unskript-alpha"
+        },
+        {
+          "name": "UNSKRIPT_TENANT_ID",
+          "value": "a86321b0-e9a9-4e3e-987c-e57fc08a18bc"
+        },
+        {
+          "name": "UNSKRIPT_TENANT_URL",
+          "value": "https://tenant-staging.alpha.unskript.io"
+        },
+        {
+          "name": "JUPYTER_BASE_URL",
+          "value": "1499f27c-6406-4fbd-bd1b-c6f92800018f"
+        }
+      ],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "dnsServers": [],
+      "dnsSearchDomains": [],
+      "dockerSecurityOptions": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/srv-c6f92800018fTaskDefinition",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "echo hi || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "srv-c6f92800018f-TaskDefinition",
+  "taskRoleArn": "arn:aws:iam::562498854212:role/srv-c6f92800018f-TaskRole",
+  "executionRoleArn": "arn:aws:iam::562498854212:role/srv-c6f92800018f-ExecutionRole",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "2048",
+  "memory": "8192"
+}
