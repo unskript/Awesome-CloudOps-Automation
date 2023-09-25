@@ -1,7 +1,0 @@
-curl --location 'http://127.0.0.1:8888/elyra/metadata/lego-genai-chat?token=818c09a44302ccc20c1245b8e1de95166c2c0d6ac5f75643' \
---header 'Content-Type: application/json' \
---data '{   
-    "schema_name": "lego-genai-chat",
-    "display_name": "K8S Credential-2",
-    "metadata": {"message": "hello"}
-}'
