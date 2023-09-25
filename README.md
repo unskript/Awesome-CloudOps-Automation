@@ -15,7 +15,7 @@
 
 We recommend using our docker setup which comes with Jupyter runtime along with pre-built [actions](https://docs.unskript.com/unskript-product-documentation/actions/what-is-an-action) and [runbooks](https://docs.unskript.com/unskript-product-documentation/readme/what-is-a-runbook). Build your own actions and runbooks with ease!
 
-### Get Started
+## Get Started
 
 1. Launch Docker
 ```
@@ -25,13 +25,17 @@ docker run -it -p 8888:8888 --user root unskript/awesome-runbooks:latest
 
 
 
-### Messing around
+## Advanced Usage
 
-You can find some additional configurations in this section which you can use to create custom actions and GenAI actions.
+In this section, we'll explore advanced configurations that enable:
+
+1. Custom Action and Runbook creation
+2. Custom Action creation using OpenAI integration
+
+### Custom Action and Runbook Creation
 
 1. Clone this repository to your local machine.
-
-```
+```bash
 git clone https://github.com/unskript/Awesome-CloudOps-Automation
 cd Awesome-CloudOps-Automation
 ```
@@ -39,7 +43,7 @@ cd Awesome-CloudOps-Automation
 2. Launch Docker 
   - Use this command to create custom runbooks and actions. (update the first -v line if you used a different directory in step 1).
 
-```
+```bash
 docker run -it -p 8888:8888 \
  -v $HOME/Awesome-CloudOps-Automation/custom:/unskript/data \
  -v $HOME/.unskript:/unskript/credentials \
@@ -48,9 +52,21 @@ docker run -it -p 8888:8888 \
  docker.io/unskript/awesome-runbooks:latest
 ```
 
-  - Use this command with OpenAI parameters to create custom GenAI actions(update the first -v line if you used a different directory in step 1).
+3. Point your browser to http://127.0.0.1:8888/awesome.
 
+### Custom Action Creation using OpenAI Integration
+
+1. Clone this repository to your local machine if you haven't already.
+```bash
+git clone https://github.com/unskript/Awesome-CloudOps-Automation
+cd Awesome-CloudOps-Automation
 ```
+
+2. Launch Docker with OpenAI parameters:
+
+  - Use this command to create custom GenAI actions (update the first -v line if you used a different directory in step 1).
+
+```bash
 docker run -it -p 8888:8888 \
  -v $HOME/Awesome-CloudOps-Automation/actions:/unskript/data/actions \
  -v $HOME/Awesome-CloudOps-Automation/runbooks:/unskript/data/runbooks \
@@ -73,7 +89,7 @@ You can find more information around how to use and play with our runbooks in th
 
 ## 📚 Documentation
 
-Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
+Dive deeper into Runbooks.sh by visiting our comprehensive [documentation](https://docs.unskript.com/unskript-product-documentation/guides/getting-started). Here, you'll find everything you need to know about using the platform, creating custom runbooks, developing plugins, and much more.
 
 # About the Project
 Runbooks.sh is a powerful, community-driven, open-source runbook automation platform designed to simplify cloud infrastructure management and streamline operations across diverse environments. Few of the highlighting features:
