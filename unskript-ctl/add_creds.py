@@ -13,6 +13,7 @@ import os
 import sys
 import json
 from pathlib import Path
+import subprocess
 
 #from creds_ui import main as ui
 from argparse import ArgumentParser, REMAINDER
@@ -880,6 +881,12 @@ credential_schemas = '''
   ]
 '''
 
+AWESOME_DIRECTORY = "Awesome-CloudOps-Automation"
+
+
+def getGitRoot():
+    return subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8')
+
 def create_stub_cred_files(dirname: str):
     """create_stub_cred_files This function creates the stub files needed by creds-ui"""
     if not os.path.exists(dirname):
@@ -888,6 +895,9 @@ def create_stub_cred_files(dirname: str):
 
     # Lets read the Stubs Creds file and create placeholder files
     if not os.path.exists(STUB_FILE):
+        # Most likely being run outside docker.
+        git_root_directory = getGitRoot()
+        STUB_FILE = os.path.join(git_root_directory, AWESOME_DIRECTORY, "unskript-ctl", STUB_FILE)
         print("Credential placeholder file JSON is missing. Please run this at unskript-ctl directory!")
         sys.exit(0)
 
