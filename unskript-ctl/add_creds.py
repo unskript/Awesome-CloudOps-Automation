@@ -882,7 +882,7 @@ credential_schemas = '''
 def create_stub_cred_files(dirname: str):
     """create_stub_cred_files This function creates the stub files needed by creds-ui"""
     if not os.path.exists(dirname):
-        return
+        os.mkdir(CREDS_DIR)
 
     # Lets read the Stubs Creds file and create placeholder files
     if not os.path.exists(STUB_FILE):
