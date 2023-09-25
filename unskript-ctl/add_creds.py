@@ -894,14 +894,13 @@ def create_stub_cred_files(dirname: str):
         path.mkdir(parents=True)
 
     # Lets read the Stubs Creds file and create placeholder files
+    NEW_STUB_FILE=STUB_FILE
     if not os.path.exists(STUB_FILE):
         # Most likely being run outside docker.
         git_root_directory = getGitRoot()
-        STUB_FILE = os.path.join(git_root_directory, AWESOME_DIRECTORY, "unskript-ctl", STUB_FILE)
-        print("Credential placeholder file JSON is missing. Please run this at unskript-ctl directory!")
-        sys.exit(0)
+        NEW_STUB_FILE = os.path.join(git_root_directory, AWESOME_DIRECTORY, "unskript-ctl", STUB_FILE)
 
-    with open(STUB_FILE, 'r') as f:
+    with open(NEW_STUB_FILE, 'r') as f:
         stub_creds_json = json.load(f)
 
     for cred in stub_creds_json:
