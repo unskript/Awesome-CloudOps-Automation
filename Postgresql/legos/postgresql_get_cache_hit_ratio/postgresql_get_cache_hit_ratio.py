@@ -3,14 +3,15 @@
 # All rights reserved.
 ##
 import pprint 
-from typing import List
+from typing import Tuple
 from pydantic import BaseModel
 
 class InputSchema(BaseModel):
     pass
 
 def postgresql_get_cache_hit_ratio_printer(output):
-    if output is None:
+    if output is None or output[1] is None:
+        print("No cache hit ratio data available.")
         return
 
     op = output[1]
@@ -19,11 +20,12 @@ def postgresql_get_cache_hit_ratio_printer(output):
         print(f"Cache hit ratio: {cache_hit_ratio:.2f}%")
     else:
         print("No cache hit ratio data available.")
-
+        
     pprint.pprint(output)
 
 
-def postgresql_get_cache_hit_ratio(handle) -> List:
+
+def postgresql_get_cache_hit_ratio(handle) -> Tuple:
     """postgresql_get_cache_hit_ratio Runs postgresql query to get the Cache hit ratio.
 
           :type handle: object
@@ -43,9 +45,10 @@ def postgresql_get_cache_hit_ratio(handle) -> List:
     handle.commit()
     cur.close()
     handle.close()
-    if res is not None and len(res) > 0:
+
+    if res is not None and len(res) > 0 and res[0][2] is not None:
         cache_hit_ratio = res[0][2] * 100
         if cache_hit_ratio >= 99:
             return (True, res)
         return (False, res)
-    return (False, res)
+    return (False, None)

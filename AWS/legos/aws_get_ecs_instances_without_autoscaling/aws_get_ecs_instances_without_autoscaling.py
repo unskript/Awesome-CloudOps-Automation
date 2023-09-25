@@ -33,6 +33,8 @@ def aws_get_ecs_instances_without_autoscaling(handle, region: str = "") -> Tuple
 
         :rtype: Array of instances.
     """
+    if not handle or (region and region not in aws_list_all_regions(handle)):
+        raise ValueError("Invalid input parameters provided.")
     result = []
     all_regions = [region]
     if not region:
@@ -40,6 +42,8 @@ def aws_get_ecs_instances_without_autoscaling(handle, region: str = "") -> Tuple
 
     for reg in all_regions:
         try:
+            if reg not in aws_list_all_regions(handle):
+                raise ValueError(f"Invalid region provided: {reg}")
             ecs_Client = handle.client('ecs', region_name=reg)
             autoscaling_client = handle.client('autoscaling', region_name=reg)
             response = aws_get_paginator(ecs_Client, "list_clusters", "clusterArns")

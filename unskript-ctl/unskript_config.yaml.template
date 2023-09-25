@@ -1,0 +1,7 @@
+globals:
+  namespace: "awesome-ops"
+  threshold: "string"
+  region: "us-west-2"
+  services: ["calendar", "audit"]
+
+

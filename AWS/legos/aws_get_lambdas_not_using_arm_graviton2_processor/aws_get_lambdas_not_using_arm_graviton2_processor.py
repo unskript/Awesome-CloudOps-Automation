@@ -38,20 +38,20 @@ def aws_get_lambdas_not_using_arm_graviton2_processor(handle, region: str = "") 
     """
 
     result = []
-    all_regions = [region]
-    if not region:
-        all_regions = aws_list_all_regions(handle)
+    all_regions = [region] if region else aws_list_all_regions(handle)
 
     for reg in all_regions:
         try:
             lambda_client = handle.client('lambda', region_name=reg)
             response = aws_get_paginator(lambda_client, "list_functions", "Functions")
             for res in response:
-                if 'arm64' not in res['Architectures']:
-                    result.append({"function_name": res['FunctionName'], "region": reg})
-        except Exception:
+                architectures = res.get('Architectures', [])
+                function_name = res.get('FunctionName', "")
+                if 'arm64' not in architectures and function_name:
+                    result.append({"function_name": function_name, "region": reg})
+        except Exception as e:
             pass
 
-    if len(result) != 0:
+    if result:
         return (False, result)
     return (True, None)
