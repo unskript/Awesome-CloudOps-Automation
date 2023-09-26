@@ -79,5 +79,19 @@ class CreateCheck():
         except Exception as e:
             raise Exception(f"Unable to create .py File {e}")
 
+        template = environment.get_template("check_test.py.template")
+
+        content = template.render({
+            "check_function_name": args.name,
+            "check_type_upper_case": args.type.upper(),
+            "check_type": args.type.lower(),
+            })
+        try:
+            with open(custom_dir + "/" + "test_" + args.name + ".py", "w") as f:
+                f.write(content)
+        except Exception as e:
+            raise Exception(f"Unable to create test .py File {e}")
+
+
 if __name__ == '__main__':
     CreateCheck()
