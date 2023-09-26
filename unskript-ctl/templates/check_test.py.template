@@ -17,6 +17,7 @@ def test_{{ check_function_name }}():
     # credentialsJson will be inserted by the jupyter extension on connector selection from the drop down.
     credentialsJson = """{"credential_type": "CONNECTOR_TYPE_{{ check_type_upper_case }}", "credential_id":"{{ check_type }}creds", "credential_name": "{{ check_type }}creds" }"""
 
+    inputParamsJson = ""
     # Fill inputParamsJson depending upon the arguments you have for the check function.
     # For eg:
     # inputParamsJson = '''
@@ -25,7 +26,6 @@ def test_{{ check_function_name }}():
     #                "region": "\\"us-west-2\\""
     #            }
     #            '''
-    inputParamsJson = ""
     t = Task(Workflow())
     t.configure(inputParamsJson, credentialsJson)
     (err, hdl, args) = t.validate(InputSchema, vars())
