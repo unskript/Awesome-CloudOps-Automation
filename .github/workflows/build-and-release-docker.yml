@@ -469,7 +469,7 @@ jobs:
           git checkout ${{ inputs.awesome_branch }}
           cd ..
           make syncrunbooks
-          cp awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker/
           cp awesome/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/template.ipynb
           cp awesome/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/Welcome.ipynb
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
