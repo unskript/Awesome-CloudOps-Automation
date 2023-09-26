@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v1
