@@ -1,6 +1,9 @@
-FROM unskript/awesome-runbooks:latest as base 
-RUN mkdir -p /data
-RUN mkdir -p /unskript
-ADD custom /data/custom
+FROM unskript/awesome-runbooks:latest as base
+COPY custom/actions/. /unskript/data/actions/
+COPY custom/runbooks/. /unskript/data/runbooks/
+
+# Copy the populate_credentials.sh file to ./
+COPY populate_credentials.sh .
+RUN chmod +x populate_credentials.sh
 
 CMD ["./start.sh"]

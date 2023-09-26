@@ -39,6 +39,8 @@ def aws_get_older_generation_rds_instances(handle, region: str = "") -> Tuple:
 
         :rtype: Status, List of old RDS Instances
     """
+    if not handle or (region and region not in aws_list_all_regions(handle)):
+        raise ValueError("Invalid input parameters provided.")
     result = []
     all_regions = [region]
     if not region:

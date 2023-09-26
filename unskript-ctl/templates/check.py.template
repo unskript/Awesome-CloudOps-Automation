@@ -1,0 +1,40 @@
+from pydantic import BaseModel, Field
+from typing import Optional, Tuple
+import pprint
+
+
+class InputSchema(BaseModel):
+    '''
+    This pydantic (https://docs.pydantic.dev/latest) class defines the schema of the inputs to the check.
+    For eg, if region is an input to the check, you can define it like this:
+
+    region: Optional[str] = Field(
+        default="",
+        title='Region',
+        description='AWS Region.')
+    '''
+    pass
+
+def {{ check_function_name }}_printer(output:Tuple):
+    '''
+    This is the printer function, which prints the output of the check.
+    A basic print of the failed objects is provided here.
+    Feel free to modify it to print the output in whatever format you want, for eg. tabular
+    '''
+    if output[0] is True:
+        print(f'Check passed')
+        return
+
+    print("Failed objects")
+    pprint.pprint(output[1])
+
+def {{ check_function_name }}(handle) -> Tuple:
+    '''
+    This is where you define the logic of the check. Things to keep in mind:
+    * handle is a required input. It is an abstraction for the credential layer, handled by unskript.
+    * As you add more arguments to this function, please define the schema for
+    * those input in the InputSchema class as well.
+    * The output of a check is always a tuple. If the check passes, it returns
+    * (True, None). If it fails, it returns (False, list of failed objects)
+    '''
+    pass

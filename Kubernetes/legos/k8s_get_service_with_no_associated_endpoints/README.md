@@ -9,12 +9,13 @@ This Lego Returns services that has no associated endpoints
 
 ## Lego Details
 
-    k8s_get_service_with_no_associated_endpoints(handle: object)
+    k8s_get_service_with_no_associated_endpoints(handle: object, namespace:str = "")
 
         handle: Object of type unSkript K8S Connector
+        namespace: String, Name of K8S Namespace
 
 ## Lego Input
-This Lego takes just one input, the Handle
+This Lego takes just two inputs- handle, and namespace.
 
 ## Lego Output
 Here is a sample output.
