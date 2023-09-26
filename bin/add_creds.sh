@@ -4,7 +4,8 @@
 #     This script can be used to add credentials.
 
 if test -f "/usr/local/bin/add_creds.py"; then
-	/usr/bin/env python ./add_creds.py "$@"
+	cd /usr/local/bin
+	/usr/bin/env python /usr/local/bin/add_creds.py "$@"
 else
 	TOPDIR=$(git rev-parse --show-toplevel)
     	AWESOME_DIRECTORY=Awesome-CloudOps-Automation
