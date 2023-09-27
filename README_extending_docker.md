@@ -97,6 +97,8 @@ You can create custom action on your workstation using your editor. Please follo
 
 1. Install the following pip packages:
 ```
+pip install -U pytest
+pip install jinja2
 pip install unskript-core
 pip install unskript-custom
 ```
