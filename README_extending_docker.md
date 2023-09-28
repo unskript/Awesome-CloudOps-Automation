@@ -95,14 +95,19 @@ Lets consider two scenarios as starting point for extending Awesome docker
 
 You can create custom action on your workstation using your editor. Please follow the steps below to setup your workstation:
 
-1. Install the following pip packages:
+1. We recommend to use [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) to avoid any conflicts with preinstalled Python libraries.
+```
+conda create --name=unskript-dev python=3.9.6 -y
+conda activate unskript-dev
+```
+2. Install the following pip packages:
 ```
 pip install -U pytest
 pip install jinja2
 pip install unskript-core
 pip install unskript-custom
 ```
-2. To create a new check template files, do the following:
+3. To create a new check template files, do the following:
 ```
 cd $YOUR_REPO_DIRECTORY
 
@@ -120,14 +125,14 @@ drwxr-xr-x  5 amit  staff   160 Sep 25 21:09 __pycache__
 -rw-r--r--  1 amit  staff  1409 Sep 25 21:09 test_aws_list_public_sg.py
 ```
 
-3. Edit the <short_name>.py (in the above eg, its aws_list_public_sg.py) and write the logic for the check. Please ensure that you define the InputSchema as well, if required.
+4. Edit the <short_name>.py (in the above eg, its aws_list_public_sg.py) and write the logic for the check. Please ensure that you define the InputSchema as well, if required.
 
-4. In order to test the check, you need to add an credential for the check. You can use the following utility to add credential
+5. In order to test the check, you need to add an credential for the check. You can use the following utility to add credential
 ```
 ./Awesome-CloudOps-Automation/bin/add_creds.sh -c <Credential type> -h
 ```
 
-5. Once the credential is programmed, you are ready to test out the check using pytest (Please ensure that pytest is installed on your workstation).
+6. Once the credential is programmed, you are ready to test out the check using pytest (Please ensure that pytest is installed on your workstation).
 You can test the check by running:
 ```
  pytest -s actions/<short_name>/test_<short_name>.py
