@@ -47,7 +47,6 @@ You can use our base docker to extend the functionality to fit your need. The st
    export CUSTOM_DOCKER_NAME=my-awesome-docker
    export CUSTOM_DOCKER_VERSION='0.1.0'
    cd $YOUR_REPO_DIRECTORY
-   cp Awesome-CloudOps-Automation/build/templates/Dockerfile.template Dockerfile
    cp Awesome-CloudOps-Automation/build/templates/Makefile.extend-docker.template Makefile
    make -f Makefile build
    ```

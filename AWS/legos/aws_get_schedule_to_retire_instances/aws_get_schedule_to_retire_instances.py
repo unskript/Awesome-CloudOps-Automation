@@ -3,7 +3,6 @@
 # All rights reserved.
 ##
 
-import pprint
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from unskript.legos.aws.aws_list_all_regions.aws_list_all_regions import aws_list_all_regions
@@ -21,10 +20,13 @@ class InputSchema(BaseModel):
 def aws_get_schedule_to_retire_instances_printer(output):
     if output is None:
         return
+    status, res = output
+    if status:
+        print("There are no instances that are scheduled to retire.")
+    else:
+        print(res)
 
-    pprint.pprint(output)
-
-def aws_get_schedule_to_retire_instances( handle, region: str=None) -> Tuple:
+def aws_get_schedule_to_retire_instances( handle, region: str="") -> Tuple:
     """aws_get_schedule_to_retire_instances Returns a tuple of instances scheduled to retire.
 
         :type region: string
@@ -32,37 +34,27 @@ def aws_get_schedule_to_retire_instances( handle, region: str=None) -> Tuple:
 
         :rtype: Object with status, list of instances scheduled to retire, and errors
     """
-    retiring_instances = {}
     result = []
-    all_instances = []
-    all_regions = [region]
-    if region is None or not region:
-         all_regions = aws_list_all_regions(handle=handle)
+    all_regions = [region] if region or len(region)!=0 else aws_list_all_regions(handle)
+
     for r in all_regions:
         try:
             ec2client = handle.client('ec2', region_name=r)
-            output = aws_filter_ec2_instances(handle=handle,region=r)
-            if len(output)!=0:
-                for o in output:
-                    all_instances_dict = {}
-                    all_instances_dict["region"]=r
-                    all_instances_dict["instance"]=o
-                    all_instances.append(all_instances_dict)
-        except Exception:
-            pass
-    for each_instance in all_instances:
-        try:
-            ec2client = handle.client('ec2', region_name=each_instance['region'])
-            response = ec2client.describe_instance_status(
-                Filters=[{'Name': 'event.code','Values': ['instance-retirement']}],
-                InstanceIds=each_instance['instance']
+            instances = aws_filter_ec2_instances(handle=handle, region=r)
+            if not instances:
+                print(f"No instances found in {r} region!")
+                continue
+            try:
+                response = ec2client.describe_instance_status(
+                    Filters=[{'Name': 'event.code', 'Values': ['instance-retirement']}],
+                    InstanceIds=instances
                 )
-            for res in response['InstanceStatuses']:
-                retiring_instances['instance'] = res['InstanceId']
-                retiring_instances['region'] = each_instance['region']
-                result.append(retiring_instances)
+                instance_statuses = response.get('InstanceStatuses', [])
+                for res in instance_statuses:
+                    result.append({'instance': res['InstanceId'], 'region': r})
+            except Exception as e:
+                print(f"An error occurred while describing instance status for instances in region {r}: {e}")
         except Exception:
             pass
-    if len(result)!=0:
-        return (False, result)
-    return (True, None)
+
+    return (False, result) if result else (True, None)

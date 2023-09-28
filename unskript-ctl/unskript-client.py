@@ -18,17 +18,18 @@ import re
 import uuid
 import psutil
 import subprocess
+import yaml
+import nbformat
+import ZODB
+import ZODB.FileStorage
+from pathlib import Path
 from datetime import datetime
 from argparse import ArgumentParser, REMAINDER
 from db_utils import *
-import yaml
-import nbformat
 from tabulate import tabulate
 from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutputStatus
-import ZODB
-import ZODB.FileStorage
 from ZODB import DB
 
 # This python client can be used to
@@ -43,9 +44,9 @@ from ZODB import DB
 #   installed before using this script.
 
 # LIST OF CONSTANTS USED IN THIS FILE
-
+UNSKRIPT_GLOBALS = {}
 if os.environ.get('GLOBAL_CONFIG_PATH') is None:
-    GLOBAL_CONFIG_PATH="/unskript/data/unskript_config.yaml"
+    GLOBAL_CONFIG_PATH="/unskript/data/actions/unskript_config.yaml"
 
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
@@ -54,8 +55,9 @@ TBL_HDR_CHKS_PASS="\033[32m Passed Checks \033[0m"
 TBL_HDR_CHKS_FAIL="\033[35m Failed Checks \033[0m"
 TBL_HDR_CHKS_ERROR="\033[31m Errored Checks \033[0m"
 TBL_HDR_RBOOK_NAME="\033[36m Runbook Name \033[0m"
-TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks) \033[0m"
+TBL_HDR_CHKS_COUNT="\033[32m Checks Count (Pass/Fail/Error) (Total checks run) / (Skipped checks) \033[0m"
 TBL_CELL_CONTENT_PASS="\033[1m PASS \033[0m"
+TBL_CELL_CONTENT_SKIPPED="\033[1m SKIPPED \033[0m"
 TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
@@ -64,22 +66,30 @@ TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
 
-
 def load_or_create_global_configuration():
     """load_global_configuration This function reads the unskript_config.yaml file from /data
        and sets os.env variables which we shall use it in the subsequent functions.
        :rpath: None
     """
-    global_content = {}
+    global UNSKRIPT_GLOBALS
     if os.path.exists(GLOBAL_CONFIG_PATH) is True:
         # READ EXISTING FILE AND SET ENV VARIABLES
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
-            global_content = yaml.safe_load(f)
+            UNSKRIPT_GLOBALS = yaml.safe_load(f)
 
+        if UNSKRIPT_GLOBALS.get('globals'):
+            for k, v in UNSKRIPT_GLOBALS.get('globals').items():
+                os.environ[k] = json.dumps(v)
+    else:
+        _f_path = Path(GLOBAL_CONFIG_PATH)
 
-    for k, v in global_content.items():
-        k = k.upper()
-        os.environ[k] = json.dumps(v)
+        # Check if the 'actions' directory exists and if not, create it
+        actions_dir = _f_path.parent
+        actions_dir.mkdir(parents=True, exist_ok=True)
+        
+        _f_path.touch()
+        with open(GLOBAL_CONFIG_PATH, 'w') as f:
+            f.write('globals:')
 
 
 def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNode:
@@ -104,6 +114,7 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
         runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
     runbook_variables = ''
 
+    
     if runbook_params:
         for k, v in runbook_params.items():
             runbook_variables = runbook_variables + \
@@ -121,6 +132,15 @@ paramDict = {runbook_params}
 paramsJson = json.dumps(paramDict)
 nbParamsObj = nbparams.NBParams(paramsJson)
 {runbook_variables}
+'''
+    if UNSKRIPT_GLOBALS.get('globals') and len(UNSKRIPT_GLOBALS.get('globals')):
+        for k,v in UNSKRIPT_GLOBALS.get('globals').items():
+            if isinstance(v,str) is True:
+                first_cell_content += f'{k} = \"{v}\"' + '\n'
+            else:
+                first_cell_content += f'{k} = {v}' + '\n'
+
+    first_cell_content += f'''
 w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={ids})'''
 
     # Firstcell content. This is a static content
@@ -145,13 +165,12 @@ except Exception as e:
     cells = nb.dict().get('cells')
     if len(cells) == 0:
         # Empty runbook, nothing to be done. return back
-        print("ERROR: Runbook seems empty, nothing to run")
+        #print("ERROR: Runbook seems empty, nothing to run")
         return nb
 
     if cells[0].get('cell_type') == 'code':
         tags = None
         if cells[0].get('metadata').get('tags') is not None:
-
             if len(cells[0].get('metadata').get('tags')) != 0:
                 tags = cells[0].get('metadata').get('tags')[0]
 
@@ -198,7 +217,7 @@ def list_runbooks():
     print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
 
 
-def run_ipynb(filename: str, status_list_of_dict: list = None):
+def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = None):
     """run_ipynb This function takes the Runbook name and executes it
            using nbclient.execute()
 
@@ -207,6 +226,13 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
 
        :rtype: None, Runbook execution will be displayed
     """
+    hardcoded_checks = [
+    "Get Unscheduled K8s Pods due to Node",
+    "Get Node-affinity related failures",
+    "Get Failed Readiness Probes",
+    "Get Failed Liveness Probes",
+    "Get K8s DaemonSets Missing on Node"
+]
     nb = read_ipynb(filename)
 
     # We store the Status of runbook execution in status_dict
@@ -240,87 +266,98 @@ def run_ipynb(filename: str, status_list_of_dict: list = None):
 
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
-    if len(outputs) == 0:
-        raise Exception(
-            "Unable to execute Runbook. Last cell content is empty")
-
-    results = outputs[0]
+    if UNSKRIPT_GLOBALS.get('skipped'):
+        for check_name,connector in UNSKRIPT_GLOBALS.get('skipped'):
+            result_table.append([
+                check_name,
+                TBL_CELL_CONTENT_SKIPPED,
+                "N/A",
+                "Credential Incomplete"
+            ])
+            status_dict['result'].append([
+                check_name,
+                "",
+                connector,
+                'ERROR'
+                ])
+    results = {}
+    if ids:
+        results = outputs[0]
     idx = 0
     r = results.get('text')
     failed_result_available = False
     failed_result = {}
 
-    for result in r.split('\n'):
-        if result == '':
-            continue
-        payload = json.loads(result)
+    if ids:
+        for result in r.split('\n'):
+            if result == '':
+                continue
+            payload = json.loads(result)
 
-        try:
-            if CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                result_table.append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    TBL_CELL_CONTENT_PASS,
-                    0,
-                    'N/A'
-                    ])
-                status_dict['result'].append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    ids[idx],
-                    get_connector_name_from_id(ids[idx], nb.dict()),
-                    'PASS']
-                    )
-            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
-                failed_objects = payload.get('objects')
-                failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
-                result_table.append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    TBL_CELL_CONTENT_FAIL,
-                    len(failed_objects),
-                    'N/A'
-                    ])
-                failed_result_available = True
-                status_dict['result'].append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    ids[idx],
-                    get_connector_name_from_id(ids[idx], nb.dict()),
-                    'FAIL'
-                    ])
-            elif CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                result_table.append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    TBL_CELL_CONTENT_ERROR,
-                    0,
-                    payload.get('error')
-                    ])
-                status_dict['result'].append([
-                    get_action_name_from_id(ids[idx], nb.dict()),
-                    ids[idx],
-                    get_connector_name_from_id(ids[idx], nb.dict()),
-                    'ERROR'
-                    ])
-        except Exception:
-            pass
-        update_current_execution(payload.get('status'), ids[idx], nb.dict())
-        update_check_run_trail(ids[idx],
-                               get_action_name_from_id(ids[idx], nb.dict()),
-                               get_connector_name_from_id(ids[idx], nb.dict()),
-                               CheckOutputStatus(payload.get('status')),
-                               failed_result)
-        idx += 1
-
-    # New Line to make the output clear to see
+            try:
+                if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
+                    result_table.append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        TBL_CELL_CONTENT_PASS,
+                        0,
+                        'N/A'
+                        ])
+                    status_dict['result'].append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        ids[idx],
+                        get_connector_name_from_id(ids[idx], nb.dict()),
+                        'PASS']
+                        )
+                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
+                    failed_objects = payload.get('objects')
+                    failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                    result_table.append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        TBL_CELL_CONTENT_FAIL,
+                        len(failed_objects),
+                        'N/A'
+                        ])
+                    failed_result_available = True
+                    status_dict['result'].append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        ids[idx],
+                        get_connector_name_from_id(ids[idx], nb.dict()),
+                        'FAIL'
+                        ])
+                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
+                    if payload.get('error') is not None:
+                        failed_objects = payload.get('error')
+                        failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                    result_table.append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        TBL_CELL_CONTENT_ERROR,
+                        0,
+                        payload.get('error')
+                        ])
+                    status_dict['result'].append([
+                        get_action_name_from_id(ids[idx], nb.dict()),
+                        ids[idx],
+                        get_connector_name_from_id(ids[idx], nb.dict()),
+                        'ERROR'
+                        ])
+            except Exception:
+                pass
+            if ids:
+                update_current_execution(payload.get('status'), ids[idx], nb.dict())
+                update_check_run_trail(ids[idx],
+                                    get_action_name_from_id(ids[idx], nb.dict()),
+                                    get_connector_name_from_id(ids[idx], nb.dict()),
+                                    CheckOutputStatus(payload.get('status')),
+                                    failed_result)
+            idx += 1
+    if filter == 'k8s':
+        for check in hardcoded_checks:
+            result_table.append([check, "Coming soon", "Coming soon", "Coming soon"])
     print("")
     print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
 
     if failed_result_available is True:
-        print("")
-        print("FAILED RESULTS")
-        for k, v in failed_result.items():
-            check_name = '\x1B[1;4m' + k + '\x1B[0m'
-            print(check_name)
-            print("Failed Objects:")
-            pprint.pprint(v)
-            print('\x1B[1;4m', '\x1B[0m')
+        UNSKRIPT_GLOBALS['failed_result'] = failed_result
 
     print("")
     status_list_of_dict.append(status_dict)
@@ -359,10 +396,61 @@ def run_checks(filter: str):
 
     status_of_runs = []
     for rb in runbooks:
+        run_ipynb(rb, status_of_runs, filter)
+
+    update_audit_trail(status_of_runs)
+    #print_run_summary(status_of_runs)
+    if UNSKRIPT_GLOBALS.get('failed_result') and len(UNSKRIPT_GLOBALS.get('failed_result')): 
+        print("")
+        print('\x1B[1;4m' + "FAILED RESULTS" + '\x1B[0m')
+        print("")
+        for k, v in UNSKRIPT_GLOBALS.get('failed_result').items():
+            check_name = '\x1B[1;4m' + k + '\x1B[0m'
+            print(check_name)
+            print("Failed Objects:")
+            pprint.pprint(v)
+            print('\x1B[1;4m', '\x1B[0m')
+
+
+def run_suites(suite_name: str):
+    """run_suites This function takes the suite_name as an argument
+    and queries the DB and with given UUIDs and creates a temporary 
+    runnable runbooks and run them, updates the audit results.
+
+    :type suite_name: string
+    :param suite_name: Suite Name string, suite name should match the
+            content under `suites` section of the unskript_config.yaml
+
+    :rtype: None
+    """
+    if suite_name in ("", None):
+        raise Exception("Run Suite needs suite_name to be specified.")
+
+    runbooks = []
+
+    check_list = []
+    if UNSKRIPT_GLOBALS.get('suites') and UNSKRIPT_GLOBALS.get('suites').get(suite_name):
+        check_list = get_checks_by_uuid(UNSKRIPT_GLOBALS.get('suites').get(suite_name))
+
+    if len(check_list) > 0:
+        runbooks.append(create_jit_runbook(check_list))
+
+    status_of_runs = []
+    for rb in runbooks:
         run_ipynb(rb, status_of_runs)
 
     update_audit_trail(status_of_runs)
     print_run_summary(status_of_runs)
+    if UNSKRIPT_GLOBALS.get('failed_result') and len(UNSKRIPT_GLOBALS.get('failed_result')): 
+        print("")
+        print('\x1B[1;4m' + "FAILED RESULTS" + '\x1B[0m')
+        print("")
+        for k, v in UNSKRIPT_GLOBALS.get('failed_result').items():
+            check_name = '\x1B[1;4m' + k + '\x1B[0m'
+            print(check_name)
+            print("Failed Objects:")
+            pprint.pprint(v)
+            print('\x1B[1;4m', '\x1B[0m')
 
 
 def print_run_summary(status_list_of_dict):
@@ -378,7 +466,7 @@ def print_run_summary(status_list_of_dict):
     for sd in status_list_of_dict:
         if sd == {}:
             continue
-        p = f = e = 0
+        p = f = e = s = 0
         for st in sd.get('result'):
             status = st[-1]
             check_name = st[0]
@@ -394,12 +482,15 @@ def print_run_summary(status_list_of_dict):
                 e += 1
                 all_result_table.append(
                     [check_name, 'N/A', 'N/A', TBL_CELL_CONTENT_ERROR])
-
             else:
                 p = f = e = -1
+    
+        if UNSKRIPT_GLOBALS.get('skipped'):
+            s = len(UNSKRIPT_GLOBALS.get('skipped'))
+        
         summary_table.append([
             sd.get('runbook'),
-            str(str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e) + ' ) ')
+            str(str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e)  + ' ) / ( ' + str(s) + ' )')
             ])
 
     s = '\x1B[1;20;46m' + "~~ Summary ~~" + '\x1B[0m'
@@ -435,7 +526,7 @@ def update_current_execution(status, id: str, content: dict):
 
     # If failed directory does not exists, lets create it
     if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace') is False:
-        os.mkdir(os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace'))
+        os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace')
 
     prev_status = None
     es = {}
@@ -484,6 +575,31 @@ def update_current_execution(status, id: str, content: dict):
     if os.path.exists(failed_runbook) is not True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
 
+def replace_input_with_globals(inputSchema: str):
+    if not inputSchema:
+        return None
+    retval = ''
+    if UNSKRIPT_GLOBALS.get('globals') and len(UNSKRIPT_GLOBALS.get('globals')):
+        input_json_start_line = '''
+task.configure(inputParamsJson=\'\'\'{
+        '''
+        input_json_end_line = '''}\'\'\')
+        '''
+        input_json_line = ''
+        try:
+            schema = inputSchema[0]
+            if schema.get('properties'):
+                for key in schema.get('properties').keys():
+                    if key in UNSKRIPT_GLOBALS.get('globals').keys():
+                        input_json_line += f"\"{key}\":  \"{key}\" ,"
+        except Exception as e:
+            print(f"EXCEPTION {e}")
+            pass 
+
+        retval = input_json_start_line + input_json_line.rstrip(',') + '\n' + input_json_end_line
+    
+    return retval 
+
 
 def create_jit_runbook(check_list: list):
     """create_jit_runbook This function creates Just In Time runbook
@@ -499,20 +615,32 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    failed_notebook = os.environ.get(
-        'EXECUTION_DIR', '/unskript').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
+    if os.path.exists(os.environ.get('EXECUTION_DIR') + '/workspace') is False:
+        os.makedirs(os.environ.get('EXECUTION_DIR') + '/workspace')
+
+    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
         cred_name, cred_id = get_creds_by_connector(s_connector)
+        # No point proceeding further if the Credential is incomplete
+        if cred_name is None or cred_id is None:
+            #print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} As {cred_name} Credential is Not Active ~~" + '\x1B[0m')
+            if UNSKRIPT_GLOBALS.get('skipped') is None:
+                UNSKRIPT_GLOBALS['skipped'] = []
+            UNSKRIPT_GLOBALS['skipped'].append([check.get('name'), s_connector])
+            continue 
+
+
         task_lines = '''
 task.configure(printOutput=True)
 task.configure(credentialsJson=\'\'\'{
         \"credential_name\":''' + f" \"{cred_name}\"" + ''',
-        \"credential_type\":''' + f" \"{s_connector}\"" + ''',
-        \"credential_id\":''' + f" \"{cred_id}\"" + '''}\'\'\')
+        \"credential_type\":''' + f" \"{s_connector}\"" + '''}\'\'\')
         '''
-
+        input_json = replace_input_with_globals(check.get('inputschema'))
+        if input_json:
+            task_lines += input_json 
         try:
             c = check.get('code')
             idx = c.index("task = Task(Workflow())")
@@ -526,7 +654,7 @@ task.configure(credentialsJson=\'\'\'{
             check['code'] = []
             for line in c[:]:
                 check['code'].append(str(line + "\n"))
-
+            
             check['metadata']['action_uuid'] = check['uuid']
             check['metadata']['name'] = check['name']
             cc = nbformat.v4.new_code_cell(check.get('code'))
@@ -537,9 +665,28 @@ task.configure(credentialsJson=\'\'\'{
 
         except Exception as e:
             raise e
-
+    # The Recent Version of Docker, the unskript-ctl spews a lot of errors like this:
+    #
+    # ERROR:traitlets:Notebook JSON is invalid: Additional properties are not allowed ('orderProperties', 'description', 
+    # 'version', 'name', 'inputschema', 'uuid', 'tags', 'type', 'language' were unexpected)
+    # This Failed validating 'additionalProperties' in code_cell:
+    #
+    # This is because the nbformat.write() complains about unknown attributes that are present
+    # in the IPYNB file. We dont need these attributes when we run the notebook via the Command Line.
+    # So we surgically eliminate these keys from the NB dictionary.
+    unknown_attrs = ['description', 'uuid', 'name', 'type', 'inputschema', 'version', 'orderProperties', 'tags', 'language']
+    for cell in nb.get('cells'):
+        if cell.get('cell_type') == "code":
+            # This check is needed because the ID value is by default saved
+            # as integer in our code-snippets to enable drag-and-drop
+            cell['id'] = str(cell.get('id'))
+        for attr in unknown_attrs:
+            del cell[attr]
     nbformat.write(nb, failed_notebook)
+
+
     return failed_notebook
+
 
 
 def update_check_run_trail(
@@ -698,7 +845,7 @@ def display_failed_checks(connector: str = ''):
 
 
 def display_failed_logs(exec_id: str = None):
-    output = os.environ.get('EXECUTION_DIR', '/unskript/execution').strip(
+    output = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip(
         '"') + '/workspace/' + f"{exec_id}_output.ipynb"
     if not os.path.exists(output):
         print(
@@ -971,18 +1118,16 @@ def create_creds_mapping():
 
        :rtype: None
     """
-    creds_files = os.environ.get('HOME').strip(
-        '"') + CREDENTIAL_DIR + '/*.json'
+    creds_files = os.environ.get('HOME').strip('"') + CREDENTIAL_DIR + '/*.json'
     list_of_creds = glob.glob(creds_files)
     d = {}
     for creds in list_of_creds:
         with open(creds, 'r') as f:
             c_data = json.load(f)
-            d[c_data.get('metadata').get('type')] = {"name": c_data.get(
-                'metadata').get('name'), "id": c_data.get('metadata').get('id')}
-            if not c_data.get('metadata').get('connectorData'):
-                print(f"ERROR: The Credential data for {c_data.get('metadata').get('type')} is empty!"
-                       " Please use unskript-ctl.sh -cc option to create the credential")
+            if c_data.get('metadata').get('connectorData') == "{}":
+                continue
+            d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
+                  "id": c_data.get('id')}
     upsert_pss_record('default_credential_id', d, False)
 
 
@@ -1428,10 +1573,12 @@ def stop_debug():
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') is None:
-          os.environ['EXECUTION_DIR'] = '/unskript/execution'
+            os.environ['EXECUTION_DIR'] = '/unskript/data/execution'
+            if os.path.exists(os.environ.get('EXECUTION_DIR')) is False:
+                os.makedirs(os.environ.get('EXECUTION_DIR'))        
 
-        create_creds_mapping()
         load_or_create_global_configuration()
+        create_creds_mapping()
     except Exception as error:
         raise error
 
@@ -1449,6 +1596,8 @@ if __name__ == "__main__":
                         help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
     parser.add_argument('-rc', '--run-checks', type=str,
                         help='Run all available checks [all | connector | failed]')
+    #parser.add_argument('-rs', '--run-suites', type=str,
+    #                    help='Run Health Check Suites (as defined in the unskript_config.yaml file)')
     parser.add_argument('-df', '--display-failed-checks',
                         help='Display Failed Checks [all | connector]')
     parser.add_argument('-lc', '--list-checks', type=str,
@@ -1483,6 +1632,8 @@ if __name__ == "__main__":
             parse_runbook_param(args.run_runbook)
     elif args.run_checks not in ('', None):
         run_checks(args.run_checks)
+    #elif args.run_suites not in ('', None):
+    #    run_suites(args.run_suites)
     elif args.display_failed_checks not in ('', None):
         display_failed_checks(args.display_failed_checks)
     elif args.list_checks not in ('', None):

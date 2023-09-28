@@ -54,6 +54,9 @@ def github_list_stale_pull_requests(handle, repository: str, threshold: int = 14
 
         :rtype: Status, List of stale pull requests
     """
+    if handle is None or not owner or not repository or threshold is None or threshold <= 0:
+        raise ValueError("Invalid input parameters")
+
     result = []
     try:
         if len(owner)==0 or owner is None:

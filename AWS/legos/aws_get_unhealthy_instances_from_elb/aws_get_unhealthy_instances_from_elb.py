@@ -40,74 +40,61 @@ def aws_get_unhealthy_instances_from_elb(handle, elb_name: str = "", region: str
     """
 
     result = []
-    all_regions = [region]
+    all_regions = [region] if region else aws_list_all_regions(handle)
     elb_list = []
-    if not region:
-        all_regions = aws_list_all_regions(handle)
 
+    # Handling the logic when elb_name is not provided
     if not elb_name:
         for reg in all_regions:
+            print(reg)
             try:
                 asg_client = handle.client('elb', region_name=reg)
-                response = aws_get_paginator(
-                    asg_client,
-                    "describe_load_balancers",
-                    "LoadBalancerDescriptions"
-                    )
+                response = aws_get_paginator(asg_client, "describe_load_balancers", "LoadBalancerDescriptions")
                 for i in response:
-                    elb_dict = {}
-                    elb_dict["load_balancer_name"] = i["LoadBalancerName"]
-                    elb_dict["region"] = reg
-                    elb_list.append(elb_dict)
+                    elb_list.append({"load_balancer_name": i["LoadBalancerName"], "region": reg})
             except Exception:
                 pass
 
+    # Handling the logic when only elb_name is provided
     if elb_name and not region:
         for reg in all_regions:
             try:
                 asg_client = handle.client('elb', region_name=reg)
-                response = aws_get_paginator(
-                    asg_client,
-                    "describe_load_balancers", 
-                    "LoadBalancerDescriptions"
-                    )
+                response = aws_get_paginator(asg_client, "describe_load_balancers", "LoadBalancerDescriptions")
                 for i in response:
                     if elb_name in i["LoadBalancerName"]:
-                        elb_dict = {}
-                        elb_dict["load_balancer_name"] = i["LoadBalancerName"]
-                        elb_dict["region"] = reg
-                        elb_list.append(elb_dict)
+                        elb_list.append({"load_balancer_name": i["LoadBalancerName"], "region": reg})
             except Exception:
                 pass
 
+    # Handling the logic when both elb_name and region are provided
     if elb_name and region:
         try:
             elbClient = handle.client('elb', region_name=region)
             res = elbClient.describe_instance_health(LoadBalancerName=elb_name)
             for instance in res['InstanceStates']:
-                data_dict = {}
                 if instance['State'] == "OutOfService":
-                    data_dict["instance_id"] = instance["InstanceId"]
-                    data_dict["region"] = reg
-                    data_dict["load_balancer_name"] = i["LoadBalancerName"]
-                    result.append(data_dict)
-        except Exception:
-            pass
+                    result.append({
+                        "instance_id": instance["InstanceId"],
+                        "region": region,
+                        "load_balancer_name": elb_name
+                    })
+        except Exception as e:
+            raise e
 
+    # Handling the logic when elb_list is populated
     for elb in elb_list:
         try:
             elbClient = handle.client('elb', region_name=elb["region"])
             res = elbClient.describe_instance_health(LoadBalancerName=elb["load_balancer_name"])
             for instance in res['InstanceStates']:
-                data_dict = {}
                 if instance['State'] == "OutOfService":
-                    data_dict["instance_id"] = instance["InstanceId"]
-                    data_dict["region"] = reg
-                    data_dict["load_balancer_name"] = i["LoadBalancerName"]
-                    result.append(data_dict)
-        except Exception:
-            pass
+                    result.append({
+                        "instance_id": instance["InstanceId"],
+                        "region": elb["region"],
+                        "load_balancer_name": elb["load_balancer_name"]
+                    })
+        except Exception as e:
+            raise e
 
-    if len(result) != 0:
-        return (False, result)
-    return (True, None)
+    return (False, result) if result else (True, None)

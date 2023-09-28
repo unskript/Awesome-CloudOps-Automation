@@ -36,36 +36,39 @@ def k8s_get_all_evicted_pods_from_namespace(handle, namespace: str = "") -> Tupl
         :rtype: Tuple of status result and list of evicted pods
     """
     if handle.client_side_validation is not True:
-        print(f"K8S Connector is invalid: {handle}")
-        return False, None
+        raise ApiException(f"K8S Connector is invalid: {handle}")
 
-    kubectl_command = "kubectl get pods --all-namespaces -o json | grep Evicted"
+    # Define the kubectl command based on the namespace input
+    kubectl_command = "kubectl get pods --all-namespaces -o json"
     if namespace:
-        kubectl_command = "kubectl get pods -n " + namespace + " -o json | grep Evicted"
+        kubectl_command = "kubectl get pods -n " + namespace + " -o json"
 
-    response = handle.run_native_cmd(kubectl_command)
+    try:
+        response = handle.run_native_cmd(kubectl_command)
+    except Exception as e:
+        print(f"Error occurred while executing command {kubectl_command}: {str(e)}")
+        raise
 
     if response is None:
-        print(
-            f"Error while executing command ({kubectl_command}) (empty response)")
-        return False, None
-        
+        print(f"Error while executing command ({kubectl_command}) (empty response)")
+        raise ApiException("Empty response from kubectl command")
+
     if response.stderr:
         raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
 
     result = []
     try:
         pod_details = json.loads(response.stdout)
-        for k, v in pod_details.items():
-            if "items" in k:
-                for i in v:
-                    pod_dict = {}
-                    pod_dict["pod_name"] = i["metadata"]["name"]
-                    pod_dict["namespace"] = i["metadata"]["namespace"]
-                    result.append(pod_dict)
+        for pod in pod_details.get('items', []):
+            if pod['status']['phase'] == 'Failed' and any(cs.get('reason') == 'Evicted' for cs in pod['status'].get('conditions', [])):
+                pod_dict = {
+                    "pod_name": pod["metadata"]["name"],
+                    "namespace": pod["metadata"]["namespace"]
+                }
+                result.append(pod_dict)
     except Exception:
-        pass
+        raise
 
-    if len(result) != 0:
+    if result:
         return (False, result)
     return (True, None)
