@@ -1580,6 +1580,22 @@ def stop_debug():
 
     print("Stopped Active Debug session successfully")
 
+def save_check_names(filename: str):
+    """save_check_names queries ZoDB and finds out all checks available and
+       dumps it to the filename given as argument
+
+       :type filename: String
+       :param filename: filename to which the output should be written
+    """
+    if not filename:
+        return 
+    
+    list_of_names = get_all_check_names()
+    with open(filename, 'w', encoding='utf-8') as f:
+        for name in list_of_names:
+            f.write(name + '\n')
+
+
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') is None:
