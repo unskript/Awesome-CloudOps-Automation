@@ -94,3 +94,21 @@ Lets consider two scenarios as starting point for extending Awesome docker
 ### How to create Custom Actions
 
 You can refer to [this link](https://docs.unskript.com/unskript-product-documentation/actions/create-custom-actions) on how to create custom Action
+
+
+## How to specify values for variables used in checks
+
+You can sepcify the variables that are used in the Checks in the Global file `unskript_config.yaml` You can see an example
+of that file in `unskript-ctl` Folder.  This step  be done before you start building your custom docker image.
+
+* In your `YOUR_REPO_DIRECTORY/actions/` Directory create a file unskript_config.yaml
+   > touch $YOUR_REPO_DIRECTORY/actions/unskript_config.yaml
+* Update the contents of the unskript_config.yaml file like so.
+   ```
+   globals:
+      namespace: "awesome-ops"
+      threshold: "string"
+      region: "us-west-2"
+      services: ["calendar", "audit"]
+   ```
+* This is a YAML file. under `globals` you can sepcify the variable you are expecting in the your check and the value of that variable on the right hand side of the variable. For example in the above snippet, `"awesome-ops"` is assigned to variable `namespace`
