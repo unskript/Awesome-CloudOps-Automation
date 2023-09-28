@@ -22,8 +22,8 @@ def test_{{ check_function_name }}():
     # For eg:
     # inputParamsJson = '''
     #            {
-    #                "lifetime_tag": "\\"aws:autoscaling:groupName\\"",
-    #                "region": "\\"us-west-2\\""
+    #                "lifetime_tag": "aws:autoscaling:groupName",
+    #                "region": "us-west-2"
     #            }
     #            '''
     t = Task(Workflow())
