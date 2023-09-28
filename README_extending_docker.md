@@ -7,7 +7,7 @@
 
 
 ## Extending the docker
-You can use our base docker to extend the functionality to fit your need. The steps below could be used to package your custom Actions/Runbooks and re-build your custom docker that you can upload and distribute to/from any docker registry. 
+You can use our base docker to extend the functionality to fit your need. The steps below could be used to package your custom Actions/Runbooks and re-build your custom docker that you can upload and distribute to/from any docker registry.
 
 
 ## Pre-requisites
@@ -25,9 +25,9 @@ You can use our base docker to extend the functionality to fit your need. The st
 3. The Directory structure resulting would be something like this
    ```
    YOUR_REPO_DIRECTORY/
-      actions/  
+      actions/
       runbooks/
-      Awesome-CloudOps-Auatomation/ 
+      Awesome-CloudOps-Auatomation/
       your-repo-folders/
       your-repo-files
       ...
@@ -37,10 +37,10 @@ You can use our base docker to extend the functionality to fit your need. The st
 6. You have Docker-ce installed and working on your build system
 
 
-## Building Custom Docker 
+## Building Custom Docker
 1. To build your custom docker. You need to set two environment variables
    `CUSTOM_DOCKER_NAME` and `CUSTOM_DOCKER_VERSION`. If not set, by default the
-   Make rule will assume `my-custom-docker` and `0.1.0` as values for these 
+   Make rule will assume `my-custom-docker` and `0.1.0` as values for these
    variables.
 
    ```
@@ -51,19 +51,19 @@ You can use our base docker to extend the functionality to fit your need. The st
    make -f Makefile build
    ```
 
-   It may take a few minutes to build the docker, once built, you can verify it using 
+   It may take a few minutes to build the docker, once built, you can verify it using
 
    ```
    docker run -it -p 8888:8888 \
-       $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_VERSION 
+       $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_VERSION
    ```
 
-   This would run your `custom docker` and you can point your browser to `http://127.0.0.1:8888/awesome`! 
+   This would run your `custom docker` and you can point your browser to `http://127.0.0.1:8888/awesome`!
 
 2. Push your `custom docker` to any docker registry for redistribution.
 <br/>
 
-## Action and agruments
+## Actions and agruments
 
 Actions are small python functions that is designed to do a specific task. For example, aws_sts_get_caller_identity action
 is designed to display the  AWS sts caller identity for a given configuration. Actions may take one or more arguments, like 
@@ -71,13 +71,69 @@ any python function do. Some or all of these arguments may also assume a default
 Many checks may have the same argument name used. For example `region` could be a common name of the argument used across
 multiple AWS actions, likewise `namespace` could be a common argument for an K8S action. 
 
+
 We call an action a check (short for health check) when the return value of the action is in the form of a Tuple.
 First value being the result of the action (a boolean) and the second value being the errored object or None. 
 We bundle a number of checks for some of the popular connectors like AWS, K8S, etc.. And you can write you own custom
 Actions (or checks) too. 
 
+### How to create Custom Actions
 
-### How to Copy Custom Actions and Runbook 
+You can create custom action on your workstation using your editor. Please follow the steps below to setup your workstation:
+
+1. We recommend to use [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) to avoid any conflicts with preinstalled Python libraries.
+```
+conda create --name=unskript-dev python=3.9.6 -y
+conda activate unskript-dev
+```
+2. Install the following pip packages:
+```
+pip install -U pytest
+pip install jinja2
+pip install unskript-core
+pip install unskript-custom
+```
+3. To create a new check template files, do the following:
+```
+cd $YOUR_REPO_DIRECTORY
+
+../Awesome-CloudOps-Automation/bin/unskript-add-check.sh -t <Check type> -n <short name for the check, separated by _> -d <description of the check>
+
+```
+The above command will create the template .py and pytest files. For eg:
+```
+(py396) amits-mbp-2:custom-checks amit$ ls -l actions/aws_list_public_sg/
+total 24
+-rw-r--r--  1 amit  staff     0 Sep 25 17:42 __init__.py
+-rw-r--r--  1 amit  staff   349 Sep 25 17:42 aws_list_public_sg.json
+-rw-r--r--  1 amit  staff  2557 Sep 25 17:44 aws_list_public_sg.py
+-rw-r--r--  1 amit  staff  1409 Sep 25 21:09 test_aws_list_public_sg.py
+```
+
+4. Edit the <short_name>.py (in the above eg, its aws_list_public_sg.py) and write the logic for the check. Please ensure that you define the InputSchema as well, if required.
+
+5. In order to test the check, you need to add an credential for the check. You can use the following utility to add credential
+```
+./Awesome-CloudOps-Automation/bin/add_creds.sh -c <Credential type> -h
+```
+
+6. Once the credential is programmed, you are ready to test out the check using pytest (Please ensure that pytest is installed on your workstation).
+You can test the check by running:
+```
+ pytest -s actions/<short_name>/test_<short_name>.py
+```
+Please ensure if your check requires any inputs, you fill the **InputParamsJson** accordingly.
+
+
+
+## Appendix
+
+### Actions Created using Jupyter Lab interface
+
+If you created custom actions using jupyter lab interface and would like to copy the custom actions and runbooks
+to include in your custom docker, then follow this.
+
+#### How to Copy Custom Actions and Runbook 
 
 If you have deployed our Awesome runbook as a Kubernetes POD then follow the step below
 1. Copy the custom actions from the POD to your local machine so you can bundle into your custom Docker for re-distribution
@@ -89,7 +145,7 @@ git clone https://github.com/unskript/Awesome-CloudOps-Automation.git
 
 Example:
 
-kubectl cp awesome-runbooks-0:/unskript/data/actions -n awesome-ops $YOUR_REPO_DIRECTORY/actions 
+kubectl cp awesome-runbooks-0:/unskript/data/actions -n awesome-ops $YOUR_REPO_DIRECTORY/actions
 kubectl cp awesome-runbooks-0:/unskript/data/runbooks -n awesome-ops $YOUR_REPO_DIRECTORY/runbooks
 ```
 
@@ -101,26 +157,10 @@ docker cp $CONTAINER_ID:/unskript/data/actions $HOME/Workspace/acme/actions
 docker cp $CONTAINER_ID:/unskript/data/runbooks $HOME/Workspace/acme/runbooks
 ```
 
+### Running Actions using unskript-ctl.sh 
 
-
-### Action and agruments
-
-Actions are small python functions that is designed to do a specific task. For example, aws_sts_get_caller_identity action
-is designed to display the  AWS sts caller identity for a given configuration. Actions may take one or more arguments, like 
-any python function do. Some or all of these arguments may also assume a default value if none given at the time of calling.
-Many actions may have the same argument name used. For example `region` could be a common name of the argument used across
-multiple AWS actions, likewise `namespace` could be a common argument for an K8S action. 
-
-We call an action a check (short for health check) when the return value of the action is in the form of a Tuple.
-First value being the result of the action (a boolean) and the second value being the errored object or None. 
-We bundle a number of checks for some of the popular connectors like AWS, K8S, etc.. And you can write your own too!
-
-
-#### How to create Custom Actions
-
-You can refer to [this link](https://docs.unskript.com/unskript-product-documentation/actions/create-custom-actions) on how to create custom Action
-
-
+If you want to run these actions (or checks) that take arguments via our CLI interface `unskript-ctl.sh` inside the custom docker, then
+follow these steps.
 
 #### How to specify values for arguments
 
@@ -141,3 +181,4 @@ Here is how you specific the values for such arguments under the `globals` tag.
 
 > Note: If you are extending our docker and have bundled your custom actions which needs arguments then please create such
 > a file first in the `YOUR_REPO_DIRECTORY/actions` folder before you build your custom docker.  
+
