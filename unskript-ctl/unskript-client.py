@@ -363,19 +363,21 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     status_list_of_dict.append(status_dict)
 
 
-def run_checks(filter: str):
+def run_checks(args: list):
     """run_checks This function takes the filter as an argument
     and based on the filter, this function queries the DB and
     creates a temporary runnable runbooks and run them, updates
     the audit results.
 
-    :type filter: string
-    :param filter: Filter string, possible values are all,<connector>,failed
+    :type args: list
+    :param args: input list, possible values are all,<connector>,failed or -f <check_name>
 
     :rtype: None
     """
-    if filter in ("", None):
+    if not args:
         raise Exception("Run Checks needs filter to be specified.")
+
+    filter = args[0]
 
     runbooks = []
     check_list = []
@@ -388,6 +390,14 @@ def run_checks(filter: str):
                 for tc in temp_check_list:
                     if tc.get('uuid') == k:
                         check_list.append(tc)
+    elif filter == '-f':
+        # If it is a `-f` option, lets get the second part of the args which
+        # Will be the name of the check that need to be run and lets run it
+        check_name = args[-1] 
+        if not check_name:
+            raise Exception("Option -f should have a check name specified")
+        # Lets call the db utils method to get the check by name
+        check_list = get_check_by_name(check_name)
     else:
         check_list = get_checks_by_connector(filter, True)
 
@@ -1594,8 +1604,8 @@ if __name__ == "__main__":
                         help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, nargs=REMAINDER,
                         help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
-    parser.add_argument('-rc', '--run-checks', type=str,
-                        help='Run all available checks [all | connector | failed]')
+    parser.add_argument('-rc', '--run-checks', type=str, nargs=REMAINDER,
+                        help='Run all available checks [all | connector | failed | -f check_name]')
     #parser.add_argument('-rs', '--run-suites', type=str,
     #                    help='Run Health Check Suites (as defined in the unskript_config.yaml file)')
     parser.add_argument('-df', '--display-failed-checks',
@@ -1614,6 +1624,8 @@ if __name__ == "__main__":
                         help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]', type=str, nargs=REMAINDER)
     parser.add_argument('--stop-debug', 
                         help='Stop Current Debug Session', action='store_true')
+    parser.add_argument('--save-check-names', type=str,
+                        help="Save Check's Names to a File")
 
     args = parser.parse_args()
 
