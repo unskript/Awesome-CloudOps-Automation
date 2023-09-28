@@ -102,34 +102,35 @@ docker cp $CONTAINER_ID:/unskript/data/runbooks $HOME/Workspace/acme/runbooks
 ```
 
 
-### How to create Custom Actions
-
-You can refer to [this link](https://docs.unskript.com/unskript-product-documentation/actions/create-custom-actions) on how to create custom Action
 
 ### Action and agruments
 
 Actions are small python functions that is designed to do a specific task. For example, aws_sts_get_caller_identity action
 is designed to display the  AWS sts caller identity for a given configuration. Actions may take one or more arguments, like 
 any python function do. Some or all of these arguments may also assume a default value if none given at the time of calling.
-Many checks may have the same argument name used. For example `region` could be a common name of the argument used across
+Many actions may have the same argument name used. For example `region` could be a common name of the argument used across
 multiple AWS actions, likewise `namespace` could be a common argument for an K8S action. 
 
 We call an action a check (short for health check) when the return value of the action is in the form of a Tuple.
 First value being the result of the action (a boolean) and the second value being the errored object or None. 
-We bundle a number of checks for some of the popular connectors like AWS, K8S, etc..
-
-Using the global file `unskript_config.yaml`, we can specify values for all the arguments needed to run the action.
-Example if 
+We bundle a number of checks for some of the popular connectors like AWS, K8S, etc.. And you can write your own too!
 
 
-## How to specify values for arguments used in checks
+#### How to create Custom Actions
 
-You can specify the variables that are used in the checks in the global file `unskript_config.yaml` You can see an example
-of that file in `unskript-ctl` Folder.  This step  be done before you start building your custom docker image.
+You can refer to [this link](https://docs.unskript.com/unskript-product-documentation/actions/create-custom-actions) on how to create custom Action
 
-* In your `YOUR_REPO_DIRECTORY/actions/` directory create a file unskript_config.yaml
-   > touch $YOUR_REPO_DIRECTORY/actions/unskript_config.yaml
-* Update the contents of the unskript_config.yaml file like so.
+
+
+#### How to specify values for arguments
+
+As aluded to earlier actions (or checks) can take one ore more arguments. If you want to run actions that take arguments via the
+`unskript-ctl.sh` CLI, then you need to specify the values for such arguments in the global configuration file named 
+`unskript_config.yaml`.  Inside the awesome-runbooks docker the location would be in `/unskript/data/actions` folder.  
+If you are extending the docker then this file need to be in the  `YOUR_REPO_DIRECTORY/actions/` folder.
+
+Here is how you specific the values for such arguments under the `globals` tag.
+
    ```
    globals:
       namespace: "awesome-ops"
@@ -137,4 +138,6 @@ of that file in `unskript-ctl` Folder.  This step  be done before you start buil
       region: "us-west-2"
       services: ["calendar", "audit"]
    ```
-* This is a YAML file. under `globals` you can sepcify the variable you are expecting in the your check and the value of that variable on the right hand side of the variable. For example in the above snippet, `"awesome-ops"` is assigned to variable `namespace`
+
+> Note: If you are extending our docker and have bundled your custom actions which needs arguments then please create such
+> a file first in the `YOUR_REPO_DIRECTORY/actions` folder before you build your custom docker.  
