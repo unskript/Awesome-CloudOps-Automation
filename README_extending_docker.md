@@ -119,7 +119,6 @@ The above command will create the template .py and pytest files. For eg:
 (py396) amits-mbp-2:custom-checks amit$ ls -l actions/aws_list_public_sg/
 total 24
 -rw-r--r--  1 amit  staff     0 Sep 25 17:42 __init__.py
-drwxr-xr-x  5 amit  staff   160 Sep 25 21:09 __pycache__
 -rw-r--r--  1 amit  staff   349 Sep 25 17:42 aws_list_public_sg.json
 -rw-r--r--  1 amit  staff  2557 Sep 25 17:44 aws_list_public_sg.py
 -rw-r--r--  1 amit  staff  1409 Sep 25 21:09 test_aws_list_public_sg.py
