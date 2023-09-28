@@ -63,9 +63,21 @@ You can use our base docker to extend the functionality to fit your need. The st
 2. Push your `custom docker` to any docker registry for redistribution.
 <br/>
 
+## Action and agruments
+
+Actions are small python functions that is designed to do a specific task. For example, aws_sts_get_caller_identity action
+is designed to display the  AWS sts caller identity for a given configuration. Actions may take one or more arguments, like 
+any python function do. Some or all of these arguments may also assume a default value if none given at the time of calling.
+Many checks may have the same argument name used. For example `region` could be a common name of the argument used across
+multiple AWS actions, likewise `namespace` could be a common argument for an K8S action. 
+
+We call an action a check (short for health check) when the return value of the action is in the form of a Tuple.
+First value being the result of the action (a boolean) and the second value being the errored object or None. 
+We bundle a number of checks for some of the popular connectors like AWS, K8S, etc.. And you can write you own custom
+Actions (or checks) too. 
 
 
-## How to Copy Custom Actions and Runbook 
+### How to Copy Custom Actions and Runbook 
 
 If you have deployed our Awesome runbook as a Kubernetes POD then follow the step below
 1. Copy the custom actions from the POD to your local machine so you can bundle into your custom Docker for re-distribution
@@ -89,19 +101,33 @@ docker cp $CONTAINER_ID:/unskript/data/actions $HOME/Workspace/acme/actions
 docker cp $CONTAINER_ID:/unskript/data/runbooks $HOME/Workspace/acme/runbooks
 ```
 
-Lets consider two scenarios as starting point for extending Awesome docker
 
 ### How to create Custom Actions
 
 You can refer to [this link](https://docs.unskript.com/unskript-product-documentation/actions/create-custom-actions) on how to create custom Action
 
+### Action and agruments
 
-## How to specify values for variables used in checks
+Actions are small python functions that is designed to do a specific task. For example, aws_sts_get_caller_identity action
+is designed to display the  AWS sts caller identity for a given configuration. Actions may take one or more arguments, like 
+any python function do. Some or all of these arguments may also assume a default value if none given at the time of calling.
+Many checks may have the same argument name used. For example `region` could be a common name of the argument used across
+multiple AWS actions, likewise `namespace` could be a common argument for an K8S action. 
 
-You can sepcify the variables that are used in the Checks in the Global file `unskript_config.yaml` You can see an example
+We call an action a check (short for health check) when the return value of the action is in the form of a Tuple.
+First value being the result of the action (a boolean) and the second value being the errored object or None. 
+We bundle a number of checks for some of the popular connectors like AWS, K8S, etc..
+
+Using the global file `unskript_config.yaml`, we can specify values for all the arguments needed to run the action.
+Example if 
+
+
+## How to specify values for arguments used in checks
+
+You can specify the variables that are used in the checks in the global file `unskript_config.yaml` You can see an example
 of that file in `unskript-ctl` Folder.  This step  be done before you start building your custom docker image.
 
-* In your `YOUR_REPO_DIRECTORY/actions/` Directory create a file unskript_config.yaml
+* In your `YOUR_REPO_DIRECTORY/actions/` directory create a file unskript_config.yaml
    > touch $YOUR_REPO_DIRECTORY/actions/unskript_config.yaml
 * Update the contents of the unskript_config.yaml file like so.
    ```
