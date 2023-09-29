@@ -1,0 +1,12 @@
+{
+  "action_title": "AWS Send Email with SES",
+  "action_description": "This Action sends an Email with AWS Simple Email Service.  Input the sender and recipient addresses, a subject and the body of the message (and the AWS region for SES), and your message will be sent.",
+  "action_type": "LEGO_TYPE_AWS",
+  "action_entry_function": "aws_send_email",
+  "action_needs_credential": "true",
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": "false",
+  "action_supports_iteration": "true",
+  "action_supports_poll": "true",
+  "action_categories":[ "CATEGORY_TYPE_CLOUDOPS","CATEGORY_TYPE_AWS" ]
+}
