@@ -1681,5 +1681,7 @@ if __name__ == "__main__":
         start_debug(args.start_debug)
     elif args.stop_debug is True:
         stop_debug()
+    elif args.save_check_names not in ('', None):
+        save_check_names(args.save_check_names)
     else:
         parser.print_help()
