@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+
+import json
+import os
+
+from unskript import nbparams
+from unskript.fwk.workflow import Task, Workflow
+from unskript.secrets import ENV_MODE, ENV_MODE_LOCAL
+from {{ check_function_name }}.{{ check_function_name }} import InputSchema, {{ check_function_name }}, {{ check_function_name }}_printer
+
+
+def test_{{ check_function_name }}():
+
+    env = {"ENV_MODE": "ENV_MODE_LOCAL"}
+    secret_store_cfg = {"SECRET_STORE_TYPE": "SECRET_STORE_TYPE_LOCAL"}
+    w = Workflow(env, secret_store_cfg, None)
+    # credentialsJson will be inserted by the jupyter extension on connector selection from the drop down.
+    credentialsJson = """{"credential_type": "CONNECTOR_TYPE_{{ check_type_upper_case }}", "credential_id":"{{ check_type }}creds", "credential_name": "{{ check_type }}creds" }"""
+
+    inputParamsJson = "{}"
+    # Fill inputParamsJson depending upon the arguments you have for the check function.
+    # For eg:
+    # inputParamsJson = '''
+    #            {
+    #                "lifetime_tag": "aws:autoscaling:groupName",
+    #                "region": "us-west-2"
+    #            }
+    #            '''
+    t = Task(Workflow())
+    t.configure(inputParamsJson, credentialsJson)
+    (err, hdl, args) = t.validate(InputSchema, vars())
+    if err is None:
+        t.output = t.execute({{ check_function_name }}, hdl,
+                             args, {{ check_function_name }}_printer)
+    assert t.workflow.global_vars['unskript_task_error'] == None
+    assert t.output[0] != None
+    if t.output[0] is False:
+        assert(len(t.output[1])> 0)

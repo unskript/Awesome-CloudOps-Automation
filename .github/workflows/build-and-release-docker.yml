@@ -3,11 +3,11 @@ name: Build and Release Docker
 on:
   workflow_call:
     inputs:
-      enabled: 
+      enabled:
         required: true
         type: boolean
       release_tag:
-        required: true 
+        required: true
         type: string
       elyra_branch:
         required: false
@@ -24,7 +24,7 @@ on:
       snippet_branch:
         required: false
         default: "master"
-        type: string 
+        type: string
       awesome_branch:
         required: false
         default: "master"
@@ -32,16 +32,16 @@ on:
       devops_branch:
         required: false
         default: "master"
-        type: string 
+        type: string
       build_number:
         required: true
         type: string
       latest:
         required: false
-        default: true 
-        type: boolean 
-      
-  workflow_dispatch: 
+        default: true
+        type: boolean
+
+  workflow_dispatch:
     inputs:
       enabled:
         description: 'Workflow Enable Flag'
@@ -57,31 +57,31 @@ on:
         description: 'unSkript Branch name'
         required: true
         default: master
-        type: string 
+        type: string
       celltoolbar_branch:
         description: 'Celltoolbar Branch name'
         required: true
         default: master
-        type: string 
+        type: string
       snippet_branch:
         description: 'Code Snippets Branch name'
         required: true
         default: master
-        type: string 
+        type: string
       awesome_branch:
         description: 'unSkript submodule awesome Branch name'
         required: true
         default: master
-        type: string 
+        type: string
       devops_branch:
         description: 'Devops Branch name'
         required: false
         default: master
-        type: string 
+        type: string
       build_number:
         description: 'Docker build number'
         required: true
-        type: string 
+        type: string
       latest:
         description: 'Docker Latest tag Branch name'
         default: false
@@ -90,7 +90,7 @@ on:
 concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
-      
+
 env:
   DOCKER_REGISTRY: docker.io
   DOCKER_IMAGE: unskript/awesome-runbooks
@@ -98,16 +98,16 @@ env:
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   USERNAME: ${{ secrets.BUILD_USER }}
   DOCKER_TARGET: linux/amd64, linux/arm64
-   
+
 permissions:
   contents: read
 
 jobs:
-  build-elyra: 
-    runs-on: ubuntu-latest 
+  build-elyra:
+    runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
     strategy:
-      fail-fast: false 
+      fail-fast: false
 
     steps:
       - name: Harden Runner
@@ -122,7 +122,7 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-      
+
       - name: Update Spy2 to workaround for repo timeout issue
         run: |
            sudo gem install apt-spy2
@@ -133,7 +133,7 @@ jobs:
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.7'
-          
+
       - name: Checkout & Build Code
         run: |
           cd $HOME
@@ -147,13 +147,13 @@ jobs:
         with:
           name: elyra-${{ github.run_id }}
           path: /tmp/elyra-3.0.0.dev0.tar.gz
-    
+
   build-unskript:
     runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
     needs: [build-elyra]
     strategy:
-      fail-fast: false 
+      fail-fast: false
 
     steps:
       - name: Harden Runner
@@ -176,13 +176,13 @@ jobs:
            sudo apt-spy2 fix --commit --launchpad --country=US
            sudo apt-get update
 
-      
+
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
-          # Restricting python version to 3.9 
+          # Restricting python version to 3.9
           python-version: '3.9'
-          
+
       - name: Install system dependencies
         run: |
           pip install shyaml
@@ -201,14 +201,14 @@ jobs:
           # We use the --upgrade-strage only-if-needed and --use-deprecated=legacy-resolver to avoid
           # PIP dependency loop. Since we are asking the git runner to be of ubuntu-latest, it becomes
           # a moving target for us hence we want to restrict the packages that are needed for unskript
-          # to compile to be fixed. 
+          # to compile to be fixed.
           /usr/bin/env python -m pip install -r ./requirements.txt --upgrade --upgrade-strategy only-if-needed --use-deprecated=legacy-resolver
           /usr/bin/env python -m pip install --upgrade protobuf
           # We need to restrict URLLIB3 to 1.26.6 because Version 2.x.y onwards the DEFAULT_CIPHERS
           # variable is deprecrated. Unfortunately our boto3 and botocore that is needed for our
           # unskript package does not work with the latest version of URLLIB3. Hence we need to
           # restrict it to a fixed version of 1.26.6
-          /usr/bin/env python -m pip install --upgrade urllib3==1.26.6 
+          /usr/bin/env python -m pip install --upgrade urllib3==1.26.6
           /usr/bin/env python -m pip install --upgrade types-urllib3==1.26.13
           /usr/bin/env python -m pip install google-api-python-client==2.77.0
           make awesome-submodule
@@ -217,10 +217,10 @@ jobs:
           cd ..
           make legoschema
           [ -f "setup-full.py" ] &&  cp "setup-full.py" ./setup.py
-          /usr/bin/env python ./setup.py bdist_wheel 
+          /usr/bin/env python ./setup.py bdist_wheel
           mv dist/code*tar /tmp
           mv dist/unskript-0.1.0-py2.py3-none-any.whl /tmp
-      
+
       - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: schema-${{ github.run_id }}
@@ -230,13 +230,13 @@ jobs:
         with:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
-      
+
 
   build-jlab-celltoolbar:
-    runs-on: ubuntu-20.04 
+    runs-on: ubuntu-20.04
     if: ${{ inputs.enabled }}
     strategy:
-      fail-fast: false 
+      fail-fast: false
 
     steps:
       - name: Harden Runner
@@ -248,7 +248,7 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
-     
+
       - name: Update Spy2 to workaround for repo timeout issue
         run: |
            sudo gem install apt-spy2
@@ -275,11 +275,11 @@ jobs:
           git checkout ${{ inputs.celltoolbar_branch }}
           /usr/bin/env python -m pip install jupyter-packaging
           /usr/bin/env python -m pip install --upgrade markupsafe
-          /usr/bin/env python -m pip install --upgrade jinja2 
+          /usr/bin/env python -m pip install --upgrade jinja2
           jlpm install
-          /usr/bin/env python ./setup.py bdist_wheel 
+          /usr/bin/env python ./setup.py bdist_wheel
           mv dist/*.whl /tmp
-  
+
 
       - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
@@ -287,10 +287,10 @@ jobs:
           path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
 
   build-code-snippets:
-    runs-on: ubuntu-20.04 
+    runs-on: ubuntu-20.04
     if: ${{ inputs.enabled }}
     strategy:
-      fail-fast: false 
+      fail-fast: false
 
     steps:
       - name: Harden Runner
@@ -302,7 +302,7 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
-      
+
       - name: Update Spy2 to workaround for repo timeout issue
         run: |
            sudo gem install apt-spy2
@@ -319,7 +319,7 @@ jobs:
           pip install shyaml
           sudo apt install nodejs npm
           pip install jupyterlab
-      
+
       - name: Checkout Code
         run: |
           cd $HOME
@@ -328,11 +328,11 @@ jobs:
           git checkout ${{ inputs.snippet_branch }}
           /usr/bin/env python -m pip install jupyter-packaging
           /usr/bin/env python -m pip install --upgrade markupsafe
-          /usr/bin/env python -m pip install --upgrade jinja2 
-          jlpm install 
-          /usr/bin/env python ./setup.py bdist_wheel 
+          /usr/bin/env python -m pip install --upgrade jinja2
+          jlpm install
+          /usr/bin/env python ./setup.py bdist_wheel
           mv dist/*.whl /tmp
-  
+
 
       - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
@@ -344,7 +344,7 @@ jobs:
     if: ${{ inputs.enabled }}
     needs: [build-unskript, build-elyra, build-jlab-celltoolbar, build-code-snippets]
     strategy:
-      fail-fast: false 
+      fail-fast: false
 
     steps:
       - name: Harden Runner
@@ -360,7 +360,7 @@ jobs:
            sudo apt-spy2 fix --commit --launchpad --country=US
            sudo apt-get update
 
-      
+
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
@@ -371,11 +371,11 @@ jobs:
           sudo apt update --fix-missing
           pip install shyaml
 
-      - name: Setup Docker Buildx 
+      - name: Setup Docker Buildx
         uses: crazy-max/ghaction-docker-buildx@126d331dc69f4a1aa02452e374835e6a5d565613 # v3.3.1
         with:
           version: latest
-          config: .github/buildkitd.toml 
+          config: .github/buildkitd.toml
 
       - name: Prepare Docker Buildx
         id: prepare
@@ -388,18 +388,18 @@ jobs:
         run: |
           echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin
 
-          
+
       - name: Checkout Code
         run: |
           cd $HOME
           pwd
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/devops.git devops
-      
+
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: code-snippets-${{ github.run_id }}
           path: /tmp/code_snippet
-    
+
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: toolbar-${{ github.run_id }}
@@ -419,28 +419,28 @@ jobs:
         with:
           name: elyra-${{ github.run_id }}
           path: /tmp/elyra
-      
+
       - name: Prepare to Build
         run: |
           cd $HOME/devops/dockers/jupyterlab/oss_docker
 
           ls -l /tmp/unskript/
           ls -l /tmp/elyra/
-          ls -l /tmp/jlab_enhanced_cell_toolbar/ 
-          ls -l /tmp/code_snippet/ 
+          ls -l /tmp/jlab_enhanced_cell_toolbar/
+          ls -l /tmp/code_snippet/
           tar xf /tmp/unskript/code_snippet_schemas.tar
           cd downloads
           mv /tmp/unskript/*.whl .
           mv /tmp/code_snippet/*.whl .
           mv /tmp/jlab_enhanced_cell_toolbar/*.whl .
           mv /tmp/elyra/elyra*tar.gz .
-          if [[ ${{ inputs.latest }} == "true" ]]; then 
+          if [[ ${{ inputs.latest }} == "true" ]]; then
               bt="${{ env.DOCKER_IMAGE }}:${{ inputs.build_number }} -t ${{ env.DOCKER_IMAGE }}:latest"
-          else 
+          else
               bt="${{ env.DOCKER_IMAGE }}:${{ inputs.build_number }}"
           fi
           echo "BUILD_TAGS=$bt" >> $GITHUB_ENV
-      
+
       - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af # v2.0.0
         with:
           name: |
@@ -450,7 +450,7 @@ jobs:
             unskript-${{ github.run_id }}
             schema-${{ github.run_id }}
 
-      - name: Build & Push 
+      - name: Build & Push
         run: |
           docker buildx create --name mybuilder
           docker buildx use mybuilder
@@ -469,7 +469,8 @@ jobs:
           git checkout ${{ inputs.awesome_branch }}
           cd ..
           make syncrunbooks
-          cp awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker/
           cp awesome/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/template.ipynb
           cp awesome/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/Welcome.ipynb
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
@@ -483,7 +484,7 @@ jobs:
     needs: [build-docker]
     strategy:
       fail-fast: false
-    
+
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
