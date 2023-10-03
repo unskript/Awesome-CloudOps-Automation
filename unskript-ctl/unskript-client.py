@@ -22,6 +22,7 @@ import yaml
 import nbformat
 import ZODB
 import ZODB.FileStorage
+
 from pathlib import Path
 from datetime import datetime
 from argparse import ArgumentParser, REMAINDER, SUPPRESS
@@ -1615,7 +1616,7 @@ def stop_debug():
     print("Stopped Active Debug session successfully")
 
 def save_check_names(filename: str):
-    """save_check_names queries ZoDB and finds out all checks available and
+    """save_check_names queries ZoDB Database and finds out all checks available and
        dumps it to the filename given as argument
 
        :type filename: String
