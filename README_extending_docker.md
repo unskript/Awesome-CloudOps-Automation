@@ -63,7 +63,6 @@ You can use our base docker to extend the functionality to fit your need. The st
 2. Push your `custom docker` to any docker registry for redistribution.
 <br/>
 
-
 ## Action and arguments
 
 Actions are small python functions that is designed to do a specific task. For example, aws_sts_get_caller_identity action
@@ -71,6 +70,7 @@ is designed to display the  AWS sts caller identity for a given configuration. A
 any python function do. Some or all of these arguments may also assume a default value if none given at the time of calling.
 Many actions may have the same argument name used. For example `region` could be a common name of the argument used across
 multiple AWS actions, likewise `namespace` could be a common argument for an K8S action. 
+
 
 We call an action a check (short for health check) when the return value of the action is in the form of a Tuple.
 First value being the result of the check (a boolean), whether it passed or not. True being check passed, False otherwise.
@@ -101,7 +101,6 @@ pip install unskript-custom
 3. To create a new check template files, do the following:
 ```
 cd $YOUR_REPO_DIRECTORY
-
 ./Awesome-CloudOps-Automation/bin/unskript-add-check.sh -t <Check type> -n <short name for the check, separated by _> -d <description of the check>
 ```
 
@@ -129,7 +128,7 @@ total 24
  pytest -s actions/<short_name>/test_<short_name>.py
 ```
 
-Please ensure if your check requires any inputs, you fill the `InputParamsJson` accordingly.
+Please ensure if your check requires any inputs, you fill the *InputParamsJson* accordingly.
 
 ### Creating custom actions using jupyterlab
 
