@@ -22,9 +22,10 @@ import yaml
 import nbformat
 import ZODB
 import ZODB.FileStorage
+
 from pathlib import Path
 from datetime import datetime
-from argparse import ArgumentParser, REMAINDER
+from argparse import ArgumentParser, REMAINDER, SUPPRESS
 from db_utils import *
 from tabulate import tabulate
 from nbclient import NotebookClient
@@ -65,6 +66,7 @@ TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
 TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
+parser = ArgumentParser(prog='unskript-ctl')
 
 def load_or_create_global_configuration():
     """load_global_configuration This function reads the unskript_config.yaml file from /data
@@ -363,23 +365,25 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     status_list_of_dict.append(status_dict)
 
 
-def run_checks(filter: str):
+def run_checks(args: list):
     """run_checks This function takes the filter as an argument
     and based on the filter, this function queries the DB and
     creates a temporary runnable runbooks and run them, updates
     the audit results.
 
-    :type filter: string
-    :param filter: Filter string, possible values are all,<connector>,failed
+    :type args: list
+    :param args: input list, possible values are all,<connector>,failed or -f <check_name>
 
     :rtype: None
     """
-    if filter in ("", None):
+    if not args:
         raise Exception("Run Checks needs filter to be specified.")
+
+    filter = args[0]
 
     runbooks = []
     check_list = []
-    if filter == 'failed':
+    if filter == '--failed':
         run_status = get_pss_record('current_execution_status')
         exec_status = run_status.get('exec_status')
         for k, v in exec_status.items():
@@ -388,8 +392,21 @@ def run_checks(filter: str):
                 for tc in temp_check_list:
                     if tc.get('uuid') == k:
                         check_list.append(tc)
+    elif filter in ('-c', '--check'):
+        # If it is a `-f` option, lets get the second part of the args which
+        # Will be the name of the check that need to be run and lets run it
+        check_name = args[-1] 
+        if not check_name:
+            raise Exception("Option -f should have a check name specified")
+        # Lets call the db utils method to get the check by name
+        check_list = get_check_by_name(check_name)
+    elif filter == '--all':
+            check_list = get_checks_by_connector("all", True)
+    elif filter == '--type':
+            check_list = get_checks_by_connector(args[-1], True)
     else:
-        check_list = get_checks_by_connector(filter, True)
+        print(f"ERROR: WRONG OPTION: {args}")
+        
 
     if len(check_list) > 0:
         runbooks.append(create_jit_runbook(check_list))
@@ -787,16 +804,26 @@ def update_audit_trail(status_dict_list: list):
     return id
 
 
-def list_checks_by_connector(connector_name: str):
+def list_checks_by_connector(args):
     """list_checks_by_connector This function reads the ZoDB and displays the
        checks by a given connector. connector_name can be `all` in that case
        all the checks across connectors performed and displayed.
 
-       :type connector_name: string
-       :param connector_name: Connector name like aws, gcp, etc... or all for everything
+       :type args: list
+       :param args: Connector name like aws, gcp, etc... or all for everything
 
        :rtype: None
     """
+    if not args:
+        print(f"ERROR: Either --all or --type <CONNECTOR_TYPE> is needed")
+        return 
+    if args[0] == '--all':
+        connector_name = 'all'
+    elif args[0] == '--type':
+        connector_name = args[-1]
+    else:
+        connector_name = 'all'
+
     list_connector_table = [
         [TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_UUID]]
     for l in get_checks_by_connector(connector_name):
@@ -807,12 +834,21 @@ def list_checks_by_connector(connector_name: str):
     print("")
 
 
-def display_failed_checks(connector: str = ''):
+def display_failed_checks(args):
     """display_failed_checks This function reads the execution_summary.yaml and displays
        the last failed checks with its UUID and Action.
 
        :rtype: None
     """
+    if not args:
+        print("ERROR: Either -all or --type connector <CONNECTOR_TYPE> needed")
+        return 
+    
+    if args[0] == '--all':
+        connector = "all"
+    elif args[0] == '--type':
+        connector = args[1]
+
     pss_content = get_pss_record('current_execution_status')
     exec_status = pss_content.get('exec_status')
     failed_exec_list = []
@@ -865,13 +901,20 @@ def display_failed_logs(exec_id: str = None):
     print(output)
 
 
-def show_audit_trail(filter: str = None):
+def show_audit_trail(args):
     """show_audit_trail This function reads the failed logs for a given execution ID
        When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']/failed/<UUID>.log
     :type filter: string
     :param filter: filter used to query audit_trail to get logs used to serach logs
     """
-    if filter is None:
+    if not args:
+        print(f"ERROR: Audit Trial needs --all or --type <CONNECTOR_TYPE>")
+        return 
+    if args[0].replace('-','') == 'all':
+        filter = 'all'
+    elif args[0].replace('-','') == 'type':
+        filter = args[-1]
+    else:
         filter = 'all'
 
     pss_content = get_pss_record('audit_trail')
@@ -908,7 +951,7 @@ def show_audit_trail(filter: str = None):
         pass
     finally:
         if exec_content == {}:
-            print("SYSTEM ERROR: Not able to print trail logs")
+            print("ERROR: No Audit Logs Found in the System")
             return
     connector_result_table = [["\033[1m Check Name \033[0m",
                                "\033[1m Run Status \033[0m",
@@ -1248,7 +1291,6 @@ def non_interactive_parse_runbook_param(args) -> dict:
     retval = {}
     retval['params'] = {}
     if args[0] in ('-h', '--h'):
-        parser.print_help()
         sys.exit(0)
 
     _runbook_contents = get_runbook_metadata_contents(args[0])
@@ -1444,18 +1486,22 @@ def parse_creds(args):
     """ 
     # Check if creds that need to be created is for k8s, if yes
     # read the given kubecofnig and create the credential of it. 
-    connector_type = args[0]
+    if args[0] != '--type':
+        display_creds_ui()
+        return 
+     
+    connector_type = args[1]
     connector_type = connector_type.replace('-','')
     if connector_type.lower() in ("k8s", "kubernetes"):
         if len(args) == 1:
             print("ERROR: Need a path for kubeconfig file as value for the k8s credential")
             parser.print_help()
             sys.exit(1)
-        if os.path.exists(args[1]) is False:
+        if os.path.exists(args[-1]) is False:
             print(f"ERROR: Credential File {args[1]} does not exist, please check path")
             parser.print_help()
             sys.exit(1)
-        with open(args[1], 'r', encoding='utf-8') as f:
+        with open(args[-1], 'r', encoding='utf-8') as f:
             creds_data = f.read()
         k8s_creds_file = os.environ.get('HOME') + CREDENTIAL_DIR + '/k8screds.json'
         with open(k8s_creds_file, 'r', encoding='utf-8') as f:
@@ -1570,6 +1616,22 @@ def stop_debug():
 
     print("Stopped Active Debug session successfully")
 
+def save_check_names(filename: str):
+    """save_check_names queries ZoDB Database and finds out all checks available and
+       dumps it to the filename given as argument
+
+       :type filename: String
+       :param filename: filename to which the output should be written
+    """
+    if not filename:
+        return 
+    
+    list_of_names = get_all_check_names()
+    with open(filename, 'w', encoding='utf-8') as f:
+        for name in list_of_names:
+            f.write(name + '\n')
+
+
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') is None:
@@ -1582,7 +1644,8 @@ if __name__ == "__main__":
     except Exception as error:
         raise error
 
-    parser = ArgumentParser(prog='unskript-ctl')
+    #parser = ArgumentParser(prog='unskript-ctl')
+
     version_number = "0.1.0"
     description = ""
     description = description + str("\n")
@@ -1594,16 +1657,14 @@ if __name__ == "__main__":
                         help='List Available Runbooks', action='store_true')
     parser.add_argument('-rr', '--run-runbook', type=str, nargs=REMAINDER,
                         help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
-    parser.add_argument('-rc', '--run-checks', type=str,
-                        help='Run all available checks [all | connector | failed]')
-    #parser.add_argument('-rs', '--run-suites', type=str,
-    #                    help='Run Health Check Suites (as defined in the unskript_config.yaml file)')
-    parser.add_argument('-df', '--display-failed-checks',
-                        help='Display Failed Checks [all | connector]')
-    parser.add_argument('-lc', '--list-checks', type=str,
-                        help='List available checks, [all | connector]')
-    parser.add_argument('-sa', '--show-audit-trail', type=str,
-                        help='Show audit trail [all | connector | execution_id]')
+    parser.add_argument('-rc', '--run-checks', type=str, nargs=REMAINDER,
+                        help='Run all available checks [--all | --type <CONNECTOR_TYPE> | --failed | --check check_name]')
+    parser.add_argument('-df', '--display-failed-checks', type=str, nargs=REMAINDER,
+                        help='Display Failed Checks [--all | --type <CONNECTOR_TYPE>]')
+    parser.add_argument('-lc', '--list-checks', type=str, nargs=REMAINDER,
+                        help='List available checks, [--all | --type <CONNECTOR_TYPE>]')
+    parser.add_argument('-sa', '--show-audit-trail', type=str, nargs=REMAINDER,
+                        help='Show audit trail [--all | --type <CONNECTOR_TYPE> | --execution_id <EXECUTION_ID>]')
     parser.add_argument('-dl', '--display-failed-logs',
                         type=str, help='Display failed logs  [execution_id]')
     parser.add_argument('-cc', '--create-credentials', type=str, nargs=REMAINDER, 
@@ -1614,6 +1675,7 @@ if __name__ == "__main__":
                         help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]', type=str, nargs=REMAINDER)
     parser.add_argument('--stop-debug', 
                         help='Stop Current Debug Session', action='store_true')
+    parser.add_argument('--save-check-names', type=str, help=SUPPRESS)
 
     args = parser.parse_args()
 
@@ -1632,8 +1694,6 @@ if __name__ == "__main__":
             parse_runbook_param(args.run_runbook)
     elif args.run_checks not in ('', None):
         run_checks(args.run_checks)
-    #elif args.run_suites not in ('', None):
-    #    run_suites(args.run_suites)
     elif args.display_failed_checks not in ('', None):
         display_failed_checks(args.display_failed_checks)
     elif args.list_checks not in ('', None):
@@ -1653,5 +1713,7 @@ if __name__ == "__main__":
         start_debug(args.start_debug)
     elif args.stop_debug is True:
         stop_debug()
+    elif args.save_check_names not in ('', None):
+        save_check_names(args.save_check_names)
     else:
         parser.print_help()
