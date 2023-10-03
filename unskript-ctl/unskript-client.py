@@ -66,6 +66,7 @@ TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
 TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
+parser = ArgumentParser(prog='unskript-ctl')
 
 def load_or_create_global_configuration():
     """load_global_configuration This function reads the unskript_config.yaml file from /data
@@ -1643,7 +1644,8 @@ if __name__ == "__main__":
     except Exception as error:
         raise error
 
-    parser = ArgumentParser(prog='unskript-ctl')
+    #parser = ArgumentParser(prog='unskript-ctl')
+
     version_number = "0.1.0"
     description = ""
     description = description + str("\n")
