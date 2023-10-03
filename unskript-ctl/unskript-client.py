@@ -1289,7 +1289,6 @@ def non_interactive_parse_runbook_param(args) -> dict:
     retval = {}
     retval['params'] = {}
     if args[0] in ('-h', '--h'):
-        parser.print_help()
         sys.exit(0)
 
     _runbook_contents = get_runbook_metadata_contents(args[0])
