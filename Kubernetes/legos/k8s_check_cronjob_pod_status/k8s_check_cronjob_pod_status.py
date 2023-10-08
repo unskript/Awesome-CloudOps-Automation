@@ -32,13 +32,7 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
     :param handle: The Kubernetes client handle.
 
     :type name: str
-    :param cronjob_name: Name of the CronJob.
-
-    :type name: str
     :param namespace: Namespace where the CronJob is deployed.
-
-    :type name: int
-    :param schedule_interval: Expected running interval of the CronJob in minutes.
 
     :return: A tuple where the first item has the status if the check and second has a list of failed objects.
     """

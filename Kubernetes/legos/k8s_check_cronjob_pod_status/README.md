@@ -8,12 +8,11 @@ This action checks the status of CronJob pods
 ## Lego Details
 	k8s_check_cronjob_pod_status(handle, namespace: str="")
 		handle: Object of type unSkript K8S Connector.
-		cronjob_name: Name of the CronJob.
-		schedule_interval: Optional, Expected running interval of the CronJob in minutes.
+		namespace: Namespace where the CronJob is deployed.
 
 
 ## Lego Input
-This Lego takes inputs handle, cronjob_name, schedule_interval (Optional)
+This Lego takes inputs handle namespace(Optional)
 
 ## Lego Output
 Here is a sample output.
