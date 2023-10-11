@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2022 unSkript.com
+# Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
@@ -31,6 +31,7 @@ from tabulate import tabulate
 from nbclient import NotebookClient
 from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutputStatus
+from unskript_ctl_gen_report import *
 from ZODB import DB
 
 # This python client can be used to
@@ -47,7 +48,16 @@ from ZODB import DB
 # LIST OF CONSTANTS USED IN THIS FILE
 UNSKRIPT_GLOBALS = {}
 if os.environ.get('GLOBAL_CONFIG_PATH') is None:
-    GLOBAL_CONFIG_PATH="/unskript/data/actions/unskript_config.yaml"
+    GLOBAL_CONFIG_PATH="/unskript/etc/unskript_global.yaml"
+
+    # Migrate any existing unskript_config.yaml to unskript_global.yaml
+    # Note, the earlier name we used was unskript_config.yaml. 
+    if os.path.exists('/unskript/data/action/unskript_config.yaml') is True:
+        try:
+            os.makedirs(Path(GLOBAL_CONFIG_PATH).parent, exist_ok=True)
+            Path('/unskript/data/action/unskript_config.yaml').rename(GLOBAL_CONFIG_PATH)
+        except:
+            pass
 
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
@@ -69,7 +79,7 @@ TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 parser = ArgumentParser(prog='unskript-ctl')
 
 def load_or_create_global_configuration():
-    """load_global_configuration This function reads the unskript_config.yaml file from /data
+    """load_global_configuration This function reads the unskript_global.yaml file from /data
        and sets os.env variables which we shall use it in the subsequent functions.
        :rpath: None
     """
@@ -403,7 +413,18 @@ def run_checks(args: list):
     elif filter == '--all':
             check_list = get_checks_by_connector("all", True)
     elif filter == '--type':
-            check_list = get_checks_by_connector(args[-1], True)
+        check_list = []
+        all_connectors = args[1:]
+        if args[-1] in ('-r', '--report'):
+            UNSKRIPT_GLOBALS['report'] = True
+            all_connectors = args[1:-1]
+            
+        for connector in all_connectors:
+            connector = connector.replace(',', '')
+            temp_list = get_checks_by_connector(connector.strip(), True)
+            for t in temp_list:
+                if t not in check_list:
+                    check_list.append(t)
     else:
         print(f"ERROR: WRONG OPTION: {args}")
         
@@ -427,7 +448,10 @@ def run_checks(args: list):
             print("Failed Objects:")
             pprint.pprint(v)
             print('\x1B[1;4m', '\x1B[0m')
-
+    
+    if UNSKRIPT_GLOBALS.get('report') is True:
+        send_notification(status_of_runs, UNSKRIPT_GLOBALS.get('failed_result'))
+    
 
 def run_suites(suite_name: str):
     """run_suites This function takes the suite_name as an argument
@@ -844,6 +868,7 @@ def display_failed_checks(args):
         print("ERROR: Either -all or --type connector <CONNECTOR_TYPE> needed")
         return 
     
+    connector = "all"
     if args[0] == '--all':
         connector = "all"
     elif args[0] == '--type':

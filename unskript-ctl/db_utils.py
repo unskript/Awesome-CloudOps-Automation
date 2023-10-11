@@ -308,7 +308,7 @@ def get_creds_by_connector(connector_type: str):
     """
     retval = ()
 
-    if connector_type is ('', None):
+    if connector_type in ('', None):
         return retval
 
     db = init_pss_db()
