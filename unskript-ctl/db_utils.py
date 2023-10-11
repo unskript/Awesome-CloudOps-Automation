@@ -252,6 +252,51 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
     db.close()
     return list_checks
 
+def get_all_check_names():
+    """get_all_check_names This function queries the snippets DB for
+       checks and returns the Names
+
+       :rtype: List containing names of all check
+    """
+    try:
+        db = DB(CS_DB_PATH)
+    except Exception as e:
+        raise e
+    tm = transaction.TransactionManager()
+    connection = db.open(tm)
+    root = connection.root()
+    cs = root.get('unskript_cs')
+    list_check_names = []
+    if cs is None:
+        raise Exception("Code Snippets Are missing")
+    for s in cs:
+        d = s
+        if d.get('metadata').get('action_is_check') is False:
+            continue
+        list_check_names.append(d.get('metadata').get('action_entry_function'))
+        
+
+    tm.commit()
+    del root
+    connection.close()
+    db.close()
+    return list_check_names
+
+def get_check_by_name(name: str):
+    """get_check_by_name This function utilizes the function get_check_by_connector
+       with `all` filter and finds out the check that matches the name and returns 
+       the code snippet that matches the name.
+
+       :type name: str
+       :param name: Check name 
+
+       :rtype: Returns the Check
+    """
+    all_snippets = get_checks_by_connector('all', True)
+    snippet_list = [x for x in all_snippets if x.get('metadata').get('action_entry_function') == name]
+
+    return snippet_list 
+
 def get_creds_by_connector(connector_type: str):
     """get_creds_by_connector This function queries ZoDB and returns the
     credential data in the form of a tuple of (cred_name, cred_id).

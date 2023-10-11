@@ -63,9 +63,78 @@ You can use our base docker to extend the functionality to fit your need. The st
 2. Push your `custom docker` to any docker registry for redistribution.
 <br/>
 
+## Action and arguments
+
+Actions are small python functions that is designed to do a specific task. For example, aws_sts_get_caller_identity action
+is designed to display the  AWS sts caller identity for a given configuration. Actions may take one or more arguments, like 
+any python function do. Some or all of these arguments may also assume a default value if none given at the time of calling.
+Many actions may have the same argument name used. For example `region` could be a common name of the argument used across
+multiple AWS actions, likewise `namespace` could be a common argument for an K8S action. 
 
 
-## How to Copy Custom Actions and Runbook
+We call an action a check (short for health check) when the return value of the action is in the form of a Tuple.
+First value being the result of the check (a boolean), whether it passed or not. True being check passed, False otherwise.
+And the second value being the list of errored objects, incase of failure, None otherwise.
+
+We bundle a number of checks for some of the popular connectors like AWS, K8S, etc.. And you can write your own too!
+
+
+### How to create Custom Actions 
+
+You can create custom action on your workstation using your editor. Please follow the steps below to setup your workstation:
+
+1. We recommend to use [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) to avoid any conflicts with preinstalled Python libraries.
+```
+conda create --name=unskript-dev python=3.9.6 -y
+conda activate unskript-dev
+```
+
+2. Install the following pip packages:
+
+```
+pip install -U pytest
+pip install jinja2
+pip install unskript-core
+pip install unskript-custom
+```
+
+3. To create a new check template files, do the following:
+```
+cd $YOUR_REPO_DIRECTORY
+./Awesome-CloudOps-Automation/bin/unskript-add-check.sh -t <Check type> -n <short name for the check, separated by _> -d <description of the check>
+```
+
+The above command will create the template .py and pytest files. For eg:
+
+```
+(py396) amits-mbp-2:custom-checks amit$ ls -l actions/aws_list_public_sg/
+total 24
+-rw-r--r--  1 amit  staff     0 Sep 25 17:42 __init__.py
+-rw-r--r--  1 amit  staff   349 Sep 25 17:42 aws_list_public_sg.json
+-rw-r--r--  1 amit  staff  2557 Sep 25 17:44 aws_list_public_sg.py
+-rw-r--r--  1 amit  staff  1409 Sep 25 21:09 test_aws_list_public_sg.py
+```
+
+4. Edit the <short_name>.py (in the above eg, its aws_list_public_sg.py) and write the logic for the check. Please ensure that you define the InputSchema as well, if required.
+
+5. In order to test the check, you need to add a credential for the check. You can use the following utility to add credential
+```
+./Awesome-CloudOps-Automation/bin/add_creds.sh -c <Credential type> -h
+```
+
+6. Once the credential is programmed, you are ready to test out the check using pytest (Please ensure that pytest is installed on your workstation). You can test the check by running:
+
+```
+ pytest -s actions/<short_name>/test_<short_name>.py
+```
+
+Please ensure if your check requires any inputs, you fill the *InputParamsJson* accordingly.
+
+### Creating custom actions using jupyterlab
+
+You can refer to [this link](https://docs.unskript.com/unskript-product-documentation/actions/create-custom-actions) on how to create custom Action using Jupyter Lab interface
+
+### How to Copy Custom Actions and Runbook 
 
 If you have deployed our Awesome runbook as a Kubernetes POD then follow the step below
 1. Copy the custom actions from the POD to your local machine so you can bundle into your custom Docker for re-distribution
@@ -89,51 +158,20 @@ docker cp $CONTAINER_ID:/unskript/data/actions $HOME/Workspace/acme/actions
 docker cp $CONTAINER_ID:/unskript/data/runbooks $HOME/Workspace/acme/runbooks
 ```
 
-Lets consider two scenarios as starting point for extending Awesome docker
+### How to specify values for arguments used in checks
 
-### How to create Custom Actions
+You can sepcify the values for the arguments that are used in the Checks in the Global file `unskript_config.yaml` You can see an example
+of that file in `unskript-ctl` Folder.
 
-You can create custom action on your workstation using your editor. Please follow the steps below to setup your workstation:
+* In your `YOUR_REPO_DIRECTORY/actions/` Directory create a file unskript_config.yaml
+   > touch $YOUR_REPO_DIRECTORY/actions/unskript_config.yaml
+* Update the contents of the unskript_config.yaml file like so.
+   ```
+   globals:
+      namespace: "awesome-ops"
+      threshold: "string"
+      region: "us-west-2"
+      services: ["calendar", "audit"]
+   ```
 
-1. We recommend to use [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) to avoid any conflicts with preinstalled Python libraries.
-```
-conda create --name=unskript-dev python=3.9.6 -y
-conda activate unskript-dev
-```
-2. Install the following pip packages:
-```
-pip install -U pytest
-pip install jinja2
-pip install unskript-core
-pip install unskript-custom
-```
-3. To create a new check template files, do the following:
-```
-cd $YOUR_REPO_DIRECTORY
-
-./Awesome-CloudOps-Automation/bin/unskript-add-check.sh -t <Check type> -n <short name for the check, separated by _> -d <description of the check>
-
-```
-The above command will create the template .py and pytest files. For eg:
-```
-(py396) amits-mbp-2:custom-checks amit$ ls -l actions/aws_list_public_sg/
-total 24
--rw-r--r--  1 amit  staff     0 Sep 25 17:42 __init__.py
--rw-r--r--  1 amit  staff   349 Sep 25 17:42 aws_list_public_sg.json
--rw-r--r--  1 amit  staff  2557 Sep 25 17:44 aws_list_public_sg.py
--rw-r--r--  1 amit  staff  1409 Sep 25 21:09 test_aws_list_public_sg.py
-```
-
-4. Edit the <short_name>.py (in the above eg, its aws_list_public_sg.py) and write the logic for the check. Please ensure that you define the InputSchema as well, if required.
-
-5. In order to test the check, you need to add an credential for the check. You can use the following utility to add credential
-```
-./Awesome-CloudOps-Automation/bin/add_creds.sh -c <Credential type> -h
-```
-
-6. Once the credential is programmed, you are ready to test out the check using pytest (Please ensure that pytest is installed on your workstation).
-You can test the check by running:
-```
- pytest -s actions/<short_name>/test_<short_name>.py
-```
-Please ensure if your check requires any inputs, you fill the **InputParamsJson** accordingly.
+> Here namespace is the argument used in the checks and "awesome-ops" is the value assigned to that argument.
