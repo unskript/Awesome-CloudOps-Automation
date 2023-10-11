@@ -1,5 +1,0 @@
-notification:
-  slack:
-    creds:
-      hook_url: https://hook/url
-  type: slack
