@@ -1,0 +1,11 @@
+{
+  "action_title": "Measure K8s worker node network bandwidth",
+  "action_description": "Measures the network bandwidth for each worker node using a DaemonSet and returns the results.",
+  "action_type": "LEGO_TYPE_K8S",
+  "action_entry_function": "k8s_measure_worker_node_network_bandwidth",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}
