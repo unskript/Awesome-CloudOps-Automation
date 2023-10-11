@@ -1,0 +1,4 @@
+#!/bin/bash
+
+* * * * * /usr/local/bin/unskript-ctl.sh -rc --type k8s,aws --report
+

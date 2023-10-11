@@ -175,3 +175,48 @@ of that file in `unskript-ctl` Folder.
    ```
 
 > Here namespace is the argument used in the checks and "awesome-ops" is the value assigned to that argument.
+
+
+### Creating a scheule for checks to run periodically
+
+You can create a schedule to run built-in (pre-coded) or custom checks. This recipie describes how to configure the docker so it runs the schedule 
+periodically. 
+
+1. Copy the scheduler template file to  `YOUR_REPO_DIRECTORY`
+```
+cp YOUR_REPO_DIRECTORY/Awesome-CloudOps-Automation/templates/scheduler.template  YOUR_REPO_DIRECTORY/scheduler
+```
+2. The contents of the scheduler template file are as follows
+```
+#!/bin/bash
+
+* * * * * /usr/local/bin/unskript-ctl.sh -rc --type k8s, aws --report
+
+```
+
+The line with `*` should be familiar to you as it is in the same lines as `cronjob`.  To learn more about what is
+cronjob, and what each `*` mean, please refer [here](https://crontab.guru/every-5-minutes).
+
+3. Modify the `scheduler` file to add all the tests you want to run. In the above snippets, all checks for connectors `k8s` and `aws` are
+schedled to run. Edit the cadence at which the scheduler should run and also change the type of connectors you want the checks to run against.
+
+4. Open your Custom Build Dockerfile From the step [above](#building-custom-docker) And Add the following line before the `CMD` line like so:
+```
+FROM unskript/awesome-runbooks:latest as base
+COPY custom/actions/. /unskript/data/actions/
+COPY custom/runbooks/. /unskript/data/runbooks/
+
+# Copy the populate_credentials.sh file to ./
+COPY populate_credentials.sh .
+RUN chmod +x populate_credentials.sh
+
+# Copy Scheduler file to ./
+COPY scheduler .
+RUN chmod 600 scheduler
+
+CMD ["./start.sh"]
+```
+In the above snippet, we have modfied the `Dockerfile.template` to copy the `scheduler` to docker so that it can register
+the scheduler to run at the desired frequency. 
+
+5. Build the docker as explained above and when your custom docker is booted, it will have the scheduler ready to run!
