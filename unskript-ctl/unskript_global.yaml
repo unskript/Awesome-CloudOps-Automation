@@ -1,7 +1,0 @@
-notification:
-  mail:
-    creds:
-      smtp_host: smtp.google.com
-      smtp_password: pass
-      smtp_user: user
-  type: mail
