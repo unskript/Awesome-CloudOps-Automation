@@ -170,7 +170,7 @@ def send_email_notification(summary_results: list,
             message += '<h2> FAILED OBJECTS </h2>' + '\n'
             for k,v in failed_result.items():
                 message += f'<li> <strong>{k}</strong> </li>' + '\n'
-                message += f'<pre> {v} </pre>' + '\n'
+                message += f'<pre> {json.dumps(v,indent=4)} </pre>' + '\n'
             message += '</ul> <br> </body> </html>' + '\n'
         pass
         
