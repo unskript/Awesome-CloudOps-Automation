@@ -418,9 +418,14 @@ def run_checks(args: list):
         if args[-1] in ('-r', '--report'):
             UNSKRIPT_GLOBALS['report'] = True
             all_connectors = args[1:-1]
-            
+        
+        # Handle case when more than one connector was given with
+        # comma separation but no space in between them. 
+        # like a,b,c
+        if len(all_connectors) == 1 and ',' in  all_connectors[0]:
+            all_connectors = all_connectors[0].split(',')
+
         for connector in all_connectors:
-            connector = connector.replace(',', '')
             temp_list = get_checks_by_connector(connector.strip(), True)
             for t in temp_list:
                 if t not in check_list:
