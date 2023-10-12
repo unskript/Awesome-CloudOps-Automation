@@ -1,0 +1,15 @@
+{
+  "action_title": "Check K8s service PVC utilization ",
+  "action_description": "This check fetches the PVC associated with a given service, determines its utilized size, and then compares it to its total capacity. If the used percentage exceeds the provided threshold, it triggers an alert.",
+  "action_type": "LEGO_TYPE_K8S",
+  "action_entry_function": "k8s_check_service_pvc_utilization",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}
