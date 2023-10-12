@@ -1,0 +1,15 @@
+{
+  "action_title": "Kafka check lag change",
+  "action_description": "This action checks if the lag for consumer groups is not changing for a threshold number of hours.\n",
+  "action_type": "LEGO_TYPE_KAFKA",
+  "action_entry_function": "kafka_check_lag_change",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}
