@@ -10,6 +10,7 @@
 #
 
 import json
+import yaml 
 import requests
 import smtplib 
 import os
@@ -136,41 +137,46 @@ def send_email_notification(summary_results: list,
             <body>
             <center>
             <h1> unSkript-ctl Check Run result </h1>
-            <p> <strong>Test run on: {datetime.now()} </strong></p>
+            <h3> <strong>Tested On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
             </center>
-            <table border="1">    
-            <tr>
-              <th> CHECK NAME </th>
-              <th> RESULT </th>
-            </tr>
         '''
         p = f = e = 0
         for sd in summary_results:
             if sd == {}:
                 continue
+            tr_message = '''
+                <table border="1">    
+                <tr>
+                <th> CHECK NAME </th>
+                <th> RESULT </th>
+                </tr>
+            '''
             for st in sd.get('result'):
                 status  = st[-1]
                 check_name = st[0]
                 if status == 'PASS':
-                    message += f'<tr> <td> {check_name}</td> <td> <strong>PASS</strong> </td></tr>' + '\n'
+                    tr_message += f'<tr> <td> {check_name}</td> <td> <strong>PASS</strong> </td></tr>' + '\n'
                     p += 1
                 elif status == 'FAIL':
-                    message += f'<tr><td> {check_name}</td><td>  <strong>FAIL</strong> </td></tr>' + '\n'
+                    check_link = f"{check_name}".lower().replace(' ','_')
+                    tr_message += f'<tr><td> <a href="#{check_link}">{check_name}</a></td><td>  <strong>FAIL</strong> </td></tr>' + '\n'
                     f += 1
                 elif status == 'ERROR':
-                    message += f'<tr><td> {check_name}</td><td>  <strong>ERROR</strong> </td></tr> ' + '\n'
+                    tr_message += f'<tr><td> {check_name}</td><td>  <strong>ERROR</strong> </td></tr> ' + '\n'
                     e += 1
                 else:
                     pass
-        message += f'<tr><td>(Pass/Fail/Error) </td><td> <strong>({p}/{f}/{e})</strong></td></tr>' + '\n'
+        message += f'<center><h3>Test Summary<br>Pass : {p}  Fail: {f}  Error: {e}</h3></center><br>' + '\n'
+        message += tr_message + '\n'
         message += '</table>' + '\n'
 
         if len(failed_result):
             message += '<br> <ul>' + '\n'
             message += '<h2> FAILED OBJECTS </h2>' + '\n'
             for k,v in failed_result.items():
-                message += f'<li> <strong>{k}</strong> </li>' + '\n'
-                message += f'<pre> {json.dumps(v,indent=4)} </pre>' + '\n'
+                check_link = f"{k}".lower().replace(' ', '_')
+                message += f'<li> <strong id="{check_link}">{k}</strong> </li>' + '\n'
+                message += f'<pre>{yaml.dump(v,default_flow_style=False)}</pre>' + '\n'
             message += '</ul> <br> </body> </html>' + '\n'
         pass
         
