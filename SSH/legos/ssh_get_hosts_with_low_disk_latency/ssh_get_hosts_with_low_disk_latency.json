@@ -1,0 +1,15 @@
+{
+  "action_title": "Get hosts with low disk latency ",
+  "action_description": "This action checks the disk latency on the provided hosts by running a disk write command and measuring the time taken. If the time taken exceeds a given threshold, the host is flagged as having potential latency issues.",
+  "action_type": "LEGO_TYPE_SSH",
+  "action_entry_function": "ssh_get_hosts_with_low_disk_latency",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}
