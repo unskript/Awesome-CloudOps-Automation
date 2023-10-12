@@ -1,0 +1,4 @@
+#!/bin/bash
+
+*/30 * * * * sudo -H -u root bash -c "/usr/local/bin/unskript-ctl.sh -rc --type k8s, aws --report"
+
