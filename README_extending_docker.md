@@ -177,7 +177,7 @@ of that file in `unskript-ctl` Folder.
 > Here namespace is the argument used in the checks and "awesome-ops" is the value assigned to that argument.
 
 
-### Creating a scheule for checks to run periodically
+### Creating a schedule for checks to run periodically
 
 You can create a schedule to run built-in (pre-coded) or custom checks. This recipie describes how to configure the docker so it runs the schedule 
 periodically. 
@@ -220,3 +220,54 @@ In the above snippet, we have modfied the `Dockerfile.template` to copy the `sch
 the scheduler to run at the desired frequency. 
 
 5. Build the docker as explained above and when your custom docker is booted, it will have the scheduler ready to run!
+
+
+
+### How to get checks run report as Email or as Slack Notification
+
+You can configure unskript-ctl to send a notification when you run the checks. The option `--report` at the end of the `-rc` command
+can be used to send the notification. Here is the receipie on how to get run reports when you run the checks. 
+
+1. Run either your custom docker or pull the latest one from `dockerhub`
+```
+docker run -it $CUSTOM_DOCKER_NAME:$CUSTOM_DOCKER_IMAGE -p 8888:8888
+
+or
+
+docker run -it unskript/awesome-runbooks:latest -p 8888:8888 
+```
+
+2. Connect to the docker instance
+```
+CONTAINER_ID=`docker ps | grep awesome-runbooks | awk '{print $1}'`
+docker exec -it $CONTAINER_ID bash
+```
+
+3. You can use the command `add_notification.sh` to configure `unskript-ctl` to send report once the Checks are run. 
+
+For example, if you want to get Slack Notification, here is the command to follow -
+```
+add_notification.sh -c Slack -u https://hooks.slack.com/services/T12345/B12345/XXXXXXX --channel test-alerting
+```
+> Here `-c` Option is used for creating a new Notification. Options are either Slack or SMTP (email)
+> `-u` Option is the webhook URL of Slack 
+> `--channel` Channel to where the notification should be sent
+
+This snippet shows how to configure SMTP (email) Notification
+
+```
+./add_notification.sh -c SMTP -s smtp.server.com -u username@domain.com -p <password_of_username> -t reciever@example.com
+```
+> Here `-s` Option is to specifiy the SMTP server 
+> `-u` Option is to specify the SMTP username. Note, you need to specificy the username with the domain like username@domain.com 
+> `-p` Option is to specify the Password for the above user. Please note, if you are using Gmail as SMTP server, then make sure you create a App Password and use that for the `-p` option
+> `-t` Optino is to specify the Reciever's Email address to whom the Email should be sent to
+
+
+4. You are not set to receive the report whenever you run the check with the `--report` option
+```
+unskript-ctl.sh -rc --type k8s, aws, postgresql --report
+```
+
+> Here, the checks for all three connectors, k8s, aws and postgresql are run and the result is sent as either Slack notification
+> Or as EMAIL to the recipient. 
