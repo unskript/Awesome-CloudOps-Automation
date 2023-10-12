@@ -190,7 +190,7 @@ cp YOUR_REPO_DIRECTORY/Awesome-CloudOps-Automation/templates/scheduler.template 
 ```
 #!/bin/bash
 
-* * * * * /usr/local/bin/unskript-ctl.sh -rc --type k8s, aws --report
+* * * * * sudo -H -u root bash -c "/usr/local/bin/unskript-ctl.sh -rc --type k8s --report"
 
 ```
 
