@@ -48,3 +48,7 @@ jobs:
         uses: theahura/pytypes-action@main
         with:
           args: --generate-config pytype.toml
+
+      - name: Run Static Analysis on the Runbooks
+        run: |
+          
