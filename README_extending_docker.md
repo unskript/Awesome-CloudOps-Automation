@@ -256,7 +256,7 @@ add_notification.sh -c Slack -u https://hooks.slack.com/services/T12345/B12345/X
 This snippet shows how to configure SMTP (email) Notification
 
 ```
-./add_notification.sh -c SMTP -s smtp.server.com -u username@domain.com -p <password_of_username> -t reciever@example.com
+./add_notification.sh -c SMTP -s smtp.server.com -u username@domain.com -p <password_of_username> -t receiver@example.com
 ```
 > Here `-s` Option is to specifiy the SMTP server 
 > `-u` Option is to specify the SMTP username. Note, you need to specificy the username with the domain like username@domain.com 
