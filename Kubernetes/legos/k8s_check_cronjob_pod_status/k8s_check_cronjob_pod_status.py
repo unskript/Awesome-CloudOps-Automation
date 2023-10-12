@@ -41,7 +41,7 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
     batch_v1beta1 = client.BatchV1beta1Api(api_client=handle)
     core_v1 = client.CoreV1Api(api_client=handle)
 
-    issues = []
+    issues = {"NotAssociated": [], "Pending": [], "UnexpectedState": []}
 
     # Get namespaces to check
     if namespace:
@@ -68,7 +68,7 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
 
             associated_jobs = [job for job in jobs.items if job.metadata.name.startswith(cronjob.metadata.name)]
             if not associated_jobs:
-                issues.append({"cronjob_name": cronjob.metadata.name, "namespace": ns, "message": "CronJob has no associated Jobs yet."})
+                issues["NotAssociated"].append({"pod_name": cronjob.metadata.name, "namespace": ns})
                 continue
 
             latest_job = sorted(associated_jobs, key=lambda x: x.status.start_time, reverse=True)[0]
@@ -78,11 +78,11 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
 
             for pod in pods.items:
                 if pod.status.phase == 'Pending' and now - pod.status.start_time > time_to_next_run:
-                    issues.append({"cronjob_name": cronjob.metadata.name, "namespace": ns, "message": "CronJob's Pod is stuck in 'Pending' state."})
+                    issues["Pending"].append({"pod_name": pod.metadata.name, "namespace": ns})
                 elif pod.status.phase not in ['Running', 'Succeeded']:
-                    issues.append({"cronjob_name": cronjob.metadata.name, "namespace": ns, "message": f"CronJob's Pod is in unexpected state: {pod.status.phase}."})
+                    issues["UnexpectedState"].append({"pod_name": pod.metadata.name, "namespace": ns, "state": pod.status.phase})
 
-    if not issues:
+    if all(not val for val in issues.values()):
         return (True, None)
     else:
         return (False, issues)
