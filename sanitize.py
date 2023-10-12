@@ -206,7 +206,9 @@ def sanitize(ipynbFile: str = '') -> bool:
                 cell['metadata']['actionNeedsCredential'] = False
                 cell['metadata']['actionSupportsIteration'] = False
                 cell['metadata']['actionSupportsPoll'] = False
-            new_cells.append(cell)
+                new_cells.append(cell)
+            else:
+                print(f"Skipping cell without legotype {cell.get('metadata').get('name')}")
             continue
 
         # Reset InputSchema
