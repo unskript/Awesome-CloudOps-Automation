@@ -139,7 +139,7 @@ class Notification():
             print("ERROR: Wrong choice")
     
     def update_notification(self, type):
-        """update_notification: Implementing cUrd for Notification
+        """update_notification: Implementing crUd for Notification
         """
         if not type:
             return 
@@ -151,7 +151,7 @@ class Notification():
             print("ERROR: Wrong choice")
 
     def read_notification(self, type):
-        """read_notification: Implementing cuRd for Notification
+        """read_notification: Implementing cRud for Notification
         """
         if not type:
             return 

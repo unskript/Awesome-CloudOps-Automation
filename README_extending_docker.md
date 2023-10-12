@@ -27,13 +27,13 @@ You can use our base docker to extend the functionality to fit your need. The st
    YOUR_REPO_DIRECTORY/
       actions/
       runbooks/
-      Awesome-CloudOps-Auatomation/
+      Awesome-CloudOps-Automation/
       your-repo-folders/
       your-repo-files
       ...
    ```
 4. You have a working Python 3 environment installed on your build system
-5. You have `make` and other build tools installed on your bulid system
+5. You have `make` and other build tools installed on your build system
 6. You have Docker-ce installed and working on your build system
 
 
@@ -160,7 +160,7 @@ docker cp $CONTAINER_ID:/unskript/data/runbooks $HOME/Workspace/acme/runbooks
 
 ### How to specify values for arguments used in checks
 
-You can sepcify the values for the arguments that are used in the Checks in the Global file `unskript_config.yaml` You can see an example
+You can specify the values for the arguments that are used in the Checks in the Global file `unskript_config.yaml` You can see an example
 of that file in `unskript-ctl` Folder.
 
 * In your `YOUR_REPO_DIRECTORY/actions/` Directory create a file unskript_config.yaml
@@ -179,7 +179,7 @@ of that file in `unskript-ctl` Folder.
 
 ### Creating a schedule for checks to run periodically
 
-You can create a schedule to run built-in (pre-coded) or custom checks. This recipie describes how to configure the docker so it runs the schedule 
+You can create a schedule to run built-in (pre-coded) or custom checks. This recipe describes how to configure the docker so it runs the schedule 
 periodically. 
 
 1. Copy the scheduler template file to  `YOUR_REPO_DIRECTORY`
@@ -198,7 +198,7 @@ The line with `*` should be familiar to you as it is in the same lines as `cronj
 cronjob, and what each `*` mean, please refer [here](https://crontab.guru/every-5-minutes).
 
 3. Modify the `scheduler` file to add all the tests you want to run. In the above snippets, all checks for connectors `k8s` and `aws` are
-schedled to run. Edit the cadence at which the scheduler should run and also change the type of connectors you want the checks to run against.
+scheduled to run. Edit the cadence at which the scheduler should run and also change the type of connectors you want the checks to run against.
 
 4. Open your Custom Build Dockerfile From the step [above](#building-custom-docker) And Add the following line before the `CMD` line like so:
 ```
@@ -216,7 +216,7 @@ RUN chmod 600 scheduler
 
 CMD ["./start.sh"]
 ```
-In the above snippet, we have modfied the `Dockerfile.template` to copy the `scheduler` to docker so that it can register
+In the above snippet, we have modified the `Dockerfile.template` to copy the `scheduler` to docker so that it can register
 the scheduler to run at the desired frequency. 
 
 5. Build the docker as explained above and when your custom docker is booted, it will have the scheduler ready to run!
@@ -226,7 +226,7 @@ the scheduler to run at the desired frequency.
 ### How to get checks run report as Email or as Slack Notification
 
 You can configure unskript-ctl to send a notification when you run the checks. The option `--report` at the end of the `-rc` command
-can be used to send the notification. Here is the receipie on how to get run reports when you run the checks. 
+can be used to send the notification. Here is the recipe on how to get run reports when you run the checks. 
 
 1. Run either your custom docker or pull the latest one from `dockerhub`
 ```
@@ -258,16 +258,16 @@ This snippet shows how to configure SMTP (email) Notification
 ```
 ./add_notification.sh -c SMTP -s smtp.server.com -u username@domain.com -p <password_of_username> -t receiver@example.com
 ```
-> Here `-s` Option is to specifiy the SMTP server 
-> `-u` Option is to specify the SMTP username. Note, you need to specificy the username with the domain like username@domain.com 
-> `-p` Option is to specify the Password for the above user. Please note, if you are using Gmail as SMTP server, then make sure you create a App Password and use that for the `-p` option
-> `-t` Optino is to specify the Reciever's Email address to whom the Email should be sent to
+> Here `-s` Option is to specify the SMTP server 
+> `-u` Option is to specify the SMTP username. Note, you need to specify the username with the domain like username@domain.com 
+> `-p` Option is to specify the Password for the above user. Please note, if you are using Gmail as SMTP server, then make sure you create a `App Password` and use that for the `-p` option
+> `-t` Option is to specify the Receiver's email address to whom the email should be sent to
 
 
-4. You are not set to receive the report whenever you run the check with the `--report` option
+4. You are all set to receive the report whenever check is run with `--report` option
 ```
 unskript-ctl.sh -rc --type k8s, aws, postgresql --report
 ```
 
 > Here, the checks for all three connectors, k8s, aws and postgresql are run and the result is sent as either Slack notification
-> Or as EMAIL to the recipient. 
+> Or as email to the recipient. 
