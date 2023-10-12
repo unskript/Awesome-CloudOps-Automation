@@ -1,0 +1,15 @@
+{
+  "action_title": "Get Kafka broker health",
+  "action_description": "Checks the health of the Kafka brokers by determining if the Kafka producer can establish a connection with the bootstrap brokers of a Kafka cluster.",
+  "action_type": "LEGO_TYPE_KAFKA",
+  "action_entry_function": "kafka_broker_health_check",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}
