@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/usr/bin/env python ./add_notification.py "$@"
+/usr/bin/env python /usr/local/bin/add_notification.py "$@"
