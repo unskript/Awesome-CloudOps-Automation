@@ -6,7 +6,7 @@
 This check fetches the PVC associated with a given service, determines its utilized size, and then compares it to its total capacity. If the used percentage exceeds the provided threshold, it triggers an alert.
 
 ## Lego Details
-	k8s_check_service_pvc_utilization(handle, service_name: str, namespace: str, threshold: int=80)
+	k8s_check_service_pvc_utilizationk8s_check_service_pvc_utilization(handle, service_name: str = "", namespace: str = "", threshold: int = 80)
 		handle: Object of type unSkript K8S Connector.
     	service_name: The name of the service.
     	threshold: Percentage threshold for utilized PVC disk size. E.g., a 80% threshold checks if the utilized space exceeds 80% of the total PVC capacity.
