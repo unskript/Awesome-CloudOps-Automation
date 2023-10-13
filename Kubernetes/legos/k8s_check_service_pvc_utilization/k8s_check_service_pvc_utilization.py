@@ -36,7 +36,7 @@ def k8s_check_service_pvc_utilization_printer(output):
         print("-" * 40)
 
 
-def k8s_check_service_pvc_utilizationk8s_check_service_pvc_utilization(handle, service_name: str = "", namespace: str = "", threshold: int = 80) -> Tuple:
+def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace: str = "", threshold: int = 80) -> Tuple:
     """
     k8s_check_service_pvc_utilization checks the utilized disk size of a service's PVC against a given threshold.
 

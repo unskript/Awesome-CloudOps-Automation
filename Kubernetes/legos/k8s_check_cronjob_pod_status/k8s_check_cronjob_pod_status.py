@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 #
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
@@ -38,7 +36,6 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
     """
     # Initialize the K8s API clients
     batch_v1 = client.BatchV1Api(api_client=handle)
-    batch_v1beta1 = client.BatchV1beta1Api(api_client=handle)
     core_v1 = client.CoreV1Api(api_client=handle)
 
     issues = {"NotAssociated": [], "Pending": [], "UnexpectedState": []}
@@ -51,11 +48,26 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
         namespaces = [ns.metadata.name for ns in ns_obj.items]
 
     for ns in namespaces:
-        # Fetch all CronJobs in the namespace
-        cronjobs = batch_v1beta1.list_namespaced_cron_job(ns).items
+        # Fetch all CronJobs in the namespace using kubectl
+        get_cronjob_command = f"kubectl get cronjobs -n {ns} -o=jsonpath='{{.items[*].metadata.name}}'"
+        response = handle.run_native_cmd(get_cronjob_command)
 
-        for cronjob in cronjobs:
-            schedule = cronjob.spec.schedule
+        if not response or response.stderr:
+            raise Exception(f"Error fetching CronJobs for namespace {ns}: {response.stderr if response else 'empty response'}")
+
+        cronjob_names = response.stdout.split()
+        for cronjob_name in cronjob_names:
+            get_cronjob_details_command = f"kubectl get cronjob {cronjob_name} -n {ns} -o=json"
+            try:
+                response = handle.run_native_cmd(get_cronjob_details_command)
+                if response.stderr:
+                    raise Exception(f"Error fetching details for CronJob {cronjob_name} in namespace {ns}: {response.stderr}")
+            except Exception as e:
+                print(f"Failed to fetch details for CronJob {cronjob_name} in namespace {ns}: {str(e)}")
+                continue
+            cronjob = json.loads(response.stdout)
+
+            schedule = cronjob['spec']['schedule']
 
             # Calculate the next expected run
             now = datetime.now(timezone.utc)
@@ -66,7 +78,7 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
             # Fetch the most recent Job associated with the CronJob
             jobs = batch_v1.list_namespaced_job(ns)  # Fetch all jobs, and then filter by prefix.
 
-            associated_jobs = [job for job in jobs.items if job.metadata.name.startswith(cronjob.metadata.name)]
+            associated_jobs = [job for job in jobs.items if job.metadata.name.startswith(cronjob['metadata']['name'])]
             if not associated_jobs:
                 issues["NotAssociated"].append({"pod_name": cronjob.metadata.name, "namespace": ns})
                 continue
@@ -86,7 +98,3 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
         return (True, None)
     else:
         return (False, issues)
-
-
-
-
