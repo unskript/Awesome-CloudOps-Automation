@@ -877,7 +877,80 @@ credential_schemas = '''
       "Password",
       "Security_Token"
     ]
-  }
+  },
+  {
+      "title": "VaultSchema",
+      "type": "object",
+      "properties": {
+        "url": {
+          "title": "Vault URL",
+          "description": "URL for the Vault instance.",
+          "type": "string"
+        },
+        "token": {
+          "title": "Token",
+          "description": "Token value to authenticate requests to Vault.",
+          "default": "",
+          "type": "string",
+          "writeOnly": true,
+          "format": "password"
+        }
+      },
+      "required": [
+        "url"
+      ]
+   },
+   {
+      "title": "KeycloakSchema",
+      "type": "object",
+      "properties": {
+        "server_url": {
+          "title": "Keycloak Server URL",
+          "description": "Base URL of the Keycloak instance",
+          "type": "string"
+        },
+        "realm": {
+          "title": "Keycloak Realm",
+          "description": "Name of the realm for authentication",
+          "type": "string"
+        },
+        "client_id": {
+          "title": "Client ID",
+          "description": "Client ID for authentication",
+          "type": "string"
+        },
+        "username": {
+          "title": "Username",
+          "description": "Username for client-based authentication",
+          "type": "string"
+        },
+        "password": {
+          "title": "Password",
+          "description": "Password for client-based authentication",
+          "type": "string",
+          "writeOnly": true,
+          "format": "password"
+        },
+        "client_secret": {
+          "title": "Client Secret",
+          "description": "Client Secret for client-based authentication",
+          "type": "string",
+          "writeOnly": true,
+          "format": "password"
+        },
+        "verify": {
+          "title": "SSL Verification",
+          "description": "Boolean to decide if SSL certificate verification should be performed",
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "server_url",
+        "realm",
+        "client_id"
+      ]
+    }
   ]
 '''
 
@@ -935,7 +1008,10 @@ class CredentialsAdd():
          'Redis',
          'PostGRES',
          'MongoDB',
-         'Kafka'
+         'Kafka',
+         'REST',
+         'Keycloak',
+         'Vault'
          ], help='Credential type')
 
       args = mainParser.parse_args(sys.argv[1:3])
@@ -1132,6 +1208,85 @@ class CredentialsAdd():
          d['zookeeper'] = args.zookeeper
 
       self.write_creds_to_file('kafkacreds.json', json.dumps(d))
+
+    def REST(self):
+      parser = ArgumentParser(description='Add REST credential')
+      parser.add_argument('-b', '--base-url', required=True, help='''
+                          Base URL of REST server
+                          ''')
+      parser.add_argument('-u', '--username', help='Username for Basic Authentication')
+      parser.add_argument('-p', '--password', help='Password for the Given User for Basic Auth')
+      parser.add_argument('-hdr', '--headers', type=json.loads, help='''
+                          A dictionary of http headers to be used to communicate with the host.
+                          Example: Authorization: bearer my_oauth_token_to_the_host.
+                          These headers will be included in all requests.
+                          ''')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['base_url'] = args.base_url
+      if args.username is not None:
+         d['username'] = args.username
+      if args.password is not None:
+         d['password'] = args.password
+      if args.headers is not None:
+         d['headers'] = args.headers
+
+      self.write_creds_to_file('restcreds.json', json.dumps(d))
+
+    def Vault(self):
+      parser = ArgumentParser(description='Add Vault credential')
+      parser.add_argument('-u', '--url', required=True, help='URL for the Vault instance')
+      parser.add_argument('-t', '--token', help='Token value to authenticate requests to Vault.')
+
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 2:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['url'] = args.url
+      if args.token is not None:
+         d['token'] = args.token
+
+      self.write_creds_to_file('vaultcreds.json', json.dumps(d))
+
+    def Keycloak(self):
+      parser = ArgumentParser(description='Add Keycloak credential')
+      parser.add_argument('-su', '--server-url', required=True, help='''
+                          Base URL of the keycloak instance.
+                         ''')
+      parser.add_argument('-r', '--realm', required=True, help='Name of the realm for authentication')
+      parser.add_argument('-c', '--client-id', required=True, help='Client ID for authentication')
+      parser.add_argument('-u', '--username', required=True, help='Username for client-based authentication')
+      parser.add_argument('-p', '--password', required=True, help='Password for client-based authentication')
+      parser.add_argument('-cs', '--client-secret', required=True, help='Client secret for client-based authentication')
+      parser.add_argument('--no-verify-certs', action='store_true', help='Not verify server ssl certs. This can be set to true when working with private certs.')
+      args = parser.parse_args(sys.argv[3:])
+
+      if len(sys.argv[3:]) < 6:
+         parser.print_help()
+         sys.exit(0)
+
+      d = {}
+      d['server_url'] = args.server_url
+      d['realm'] = args.realm
+      d['client_id'] = args.client_id
+      d['username'] = args.username
+      d['password'] = args.password
+      d['client_secret'] = args.client_secret
+      if args.no_verify_certs is True:
+         d['verify'] = False
+      else:
+         d['verify'] = True
+
+      self.write_creds_to_file('keycloakcreds.json', json.dumps(d))
+
 
 if __name__ == '__main__':
     CredentialsAdd()
