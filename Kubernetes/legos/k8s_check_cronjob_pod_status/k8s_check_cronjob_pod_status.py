@@ -7,6 +7,7 @@ from kubernetes import client
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from croniter import croniter
+import json
 
 
 class InputSchema(BaseModel):
