@@ -1,0 +1,15 @@
+{
+  "action_title": "Get Kafka topic partition health",
+  "action_description": "Checks the health of the Kafka topics and their partitions.This check checks if the topics have any partitions at all.",
+  "action_type": "LEGO_TYPE_KAFKA",
+  "action_entry_function": "kafka_topic_partition_health_check",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}

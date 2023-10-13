@@ -17,17 +17,26 @@ class InputSchema(BaseModel):
 def k8s_get_nodes_pressure_printer(output):
     if output is None:
         return
-    headers = ['Node', 'Memory Pressure', 'Disk Pressure']
-    print(tabulate(output, headers, tablefmt='pretty'))
+
+    status, data = output
+
+    if status:
+        print("No nodes have memory or disk pressure issues.")
+        return
+
+    headers = ['Node', 'Type', 'Status']
+    formatted_data = [[item['node'], item['type'], item['status']] for item in data]
+    print(tabulate(formatted_data, headers=headers, tablefmt='pretty'))
+
 
 
 def k8s_get_nodes_pressure(handle) -> List:
     """
     k8s_get_nodes_pressure fetches the memory and disk pressure status of each node in the cluster
-
+    
     :type handle: object
     :param handle: Object returned from the Task validate method
-
+    
     :rtype: List of memory and disk pressure status of each node in the cluster
     """
 
@@ -43,7 +52,7 @@ def k8s_get_nodes_pressure(handle) -> List:
         raise ApiException(f"Error occurred while executing command {cmd} {result.stderr}")
 
     nodes = json.loads(result.stdout)['items']
-    data = []
+    pressure_nodes = []
 
     for node in nodes:
         name = node['metadata']['name']
@@ -52,11 +61,16 @@ def k8s_get_nodes_pressure(handle) -> List:
         memory_pressure = next((item for item in conditions if item["type"] == "MemoryPressure"), None)
         disk_pressure = next((item for item in conditions if item["type"] == "DiskPressure"), None)
 
-        if memory_pressure and disk_pressure:
-            memory_pressure_status = memory_pressure['status']
-            disk_pressure_status = disk_pressure['status']
-            data.append([name, memory_pressure_status, disk_pressure_status])
-    return data
+        # Check for pressure conditions being False
+        if memory_pressure and memory_pressure['status'] != "False":
+            pressure_nodes.append({"node": name, "type": "MemoryPressure", "status": "False"})
+
+        if disk_pressure and disk_pressure['status'] != "False":
+            pressure_nodes.append({"node": name, "type": "DiskPressure", "status": "False"})
+
+    if len(pressure_nodes) != 0:
+        return (False, pressure_nodes)
+    return (True, None)
 
 
 
