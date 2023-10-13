@@ -213,5 +213,27 @@
     "schema_name": "credential-save",
     "type": "CONNECTOR_TYPE_SSH",
     "id": "d27208f2-ff71-4ff6-bedc-6403add8b184"
+  },
+  {
+    "display_name": "vaultcreds",
+    "metadata": {
+      "name": "vaultcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_VAULT"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_VAULT",
+    "id": "75dafeae-b46d-45dc-9614-a58ba94187bb"
+  },
+  {
+    "display_name": "keycloakcreds",
+    "metadata": {
+      "name": "keycloakcreds",
+      "connectorData": "{}",
+      "type": "CONNECTOR_TYPE_KEYCLOAK"
+    },
+    "schema_name": "credential-save",
+    "type": "CONNECTOR_TYPE_KEYCLOAK",
+    "id": "75dafeae-b46d-45dc-9614-a58ba94187bf"
   }
 ]
