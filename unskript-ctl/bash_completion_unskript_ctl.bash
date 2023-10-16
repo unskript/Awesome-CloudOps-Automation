@@ -57,13 +57,13 @@ _unskript-client-completion() {
 
         -lc|--list-checks)
             # Provide completion suggestions for list-checks options
-            COMPREPLY=( $(compgen -W "--all   --type" -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--all --type" -- "${cur}" -o nospace) )
             return 0
             ;;
 
         -sa|--show-audit-trail)
             # Provide completion suggestions for show-audit-trail options
-            COMPREPLY=( $(compgen -W "--all   --type   --execution_id" -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--all --type  --execution_id" -- "${cur}" -o nospace) )
             return 0
             ;;
 
@@ -83,9 +83,9 @@ _unskript-client-completion() {
             if [ "${prev}" = "--check" ];
             then
                 # Try to autocomplete the checks
-		cur=${cur#--check}
+                cur=${cur#--check}
                 opt2="$(grep -F ${cur} /tmp/checknames.txt)"
-		COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
+                COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
             else
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}" -o nospace) )
             fi
