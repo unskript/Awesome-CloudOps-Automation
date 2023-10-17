@@ -14,7 +14,6 @@ import sys
 import json
 from pathlib import Path
 import subprocess
-
 #from creds_ui import main as ui
 from argparse import ArgumentParser, REMAINDER
 
@@ -1004,7 +1003,7 @@ AWESOME_DIRECTORY = "Awesome-CloudOps-Automation"
 def getGitRoot():
     return subprocess.Popen(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE).communicate()[0].rstrip().decode('utf-8')
 
-def create_stub_cred_files(dirname: str):
+def create_stub_cred_files(dirname: str) -> list:
     """create_stub_cred_files This function creates the stub files needed by creds-ui"""
     if not os.path.exists(dirname):
         path = Path(CREDS_DIR)
@@ -1020,20 +1019,23 @@ def create_stub_cred_files(dirname: str):
     with open(NEW_STUB_FILE, 'r') as f:
         stub_creds_json = json.load(f)
 
+    credentials_list = []
     for cred in stub_creds_json:
         f_name = os.path.join(dirname, cred.get('display_name'))
         f_name = f_name + '.json'
+        credentials_list.append(cred.get('display_name').replace('creds', ""))
         # Lets check if file already exists, if it does not, then create it
         if not os.path.exists(f_name):
             with open(f_name, 'w') as f:
                 f.write(json.dumps(cred, indent=4))
+    return credentials_list
 
 CREDS_DIR = os.environ.get('HOME') + "/.local/share/jupyter/metadata/credential-save/"
 #CREDS_DIR = os.environ.get('HOME') + "/creds/"
 
 class CredentialsAdd():
     def __init__(self):
-      create_stub_cred_files(CREDS_DIR)
+      credentials_list = create_stub_cred_files(CREDS_DIR)
       try:
         schema_json = json.loads(credential_schemas)
       except Exception as e:
@@ -1044,26 +1046,101 @@ class CredentialsAdd():
       description = description + str("\n")
       description = description + str("\t  Add credentials \n")
       mainParser.description = description
-      mainParser.add_argument('-c', '--credential-type', choices=[
-         'aws',
-         'k8s',
-         'gcp',
-         'elasticsearch',
-         'redis',
-         'postgres',
-         'mongodb',
-         'kafka',
-         'rest',
-         'keycloak',
-         'vault'
-         ], help='Credential type')
+      mainParser.add_argument('-c', '--credential-type', choices=credentials_list, help='Credential type')
 
       args = mainParser.parse_args(sys.argv[1:3])
       if len(sys.argv) == 1:
           mainParser.print_help()
           sys.exit(0)
+      for schema in schema_json:
+        if args.credential_type.lower() in schema['title'].lower():
+          self.add_cred(args.credential_type, schema)
+          break
 
-      getattr(self, args.credential_type)()
+    def add_cred(self, credential, credential_schema):
+      d = {}
+      parser = ArgumentParser(description='Add '+ credential + ' credential')
+      properties = credential_schema.get('properties', {})
+      discriminator_prop_name = ""
+      discriminator = ""
+      schema_parsers = {}
+      for prop, prop_info in properties.items():
+          description = prop_info.get('description', '')
+          default = prop_info.get('default', None)
+          prop_type = prop_info.get('type', None)
+          is_required = False
+          if credential_schema.get('required') is not None:
+             if prop in credential_schema.get('required'):
+                is_required = True
+          if prop_info.get('anyOf') is not None:
+            discriminator = prop_info.get('discriminator')
+            if discriminator is None:
+              continue
+            d[prop] = {}
+            discriminator_prop_name = prop
+            schema_definitions = prop_info.get('anyOf')
+            discriminator_choices = []
+            sub_parser = parser.add_subparsers(title="subcommands", description="Available subcommands")
+            for schema_definition in schema_definitions:
+              if schema_definition.get('$ref') is not None:
+                  schema = credential_schema
+                  schema_name = ""
+                  for key in schema_definition.get('$ref').split('/'):
+                     if key != "#":
+                        schema = schema.get(key, {})
+                        schema_name = key
+                  parser_for_schema = sub_parser.add_parser(schema_name)
+                  for schema_prop, schema_prop_info in schema.get('properties', {}).items():
+                      is_schema_prop_required = False
+                      if schema_prop == discriminator:
+                        discriminator_choices.extend(schema_prop_info.get('enum', ''))
+                        schema_parsers[schema_prop_info.get('enum', '')[0]] = parser_for_schema
+                        continue
+                      if schema.get('required') is not None:
+                        if schema_prop in schema.get('required'):
+                            is_schema_prop_required = True
+                      schema_prop_description = schema_prop_info.get('description', '')
+                      schema_prop_default = schema_prop_info.get('default', None)
+                      schema_prop_type = schema_prop_info.get('type', None)
+                      self.add_argument_to_parser(parser_for_schema, schema_prop_type, schema_prop, schema_prop_description, schema_prop_default, is_schema_prop_required, [])
+            if len(discriminator_choices) != 0:
+              self.add_argument_to_parser(parser, "string", discriminator, "", "", True, discriminator_choices)
+            continue
+          self.add_argument_to_parser(parser, prop_type, prop, description, default, is_required, [])
+          d[prop] = None
+      args, unknown = parser.parse_known_args(sys.argv[3:])
+      schema_dict = None
+      for arg_name in vars(args): 
+        if arg_name == discriminator:
+          d[discriminator_prop_name][arg_name] = getattr(args, arg_name)
+          schema_args, unknown = schema_parsers[getattr(args, arg_name)].parse_known_args(sys.argv[3:])
+          schema_dict = vars(schema_args)
+          for schema_arg_name in vars(schema_args):             
+            d[discriminator_prop_name][schema_arg_name] = getattr(schema_args, schema_arg_name)
+        else:
+          d[arg_name] = getattr(args, arg_name)
+      if schema_dict is not None:
+        for key in schema_dict.keys():
+          if key in d:
+            del d[key]
+      self.write_creds_to_file(credential + 'creds.json', json.dumps(d))
+
+    def add_argument_to_parser(self, parser, type, parameter, description, default_value, required, choices):
+      parameter_type = str
+      if type == "string":
+        parameter_type = str
+      if type == "number":
+        parameter_type = int
+      if type == "boolean":
+        parameter_type = bool
+      if type == "object":
+        parameter_type = json.loads
+      if type == "array":
+        parameter_type = list
+      if len(choices) != 0:
+        parser.add_argument(f'--{parameter}', default=default_value, help=description, required=required, type=parameter_type, choices=choices)
+      else:
+        parser.add_argument(f'--{parameter}', default=default_value, help=description, required=required, type=parameter_type)
 
     def write_creds_to_file(self, json_file_name, data):
       creds_file = CREDS_DIR + json_file_name
@@ -1085,7 +1162,6 @@ class CredentialsAdd():
       parser.add_argument('-a', '--access-key', required=True, help='AWS Access Key')
       parser.add_argument('-s', '--secret-access-key', required=True, help='AWS Secret Access Key')
       args = parser.parse_args(sys.argv[3:])
-
       if len(sys.argv[3:]) != 4:
          parser.print_help()
          sys.exit(0)

@@ -23,12 +23,12 @@
     "id": "7ab97aa6-3016-4818-afde-1a9eb3cb32cb"
   },
   {
-    "display_name": "escreds",
+    "display_name": "elasticsearchscreds",
     "metadata": {
       "id": "025e0bcd-1ddf-426c-bf24-864dfe3adf9a",
       "connectorData": "{}",
       "type": "CONNECTOR_TYPE_ELASTICSEARCH",
-      "name": "escreds"
+      "name": "elasticsearchscreds"
     },
     "schema_name": "credential-save",
     "type": "CONNECTOR_TYPE_ELASTICSEARCH",
@@ -159,9 +159,9 @@
     "id": "907fcd0c-df0e-44b6-bc98-e97fe898cfcf"
   },
   {
-    "display_name": "postgrescreds",
+    "display_name": "postgresqlcreds",
     "metadata": {
-      "name": "postgrescreds",
+      "name": "postgresqlcreds",
       "connectorData": "{}",
       "type": "CONNECTOR_TYPE_POSTGRESQL"
     },
