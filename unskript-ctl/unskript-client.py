@@ -51,7 +51,7 @@ if os.environ.get('GLOBAL_CONFIG_PATH') is None:
     GLOBAL_CONFIG_PATH="/unskript/etc/unskript_global.yaml"
 
     # Migrate any existing unskript_config.yaml to unskript_global.yaml
-    # Note, the earlier name we used was unskript_config.yaml. 
+    # Note, the earlier name we used was unskript_config.yaml.
     if os.path.exists('/unskript/data/action/unskript_config.yaml') is True:
         try:
             os.makedirs(Path(GLOBAL_CONFIG_PATH).parent, exist_ok=True)
@@ -98,7 +98,7 @@ def load_or_create_global_configuration():
         # Check if the 'actions' directory exists and if not, create it
         actions_dir = _f_path.parent
         actions_dir.mkdir(parents=True, exist_ok=True)
-        
+
         _f_path.touch()
         with open(GLOBAL_CONFIG_PATH, 'w') as f:
             f.write('globals:')
@@ -126,7 +126,7 @@ def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNo
         runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
     runbook_variables = ''
 
-    
+
     if runbook_params:
         for k, v in runbook_params.items():
             runbook_variables = runbook_variables + \
@@ -405,7 +405,7 @@ def run_checks(args: list):
     elif filter in ('-c', '--check'):
         # If it is a `-f` option, lets get the second part of the args which
         # Will be the name of the check that need to be run and lets run it
-        check_name = args[-1] 
+        check_name = args[1]
         if not check_name:
             raise Exception("Option -f should have a check name specified")
         # Lets call the db utils method to get the check by name
@@ -416,11 +416,10 @@ def run_checks(args: list):
         check_list = []
         all_connectors = args[1:]
         if args[-1] in ('-r', '--report'):
-            UNSKRIPT_GLOBALS['report'] = True
             all_connectors = args[1:-1]
-        
+
         # Handle case when more than one connector was given with
-        # comma separation but no space in between them. 
+        # comma separation but no space in between them.
         # like a,b,c
         if len(all_connectors) == 1 and ',' in  all_connectors[0]:
             all_connectors = all_connectors[0].split(',')
@@ -432,7 +431,10 @@ def run_checks(args: list):
                     check_list.append(t)
     else:
         print(f"ERROR: WRONG OPTION: {args}")
-        
+
+
+    if args[-1] in ('-r', '--report'):
+        UNSKRIPT_GLOBALS['report'] = True
 
     if len(check_list) > 0:
         runbooks.append(create_jit_runbook(check_list))
@@ -443,7 +445,7 @@ def run_checks(args: list):
 
     update_audit_trail(status_of_runs)
     #print_run_summary(status_of_runs)
-    if UNSKRIPT_GLOBALS.get('failed_result') and len(UNSKRIPT_GLOBALS.get('failed_result')): 
+    if UNSKRIPT_GLOBALS.get('failed_result') and len(UNSKRIPT_GLOBALS.get('failed_result')):
         print("")
         print('\x1B[1;4m' + "FAILED RESULTS" + '\x1B[0m')
         print("")
@@ -453,14 +455,14 @@ def run_checks(args: list):
             print("Failed Objects:")
             pprint.pprint(v)
             print('\x1B[1;4m', '\x1B[0m')
-    
+
     if UNSKRIPT_GLOBALS.get('report') is True:
         send_notification(status_of_runs, UNSKRIPT_GLOBALS.get('failed_result'))
-    
+
 
 def run_suites(suite_name: str):
     """run_suites This function takes the suite_name as an argument
-    and queries the DB and with given UUIDs and creates a temporary 
+    and queries the DB and with given UUIDs and creates a temporary
     runnable runbooks and run them, updates the audit results.
 
     :type suite_name: string
@@ -487,7 +489,7 @@ def run_suites(suite_name: str):
 
     update_audit_trail(status_of_runs)
     print_run_summary(status_of_runs)
-    if UNSKRIPT_GLOBALS.get('failed_result') and len(UNSKRIPT_GLOBALS.get('failed_result')): 
+    if UNSKRIPT_GLOBALS.get('failed_result') and len(UNSKRIPT_GLOBALS.get('failed_result')):
         print("")
         print('\x1B[1;4m' + "FAILED RESULTS" + '\x1B[0m')
         print("")
@@ -530,10 +532,10 @@ def print_run_summary(status_list_of_dict):
                     [check_name, 'N/A', 'N/A', TBL_CELL_CONTENT_ERROR])
             else:
                 p = f = e = -1
-    
+
         if UNSKRIPT_GLOBALS.get('skipped'):
             s = len(UNSKRIPT_GLOBALS.get('skipped'))
-        
+
         summary_table.append([
             sd.get('runbook'),
             str(str(p) + ' / ' + str(f) + ' / ' + str(e) + ' ( ' + str(p+f+e)  + ' ) / ( ' + str(s) + ' )')
@@ -640,11 +642,11 @@ task.configure(inputParamsJson=\'\'\'{
                         input_json_line += f"\"{key}\":  \"{key}\" ,"
         except Exception as e:
             print(f"EXCEPTION {e}")
-            pass 
+            pass
 
         retval = input_json_start_line + input_json_line.rstrip(',') + '\n' + input_json_end_line
-    
-    return retval 
+
+    return retval
 
 
 def create_jit_runbook(check_list: list):
@@ -675,7 +677,7 @@ def create_jit_runbook(check_list: list):
             if UNSKRIPT_GLOBALS.get('skipped') is None:
                 UNSKRIPT_GLOBALS['skipped'] = []
             UNSKRIPT_GLOBALS['skipped'].append([check.get('name'), s_connector])
-            continue 
+            continue
 
 
         task_lines = '''
@@ -686,7 +688,7 @@ task.configure(credentialsJson=\'\'\'{
         '''
         input_json = replace_input_with_globals(check.get('inputschema'))
         if input_json:
-            task_lines += input_json 
+            task_lines += input_json
         try:
             c = check.get('code')
             idx = c.index("task = Task(Workflow())")
@@ -700,7 +702,7 @@ task.configure(credentialsJson=\'\'\'{
             check['code'] = []
             for line in c[:]:
                 check['code'].append(str(line + "\n"))
-            
+
             check['metadata']['action_uuid'] = check['uuid']
             check['metadata']['name'] = check['name']
             cc = nbformat.v4.new_code_cell(check.get('code'))
@@ -713,7 +715,7 @@ task.configure(credentialsJson=\'\'\'{
             raise e
     # The Recent Version of Docker, the unskript-ctl spews a lot of errors like this:
     #
-    # ERROR:traitlets:Notebook JSON is invalid: Additional properties are not allowed ('orderProperties', 'description', 
+    # ERROR:traitlets:Notebook JSON is invalid: Additional properties are not allowed ('orderProperties', 'description',
     # 'version', 'name', 'inputschema', 'uuid', 'tags', 'type', 'language' were unexpected)
     # This Failed validating 'additionalProperties' in code_cell:
     #
@@ -845,7 +847,7 @@ def list_checks_by_connector(args):
     """
     if not args:
         print(f"ERROR: Either --all or --type <CONNECTOR_TYPE> is needed")
-        return 
+        return
     if args[0] == '--all':
         connector_name = 'all'
     elif args[0] == '--type':
@@ -871,8 +873,8 @@ def display_failed_checks(args):
     """
     if not args:
         print("ERROR: Either -all or --type connector <CONNECTOR_TYPE> needed")
-        return 
-    
+        return
+
     connector = "all"
     if args[0] == '--all':
         connector = "all"
@@ -939,7 +941,7 @@ def show_audit_trail(args):
     """
     if not args:
         print(f"ERROR: Audit Trial needs --all or --type <CONNECTOR_TYPE>")
-        return 
+        return
     if args[0].replace('-','') == 'all':
         filter = 'all'
     elif args[0].replace('-','') == 'type':
@@ -1199,7 +1201,7 @@ def create_creds_mapping():
             c_data = json.load(f)
             if c_data.get('metadata').get('connectorData') == "{}":
                 continue
-            d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
+            d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'),
                   "id": c_data.get('id')}
     upsert_pss_record('default_credential_id', d, False)
 
@@ -1513,13 +1515,13 @@ def parse_creds(args):
        :param args: ParseArgs List that it returns for the given option
 
        :rtype: None
-    """ 
+    """
     # Check if creds that need to be created is for k8s, if yes
-    # read the given kubecofnig and create the credential of it. 
+    # read the given kubecofnig and create the credential of it.
     if args[0] != '--type':
         display_creds_ui()
-        return 
-     
+        return
+
     connector_type = args[1]
     connector_type = connector_type.replace('-','')
     if connector_type.lower() in ("k8s", "kubernetes"):
@@ -1547,9 +1549,9 @@ def parse_creds(args):
             print("Successfully Created K8S Credential")
 
     else:
-        # Currently only file based creds creation is supported, 
+        # Currently only file based creds creation is supported,
         # for the rest, display UI.
-        display_creds_ui() 
+        display_creds_ui()
 
 def display_creds_ui():
     """display_creds_ui Display the npyscreen based UI for user to add creds
@@ -1558,7 +1560,7 @@ def display_creds_ui():
         from creds_ui import main as ui
         ui()
     except:
-        print("Required Python library creds_ui is not packaged, please raise an issue on Github")    
+        print("Required Python library creds_ui is not packaged, please raise an issue on Github")
 
 
 def list_creds():
@@ -1577,12 +1579,12 @@ def list_creds():
             c_type = content.get('type').replace('CONNECTOR_TYPE_', '')
         else:
             c_type = "UNDEFINED"
-        
+
         if content.get('metadata') and content.get('metadata').get('connectorData') == "{}":
             status = "Incomplete"
         else:
             status = "Active"
-        
+
         if content.get('display_name'):
             name = content.get('display_name')
         else:
@@ -1590,18 +1592,18 @@ def list_creds():
         creds_data.append([index, c_type, name, status])
         index += 1
     print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
-    
+
 def start_debug(args):
     """start_debug Starts Debug session. This function takes
        the remote configuration as input and if valid, starts
-       the debug session. 
+       the debug session.
     """
     remote_config = args[0]
     remote_config = remote_config.replace('-','')
-    
+
     if remote_config != "config":
         raise Exception(f"The Allowed Parameter is --config, Given Flag is not recognized, --{remote_config}")
-    
+
     remote_config_file = args[1]
     if os.path.exists(remote_config_file) is False:
         raise Exception(f"Required Remote Configuration not present. Ensure {remote_config_file} file is present.")
@@ -1618,11 +1620,11 @@ def start_debug(args):
     # Lets verify if the openvpn process is really running
     running = False
     for proc in psutil.process_iter(['pid', 'name']):
-        # Search for openvpn process. 
+        # Search for openvpn process.
         if proc.info['name'] == "openvpn":
             # Lets make sure we ensure Tunnel Interface is Created and Up!
             intf_up_result = subprocess.run(["ip", "link", "show", "tun0"],
-                                            stdout=subprocess.PIPE, 
+                                            stdout=subprocess.PIPE,
                                             stderr=subprocess.PIPE)
             if intf_up_result.returncode == 0:
                 running = True
@@ -1638,7 +1640,7 @@ def stop_debug():
     """
     for proc in psutil.process_iter(['pid', 'name']):
         # Search for openvpn process. On Docker, we dont expect
-        # Multiple process of openvpn to run. 
+        # Multiple process of openvpn to run.
         if proc.info['name'] == "openvpn":
             process = psutil.Process(proc.info['pid'])
             process.terminate()
@@ -1654,8 +1656,8 @@ def save_check_names(filename: str):
        :param filename: filename to which the output should be written
     """
     if not filename:
-        return 
-    
+        return
+
     list_of_names = get_all_check_names()
     with open(filename, 'w', encoding='utf-8') as f:
         for name in list_of_names:
@@ -1667,7 +1669,7 @@ if __name__ == "__main__":
         if os.environ.get('EXECUTION_DIR') is None:
             os.environ['EXECUTION_DIR'] = '/unskript/data/execution'
             if os.path.exists(os.environ.get('EXECUTION_DIR')) is False:
-                os.makedirs(os.environ.get('EXECUTION_DIR'))        
+                os.makedirs(os.environ.get('EXECUTION_DIR'))
 
         load_or_create_global_configuration()
         create_creds_mapping()
@@ -1697,13 +1699,13 @@ if __name__ == "__main__":
                         help='Show audit trail [--all | --type <CONNECTOR_TYPE> | --execution_id <EXECUTION_ID>]')
     parser.add_argument('-dl', '--display-failed-logs',
                         type=str, help='Display failed logs  [execution_id]')
-    parser.add_argument('-cc', '--create-credentials', type=str, nargs=REMAINDER, 
+    parser.add_argument('-cc', '--create-credentials', type=str, nargs=REMAINDER,
                         help='Create Credential [-creds-type creds_file_path]')
-    parser.add_argument('-cl', '--credential-list', 
+    parser.add_argument('-cl', '--credential-list',
                         help='Credential List', action='store_true')
-    parser.add_argument('--start-debug', 
+    parser.add_argument('--start-debug',
                         help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]', type=str, nargs=REMAINDER)
-    parser.add_argument('--stop-debug', 
+    parser.add_argument('--stop-debug',
                         help='Stop Current Debug Session', action='store_true')
     parser.add_argument('--save-check-names', type=str, help=SUPPRESS)
 
