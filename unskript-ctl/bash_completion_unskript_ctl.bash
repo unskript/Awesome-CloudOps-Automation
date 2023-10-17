@@ -1,10 +1,12 @@
 #!/bin/bash
 
+
 _unskript-client-completion() {
     local cur prev opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
+    connector_list=("aws" "k8s" "postgres" "mongodb" "elasticsearch" "vault" "ssh" "keycloak" "github" "redis")
 
 
     # Find the absolute path of unskript-client.py
@@ -42,6 +44,7 @@ _unskript-client-completion() {
                             COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
                             ;;
                         *)
+                            #COMPREPLY=( $(compgen -W "--all  --type  --failed  --check" -- "${cur}" -o nospace) )
                             COMPREPLY=( $(compgen -W "--all  --type  --failed  --check" -o nospace) )
                             ;;
                     esac
@@ -57,13 +60,13 @@ _unskript-client-completion() {
 
         -lc|--list-checks)
             # Provide completion suggestions for list-checks options
-            COMPREPLY=( $(compgen -W "--all --type" -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--all   --type" -- "${cur}" -o nospace) )
             return 0
             ;;
 
         -sa|--show-audit-trail)
             # Provide completion suggestions for show-audit-trail options
-            COMPREPLY=( $(compgen -W "--all --type  --execution_id" -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--all   --type   --execution_id" -- "${cur}" -o nospace) )
             return 0
             ;;
 
@@ -75,22 +78,65 @@ _unskript-client-completion() {
 
         -cc|--create-credentials)
             # Provide completion suggestions for create-credentials options
-            COMPREPLY=( $(compgen -W "--type creds_file_path" -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--type" -- "${cur}" -o nospace) )
             return 0
             ;;
 
         *)  # Default: Provide completion suggestions for global options
+            _cmd="${COMP_WORDS[COMP_CWORD-2]}"
             if [ "${prev}" = "--check" ];
             then
-                # Try to autocomplete the checks
                 cur=${cur#--check}
                 opt2="$(grep -F ${cur} /tmp/checknames.txt)"
                 COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
+                compopt -o nospace
+            elif [ "${_cmd}" = "--check" ];
+            then 
+                COMPREPLY=( $(compgen -W "--report" -o nospace) )
+            elif [ "${cur}" = "--report" ];
+            then
+                COMPREPLY=()
+            elif [[ "${_cmd}" = '-cc' || "${_cmd}" = '--create-credentials' ]];
+            then
+                COMPREPLY+=("-k8s <KUBECONFIG_FILE_PATH>")
+            elif [[ "${_cmd}" = '-rc' || "${_cmd}" = '--run-checks' || "${_cmd}" = '--list-checks' || "${_cmd}" = '-lc' ]];
+            then
+                if [ "${prev}" = "--type" ];
+                then
+                    COMPREPLY=( $(compgen -W "aws k8s postgres mongodb elasticsearch vault ssh keycloak github redis" -o nospace) )
+                elif [[ "${prev}" = "--all" || "${prev}" = "--failed" ]];
+                then
+                    COMPREPLY+=('--report')
+                fi
+            elif [[ "${_cmd}" = "--type" && "${COMP_WORDS[COMP_CWORD-3]}" = '-rc' || "${COMP_WORDS[COMP_CWORD-3]}" = '--run-checks' ]];
+            then 
+                for item in "${connector_list[@]}";
+                do
+                    if [ "$item" == "${prev}" ];
+                    then
+                        COMPREPLY+=("--report")
+                        break
+                    fi
+                done 
+            elif [[ "${_cmd}" = '-sa' || "${_cmd}" = '--show-audit-trail' ]];
+            then
+                if [ "${prev}" = '--type' ];
+                then
+                    COMPREPLY=( $(compgen -W "aws k8s postgres mongodb elasticsearch vault ssh keycloak github redis" -o nospace) )
+                elif [ "${prev}" = '--execution_id' ];
+                then
+                    COMPREPLY=( $(compgen -W "<EXECUTION_ID>" -o nospace) )
+                fi
             else
+                if [ "${#COMP_WORDS[@]}" != "2" ]; 
+                then
+                    return 0
+                fi
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}" -o nospace) )
             fi
-            return 0
-            ;;
+
+        return 0
+        ;;
     esac
 }
 
