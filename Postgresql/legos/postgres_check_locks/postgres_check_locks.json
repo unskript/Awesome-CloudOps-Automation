@@ -2,7 +2,7 @@
   "action_title": "PostgreSQL check for locks in database",
   "action_description": "Checks for any locks in the postgres database.",
   "action_type": "LEGO_TYPE_POSTGRESQL",
-  "action_entry_function": "postgresql_check_locks",
+  "action_entry_function": "postgres_check_locks",
   "action_needs_credential": true,
   "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
   "action_is_check": true,

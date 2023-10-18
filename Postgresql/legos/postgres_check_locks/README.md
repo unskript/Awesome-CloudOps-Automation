@@ -6,7 +6,7 @@
 Checks for any locks in the postgres database.
 
 ## Lego Details
-	postgresql_check_locks(handle)
+	postgres_check_locks(handle)
 		handle: Object of type unSkript POSTGRESQL Connector.
 
 
