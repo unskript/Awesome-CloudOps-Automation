@@ -72,7 +72,7 @@ _unskript-client-completion() {
 
         -dl|--display-failed-logs)
             # Provide completion suggestions for display-failed-logs options
-            COMPREPLY=( $(compgen -W "--execution_id <EXECUTION_ID>" -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--execution_id" -- "${cur}" -o nospace) )
             return 0
             ;;
 
