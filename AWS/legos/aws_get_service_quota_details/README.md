@@ -7,7 +7,7 @@ For a Given Service code and Quota Code - get the quota details.
 
 ## Lego Details
 
-    def aws_get_service_quotas(handle, service_code:str, quota_code:str, region:str) -> Dict:
+    def aws_get_service_quota_details(handle, service_code:str, quota_code:str, region:str) -> Dict:
 
         handle: Object of type unSkript AWS Connector
         service_code: Service Code name (ex: ec2)
