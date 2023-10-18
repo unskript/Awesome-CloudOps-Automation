@@ -93,7 +93,7 @@ _unskript-client-completion() {
             if [ "${prev}" = "--check" ];
             then
                 cur=${cur#--check}
-                opt2="$(grep -F ${cur} /tmp/checknames.txt)"
+                opt2="$(grep -E "^${cur}" /tmp/checknames.txt)"
                 COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
                 compopt -o nospace
             elif [ "${_cmd}" = "--check" ];

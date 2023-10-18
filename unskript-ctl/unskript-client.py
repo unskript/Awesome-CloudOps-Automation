@@ -454,6 +454,7 @@ def run_checks(args: list):
         # Lets call the db utils method to get the check by name
         check_list = get_check_by_name(check_name)
         if len(check_list) == 0:
+            print(f"ERROR: Invalid Function name {check_name}")
             parser.print_help()
             print("Note: You can use TAB to autocomplete options available for the -rc --check")
             return 
