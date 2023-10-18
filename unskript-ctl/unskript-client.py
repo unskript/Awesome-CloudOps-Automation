@@ -440,7 +440,6 @@ def run_checks(args: list):
         run_status = get_pss_record('current_execution_status')
         exec_status = run_status.get('exec_status')
         for k, v in exec_status.items():
-            print(f"{k} <=> {v}")
             if CheckOutputStatus(v.get('current_status')) == CheckOutputStatus.FAILED:
                 temp_check_list = get_checks_by_connector('all', True)
                 for tc in temp_check_list:
@@ -1021,6 +1020,10 @@ def display_failed_logs(args):
     
     args = parser.parse_args()
     
+    if len(sys.argv) == 2:
+        parser.print_help()
+        sys.exit(0)
+
     if args.execution_id not in ('', None):
         exec_id = args.execution_id 
 
