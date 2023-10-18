@@ -65,20 +65,19 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
 
     namespaces_to_check = [namespace] if namespace else [ns.metadata.name for ns in v1.list_namespace().items]
 
-    for namespace in namespaces_to_check:
-        print(f"Checking namespace: {namespace}")
+    for ns in namespaces_to_check:
 
         # Get all services in the namespace
-        get_all_services_command = f"kubectl get svc -n {namespace} -o=jsonpath='{{.items[*].metadata.name}}'"
+        get_all_services_command = f"kubectl get svc -n {ns} -o=jsonpath='{{.items[*].metadata.name}}'"
         response = handle.run_native_cmd(get_all_services_command)
         if not response or response.stderr:
-            raise ApiException(f"Error fetching services in namespace {namespace}: {response.stderr if response else 'empty response'}")
+            raise ApiException(f"Error fetching services in namespace {ns}: {response.stderr if response else 'empty response'}")
         services_to_check = response.stdout.strip().split()
 
         for svc in services_to_check:
 
             # Get service's pod based on its labels
-            get_service_labels_command = f"kubectl get service {svc} -n {namespace} -o=jsonpath='{{.spec.selector}}'"
+            get_service_labels_command = f"kubectl get service {svc} -n {ns} -o=jsonpath='{{.spec.selector}}'"
             response = handle.run_native_cmd(get_service_labels_command)
             if not response.stdout.strip():
                 # No labels found for a particular service. Skipping... 
@@ -87,7 +86,7 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
             label_selector = ",".join([f"{k}={v}" for k, v in labels_dict.items()])
 
             # Fetch the pod attached to this service
-            get_pod_command = f"kubectl get pods -n {namespace} -l {label_selector} -o=jsonpath='{{.items[0].metadata.name}}'"
+            get_pod_command = f"kubectl get pods -n {ns} -l {label_selector} -o=jsonpath='{{.items[0].metadata.name}}'"
             response = handle.run_native_cmd(get_pod_command)
             if not response or response.stderr:
                 raise ApiException(f"Error while executing command ({get_pod_command}): {response.stderr if response else 'empty response'}")
@@ -95,14 +94,14 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
 
             # Get the full pod object
             try:
-                pod = v1.read_namespaced_pod(name=pod_name, namespace=namespace)
+                pod = v1.read_namespaced_pod(name=pod_name, namespace=ns)
             except ApiException as e:
-                raise ApiException(f"Error fetching pod {pod_name} in namespace {namespace}: {str(e)}")
+                raise ApiException(f"Error fetching pod {pod_name} in namespace {ns}: {str(e)}")
 
             # Fetch and analyze logs for the given pod
             containers = [c.name for c in pod.spec.containers]
             for container_name in containers:
-                log_cmd = f"kubectl logs {pod_name} -n {namespace} -c {container_name} --tail={tail_lines}"
+                log_cmd = f"kubectl logs {pod_name} -n {ns} -c {container_name} --tail={tail_lines}"
                 try:
                     response = handle.run_native_cmd(log_cmd)
                     if response and not response.stderr:
@@ -113,7 +112,7 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
                                     timestamp = line.split(']')[0].strip('[').split()[0] if ']' in line else "Unknown Time"
                                     crash_logs.append({
                                         "pod": pod_name,
-                                        "namespace": namespace,
+                                        "namespace": ns,
                                         "error": pattern,
                                         "timestamp": timestamp,
                                     })
