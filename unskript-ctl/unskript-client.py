@@ -275,6 +275,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         with open(output_file, "r") as f:
             new_nb = nbformat.read(f, as_version=4)
         outputs = get_last_code_cell_output(new_nb.dict())
+        if not len(outputs):
+            print("ERROR: Output of the cell execution is empty. Is the credential configured?")
 
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
