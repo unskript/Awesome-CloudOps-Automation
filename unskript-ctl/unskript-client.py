@@ -275,7 +275,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         with open(output_file, "r") as f:
             new_nb = nbformat.read(f, as_version=4)
         outputs = get_last_code_cell_output(new_nb.dict())
-        if not len(outputs):
+        if len(outputs) == 0:
             print("ERROR: Output of the cell execution is empty. Is the credential configured?")
 
     ids = get_code_cell_action_uuids(nb.dict())
@@ -413,14 +413,14 @@ def run_checks(args: list):
                         help='Report check runs')
     args = parser.parse_args()
     
-    if (len(sys.argv) == 2):
+    if len(sys.argv) == 2:
         parser.print_help()
         sys.exit(0)
 
     filter = ''
-    if args.all == True:
+    if args.all is True:
         filter = '--all'
-    elif args.failed == True:
+    elif args.failed is True:
         filter = '--failed'
     elif args.type not in ([], None):
         filter = '--type'
@@ -849,7 +849,7 @@ def update_audit_trail(status_dict_list: list):
     finally:
         k = str(datetime.now())
         p = f = e = 0
-        if UNSKRIPT_GLOBALS.get('exec_id') == None:
+        if UNSKRIPT_GLOBALS.get('exec_id') is None:
             id = uuid.uuid4()
         else:
             id = UNSKRIPT_GLOBALS.get('exec_id')
@@ -909,7 +909,7 @@ def list_checks_by_connector(args):
         sys.exit(0)
     
 
-    if args.all == True:
+    if args.all is True:
         connector_name = 'all'
     elif args.type not in ('', None):
         connector_name = args.type 
@@ -957,7 +957,7 @@ def display_failed_checks(args):
         return
 
     connector = "all"
-    if args.all == True:
+    if args.all is True:
         connector = 'all'
     elif args.connector_type not in ('', None):
         connector = args.connector_type 
@@ -1066,7 +1066,7 @@ def show_audit_trail(args):
     # if not args:
     #     print(f"ERROR: Audit Trial needs --all or --type <CONNECTOR_TYPE>")
     #     return
-    if args.all == True:
+    if args.all is True:
         filter = 'all'
     elif args.connector_type not in ('', None):
         filter = args.connector_type
@@ -1419,7 +1419,7 @@ def get_runbook_metadata_contents(_runbook) -> dict:
             if os.path.exists(os.environ.get('PWD') + '/' + _runbook):
                 file_name_to_read = os.environ.get('PWD') + '/' + _runbook
     
-    if os.path.exists(_runbook) == True:
+    if os.path.exists(_runbook) is True:
         file_name_to_read = _runbook
 
     if not file_name_to_read:
