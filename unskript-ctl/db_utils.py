@@ -242,7 +242,7 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
         if connector_name.lower() != 'all' and not re.match(connector_name.lower(), s_connector):
             continue
         if full_snippet is False:
-            list_checks.append([s_connector.capitalize(), d.get('name'), d.get('uuid')])
+            list_checks.append([s_connector.capitalize(), d.get('name'), d.get('metadata').get('action_entry_function')])
         else:
             list_checks.append(d)
 

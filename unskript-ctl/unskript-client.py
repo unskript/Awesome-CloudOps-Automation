@@ -74,6 +74,7 @@ TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
 TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
 TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
+TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
 parser = ArgumentParser(prog='unskript-ctl')
@@ -398,7 +399,8 @@ def run_checks(args: list):
                         help="Run All checks available in the System", 
                         action="store_true")
     parser.add_argument('--check', 
-                        type=str, 
+                        type=str,
+                        dest='function_name',
                         help="Run an individual check")
     parser.add_argument('--failed',
                         help="Run Failed checks again",
@@ -425,6 +427,8 @@ def run_checks(args: list):
     elif args.type not in ([], None):
         filter = '--type'
         largs = args.type
+    elif args.function_name not in ('', None):
+        filter = '--check'
 
     if not args:
         raise Exception("Run Checks needs filter to be specified.")
@@ -450,6 +454,10 @@ def run_checks(args: list):
             raise Exception("Option --check should have a check name specified")
         # Lets call the db utils method to get the check by name
         check_list = get_check_by_name(check_name)
+        if len(check_list) == 0:
+            parser.print_help()
+            print("Note: You can use TAB to autocomplete options available for the -rc --check")
+            return 
     elif filter == '--all':
             check_list = get_checks_by_connector("all", True)
     elif filter == '--type':
@@ -469,7 +477,9 @@ def run_checks(args: list):
                 if t not in check_list:
                     check_list.append(t)
     else:
-        print(f"ERROR: WRONG OPTION: {args}")
+        parser.print_help()
+        print("Note: You can use TAB to autocomplete options available for the -rc ")
+        return
 
     if args.report:
         UNSKRIPT_GLOBALS['report'] = True
@@ -917,7 +927,7 @@ def list_checks_by_connector(args):
         connector_name = 'all'
 
     list_connector_table = [
-        [TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_UUID]]
+        [TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_FN]]
     for l in get_checks_by_connector(connector_name):
         list_connector_table.append(l)
 
