@@ -64,6 +64,12 @@ _unskript-client-completion() {
             return 0
             ;;
 
+        --credential-list)
+            # Provide completion suggestions for list-checks options
+            COMPREPLY=()
+            return 0
+            ;;
+
         -sa|--show-audit-trail)
             # Provide completion suggestions for show-audit-trail options
             COMPREPLY=( $(compgen -W "--all   --type   --execution_id" -- "${cur}" -o nospace) )
