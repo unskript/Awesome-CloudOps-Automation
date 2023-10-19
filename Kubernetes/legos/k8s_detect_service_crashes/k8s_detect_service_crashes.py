@@ -22,14 +22,6 @@ class InputSchema(BaseModel):
     )
 
 
-
-ERROR_PATTERNS = [
-    "Worker exiting",
-    "Exception",
-    "Exception in worker process"
-    # Add more error patterns here as necessary
-]
-
 def k8s_detect_service_crashes_printer(output):
     status, data = output
 
@@ -56,6 +48,12 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
 
     :rtype: Status, List of objects of pods, namespaces that might have crashed along with the timestamp
     """
+    ERROR_PATTERNS = [
+    "Worker exiting",
+    "Exception",
+    "Exception in worker process"
+    # Add more error patterns here as necessary
+    ]
     crash_logs = []
 
     if handle.client_side_validation is not True:
