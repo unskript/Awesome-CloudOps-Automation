@@ -26,13 +26,13 @@ class InputSchema(BaseModel):
     )
 
 
-def github_comment_on_issue_printer(output):
+def github_issue_comment_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 
 
-def github_comment_on_issue(
+def github_issue_comment(
         handle,
         owner:str,
         repository:str,

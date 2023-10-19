@@ -8,7 +8,7 @@ This Action takes a Service and the quota code, along with a requested new quota
 
 ## Lego Details
 
-  aws_get_service_quotas(handle, service_code:str, quota_code:str, new_quota:float,region:str) -> Dict:
+  aws_request_service_quota_increase(handle, service_code:str, quota_code:str, new_quota:float,region:str) -> Dict:
 
         handle: Object of type unSkript AWS Connector
         service_code: the Service Code (for example EC2)
