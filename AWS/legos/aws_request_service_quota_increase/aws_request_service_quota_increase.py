@@ -25,14 +25,14 @@ class InputSchema(BaseModel):
 
 
 @beartype
-def aws_get_service_quotas_printer(output):
+def aws_request_service_quota_increase_printer(output):
     if output is None:
         return
     pprint.pprint(output)
 #list_service_quotas
 #list_aws_default_service_quotas
 @beartype
-def aws_get_service_quotas(
+def aws_request_service_quota_increase(
     handle,
     service_code:str,
     quota_code:str,
