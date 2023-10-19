@@ -247,16 +247,16 @@ docker exec -it $CONTAINER_ID bash
 
 For example, if you want to get Slack Notification, here is the command to follow -
 ```
-add_notification.sh -c Slack -u https://hooks.slack.com/services/T12345/B12345/XXXXXXX --channel test-alerting
+add_notification.sh -c Slack -u https://hooks.slack.com/services/T12345/B12345/XXXXXXX --channel-name test-alerting
 ```
 > Here `-c` Option is used for creating a new Notification. Options are either Slack or SMTP (email)
 > `-u` Option is the webhook URL of Slack 
-> `--channel` Channel to where the notification should be sent
+> `--channel-name` Channel to where the notification should be sent
 
 This snippet shows how to configure SMTP (email) Notification
 
 ```
-./add_notification.sh -c SMTP -s smtp.server.com -u username@domain.com -p <password_of_username> -t receiver@example.com
+add_notification.sh -c SMTP -s smtp.server.com -u username@domain.com -p <password_of_username> -t receiver@example.com
 ```
 > Here `-s` Option is to specify the SMTP server 
 > `-u` Option is to specify the SMTP username. Note, you need to specify the username with the domain like username@domain.com 

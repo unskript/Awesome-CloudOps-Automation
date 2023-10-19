@@ -11,6 +11,7 @@
 import os
 import sys
 import json
+import yaml
 from pathlib import Path
 import subprocess
 
@@ -27,11 +28,15 @@ if os.environ.get('GLOBAL_CONFIG_PATH') is None:
 # Note, the earlier name we used was unskript_config.yaml. 
 if os.path.exists('/unskript/data/action/unskript_config.yaml') is True:
     try:
-        os.makedirs(Path(GLOBAL_CONFIG_PATH).parent, exist_ok=True)
+        os.makedirs(Path(GLOBAL_CONFIG_PATH).parent, exist_ok=True) 
         Path('/unskript/data/action/unskript_config.yaml').rename(GLOBAL_CONFIG_PATH)
     except:
         pass
 
+# Lets ensure the Global Config file exists in the
+# path
+if os.path.exists(GLOBAL_CONFIG_PATH) is False:
+    Path(GLOBAL_CONFIG_PATH).touch()
 
 """
 This class define basic parser that shall be extended based on each notification
