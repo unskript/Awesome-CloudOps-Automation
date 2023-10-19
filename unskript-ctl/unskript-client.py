@@ -17,6 +17,7 @@ import time
 import re
 import uuid
 import psutil
+import pprint
 import subprocess
 import yaml
 import nbformat
@@ -201,6 +202,8 @@ except Exception as e:
     return nb
 
 
+
+
 # These are all trigger functions that are
 # called based on argument passed
 def list_runbooks():
@@ -245,7 +248,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     "Get Failed Readiness Probes",
     "Get Failed Liveness Probes",
     "Get K8s DaemonSets Missing on Node"
-]
+    ]
     nb = read_ipynb(filename)
 
     # We store the Status of runbook execution in status_dict
@@ -295,76 +298,78 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
                 connector,
                 'ERROR'
                 ])
-    results = {}
+    
+    results = []
     if ids:
-        results = outputs[0]
+        results = outputs
     idx = 0
-    r = results.get('text')
     failed_result_available = False
     failed_result = {}
 
     if ids:
-        for result in r.split('\n'):
-            if result == '':
-                continue
-            payload = json.loads(result)
+        for output in outputs:
+            r = output.get('text')
+            for result in r.split('\n'):
+                if result == '':
+                    continue
+                payload = json.loads(result)
 
-            try:
-                if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                    result_table.append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        TBL_CELL_CONTENT_PASS,
-                        0,
-                        'N/A'
-                        ])
-                    status_dict['result'].append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        ids[idx],
-                        get_connector_name_from_id(ids[idx], nb.dict()),
-                        'PASS']
-                        )
-                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
-                    failed_objects = payload.get('objects')
-                    failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
-                    result_table.append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        TBL_CELL_CONTENT_FAIL,
-                        len(failed_objects),
-                        'N/A'
-                        ])
-                    failed_result_available = True
-                    status_dict['result'].append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        ids[idx],
-                        get_connector_name_from_id(ids[idx], nb.dict()),
-                        'FAIL'
-                        ])
-                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                    if payload.get('error') is not None:
-                        failed_objects = payload.get('error')
+                try:
+                    if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
+                        result_table.append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            TBL_CELL_CONTENT_PASS,
+                            0,
+                            'N/A'
+                            ])
+                        status_dict['result'].append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            ids[idx],
+                            get_connector_name_from_id(ids[idx], nb.dict()),
+                            'PASS']
+                            )
+                    elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
+                        failed_objects = payload.get('objects')
                         failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
-                    result_table.append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        TBL_CELL_CONTENT_ERROR,
-                        0,
-                        payload.get('error')
-                        ])
-                    status_dict['result'].append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        ids[idx],
-                        get_connector_name_from_id(ids[idx], nb.dict()),
-                        'ERROR'
-                        ])
-            except Exception:
-                pass
-            if ids:
+                        result_table.append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            TBL_CELL_CONTENT_FAIL,
+                            len(failed_objects),
+                            'N/A'
+                            ])
+                        failed_result_available = True
+                        status_dict['result'].append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            ids[idx],
+                            get_connector_name_from_id(ids[idx], nb.dict()),
+                            'FAIL'
+                            ])
+                    elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
+                        if payload.get('error') is not None:
+                            failed_objects = payload.get('error')
+                            failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                        result_table.append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            TBL_CELL_CONTENT_ERROR,
+                            0,
+                            pprint.pformat(payload.get('error'), width=30)
+                            ])
+                        status_dict['result'].append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            ids[idx],
+                            get_connector_name_from_id(ids[idx], nb.dict()),
+                            'ERROR'
+                            ])
+                except Exception:
+                    pass
+
                 update_current_execution(payload.get('status'), ids[idx], nb.dict())
                 update_check_run_trail(ids[idx],
                                     get_action_name_from_id(ids[idx], nb.dict()),
                                     get_connector_name_from_id(ids[idx], nb.dict()),
                                     CheckOutputStatus(payload.get('status')),
                                     failed_result)
-            idx += 1
+                idx += 1
     if filter == 'k8s':
         for check in hardcoded_checks:
             result_table.append([check, "Coming soon", "Coming soon", "Coming soon"])
@@ -1249,16 +1254,16 @@ def get_code_cell_action_uuids(content: dict) -> list:
 
     return retval
 
-def get_last_code_cell_output(content: dict) -> dict:
-    """get_last_code_cell_output This function takes in the notenode dictionary
+def get_last_code_cell_output(content: dict) -> list:
+    """get_last_code_cell_output This function takes in the notebook node dictionary
            finds out the last cell output and returns in the form of a dict
 
        :type content: dict
-       :param content: Notenode as Dictionary
+       :param content: NotebookNode as Dictionary
 
-       :rtype: Last output in the form of Python dictionary
+       :rtype: Last output in the form of Python list
     """
-    retval = {}
+    retval = []
     if content in ('', None):
         print("Content sent is empty")
         return retval
@@ -1266,9 +1271,7 @@ def get_last_code_cell_output(content: dict) -> dict:
     for cell in content.get('cells'):
         if cell.get('cell_type') == 'code':
             if cell.get('id') == 'lastcell':
-                outputs = {}
-                outputs = cell.get('outputs')
-                retval = outputs
+                retval = cell.get('outputs')
     print("")
     return retval
 
