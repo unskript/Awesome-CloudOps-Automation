@@ -14,152 +14,51 @@ import os
 
 from pathlib import Path 
 
+try:
+    from envyaml import EnvYAML
+except Exception as e:
+    print("ERROR: Unable to find required yaml package to parse the config file")
+    raise e
+
 # Global Constants used in this file
-GLOBAL_UNSKRIPT_CONFIG_FILE = '/unskript/etc/unskript_global.yaml'
-
-def unskript_ctl_config_create_notification(type, creds_data):
-    """unskript_ctl_config_create_notification: This function updates Notification entry in the global
-    configuration file. This will be used later to read from and send notification. This is the Create
-    function.
-    """
-    if not type or not creds_data:
-        print("ERROR: Type & creds_data are mandatory parameters for this function")
-        return
-    
-    data = {}
-    data['notification'] = {}
-    if type == 'slack':
-        data['notification']['type'] = 'slack'
-        data['notification']['slack'] = {}
-        data['notification']['slack']['creds'] = {}
-        if isinstance(creds_data, dict):
-            if list(creds_data.keys()).sort() != ['hook_url', 'channel'].sort():
-                print(f"ERROR: Creds Data should have smtp_user, smtp_host and smtp_password Keys!")
-                return
-            
-            for k, v in creds_data.items():
-                    data['notification']['slack']['creds'][k] = v
-        else:
-            print(f"ERROR: Creds_Data should be of type dictionary")
-            return
-
-    elif type == 'mail':
-        data['notification']['type'] = 'mail'
-        data['notification']['mail'] = {}
-        data['notification']['mail']['creds'] = {}
-        if isinstance(creds_data, dict):
-            if list(creds_data.keys()).sort() != ['smtp_user', 'smtp_host', 'smtp_password', "to_email"].sort():
-                print(f"ERROR: Creds Data should have smtp_user, smtp_host, smtp_password and to_email Keys!")
-                return
-
-            for k, v in creds_data.items():
-                data['notification']['mail']['creds'][k] = v
-        else:
-            print(f"ERROR: Creds_Data should be of type dictionary")
-            return
-    else:
-        print(f"ERROR: Option {type} is not implemented")
-        return
-    
-    existing_data = {}
-    if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is True:
-        with open(GLOBAL_UNSKRIPT_CONFIG_FILE, 'r', encoding='utf-8') as f:
-            existing_data = yaml.safe_load(f.read())
-
-    existing_data['notification'] = data['notification']
-    
-    with open(GLOBAL_UNSKRIPT_CONFIG_FILE, 'w', encoding='utf-8') as f:
-        f.write(yaml.safe_dump(existing_data))
-    
-    print("Successfully Registered Notification Entry in Global Configuration")
+GLOBAL_UNSKRIPT_CONFIG_FILE = '/unskript/etc/unskript_ctl_config.yaml'
 
 
-def unskript_ctl_config_read_notification(type):
+def unskript_ctl_config_read_notification(n_type: str):
     """unskript_ctl_config_read_notification: This is the Read notification. This function reads the configuration
     and returns the Notification configuration as a python dictionary. This is the Read function of Notification.
     """
-    if not type:
+    if not n_type:
         print("ERROR: Type is mandatory parameters for this function")
         return
+
         
     existing_data = {}
     if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is True:
-        with open(GLOBAL_UNSKRIPT_CONFIG_FILE, 'r', encoding='utf-8') as f:
-            existing_data = yaml.safe_load(f.read())
+        existing_data = EnvYAML(GLOBAL_UNSKRIPT_CONFIG_FILE, strict=False)
 
-    if existing_data.get('notification') and existing_data.get('notification').get(type):
-        return existing_data
-    else:
-        print(f"WARNING: No saved Data of {type}? Please check if it was configured")
-        return None 
-    
-def unskript_ctl_config_update_notification(type, creds_data):
-    """unskript_ctl_config_update_notification: This function Updates existing notification for the given type
-    and updates the global configuration file to reflect the changes. This is the Update function.
-    """
-    if not type or not creds_data:
-        print("ERROR: Type & creds_data are mandatory parameters for this function")
+    n_dict = existing_data.get('notification')
+    if not n_dict:
+        print("ERROR: No Notification data found")
         return
-    
-    data = {}
-    data['notification'] = {}
-    if type == 'slack':
-        data['notification']['type'] = 'slack'
-        data['notification']['slack'] = {}
-        data['notification']['slack']['creds'] = {}
-        if isinstance(creds_data, str) is False:
-            print("ERROR: Webhook Should be of type String")
-            return
-        data['notification']['slack']['creds']['hook_url'] = creds_data
-    elif type == 'mail':
-        data['notification']['type'] = 'mail'
-        data['notification']['mail'] = {}
-        data['notification']['mail']['creds'] = {}
-        if isinstance(creds_data, dict):
-            if list(creds_data.keys()).sort() != ['smtp_user', 'smtp_host', 'smtp_password'].sort():
-                print(f"ERROR: Creds Data should have smtp_user, smtp_host and smtp_password Keys!")
-                return
 
-            for k, v in creds_data.items():
-                data['notification']['mail']['creds'][k] = v
+    if n_dict.get(n_type):
+        if n_type.lower() == 'email':
+            if n_dict.get('Email').get('enable') == True:
+                notify_data = n_dict.get('Email')
+                return notify_data
+            else:
+                print("ERROR: Enable flag under Email section is set to false, please change to true and re-run")
+                return {}
+        elif n_type.lower() == 'slack':
+            if n_dict.get('Slack').get('enable') == True:
+                return n_dict.get('Slack')
+            else:
+                print("ERROR: Enable flag under Slack section is set to false, please change to true and re-run")
+                return {}
         else:
-            print(f"ERROR: Creds_Data should be of type dictionary")
-            return
+            print(f"ERROR: Opton {n_type} is not supported")
+            return {}
     else:
-        print(f"ERROR: Option {type} is not implemented")
-        return
-    
-    existing_data = {}
-    if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is True:
-        with open(GLOBAL_UNSKRIPT_CONFIG_FILE, 'r', encoding='utf-8') as f:
-            existing_data = yaml.safe_load(f.read())
-
-    existing_data['notification'] = data['notification']
-    
-    with open(GLOBAL_UNSKRIPT_CONFIG_FILE, 'w', encoding='utf-8') as f:
-        f.write(yaml.safe_dump(existing_data))
-    
-    print("Successfully Updated Notification Entry in Global Configuration")
-
-def unskript_ctl_config_delete_notification(type):
-    """unskript_ctl_config_delete_notification: This function implements the Deletion of Notification 
-    stored in the global configuration. This is the Deletion function.
-    """
-    if not type:
-        print("ERROR: Type is mandatory parameters for this function")
-        return
-        
-    existing_data = {}
-    if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is True:
-        with open(GLOBAL_UNSKRIPT_CONFIG_FILE, 'r', encoding='utf-8') as f:
-            existing_data = yaml.safe_load(f.read())
-
-    if existing_data['notification'].get('type') == type:
-        del existing_data['notification']
-        with open(GLOBAL_UNSKRIPT_CONFIG_FILE, 'w', encoding='utf-8') as f:
-            f.write(yaml.safe_dump(existing_data))    
-    else:
-        print(f"ERROR: No saved Data of {type}? Nothing to delete")
-        return None
-
-
+        print(f"No Notification found for {n_type}")
+        return {} 
