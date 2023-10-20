@@ -44,14 +44,14 @@ def unskript_ctl_config_read_notification(n_type: str):
 
     if n_dict.get(n_type):
         if n_type.lower() == 'email':
-            if n_dict.get('Email').get('enable') == True:
+            if n_dict.get('Email').get('enable') is True:
                 notify_data = n_dict.get('Email')
                 return notify_data
             else:
                 print("ERROR: Enable flag under Email section is set to false, please change to true and re-run")
                 return {}
         elif n_type.lower() == 'slack':
-            if n_dict.get('Slack').get('enable') == True:
+            if n_dict.get('Slack').get('enable') is True:
                 return n_dict.get('Slack')
             else:
                 print("ERROR: Enable flag under Slack section is set to false, please change to true and re-run")

@@ -108,7 +108,7 @@ def send_email_notification(summary_results: list,
     if not creds_data:
         print("ERROR: Mail Notification setting is empty. Cannot send Mail out")
 
-    if creds_data.get('SMTP').get('enable') == True:
+    if creds_data.get('SMTP').get('enable') is True:
         c_data = creds_data.get('SMTP')
         send_smtp_notification(summary_results,
                                failed_result,
@@ -117,14 +117,14 @@ def send_email_notification(summary_results: list,
                                c_data.get('smtp-password'),
                                c_data.get('to-email'),
                                c_data.get('from-email'))
-    elif creds_data.get('Sendgrid').get('enable') == True:
+    elif creds_data.get('Sendgrid').get('enable') is True:
         c_data = creds_data.get('Sendgrid')
         send_sendgrid_notification(summary_results,
                                    failed_result,
                                    c_data.get('from-email'),
                                    c_data.get('to-email'),
                                    c_data.get('api_key'))
-    elif creds_data.get('SES').get('enable') == True:
+    elif creds_data.get('SES').get('enable') is True:
         c_data = creds_data.get('SES')
         send_awsses_notification(summary_results,
                                    failed_result,
@@ -134,7 +134,7 @@ def send_email_notification(summary_results: list,
                                    c_data.get('from-email'),
                                    c_data.get('region'))
     else: 
-        print(f"ERROR: Unknown notification service {creds.get('service_provider')}")
+        print(f"ERROR: Unknown notification service {creds_data.get('service_provider')}")
 
     pass
 
