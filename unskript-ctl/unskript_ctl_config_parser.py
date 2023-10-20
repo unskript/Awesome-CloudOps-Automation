@@ -11,14 +11,10 @@
 import logging
 import subprocess
 import os
+from envyaml import EnvYAML
 
 
 from pathlib import Path
-try:
-    from envyaml import EnvYAML
-except Exception as e:
-    print("ERROR: Unable to find required yaml package to parse hooks.yaml file!")
-    raise e
 
 #logging.basicConfig(
 #    level=logging.DEBUG,
@@ -26,250 +22,196 @@ except Exception as e:
 #    datefmt='%Y-%m-%d %H:%M:%S',
 #    filename="/tmp/"
 #)
+UNSKRIPT_CTL_CONFIG_FILE="/unskript/etc/unskript_ctl_config.yaml"
+UNSKRIPT_CTL_BINARY="/usr/local/bin/unskript-ctl.sh"
 
-def parse_hook_yaml(hook_file: str) -> dict:
-    """parse_hook_yaml: This function parses the hooks yaml file and converts the
-    content as a python dictionary and returns back to the caller.
-    """
-    retval = {}
-    if not hook_file:
-        hook_file = os.path.join(os.environ.get('HOME'), 'hook.yaml')
+# Job config related
+JOB_CONFIG_CHECKS_KEY_NAME = "checks"
+JOB_CONFIG_SUITES_KEY_NAME = "suites"
+JOB_CONFIG_CONNECTORS_KEY_NAME = "connector_types"
+JOB_CONFIG_CUSTOM_SCRIPTS_KEY_NAME = "custom_scripts"
+JOB_CONFIG_NOTIFY_KEY_NAME = "notify"
 
-    if os.path.exists(hook_file) == False:
-        print(f"WARNING: {hook_file} Not found!")
-        return retval
+class Job():
+    def __init__(
+            self,
+            checks: list[str],
+            suites: list[str]=None,
+            connectors: list[str] = None,
+            custom_scripts: list[str] = None,
+            notify: bool = False):
+        self.checks = checks
+        self.suites = suites
+        self.connectors = connectors
+        self.custom_scripts = custom_scripts
+        self.notify = notify
+
+    def parse(self):
+        cmds = []
+        notify = '--report' if self.notify == True else ''
+        #TBD: Add support for suites and custom_scripts
+        if self.checks is not None:
+            cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --check {self.checks[0]} {notify}')
+        if self.connectors is not None:
+            # Need to construct the unskript-ctl command like
+            # unskript-ctl.sh -rc --types aws,k8s
+            connector_types_string = ','.join(self.connectors)
+            cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --type {connector_types_string} {notify}')
+        self.cmds = cmds
+        print(self.cmds)
 
 
-    # We use EnvYAML to parse the hook file and give us the
-    # dictionary representation of the YAML file
-    retval = EnvYAML(hook_file, strict=False)
+class ConfigParser():
+    def __init__(self, config_file: str):
+        self.config_file = config_file
+        # Dictionary of jobs, with job name being the key.
+        self.jobs = {}
 
-    if not retval:
-        print(f"WARNING: Hooks file content seems to be empty!")
-        return retval
+    def parse_config_yaml(self) -> dict:
+        """parse_config_yaml: This function parses the config yaml file and converts the
+        content as a python dictionary and returns back to the caller.
+        """
+        retval = {}
 
-    return retval
+        if os.path.exists(self.config_file) == False:
+            print(f"WARNING: {self.config_file} Not found!")
+            return retval
 
 
-def configure_credential(creds_dict: dict):
-    """configure_credential: This function is used to parse through the creds_dict and
-    call the add_creds.sh method to populate the respective credential json
-    """
-    if not creds_dict:
-        print(f"ERROR: Nothing to configure credential with, found empty creds data")
-        return
+        # We use EnvYAML to parse the hook file and give us the
+        # dictionary representation of the YAML file
+        retval = EnvYAML(self.config_file, strict=False)
 
-    creds_cmd = []
-    for cred_type in creds_dict.keys():
-        cred_list = creds_dict.get(cred_type)
-        for cred in cred_list:
-            if cred.get('enable') == False:
-                continue
-            creds_cmd = ['add_creds.sh', '-c', cred_type]
-            for cred_key in cred:
-                # Skip name and enable keys
-                if cred_key in ['name', 'enable']:
-                    continue
-                creds_cmd.extend(['--'+cred_key, cred.get(cred_key)])
-        #if cred.lower() == 'aws':
-        #    aws_config = creds_dict.get(cred)
-        #    access_key = creds_dict.get(cred).get('access_key')
-        #    secret_access_key = creds_dict.get(cred).get('secret_access_key')
-        #    if access_key.startswith('$') or secret_access_key.startswith('$'):
-        #        print("One or more environment variable is not set for AWS credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh", "-c", "AWS", "-a", access_key, "-s", secret_access_key]
-        #    break
-        #elif cred.lower() == 'k8s':
-        #    kubeconfig = creds_dict.get(cred).get('kubeconfig')
-        #    if kubeconfig.startswith('$'):
-        #        print("One or more environment variable is not set for K8S credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh", "-c", "K8S", "-k", kubeconfig]
-        #    break
-        #elif cred.lower() == 'gcp':
-        #    credential_json = creds_dict.get(cred).get('credential_json')
-        #    if credential_json.startswith('$'):
-        #        print("One or more environment variable is not set for GCP credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh", "-c", "GCP", "-g", credential_json]
-        #    break
-        #elif cred.lower() == 'elasticsearch':
-        #    server = creds_dict.get(cred).get('server')
-        #    api_key = creds_dict.get(cred).get('api_key')
-        #    no_verify_ssl = creds_dict.get(cred).get('no_verify_ssl')
-        #    if server.startswith('$') or api_key.startswith('$') or no_verify_ssl.startswith('$'):
-        #        print("One or more environment variable is not set for Elasticsearch credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh", "-c", "Elasticsearch", "-s", server, "-a", api_key]
-        #    if no_verify_ssl:
-        #        creds_cmd.append('--no-verify-certs')
-        #    break
-        #elif cred.lower() == 'redis':
-        #    server = creds_dict.get(cred).get('server')
-        #    port = creds_dict.get(cred).get('port')
-        #    username = creds_dict.get(cred).get('username')
-        #    password = creds_dict.get(cred).get('password')
-        #    database = creds_dict.get(cred).get('database')
-        #    use_ssl = creds_dict.get(cred).get('use_ssl')
-        #    if server.startswith('$') or \
-        #       port.startswith('$') or \
-        #       username.startswith('$') or \
-        #       password.startswith('$') or \
-        #       database.startswith('$'):
-        #        print("One or more environment variable is not set for Redis credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh",
-        #                 "-c", "Redis",
-        #                 "-s", server,
-        #                 "-p", port,
-        #                 "-u", username,
-        #                 "-pa", password,
-        #                 "-db", database]
-        #    if use_ssl:
-        #        creds_cmd.append('--use-ssl')
-        #    break
-        #elif cred.lower() == 'postgres':
-        #    server = creds_dict.get(cred).get('server')
-        #    port = creds_dict.get(cred).get('port')
-        #    username = creds_dict.get(cred).get('username')
-        #    password = creds_dict.get(cred).get('password')
-        #    database = creds_dict.get(cred).get('database')
-        #    if server.startswith('$') or \
-        #       port.startswith('$') or \
-        #       username.startswith('$') or \
-        #       password.startswith('$') or \
-        #       database.startswith('$'):
-        #        print("One or more environment variable is not set for Postgres credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh",
-        #                 "-c", "PostGRES",
-        #                 "-s", server,
-        #                 "-p", port,
-        #                 "-db", database,
-        #                 "-u", username,
-        #                 "-pa", password]
-        #    break
-        #elif cred.lower() == 'mongodb':
-        #    server = creds_dict.get(cred).get('server')
-        #    port = creds_dict.get(cred).get('port')
-        #    username = creds_dict.get(cred).get('username')
-        #    password = creds_dict.get(cred).get('password')
-        #    if server.startswith('$') or \
-        #       port.startswith('$') or \
-        #       username.startswith('$') or \
-        #       password.startswith('$'):
-        #        print("One or more environment variable is not set for MongoDB credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh",
-        #                 "-c", "MongoDB",
-        #                 "-s", server,
-        #                 "-p", port,
-        #                 "-u", username,
-        #                 "-pa", password]
-        #    break
-        #elif cred.lower() == 'kafka':
-        #    broker = creds_dict.get(cred).get('broker')
-        #    username = creds_dict.get(cred).get('username')
-        #    password = creds_dict.get(cred).get('password')
-        #    zookeeper = creds_dict.get(cred).get('zookeeper')
-        #    if broker.startswith('$') or \
-        #       zookeeper.startswith('$') or \
-        #       username.startswith('$') or \
-        #       password.startswith('$'):
-        #        print("One or more environment variable is not set for Kafka credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh",
-        #                 "-c", "Kafka",
-        #                 "-b", broker,
-        #                 "-u", username,
-        #                 "-p", password,
-        #                 "-z", zookeeper]
-        #    break
-        #elif cred.lower() == 'rest':
-        #    base_url = creds_dict.get(cred).get('base_url')
-        #    username = creds_dict.get(cred).get('username')
-        #    password = creds_dict.get(cred).get('password')
-        #    headers = creds_dict.get(cred).get('headers')
-        #    if base_url.startswith('$') or \
-        #       username.startswith('$') or \
-        #       password.startswith('$') or \
-        #       headers.startswith('$'):
-        #        print("One or more environment variable is not set for REST credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh",
-        #                 "-c", "REST",
-        #                 "-b", base_url,
-        #                 "-u", username,
-        #                 "-p", password,
-        #                 "-h", headers]
-        #    break
-        #elif cred.lower() == 'vault':
-        #    url = creds_dict.get(cred).get('url')
-        #    token = creds_dict.get(cred).get('token')
-        #    if url.startswith('$') or \
-        #       token.startswith('$'):
-        #        print("One or more environment variable is not set for Vault credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh",
-        #                 "-c", "Vault",
-        #                 "-u", url,
-        #                 "-t", token]
-        #    break
-        #elif cred.lower() == 'keycloak':
-        #    server_url = creds_dict.get(cred).get('server_url')
-        #    realm = creds_dict.get(cred).get('realm')
-        #    client_id = creds_dict.get(cred).get('client_id')
-        #    username = creds_dict.get(cred).get('username')
-        #    password = creds_dict.get(cred).get('password')
-        #    client_secret = creds_dict.get(cred).get('client_secret')
-        #    no_verify_certs = creds_dict.get(cred).get('no_verify_certs')
-        #    if server_url.startswith('$') or \
-        #       realm.startswith('$') or  \
-        #       client_id.startswith('$') or  \
-        #       username.startswith('$') or  \
-        #       password.startswith('$') or  \
-        #       client_secret.startswith('$'):
-        #        print("One or more environment variable is not set for Keycloak credential")
-        #        continue
-        #    creds_cmd = ["add_creds.sh",
-        #                 "-c", "Keycloak",
-        #                 "-su", server_url,
-        #                 "-r", realm,
-        #                 "-c", client_id,
-        #                 "-u", username,
-        #                 "-p", password,
-        #                 "-cs", client_secret]
-        #    if no_verify_certs:
-        #        creds_cmd.append('--no-verify-certs')
-        #    break
-        else:
-            print(f"WARNING: Option not implemented {cred}")
+        if not retval:
+            print(f"WARNING: config file {self.config_file} content seems to be empty!")
+            return retval
 
-    if creds_cmd:
-        print(f"CREDS CMD is {creds_cmd}")
-        result = subprocess.run(creds_cmd,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        if result.returncode == 0:
-            print(f"ERROR: Cannot add_creds did not succeed: {result.stdout} {result.stderr}")
+        self.parsed_config = retval
+
+    def configure_credential(self):
+        """configure_credential: This function is used to parse through the creds_dict and
+        call the add_creds.sh method to populate the respective credential json
+        """
+        print('Processing credential section')
+        creds_dict = self.parsed_config.get('credential')
+        if creds_dict is None:
+            print(f"ERROR: Nothing to configure credential with, found empty creds data")
             return
-        print("Credential programming was successful")
-    else:
-        print("ERROR: No Credential was programmed")
 
-    return
+        for cred_type in creds_dict.keys():
+            cred_list = creds_dict.get(cred_type)
+            for cred in cred_list:
+                if cred.get('enable') == False:
+                    continue
+                creds_cmd = ['/usr/local/bin/add_creds.sh', '-c', cred_type]
+                for cred_key in cred:
+                    # Skip name and enable keys
+                    if cred_key in ['name', 'enable']:
+                        continue
+                    #TBD: Take care of arguments with no value
+                    creds_cmd.extend(['--'+cred_key, cred.get(cred_key)])
+                if creds_cmd:
+                    print_cmd = ' '.join(creds_cmd)
+                    print(f"Programming credential, command {print_cmd}")
+                    self.run_command(creds_cmd)
+                    print(f"Successfully programmed {cred_type}")
+                else:
+                    print(f"ERROR: No Credential {cred_type} was programmed")
 
 
+    def configure_schedule(self):
+        """configure_schedule: configures the schedule settings
+        """
+        print('Processing scheduler section')
+        config = self.parsed_config.get('scheduler')
+        if config is None:
+            print(f"No scheduler configuration found")
+            return
+
+        cmds = []
+        #unskript_crontab_file = "/unskript/etc/unskript_crontab.tab"
+        unskript_crontab_file = "./unskript_crontab.tab"
+        crons = []
+        try:
+            for schedule in config:
+                if schedule.get('enable') == False:
+                        continue
+                cadence = schedule.get('cadence')
+                script = schedule.get('script')
+                # TBD: Validate cadence and script is valid
+                crons.append(f'{cadence} {script}')
+        except Exception as e:
+            print(f'ERROR: Got error in programming cadence {cadence}, script {script}, {e}')
+            raise e
+
+        if crons:
+            crons_per_line = "\n".join(crons)
+            print(f'Schedule section: Programming crontab {crons_per_line}')
+            try:
+                with open(unskript_crontab_file, "w") as f:
+                    f.write('\n'.join(crons))
+                    f.write("\n")
+                cmds = ['crontab', unskript_crontab_file]
+                self.run_command(cmds)
+            except Exception as e:
+                print(f'Cron programming failed, {e}')
+                raise e
+
+    def parse_jobs(self):
+        print('Processing jobs section')
+        config = self.parsed_config.get('jobs')
+        if config is None:
+            print(f'No jobs config found')
+            return
+
+        for job in config:
+            if job.get('enable') == False:
+                continue
+            job_name = job.get('name')
+            if job_name is None:
+                print("Skiping invalid job, name not found")
+                continue
+            # Check if the same job name exists
+            if job_name in self.jobs:
+                print(f'Skipping job name {job_name}, duplicate entry')
+                continue
+            checks = job.get(JOB_CONFIG_CHECKS_KEY_NAME)
+            suites = job.get(JOB_CONFIG_SUITES_KEY_NAME)
+            connectors = job.get(JOB_CONFIG_CONNECTORS_KEY_NAME)
+            custom_scripts = job.get(JOB_CONFIG_CUSTOM_SCRIPTS_KEY_NAME)
+            notify = job.get(JOB_CONFIG_NOTIFY_KEY_NAME, False)
+
+            if checks is not None and len(checks) > 1:
+                print(f'{job_name}: NOT SUPPORTED: more than 1 check')
+                continue
+            new_job = Job(checks, suites, connectors, custom_scripts, notify)
+            new_job.parse()
+            self.jobs[job_name] = new_job
+
+    def run_command(self, cmds:list)->str:
+        """run_command: Runs the command in a subprocess and returns the output
+        or raise excetption
+        """
+        try:
+            result = subprocess.run(cmds,
+                                    capture_output=True,
+                                    check=True)
+        except Exception as e:
+            print(f'{"".join(cmds)} failed, {e}')
+            raise e
+
+        return str(result.stdout)
 
 def main():
     """main: This is the main function that gets called by the start.sh function
     to parse the unskript_ctl_config.yaml file and program credential and schedule as configured
     """
-    retval = parse_hook_yaml('./config/unskript_ctl_config.yaml')
+    config_parser = ConfigParser(UNSKRIPT_CTL_CONFIG_FILE)
+    config_parser.parse_config_yaml()
 
-    configure_credential(retval.get('credential'))
-
+    config_parser.configure_credential()
+    config_parser.parse_jobs()
+    config_parser.configure_schedule()
 
 if __name__ == '__main__':
     main()

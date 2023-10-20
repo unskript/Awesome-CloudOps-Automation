@@ -11,6 +11,26 @@
 version: 1.0.0
 
 #
+# Global section
+#
+# Global config
+#
+global:
+   # if enable_runbooks is enabled, jupyterlab is launched so that one can open
+   # runbooks in jupyterlab.
+   enable_runbooks: true
+
+#
+# Checks section
+#
+# Check specific configuration. For eg, arguments.
+#
+checks:
+  # Arguments common to all checks, like region, namespace, etc.
+  arguments:
+    global:
+       region: us-west-2
+
 # Credential section
 #
 # uncomment the relevant sections below to enable respective credential
@@ -121,31 +141,103 @@ credential:
 # uncomment the relevant sections below to enable either slack or email notification
 notification:
   # Slack Notification setting
-  slack:
-      enable: false
-      webhook_url: ENV ${UNSKRIPT_NOTIFICATION_SLACK_WEBHOOK_URL}
-      channel_name: ENV ${UNSKRIPT_NOTIFICATION_SLACK_CHANNEL_NAME}
-  smtp:
-      enable: false
-      smtp_server: ${UNSKRIPT_NOTIFICATION_SMTP_SERVER}
-      smtp_username: ${UNSKRIPT_NOTIFICATION_USERNAME}
-      smtp_password: ${UNSKRIPT_NOTIFICATION_PASSWORD}
-      receiver_email: ${UNSKRIPT_NOTIFICATION_RECEIVER_EMAIL}
+  Slack:
+    enable: true
+    web-hook-url: ${UNSKRIPT_NOTIFICATION_SLACK_WEBHOOK_URL}
+    channel-name: ${UNSKRIPT_NOTIFICATION_SLACK_CHANNEL_NAME}
+    verbose: false #Not yet supported
+  Email:
+    verbose: true #Not yet supported
+    enable: true
+    # provider for the email. Possible values:
+    #    - SMTP - SMTP server
+    #    - SES -  AWS SES
+    #    - Sendgrid - Sendgrid
+    provider: ""
+    SMTP:
+      smtp-host: ${UNSKRIPT_NOTIFICATION_SMTP_SERVER}
+      smtp-user: ${UNSKRIPT_NOTIFICATION_USERNAME}
+      smtp-password: ${UNSKRIPT_NOTIFICATION_PASSWORD}
+      to-email: ${UNSKRIPT_NOTIFICATION_RECEIVER_EMAIL}
+      from-email: support@unskript.com
+    SES:
+      access_key: ${UNSKRIPT_NOTIFICATION_SMTP_SERVER}
+      secret_acess: ${UNSKRIPT_NOTIFICATION_USERNAME}
+      region: us-west-2
+      to-email: ${UNSKRIPT_NOTIFICATION_RECEIVER_EMAIL}
+      from-email: support@unskript.com
+    Sendgrid:
+      api_key: foo
+      to-email: ${UNSKRIPT_NOTIFICATION_RECEIVER_EMAIL}
+      from-email: support@unskript.com
+
+
+#
+# Job section
+#
+# Job detail contains information about what all unskript-ctl can run.
+jobs:
+  - name: "" # Unique name
+    # The results of the job to be notified or not.
+    notify: true
+    enable: true
+    # Specific checks to run
+    # Not supported: multiple checks, only single check support for now.
+    checks: []
+    # Specific suites to run
+    # Not supported
+    suites: []
+    # connector types whose checks need to be run
+    # Possible values:
+    #   - aws
+    #   - k8s
+    #   - gcp
+    #   - postgresql
+    #   - slack
+    #   - mongodb
+    #   - jenkins
+    #   - mysql
+    #   - jira
+    #   - rest
+    #   - elasticsearch
+    #   - kafka
+    #   - grafana
+    #   - ssh
+    #   - prometheus
+    #   - datadog
+    #   - stripe
+    #   - redis
+    #   - zabbix
+    #   - opensearch
+    #   - pingdom
+    #   - github
+    #   - terraform
+    #   - airflow
+    #   - hadoop
+    #   - mssql
+    #   - snowflake
+    #   - splunk
+    #   - salesforce
+    #   - azure
+    #   - nomad
+    #   - netbox
+    #   - opsgenie
+    connector_types: []
+    # Custom scripts to be run.
+    # Not supported
+    custom_scripts: []
 
 #
 # Scheduler section
 #
 # You can configure multiple schedules.
 scheduler:
-  - enable: false
+  - enable: true
     # Cadence is specified in cron syntax. More information about the syntax can
     # be found in https://crontab.guru
     # minute  hour  day (of month)  month  day (of week)
     #   *      *          *           *        *
-    # Example: "*/30 * * * *"   <= This will run Every 30 Minutes
+    # Example: "*/30 * * * *"   <= This will run every 30 Minutes
     cadence: "*/60 * * * *"
-    # connectors list which should be used to run the tests
-    connectors: ["aws", "k8s", "postgres"]
-
-
-
+    # Name of the job to add to the schedule
+    job_name: ""

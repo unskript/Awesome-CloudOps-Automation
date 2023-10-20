@@ -17,6 +17,7 @@ import time
 import re
 import uuid
 import psutil
+import pprint
 import subprocess
 import yaml
 import nbformat
@@ -47,18 +48,7 @@ from ZODB import DB
 
 # LIST OF CONSTANTS USED IN THIS FILE
 UNSKRIPT_GLOBALS = {}
-if os.environ.get('GLOBAL_CONFIG_PATH') is None:
-    GLOBAL_CONFIG_PATH="/unskript/etc/unskript_global.yaml"
-
-    # Migrate any existing unskript_config.yaml to unskript_global.yaml
-    # Note, the earlier name we used was unskript_config.yaml.
-    if os.path.exists('/unskript/data/action/unskript_config.yaml') is True:
-        try:
-            os.makedirs(Path(GLOBAL_CONFIG_PATH).parent, exist_ok=True)
-            Path('/unskript/data/action/unskript_config.yaml').rename(GLOBAL_CONFIG_PATH)
-        except:
-            pass
-
+GLOBAL_CONFIG_PATH="/unskript/etc/unskript_ctl_config.yaml"
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
@@ -74,6 +64,7 @@ TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
 TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
 TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
+TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
 parser = ArgumentParser(prog='unskript-ctl')
@@ -89,20 +80,11 @@ def load_or_create_global_configuration():
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
             UNSKRIPT_GLOBALS = yaml.safe_load(f)
 
-        if UNSKRIPT_GLOBALS.get('globals'):
-            for k, v in UNSKRIPT_GLOBALS.get('globals').items():
-                os.environ[k] = json.dumps(v)
-    else:
-        _f_path = Path(GLOBAL_CONFIG_PATH)
-
-        # Check if the 'actions' directory exists and if not, create it
-        actions_dir = _f_path.parent
-        actions_dir.mkdir(parents=True, exist_ok=True)
-
-        _f_path.touch()
-        with open(GLOBAL_CONFIG_PATH, 'w') as f:
-            f.write('globals:')
-
+        if UNSKRIPT_GLOBALS.get('checks'):
+            if UNSKRIPT_GLOBALS.get('checks').get('arguments'):
+                if UNSKRIPT_GLOBALS.get('checks').get('arguments').get('global'):
+                    for k, v in UNSKRIPT_GLOBALS.get('checks').get('arguments').get('global').items():
+                        os.environ[k] = json.dumps(v)
 
 def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNode:
     """insert_first_and_last_cell This function inserts the first cell (unskript internal)
@@ -200,6 +182,8 @@ except Exception as e:
     return nb
 
 
+
+
 # These are all trigger functions that are
 # called based on argument passed
 def list_runbooks():
@@ -244,7 +228,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     "Get Failed Readiness Probes",
     "Get Failed Liveness Probes",
     "Get K8s DaemonSets Missing on Node"
-]
+    ]
     nb = read_ipynb(filename)
 
     # We store the Status of runbook execution in status_dict
@@ -275,6 +259,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         with open(output_file, "r") as f:
             new_nb = nbformat.read(f, as_version=4)
         outputs = get_last_code_cell_output(new_nb.dict())
+        if len(outputs) == 0:
+            print("ERROR: Output of the cell execution is empty. Is the credential configured?")
 
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
@@ -292,76 +278,78 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
                 connector,
                 'ERROR'
                 ])
-    results = {}
+
+    results = []
     if ids:
-        results = outputs[0]
+        results = outputs
     idx = 0
-    r = results.get('text')
     failed_result_available = False
     failed_result = {}
 
     if ids:
-        for result in r.split('\n'):
-            if result == '':
-                continue
-            payload = json.loads(result)
+        for output in outputs:
+            r = output.get('text')
+            for result in r.split('\n'):
+                if result == '':
+                    continue
+                payload = json.loads(result)
 
-            try:
-                if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
-                    result_table.append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        TBL_CELL_CONTENT_PASS,
-                        0,
-                        'N/A'
-                        ])
-                    status_dict['result'].append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        ids[idx],
-                        get_connector_name_from_id(ids[idx], nb.dict()),
-                        'PASS']
-                        )
-                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
-                    failed_objects = payload.get('objects')
-                    failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
-                    result_table.append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        TBL_CELL_CONTENT_FAIL,
-                        len(failed_objects),
-                        'N/A'
-                        ])
-                    failed_result_available = True
-                    status_dict['result'].append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        ids[idx],
-                        get_connector_name_from_id(ids[idx], nb.dict()),
-                        'FAIL'
-                        ])
-                elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
-                    if payload.get('error') is not None:
-                        failed_objects = payload.get('error')
+                try:
+                    if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
+                        result_table.append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            TBL_CELL_CONTENT_PASS,
+                            0,
+                            'N/A'
+                            ])
+                        status_dict['result'].append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            ids[idx],
+                            get_connector_name_from_id(ids[idx], nb.dict()),
+                            'PASS']
+                            )
+                    elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
+                        failed_objects = payload.get('objects')
                         failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
-                    result_table.append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        TBL_CELL_CONTENT_ERROR,
-                        0,
-                        payload.get('error')
-                        ])
-                    status_dict['result'].append([
-                        get_action_name_from_id(ids[idx], nb.dict()),
-                        ids[idx],
-                        get_connector_name_from_id(ids[idx], nb.dict()),
-                        'ERROR'
-                        ])
-            except Exception:
-                pass
-            if ids:
+                        result_table.append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            TBL_CELL_CONTENT_FAIL,
+                            len(failed_objects),
+                            'N/A'
+                            ])
+                        failed_result_available = True
+                        status_dict['result'].append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            ids[idx],
+                            get_connector_name_from_id(ids[idx], nb.dict()),
+                            'FAIL'
+                            ])
+                    elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
+                        if payload.get('error') is not None:
+                            failed_objects = payload.get('error')
+                            failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                        result_table.append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            TBL_CELL_CONTENT_ERROR,
+                            0,
+                            pprint.pformat(payload.get('error'), width=30)
+                            ])
+                        status_dict['result'].append([
+                            get_action_name_from_id(ids[idx], nb.dict()),
+                            ids[idx],
+                            get_connector_name_from_id(ids[idx], nb.dict()),
+                            'ERROR'
+                            ])
+                except Exception:
+                    pass
+
                 update_current_execution(payload.get('status'), ids[idx], nb.dict())
                 update_check_run_trail(ids[idx],
                                     get_action_name_from_id(ids[idx], nb.dict()),
                                     get_connector_name_from_id(ids[idx], nb.dict()),
                                     CheckOutputStatus(payload.get('status')),
                                     failed_result)
-            idx += 1
+                idx += 1
     if filter == 'k8s':
         for check in hardcoded_checks:
             result_table.append([check, "Coming soon", "Coming soon", "Coming soon"])
@@ -386,10 +374,50 @@ def run_checks(args: list):
 
     :rtype: None
     """
+    parser = ArgumentParser(description='-rc | --run-checks')
+    parser.add_argument('-rc', '--run-checks',
+                        required=True,
+                        default=True,
+                        help=SUPPRESS,
+                        action="store_true")
+    parser.add_argument('--all',
+                        help="Run All checks available in the System",
+                        action="store_true")
+    parser.add_argument('--check',
+                        type=str,
+                        dest='function_name',
+                        help="Run an individual check")
+    parser.add_argument('--failed',
+                        help="Run Failed checks again",
+                        action="store_true")
+    parser.add_argument('--type',
+                        type=str,
+                        nargs='*',
+                        help='Run all checks in the given connectors')
+    parser.add_argument('--report',
+                        action="store_true",
+                        required=False,
+                        help='Report check runs')
+    args = parser.parse_args()
+
+    if len(sys.argv) == 2:
+        parser.print_help()
+        sys.exit(0)
+
+    filter = ''
+    if args.all is True:
+        filter = '--all'
+    elif args.failed is True:
+        filter = '--failed'
+    elif args.type not in ([], None):
+        filter = '--type'
+        largs = args.type
+    elif args.function_name not in ('', None):
+        filter = '--check'
+
     if not args:
         raise Exception("Run Checks needs filter to be specified.")
 
-    filter = args[0]
 
     runbooks = []
     check_list = []
@@ -403,20 +431,23 @@ def run_checks(args: list):
                     if tc.get('uuid') == k:
                         check_list.append(tc)
     elif filter in ('-c', '--check'):
-        # If it is a `-f` option, lets get the second part of the args which
+        # If it is a `-c` option, lets get the second part of the args which
         # Will be the name of the check that need to be run and lets run it
-        check_name = args[1]
+        check_name = args.check
         if not check_name:
-            raise Exception("Option -f should have a check name specified")
+            raise Exception("Option --check should have a check name specified")
         # Lets call the db utils method to get the check by name
         check_list = get_check_by_name(check_name)
+        if len(check_list) == 0:
+            print(f"ERROR: Invalid Function name {check_name}")
+            parser.print_help()
+            print("Note: You can use TAB to autocomplete options available for the -rc --check")
+            return
     elif filter == '--all':
             check_list = get_checks_by_connector("all", True)
     elif filter == '--type':
         check_list = []
-        all_connectors = args[1:]
-        if args[-1] in ('-r', '--report'):
-            all_connectors = args[1:-1]
+        all_connectors = largs
 
         # Handle case when more than one connector was given with
         # comma separation but no space in between them.
@@ -425,15 +456,17 @@ def run_checks(args: list):
             all_connectors = all_connectors[0].split(',')
 
         for connector in all_connectors:
+            connector = connector.replace(',', '')
             temp_list = get_checks_by_connector(connector.strip(), True)
             for t in temp_list:
                 if t not in check_list:
                     check_list.append(t)
     else:
-        print(f"ERROR: WRONG OPTION: {args}")
+        parser.print_help()
+        print("Note: You can use TAB to autocomplete options available for the -rc ")
+        return
 
-
-    if args[-1] in ('-r', '--report'):
+    if args.report:
         UNSKRIPT_GLOBALS['report'] = True
 
     if len(check_list) > 0:
@@ -666,7 +699,9 @@ def create_jit_runbook(check_list: list):
     if os.path.exists(os.environ.get('EXECUTION_DIR') + '/workspace') is False:
         os.makedirs(os.environ.get('EXECUTION_DIR') + '/workspace')
 
-    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/workspace/' + str(uuid.uuid4()) + '.ipynb'
+    exec_id = str(uuid.uuid4())
+    UNSKRIPT_GLOBALS['exec_id'] = exec_id
+    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/workspace/' + exec_id + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
@@ -809,7 +844,10 @@ def update_audit_trail(status_dict_list: list):
     finally:
         k = str(datetime.now())
         p = f = e = 0
-        id = uuid.uuid4()
+        if UNSKRIPT_GLOBALS.get('exec_id') is None:
+            id = uuid.uuid4()
+        else:
+            id = UNSKRIPT_GLOBALS.get('exec_id')
         trail_data = {}
         trail_data[id] = {}
         trail_data[id]['time_stamp'] = k
@@ -845,18 +883,36 @@ def list_checks_by_connector(args):
 
        :rtype: None
     """
-    if not args:
-        print(f"ERROR: Either --all or --type <CONNECTOR_TYPE> is needed")
-        return
-    if args[0] == '--all':
+    parser = ArgumentParser(description='-lc | --list-checks')
+    parser.add_argument('-lc',
+                        '--list-checks',
+                        help=SUPPRESS,
+                        required=True,
+                        default=True,
+                        action="store_true")
+    parser.add_argument('--all',
+                        help="List all Checks across connectors in the system",
+                        action="store_true")
+    parser.add_argument('--type',
+                        type=str,
+                        help="Type of connector for which the checks should be shown")
+
+    args = parser.parse_args()
+
+    if len(sys.argv) <= 2:
+        parser.print_help()
+        sys.exit(0)
+
+
+    if args.all is True:
         connector_name = 'all'
-    elif args[0] == '--type':
-        connector_name = args[-1]
+    elif args.type not in ('', None):
+        connector_name = args.type
     else:
         connector_name = 'all'
 
     list_connector_table = [
-        [TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_UUID]]
+        [TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_FN]]
     for l in get_checks_by_connector(connector_name):
         list_connector_table.append(l)
 
@@ -871,29 +927,51 @@ def display_failed_checks(args):
 
        :rtype: None
     """
+    parser = ArgumentParser(description='-df | --display-failed-checks')
+    parser.add_argument('-df',
+                        '--display-failed-checks',
+                        help=SUPPRESS,
+                        required=True,
+                        default=True,
+                        action="store_true")
+    parser.add_argument('--all',
+                        help='Run all failed checks again',
+                        action="store_true")
+    parser.add_argument('--type',
+                        dest='connector_type',
+                        help="Connector Type to display the failed check against",
+                        type=str)
+    args = parser.parse_args()
+
+    if len(sys.argv) == 2:
+        parser.print_help()
+        sys.exit(0)
+
     if not args:
         print("ERROR: Either -all or --type connector <CONNECTOR_TYPE> needed")
         return
 
     connector = "all"
-    if args[0] == '--all':
-        connector = "all"
-    elif args[0] == '--type':
-        connector = args[1]
+    if args.all is True:
+        connector = 'all'
+    elif args.connector_type not in ('', None):
+        connector = args.connector_type
+    else:
+        connector = 'all'
 
     pss_content = get_pss_record('current_execution_status')
     exec_status = pss_content.get('exec_status')
     failed_exec_list = []
     if exec_status is not None:
         for k,v in exec_status.items():
-            if CheckOutputStatus(v.get('current_status')) == CheckOutputStatus.FAILED:
+            if v.get('current_status') == 2:
                 d = {}
                 d['check_name'] = v.get('check_name')
                 d['timestamp'] = v.get('failed_timestamp')
                 d['execution_id'] = k
                 if connector == 'all':
                     failed_exec_list.append(d)
-                elif connector not in ('', None) and v.get('connector_type') == connector.lower():
+                elif connector and v.get('connector_type').lower() == connector.lower():
                     # Append only when connector type matches
                     failed_exec_list.append(d)
                 else:
@@ -912,7 +990,33 @@ def display_failed_checks(args):
     print("")
 
 
-def display_failed_logs(exec_id: str = None):
+def display_failed_logs(args):
+
+    parser = ArgumentParser(description='-dl | --display-failed-logs')
+
+    parser.add_argument('-dl',
+                        '--display-failed-logs',
+                        help=SUPPRESS,
+                        required=True,
+                        default=True,
+                        action="store_true")
+    parser.add_argument('--execution_id',
+                        help="Execution ID for which the Logs should be fetched",
+                        type=str)
+
+    args = parser.parse_args()
+
+    if len(sys.argv) == 2:
+        parser.print_help()
+        sys.exit(0)
+
+    if args.execution_id not in ('', None):
+        exec_id = args.execution_id
+
+    if not args:
+        return
+
+    # exec_id = args[-1]
     output = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip(
         '"') + '/workspace/' + f"{exec_id}_output.ipynb"
     if not os.path.exists(output):
@@ -937,15 +1041,36 @@ def show_audit_trail(args):
     """show_audit_trail This function reads the failed logs for a given execution ID
        When a check fails, the failed logs are saved in os.environ['EXECUTION_DIR']/failed/<UUID>.log
     :type filter: string
-    :param filter: filter used to query audit_trail to get logs used to serach logs
+    :param filter: filter used to query audit_trail to get logs used to search logs
     """
-    if not args:
-        print(f"ERROR: Audit Trial needs --all or --type <CONNECTOR_TYPE>")
-        return
-    if args[0].replace('-','') == 'all':
+    parser = ArgumentParser(description='-sa | --show-audit-trail')
+    parser.add_argument('-sa',
+                        '--show-audit-trail',
+                        help=SUPPRESS,
+                        required=True,
+                        default=True,
+                        action='store_true')
+    parser.add_argument('--all',
+                        help="List Logs of All check across all connectors",
+                        action="store_true")
+    parser.add_argument('--type',
+                        dest='connector_type',
+                        help='Show Audit trail for checks for the given connector',
+                        type=str)
+    parser.add_argument('--execution_id',
+                        type=str,
+                        help='Execution ID for which the audit trail should be shown')
+
+    args = parser.parse_args()
+    # if not args:
+    #     print(f"ERROR: Audit Trial needs --all or --type <CONNECTOR_TYPE>")
+    #     return
+    if args.all is True:
         filter = 'all'
-    elif args[0].replace('-','') == 'type':
-        filter = args[-1]
+    elif args.connector_type not in ('', None):
+        filter = args.connector_type
+    elif args.execution_id not in ('', None):
+        filter = args.execution_id
     else:
         filter = 'all'
 
@@ -1109,16 +1234,16 @@ def get_code_cell_action_uuids(content: dict) -> list:
 
     return retval
 
-def get_last_code_cell_output(content: dict) -> dict:
-    """get_last_code_cell_output This function takes in the notenode dictionary
+def get_last_code_cell_output(content: dict) -> list:
+    """get_last_code_cell_output This function takes in the notebook node dictionary
            finds out the last cell output and returns in the form of a dict
 
        :type content: dict
-       :param content: Notenode as Dictionary
+       :param content: NotebookNode as Dictionary
 
-       :rtype: Last output in the form of Python dictionary
+       :rtype: Last output in the form of Python list
     """
-    retval = {}
+    retval = []
     if content in ('', None):
         print("Content sent is empty")
         return retval
@@ -1126,9 +1251,8 @@ def get_last_code_cell_output(content: dict) -> dict:
     for cell in content.get('cells'):
         if cell.get('cell_type') == 'code':
             if cell.get('id') == 'lastcell':
-                outputs = {}
-                outputs = cell.get('outputs')
-                retval = outputs
+                retval = cell.get('outputs')
+    print("")
     return retval
 
 
@@ -1291,6 +1415,9 @@ def get_runbook_metadata_contents(_runbook) -> dict:
         else:
             if os.path.exists(os.environ.get('PWD') + '/' + _runbook):
                 file_name_to_read = os.environ.get('PWD') + '/' + _runbook
+
+    if os.path.exists(_runbook) is True:
+        file_name_to_read = _runbook
 
     if not file_name_to_read:
         raise Exception(f"Runbook Not found {_runbook}")
@@ -1517,22 +1644,39 @@ def parse_creds(args):
     """
     # Check if creds that need to be created is for k8s, if yes
     # read the given kubecofnig and create the credential of it.
-    if args[0] != '--type':
+    parser = ArgumentParser(description='-cc | --create-credentials')
+    parser.add_argument('-cc',
+                        '--create-credentials',
+                        help=SUPPRESS,
+                        required=True,
+                        default=True,
+                        action='store_true')
+    parser.add_argument('--type',
+                        dest='connector_type',
+                        type=str,
+                        nargs=REMAINDER,
+                        help='Type of connector to be created')
+
+    args = parser.parse_args()
+
+    if args.connector_type in ('', None):
         display_creds_ui()
         return
 
-    connector_type = args[1]
+    largs = args.connector_type
+    connector_type = largs[0]
     connector_type = connector_type.replace('-','')
+
     if connector_type.lower() in ("k8s", "kubernetes"):
-        if len(args) == 1:
+        if len(largs) == 1:
             print("ERROR: Need a path for kubeconfig file as value for the k8s credential")
             parser.print_help()
             sys.exit(1)
-        if os.path.exists(args[-1]) is False:
+        if os.path.exists(largs[-1]) is False:
             print(f"ERROR: Credential File {args[1]} does not exist, please check path")
             parser.print_help()
             sys.exit(1)
-        with open(args[-1], 'r', encoding='utf-8') as f:
+        with open(largs[-1], 'r', encoding='utf-8') as f:
             creds_data = f.read()
         k8s_creds_file = os.environ.get('HOME') + CREDENTIAL_DIR + '/k8screds.json'
         with open(k8s_creds_file, 'r', encoding='utf-8') as f:
@@ -1567,29 +1711,35 @@ def list_creds():
        we display on the UI. ACTIVE means the credential data has been filled and ready to go
        INACTIVE means the credential is not yet ready to be used.
     """
+    # Lets get the creds data from PSS instead of reading from the credentials
+    # json files.
+    creds_pss_data = get_pss_record('default_credential_id')
+    creds_data = [["#", "Connector Type", "Connector Name", "Status"]]
     creds_dir = os.environ.get('HOME') + CREDENTIAL_DIR
     creds_files = glob.glob(creds_dir + '/*.json',recursive=True)
-    creds_data = [["#", "Connector Type", "Connector Name", "Status"]]
-    index = 0
-    for cf in creds_files:
-        with open(cf, 'r', encoding='utf-8') as f:
-            content = json.loads(f.read())
-        if content.get('type'):
-            c_type = content.get('type').replace('CONNECTOR_TYPE_', '')
-        else:
-            c_type = "UNDEFINED"
+    if creds_pss_data:
+        index = 0
+        list_of_creds_active = []
+        for data in creds_pss_data.items():
+            c_type, c_data = data
+            c_name = c_data.get('name')
+            list_of_creds_active.append(c_name)
+            creds_data.append([index, c_type.split('_')[-1], c_name, "Active"])
+            index += 1
+        for c_file in creds_files:
+            c_name = os.path.basename(c_file).replace('.json', '')
+            if c_name not in list_of_creds_active:
+                with open(c_file, 'r', encoding='utf-8') as f:
+                    content = json.loads(f.read())
+                    if content.get('type'):
+                        c_type = content.get('type').replace('CONNECTOR_TYPE_', '')
+                    else:
+                        c_type = "UNDEFINED"
+                    creds_data.append([index, c_type, c_name, "Incomplete"])
+            index += 1
+    else:
+        print("ERROR: No Credential Data saaved in PSS DB. Nothing to display")
 
-        if content.get('metadata') and content.get('metadata').get('connectorData') == "{}":
-            status = "Incomplete"
-        else:
-            status = "Active"
-
-        if content.get('display_name'):
-            name = content.get('display_name')
-        else:
-            name = "UNDEFINED"
-        creds_data.append([index, c_type, name, status])
-        index += 1
     print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
 
 def start_debug(args):
@@ -1684,29 +1834,58 @@ if __name__ == "__main__":
     description = description + str(f"\t\t   VERSION: {version_number} \n")
     parser.description = description
 
-    parser.add_argument('-lr', '--list-runbooks',
-                        help='List Available Runbooks', action='store_true')
-    parser.add_argument('-rr', '--run-runbook', type=str, nargs=REMAINDER,
+    parser.add_argument('-lr',
+                        '--list-runbooks',
+                        help='List Available Runbooks',
+                        action='store_true')
+    parser.add_argument('-rr',
+                        '--run-runbook',
+                        type=str,
+                        nargs=REMAINDER,
                         help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
-    parser.add_argument('-rc', '--run-checks', type=str, nargs=REMAINDER,
+    parser.add_argument('-rc',
+                        '--run-checks',
+                        type=str,
+                        nargs=REMAINDER,
                         help='Run all available checks [--all | --type <CONNECTOR_TYPE> | --failed | --check check_name]')
-    parser.add_argument('-df', '--display-failed-checks', type=str, nargs=REMAINDER,
+    parser.add_argument('-df',
+                        '--display-failed-checks',
+                        type=str,
+                        nargs=REMAINDER,
                         help='Display Failed Checks [--all | --type <CONNECTOR_TYPE>]')
-    parser.add_argument('-lc', '--list-checks', type=str, nargs=REMAINDER,
+    parser.add_argument('-lc',
+                        '--list-checks',
+                        type=str,
+                        nargs=REMAINDER,
                         help='List available checks, [--all | --type <CONNECTOR_TYPE>]')
-    parser.add_argument('-sa', '--show-audit-trail', type=str, nargs=REMAINDER,
+    parser.add_argument('-sa',
+                        '--show-audit-trail',
+                        type=str,
+                        nargs=REMAINDER,
                         help='Show audit trail [--all | --type <CONNECTOR_TYPE> | --execution_id <EXECUTION_ID>]')
-    parser.add_argument('-dl', '--display-failed-logs',
-                        type=str, help='Display failed logs  [execution_id]')
-    parser.add_argument('-cc', '--create-credentials', type=str, nargs=REMAINDER,
+    parser.add_argument('-dl',
+                        '--display-failed-logs',
+                        type=str,
+                        nargs=REMAINDER,
+                        help='Display failed logs  [execution_id]')
+    parser.add_argument('-cc',
+                        '--create-credentials',
+                        type=str,
+                        nargs=REMAINDER,
                         help='Create Credential [-creds-type creds_file_path]')
-    parser.add_argument('-cl', '--credential-list',
-                        help='Credential List', action='store_true')
+    parser.add_argument('--credential-list',
+                        help='Credential List',
+                        action='store_true')
     parser.add_argument('--start-debug',
-                        help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]', type=str, nargs=REMAINDER)
+                        help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]',
+                        type=str,
+                        nargs=REMAINDER)
     parser.add_argument('--stop-debug',
-                        help='Stop Current Debug Session', action='store_true')
-    parser.add_argument('--save-check-names', type=str, help=SUPPRESS)
+                        help='Stop Current Debug Session',
+                        action='store_true')
+    parser.add_argument('--save-check-names',
+                        type=str,
+                        help=SUPPRESS)
 
     args = parser.parse_args()
 
