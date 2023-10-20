@@ -36,6 +36,9 @@ def unskript_ctl_config_read_notification(n_type: str):
     existing_data = {}
     if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is True:
         existing_data = EnvYAML(GLOBAL_UNSKRIPT_CONFIG_FILE, strict=False)
+    else:
+        print("ERROR: unskript-ctl configuration is missing, please check if it exists in /unskript/etc folder")
+        return
 
     n_dict = existing_data.get('notification')
     if not n_dict:
