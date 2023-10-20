@@ -146,7 +146,6 @@ def send_awsses_notification(summary_results: list,
                              to_email: str,
                              from_email: str,
                              region: str):
-    print(f"ARGS: {access_key} {secret_key} {to_email} {from_email} {region}")
     if not access_key or not secret_key:
         print("ERROR: Cannot send AWS SES Notification without access and/or secret_key")
         return 
