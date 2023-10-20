@@ -19,19 +19,66 @@ from pathlib import Path
 from datetime import datetime 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from unskript_ctl_config import *
+
+try:
+    from envyaml import EnvYAML
+except Exception as e:
+    print("ERROR: Unable to find required yaml package to parse the config file")
+    raise e
 
 # Global Constants used in this file
-GLOBAL_UNSKRIPT_CONFIG_FILE = '/unskript/etc/unskript_global.yaml'
+GLOBAL_UNSKRIPT_CONFIG_FILE = '/unskript/etc/unskript_ctl_config.yaml'
 SMTP_TLS_PORT = 587
+
+def unskript_ctl_config_read_notification(n_type: str):
+    """unskript_ctl_config_read_notification: This function reads the configuration
+    and returns the Notification configuration as a python dictionary. 
+    """
+    if not n_type:
+        print("ERROR: Type is mandatory parameters for this function")
+        return
+
+    existing_data = {}
+    if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is True:
+        existing_data = EnvYAML(GLOBAL_UNSKRIPT_CONFIG_FILE, strict=False)
+    else:
+        print("ERROR: unskript-ctl configuration is missing, please check if it exists in /unskript/etc folder")
+        return
+
+    n_dict = existing_data.get('notification')
+    if not n_dict:
+        print("ERROR: No Notification data found")
+        return
+
+    if n_dict.get(n_type):
+        if n_type.lower() == 'email':
+            if n_dict.get('Email').get('enable') is True:
+                notify_data = n_dict.get('Email')
+                return notify_data
+            else:
+                print("ERROR: Enable flag under Email section is set to false, please change to true and re-run")
+                return {}
+        elif n_type.lower() == 'slack':
+            if n_dict.get('Slack').get('enable') is True:
+                return n_dict.get('Slack')
+            else:
+                print("ERROR: Enable flag under Slack section is set to false, please change to true and re-run")
+                return {}
+        else:
+            print(f"ERROR: option {n_type} is not supported")
+            return {}
+    else:
+        print(f"No Notification found for {n_type}")
+        return {} 
 
 def send_notification(summary_result_table: list, failed_result: dict):
     """send_notification: This function is called by unskript-ctl or
        unctl to send notification of any given result. The requirement is that
        the result should be in the form of a list of dictionaries. 
     """
+    retval = None
     if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is False:
-        print("ERROR: Global Configuration file not found. Please run add_notification first")
+        print("ERROR: unskript-ctl configuration is missing. Ensure it exists in /unskript/etc")
         return 
     
     slack_settings = unskript_ctl_config_read_notification('Slack')
@@ -42,15 +89,23 @@ def send_notification(summary_result_table: list, failed_result: dict):
     if len(slack_settings):
         # Slack configuration was found
         s = slack_settings
-        send_slack_notification(summary_result_table, 
+        retval = send_slack_notification(summary_result_table, 
                                 s.get('web-hook-url'),
                                 s.get('channel-name'))
+    else:
+        retval = False
+
     if len(mail_settings):
-        # Mail configuration aws found
+        # Mail cnofiguration aws found
         m = mail_settings
-        send_email_notification(summary_result_table,
+        retval = send_email_notification(summary_result_table,
                                 failed_result,
                                 m)
+    else:
+        retval = False
+
+    if retval is False:
+        print(f"Notification was not sent. Please check if notification is enabled in the unskript-ctl configuration file")
 
 def send_slack_notification(summary_results: list,
                             webhook_url: str,
@@ -59,7 +114,8 @@ def send_slack_notification(summary_results: list,
        to the given channel. The message is constructed from the summary_results.
     """
     # Construct the Message to be sent
-    message = ':wave: *unSkript Ctl Check Results* \n'
+    message = ''
+    summary_message = ':wave: *unSkript Ctl Check Results* \n'
     if len(summary_results):
         p = f = e = 0
         for sd in summary_results:
@@ -69,35 +125,41 @@ def send_slack_notification(summary_results: list,
                 status  = st[-1]
                 check_name = st[0]
                 if status == 'PASS':
-                    message += f'*{check_name}*  :white_check_mark: ' + '\n'
+                    message += f':hash: *{check_name}*  :white_check_mark: ' + '\n'
                     p += 1
                 elif status == 'FAIL':
-                    message += f'*{check_name}*  :x: ' + '\n'
+                    message += f':hash: *{check_name}*  :x: ' + '\n'
                     f += 1
                 elif status == 'ERROR':
-                    message += f'*{check_name}*  :dizzy_face: ' + '\n'
+                    message += f':hash: *{check_name}*  :dizzy_face: ' + '\n'
                     e += 1
                 else:
                     pass
-            message += f'*(Pass/Fail/Error)* <-> *({p}/{f}/{e})*' + '\n'
-        pass
+            summary_message += f':trophy: *(Pass/Fail/Error)* <-> *({p}/{f}/{e})*' + '\n\n'
     else:
         print("ERROR: Summary Result is Empty, Not sending notification")
+        return False
     
     if message:
+        message = summary_message + message
         try:
             to_send = { "text": f"{message:<25}" , "mrkdwn": True, "type": "mrkdwn"}
             response = requests.post(webhook_url,
                                     data=json.dumps(to_send, indent=4),
                                     headers={"Content-Type": "application/json"})
             if response.status_code == 200:
-                print("Message sent successfully!")
+                print("Slack message sent successfully!")
+                return True
             else:
                 print(f"ERROR: Failed to send message {response.status_code}, {response.text}")
-        except:
-            pass
+                return False
+        except Exception as e:
+            print(f"ERROR: Not able to send slack message: {e.str()}")
     else:
         print("ERROR: Nothing to send, Results Empty")
+        return False
+
+    return True
 
 def send_email_notification(summary_results: list,
                             failed_result: dict,
@@ -105,28 +167,29 @@ def send_email_notification(summary_results: list,
     """send_email_notification: This function sends the summary result
        in the form of an email.
     """
+    retval = False
     if not creds_data:
         print("ERROR: Mail Notification setting is empty. Cannot send Mail out")
 
-    if creds_data.get('SMTP').get('enable') is True:
+    if creds_data.get('provider').lower() == "smtp":
         c_data = creds_data.get('SMTP')
-        send_smtp_notification(summary_results,
+        retval = send_smtp_notification(summary_results,
                                failed_result,
                                c_data.get('smtp-host'),
                                c_data.get('smtp-user'),
                                c_data.get('smtp-password'),
                                c_data.get('to-email'),
                                c_data.get('from-email'))
-    elif creds_data.get('Sendgrid').get('enable') is True:
+    elif creds_data.get('provider').lower() == "sendgrid":
         c_data = creds_data.get('Sendgrid')
-        send_sendgrid_notification(summary_results,
+        retval = send_sendgrid_notification(summary_results,
                                    failed_result,
                                    c_data.get('from-email'),
                                    c_data.get('to-email'),
                                    c_data.get('api_key'))
-    elif creds_data.get('SES').get('enable') is True:
+    elif creds_data.get('provider').lower() == "ses":
         c_data = creds_data.get('SES')
-        send_awsses_notification(summary_results,
+        retval = send_awsses_notification(summary_results,
                                    failed_result,
                                    c_data.get('access_key'),
                                    c_data.get('secret_access'),
@@ -136,7 +199,7 @@ def send_email_notification(summary_results: list,
     else: 
         print(f"ERROR: Unknown notification service {creds_data.get('service_provider')}")
 
-    pass
+    return retval
 
 
 def send_awsses_notification(summary_results: list,
@@ -148,9 +211,9 @@ def send_awsses_notification(summary_results: list,
                              region: str):
     if not access_key or not secret_key:
         print("ERROR: Cannot send AWS SES Notification without access and/or secret_key")
-        return 
+        return  False
 
-    # boto3 client needs AWS Access Key and Secret Key 
+    # Boto3 client needs AWS Access Key and Secret Key 
     # to be able to initialize the SES client. 
     # We do it by setting  the os.environ variables 
     # for access and secret key
@@ -179,19 +242,21 @@ def send_awsses_notification(summary_results: list,
     }
     # The AWS SES Client needs from_email address to be set
     # Else the email will not be sent.
-    if from_email:
-        sender_email = 'no-reply@unskript.com'
     try: 
         response = client.send_email(
-                Source=sender_email,
+                Source=from_email,
                 Destination={
                     'ToAddresses': [to_email]
                 },
                 Message=email_template
                 )
-        print("Notification Sent Successfully as Email")
+        print(f"Notification sent successfully as email to {to_email}")
+        return True
     except NoCredentialsError:
         print("Unable to send email notification to {to_email}")
+        return False
+
+    return False
 
 def send_sendgrid_notification(summary_results: list,
                                failed_result: dict,
@@ -205,7 +270,7 @@ def send_sendgrid_notification(summary_results: list,
 
     if not from_email or not to_email or not api_key:
         print("ERROR: From Email, To Email and API Key are mandatory parameters to send email notification")
-        return 
+        return False
     try:
         html_message = ''
         if len(summary_results):
@@ -218,9 +283,13 @@ def send_sendgrid_notification(summary_results: list,
         )
         sg = sendgrid.SendGridAPIClient(api_key)
         response = sg.send(email_message)
-        print(f"Notification sent successfully as to {to_email}")
+        print(f"Notification sent successfully to {to_email}")
+        return True
     except Exception as e:
-        print(f"ERROR: Unable to send notification as email. {e.str()}")
+        print(f"ERROR: Unable to send notification as email. {e.__str__()}")
+        return False
+
+    return False
 
 def create_email_message(summary_results: list,
                          failed_result: dict):
@@ -306,18 +375,22 @@ def send_smtp_notification(summary_results: list,
         server.login(smtp_user, smtp_password)
     except Exception as e:
         print(e)
-        return
+        return False
     
     if len(summary_results):
         message = create_email_message(summary_results, failed_result)
 
     else:
         print("ERROR: Nothing to send, Results Empty")
-        return 
+        return False
     
     if message:
         msg.attach(MIMEText(message, 'html'))
         server.sendmail(smtp_user, to_email, msg.as_string())
-        print("Notification Sent Successfully as Email")
+        print(f"Notification sent successfully to {to_email}")
+        return True
     else:
         print("ERROR: Nothing to send, Results Empty")
+
+
+    return False
