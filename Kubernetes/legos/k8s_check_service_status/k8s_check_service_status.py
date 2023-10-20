@@ -2,129 +2,109 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import List, Tuple, Optional
+from typing import Tuple, List, Optional
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from kubernetes.client.rest import ApiException
 import requests
-import json
+from pydantic import BaseModel, Field
+from datetime import datetime, timedelta
+import ssl
+import socket
 
 # Disabling insecure request warnings
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 class InputSchema(BaseModel):
-    namespace: Optional[str] = Field(
-        ...,
-        description='Namespace in which the services are running.',
+    endpoints: Optional[list] = Field(
+        ..., description='The URLs of the endpoint whose SSL certificate is to be checked. Eg: ["https://www.google.com", "https://expired.badssl.com/"]', title='List of URLs'
+    )
+    threshold: Optional[int] = Field(
+        30,
+        description='The number of days within which, if the certificate is set to expire is considered a potential issue.',
         title='K8s Namespace',
     )
-    services: Optional[List] = Field(
-        ..., description='List of service names to be checked.', title='List of service names'
-    )
+    
 
 
 def k8s_check_service_status_printer(output):
-
-    status, result = output
+    status, results = output
     if status:
         print("All services are healthy.")
         return
 
-    # If there are any unhealthy services
-    print("\n" + "=" * 100)  # main separator
+    if "Error" in results[0]:
+        print(f"Error: {results[0]['Error']}")
+        return
+    print("\n" + "=" * 100) 
 
-    for service, status_msg in result[0].items():
-        print(f"Service:\t{service}")
-        print("-" * 100)  # sub-separator
-        print(f"Status: {status_msg}\n")
-        print("=" * 100)  # main separator
-
-
-def get_service_url(service_name, namespace, handle):
-    kubectl_command = f"kubectl get service {service_name} -n {namespace} -o=json"
-    response = handle.run_native_cmd(kubectl_command)
-
-    if response is None or response.stderr:
-        error_message = response.stderr if response else "empty response"
-        print(f"Error while executing command ({kubectl_command}) ({error_message})")
-        return None
-
-    service_info = json.loads(response.stdout)
-
-    # Check if 'spec' key exists in service_info
-    if 'spec' not in service_info:
-        print(f"Service '{service_name}' in namespace '{namespace}' does not contain 'spec' key.")
-        return None
-
-    ip = service_info['spec'].get('clusterIP', None)
-    port = None
-    if 'ports' in service_info['spec'] and len(service_info['spec']['ports']) > 0:
-        port = service_info['spec']['ports'][0].get('port', None)
-
-    if ip and port:
-        return f'http://{ip}:{port}'
-    return None
+    for result in results:
+        print(f"Service:\t{result['endpoint']}")
+        print("-" * 100)  
+        print(f"Status: {result['status']}\n")
+        print("=" * 100) 
 
 
-def k8s_check_service_status(handle, services: list = "", namespace: str = "") -> Tuple:
-    """
-    k8s_check_service_status Checks the health status of the provided Kubernetes services.
+def check_ssl_expiry(endpoint, threshold):
+    hostname = endpoint.split("//")[-1].split("/")[0]
+    ssl_date_fmt = r'%b %d %H:%M:%S %Y %Z'
 
-    :type handle: object
-    :param handle: Handle object to execute the kubectl command.
+    # Create an SSL context that restricts to secure versions of TLS
+    context = ssl.create_default_context()
+    context.check_hostname = True
+    context.verify_mode = ssl.CERT_REQUIRED
 
-    :type services: list, optional
-    :param services: List of service names to be checked.
+    # Ensure that only TLSv1.2 and later are used (disabling TLSv1.0 and TLSv1.1) as TLS versions 1.0 and 1.1 are known to be vulnerable to attacks
+    context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
 
-    :type namespace: str, optional
-    :param namespace: Namespace where the services reside.
-
-    :return: Status, dictionary with service statuses.
-    """
-    status_dict = {}
-    result = []
-
-    # Get all namespaces if none is provided
-    if not namespace:
-        kubectl_command = "kubectl get namespace -o=jsonpath='{.items[*].metadata.name}'"
-        response = handle.run_native_cmd(kubectl_command)
-        if response is None or response.stderr:
-            raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
-        namespaces = response.stdout.strip().split(' ')
-    else:
-        namespaces = [namespace]
-
-    # For each namespace
-    for ns in namespaces:
-        # If services are provided
-        if services or len(services)!=0:
-            services_to_check = services
+    try:
+        with socket.create_connection((hostname, 443), timeout=10) as sock:
+            with context.wrap_socket(sock, server_hostname=hostname) as ssl_sock:
+                ssl_info = ssl_sock.getpeercert()
+                
+        expiry_date = datetime.strptime(ssl_info['notAfter'], ssl_date_fmt).date()
+        days_remaining = (expiry_date - datetime.utcnow().date()).days
+        if days_remaining <= threshold:
+            return (days_remaining, False)
         else:
-            kubectl_command = f"kubectl get services -n {ns} -o=jsonpath='{{.items[*].metadata.name}}'"
-            response = handle.run_native_cmd(kubectl_command)
-            if response is None or response.stderr:
-                raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
-                continue
-            services_to_check = response.stdout.strip().split(' ')
+            return (days_remaining, True)
+    except Exception as e:
+        raise e
 
-        for name in services_to_check:
-            url = get_service_url(name, ns, handle)
 
-            if not url:
-                print(f'Unable to find service {name} in namespace {ns}')
-                continue
+def k8s_check_service_status(handle, endpoints:list=[], threshold: int = 30) -> Tuple:
+    """
+    k8s_check_service_status Checks the health status of the provided endpoints.
 
-            # Check service health
-            try:
-                response = requests.get(url, verify=True, timeout=5)
-                if response.status_code != 200:
-                    status_dict[name] = f'unhealthy in namespace {ns}. Status code: {response.status_code}'
-                    result.append(status_dict)
-            except requests.RequestException as e:
-                status_dict[name] = f'down in namespace {ns}. Error: {str(e)}'
-                result.append(status_dict)
+    :param endpoints: The URLs of the endpoint whose SSL certificate is to be checked. Eg: ["https://www.google.com", "https://expired.badssl.com/"]
+    :param threshold: The number of days within which, if the certificate is set to expire, 
+                      is considered a potential issue.
+    :return: Tuple with a boolean indicating if all services are healthy, and a list of dictionaries 
+             with individual service status.
+    """
+    # Check if no endpoints are provided
+    if not endpoints:
+        return False, [{"Error": "No endpoints specified."}]
 
-    if len(result) != 0:
-        return (False, result)
-    return (True, None)
+    status_list = []
+
+    for endpoint in endpoints:
+        status_info = {"endpoint": endpoint}
+        try:
+            response = requests.get(endpoint, verify=True, timeout=5)
+            days_remaining, is_healthy = check_ssl_expiry(endpoint, threshold)
+            if response.status_code == 200:
+                if not is_healthy:
+                    status_info["status"] = f'SSL expiring in {days_remaining} days.'
+                else:
+                    status_info["status"] = 'healthy'
+            else:
+                status_info["status"] = f'unhealthy. Status code: {response.status_code}'
+        except requests.RequestException as e:
+            if 'CERTIFICATE_VERIFY_FAILED' in str(e) or 'SSL: CERTIFICATE_VERIFY_FAILED' in str(e):
+                status_info["status"] = 'SSL error. Certificate is invalid or not trusted.'
+            else:
+                status_info["status"] = f'Error: {str(e)}'
+
+        status_list.append(status_info)
+
+    return (all(info["status"] == 'healthy' for info in status_list), status_list)
