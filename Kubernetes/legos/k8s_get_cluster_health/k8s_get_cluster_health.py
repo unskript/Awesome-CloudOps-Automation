@@ -132,6 +132,9 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
     # Check the status of the Kubernetes pods
     pods = pods_api.list_pod_for_all_namespaces()
     for pod in pods.items:
+        # Skip completed one-time jobs
+        if pod.status.phase == 'Succeeded':
+            continue
         conditions = pod.status.conditions
         for condition in conditions:
             if condition.type == 'Ready' and condition.status == 'False':
