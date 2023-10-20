@@ -49,19 +49,22 @@ def check_ssl_expiry(endpoint, threshold):
     ssl_date_fmt = r'%b %d %H:%M:%S %Y %Z'
 
     context = ssl.create_default_context()
+    context.check_hostname = True
+    context.verify_mode = ssl.CERT_REQUIRED
 
-    # Create a connection using the created SSL context
-    with socket.create_connection((hostname, 443)) as sock:
-        with context.wrap_socket(sock, server_hostname=hostname) as ssl_sock:
-            ssl_info = ssl_sock.getpeercert()
-
-    expiry_date = datetime.strptime(ssl_info['notAfter'], ssl_date_fmt).date()
-    days_remaining = (expiry_date - datetime.utcnow().date()).days
-
-    if days_remaining <= threshold:
-        return (days_remaining, False)
-    else:
-        return (days_remaining, True)
+    try:
+        with socket.create_connection((hostname, 443), timeout=10) as sock:
+            with context.wrap_socket(sock, server_hostname=hostname) as ssl_sock:
+                ssl_info = ssl_sock.getpeercert()
+                
+        expiry_date = datetime.strptime(ssl_info['notAfter'], ssl_date_fmt).date()
+        days_remaining = (expiry_date - datetime.utcnow().date()).days
+        if days_remaining <= threshold:
+            return (days_remaining, False)
+        else:
+            return (days_remaining, True)
+    except Exception as e:
+        raise e
 
 
 def k8s_check_service_status(handle, endpoints:list=[], threshold: int = 30) -> Tuple:
