@@ -221,7 +221,7 @@ def send_sendgrid_notification(summary_results: list,
         response = sg.send(email_message)
         print(f"Notification sent successfully as to {to_email}")
     except Exception as e:
-        print(f"ERROR: Unable to send notification as email. {e.__str__()}")
+        print(f"ERROR: Unable to send notification as email. {e.str()}")
 
 def create_email_message(summary_results: list,
                          failed_result: dict):
