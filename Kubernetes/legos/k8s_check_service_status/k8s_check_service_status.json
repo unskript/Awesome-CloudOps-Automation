@@ -1,6 +1,6 @@
 {
-  "action_title": "Check K8s services endpoint health",
-  "action_description": "This action checks the health status of the provided Kubernetes services.",
+  "action_title": "Check K8s services endpoint and SSL certificate health",
+  "action_description": "Checks the health status of the provided list of endpoints and their SSL certificate status.",
   "action_type": "LEGO_TYPE_K8S",
   "action_entry_function": "k8s_check_service_status",
   "action_needs_credential": true,

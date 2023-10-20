@@ -879,27 +879,33 @@ credential_schemas = '''
     ]
   },
   {
-      "title": "VaultSchema",
-      "type": "object",
-      "properties": {
-        "url": {
-          "title": "Vault URL",
-          "description": "URL for the Vault instance.",
-          "type": "string"
-        },
-        "token": {
-          "title": "Token",
+    "title": "VaultSchema",
+    "type": "object",
+    "properties": {
+      "url": {
+        "title": "Vault URL",
+        "description": "URL for the Vault instance.",
+        "type": "string"
+      },
+      "token": {
+        "title": "Token",
           "description": "Token value to authenticate requests to Vault.",
           "default": "",
           "type": "string",
           "writeOnly": true,
           "format": "password"
-        }
       },
-      "required": [
-        "url"
-      ]
-   },
+      "verify_ssl": {
+        "default": false,
+        "description": "Flag to decide if SSL verification should be enforced for Vault connection.",
+        "title": "Verify SSL",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "url"
+    ]
+  },
    {
       "title": "KeycloakSchema",
       "type": "object",
@@ -1242,6 +1248,8 @@ class CredentialsAdd():
       parser = ArgumentParser(description='Add Vault credential')
       parser.add_argument('-u', '--url', required=True, help='URL for the Vault instance')
       parser.add_argument('-t', '--token', help='Token value to authenticate requests to Vault.')
+      parser.add_argument('--verify_ssl', action='store_true', help='Flag to decide if SSL verification should be enforced for Vault connection. Default is False.')
+
 
       args = parser.parse_args(sys.argv[3:])
 
@@ -1263,9 +1271,9 @@ class CredentialsAdd():
                          ''')
       parser.add_argument('-r', '--realm', required=True, help='Name of the realm for authentication')
       parser.add_argument('-c', '--client-id', required=True, help='Client ID for authentication')
-      parser.add_argument('-u', '--username', required=True, help='Username for client-based authentication')
-      parser.add_argument('-p', '--password', required=True, help='Password for client-based authentication')
-      parser.add_argument('-cs', '--client-secret', required=True, help='Client secret for client-based authentication')
+      parser.add_argument('-u', '--username', help='Username for client-based authentication')
+      parser.add_argument('-p', '--password', help='Password for client-based authentication')
+      parser.add_argument('-cs', '--client-secret', help='Client secret for client-based authentication')
       parser.add_argument('--no-verify-certs', action='store_true', help='Not verify server ssl certs. This can be set to true when working with private certs.')
       args = parser.parse_args(sys.argv[3:])
 
