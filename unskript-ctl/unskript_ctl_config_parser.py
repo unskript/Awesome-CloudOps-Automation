@@ -128,7 +128,6 @@ class ConfigParser():
             print(f"No scheduler configuration found")
             return
 
-        cmds = []
         #unskript_crontab_file = "/unskript/etc/unskript_crontab.tab"
         unskript_crontab_file = "./unskript_crontab.tab"
         crons = []
@@ -137,7 +136,13 @@ class ConfigParser():
                 if schedule.get('enable') == False:
                         continue
                 cadence = schedule.get('cadence')
-                script = schedule.get('script')
+                job_name = schedule.get('job_name')
+                # look up the job name and get the commands
+                job = self.jobs.get(job_name)
+                if job is None:
+                    print(f'ERROR: Unknown job name {job_name}. Please check the jobs section and ensure the job is defined')
+                    continue
+                script = '; '.join(job.cmds)
                 # TBD: Validate cadence and script is valid
                 crons.append(f'{cadence} {script}')
         except Exception as e:
@@ -145,6 +150,7 @@ class ConfigParser():
             raise e
 
         if crons:
+            cmds = []
             crons_per_line = "\n".join(crons)
             print(f'Schedule section: Programming crontab {crons_per_line}')
             try:

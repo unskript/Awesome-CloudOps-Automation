@@ -37,7 +37,7 @@ checks:
 #
 credential:
   # AWS connector details
-  AWS:
+  aws:
     - name: awscreds
       enable: true
       access_key: ${UNSKRIPT_CREDS_AWS_ACCESS_KEY}
@@ -128,11 +128,11 @@ credential:
   #    enable: true
   #    server_url: ${UNSKRIPT_CREDS_KEYCLOAK_SERVER_URL}
   #    realm: ${UNSKRIPT_CREDS_KEYCLOAK_REALM}
-  #    client_id: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_ID}
+  #    client-id: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_ID}
   #    username: ${UNSKRIPT_CREDS_KEYCLOAK_USERNAME}
   #    password: ${UNSKRIPT_CREDS_KEYCLOAK_PASSWORD}
-  #    client_secret: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_SECRET}
-  #    no_verify_certs: ${UNSKRIPT_CREDS_KEYCLOAK_NO_VERIFY_CERTS:-true}
+  #    client-secret: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_SECRET}
+  #    no-verify-certs: ${UNSKRIPT_CREDS_KEYCLOAK_NO_VERIFY_CERTS:-true}
 
 
 #

@@ -1007,17 +1007,17 @@ class CredentialsAdd():
       description = description + str("\t  Add credentials \n")
       mainParser.description = description
       mainParser.add_argument('-c', '--credential-type', choices=[
-         'AWS',
-         'K8S',
-         'GCP',
-         'Elasticsearch',
-         'Redis',
-         'PostGRES',
-         'MongoDB',
-         'Kafka',
-         'REST',
-         'Keycloak',
-         'Vault'
+         'aws',
+         'k8s',
+         'gcp',
+         'elasticsearch',
+         'redis',
+         'postgres',
+         'mongodb',
+         'kafka',
+         'rest',
+         'keycloak',
+         'vault'
          ], help='Credential type')
 
       args = mainParser.parse_args(sys.argv[1:3])
@@ -1042,7 +1042,7 @@ class CredentialsAdd():
       with open(creds_file, 'w', encoding="utf-8") as f:
           f.write(json.dumps(contents, indent=2))
 
-    def AWS(self):
+    def aws(self):
       parser = ArgumentParser(description='Add AWS credential')
       parser.add_argument('-a', '--access-key', required=True, help='AWS Access Key')
       parser.add_argument('-s', '--secret-access-key', required=True, help='AWS Secret Access Key')
@@ -1062,7 +1062,7 @@ class CredentialsAdd():
       d['authentication']['secret_access_key'] = args.secret_access_key
       self.write_creds_to_file('awscreds.json', json.dumps(d))
 
-    def K8S(self):
+    def k8s(self):
       parser = ArgumentParser(description='Add K8S credential')
       parser.add_argument('-k', '--kubeconfig', required=True, help='Contents of the kubeconfig file')
       args = parser.parse_args(sys.argv[3:])
@@ -1075,7 +1075,7 @@ class CredentialsAdd():
       d['kubeconfig'] = args.kubeconfig
       self.write_creds_to_file('k8screds.json', json.dumps(d))
 
-    def GCP(self):
+    def gcp(self):
       parser = ArgumentParser(description='Add GCP credential')
       parser.add_argument('-g', '--gcp-credentials', help='Contents of the GCP credentials json file')
       args = parser.parse_args(sys.argv[3:])
@@ -1088,7 +1088,7 @@ class CredentialsAdd():
       d['credentials'] = args.gcp_credentials
       self.write_creds_to_file('gcpcreds.json', json.dumps(d))
 
-    def Elasticsearch(self):
+    def elasticsearch(self):
       parser = ArgumentParser(description='Add Elasticsearch credential')
       parser.add_argument('-s', '--host', required=True, help='''
                           Elasticsearch Node URL. For eg: https://localhost:9200.
@@ -1114,7 +1114,7 @@ class CredentialsAdd():
 
       self.write_creds_to_file('escreds.json', json.dumps(d))
 
-    def Redis(self):
+    def redis(self):
       parser = ArgumentParser(description='Add Redis credential')
       parser.add_argument('-s', '--host', required=True, help='Hostname of the redis server')
       parser.add_argument('-p', '--port', help='Port on which redis server is listening', type=int, default=6379)
@@ -1140,7 +1140,7 @@ class CredentialsAdd():
       d['use_ssl'] = args.use_ssl
       self.write_creds_to_file('rediscreds.json', json.dumps(d))
 
-    def PostGRES(self):
+    def postgres(self):
       parser = ArgumentParser(description='Add POSTGRES credential')
       parser.add_argument('-s', '--host', required=True, help='Hostname of the PostGRES server')
       parser.add_argument('-p', '--port', help='Port on which PostGRES server is listening', type=int, default=5432)
@@ -1163,7 +1163,7 @@ class CredentialsAdd():
          d['Password'] = args.password
       self.write_creds_to_file('postgrescreds.json', json.dumps(d))
 
-    def MongoDB(self):
+    def mongodb(self):
       parser = ArgumentParser(description='Add MongoDB credential')
       parser.add_argument('-s', '--host', required=True, help='Full MongoDB URI, in addition to simple hostname. It also supports mongodb+srv:// URIs"')
       parser.add_argument('-p', '--port', help='Port on which MongoDB server is listening', type=int, default=27017)
@@ -1188,7 +1188,7 @@ class CredentialsAdd():
 
       self.write_creds_to_file('mongodbcreds.json', json.dumps(d))
 
-    def Kafka(self):
+    def kafka(self):
       parser = ArgumentParser(description='Add Kafka credential')
       parser.add_argument('-b', '--broker', required=True, help='''
                           host[:port] that the producer should contact to bootstrap initial cluster metadata. Default port is 9092.
@@ -1215,7 +1215,7 @@ class CredentialsAdd():
 
       self.write_creds_to_file('kafkacreds.json', json.dumps(d))
 
-    def REST(self):
+    def rest(self):
       parser = ArgumentParser(description='Add REST credential')
       parser.add_argument('-b', '--base-url', required=True, help='''
                           Base URL of REST server
@@ -1244,7 +1244,7 @@ class CredentialsAdd():
 
       self.write_creds_to_file('restcreds.json', json.dumps(d))
 
-    def Vault(self):
+    def vault(self):
       parser = ArgumentParser(description='Add Vault credential')
       parser.add_argument('-u', '--url', required=True, help='URL for the Vault instance')
       parser.add_argument('-t', '--token', help='Token value to authenticate requests to Vault.')
@@ -1264,7 +1264,7 @@ class CredentialsAdd():
 
       self.write_creds_to_file('vaultcreds.json', json.dumps(d))
 
-    def Keycloak(self):
+    def keycloak(self):
       parser = ArgumentParser(description='Add Keycloak credential')
       parser.add_argument('-su', '--server-url', required=True, help='''
                           Base URL of the keycloak instance.
