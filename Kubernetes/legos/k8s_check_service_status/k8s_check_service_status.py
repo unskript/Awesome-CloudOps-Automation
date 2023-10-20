@@ -48,9 +48,13 @@ def check_ssl_expiry(endpoint, threshold):
     hostname = endpoint.split("//")[-1].split("/")[0]
     ssl_date_fmt = r'%b %d %H:%M:%S %Y %Z'
 
+    # Create an SSL context that restricts to secure versions of TLS
     context = ssl.create_default_context()
     context.check_hostname = True
     context.verify_mode = ssl.CERT_REQUIRED
+
+    # Ensure that only TLSv1.2 and later are used (disabling TLSv1.0 and TLSv1.1) as TLS versions 1.0 and 1.1 are known to be vulnerable to attacks
+    context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
 
     try:
         with socket.create_connection((hostname, 443), timeout=10) as sock:
