@@ -433,7 +433,7 @@ def run_checks(args: list):
     elif filter in ('-c', '--check'):
         # If it is a `-c` option, lets get the second part of the args which
         # Will be the name of the check that need to be run and lets run it
-        check_name = args.check
+        check_name = args.function_name
         if not check_name:
             raise Exception("Option --check should have a check name specified")
         # Lets call the db utils method to get the check by name
