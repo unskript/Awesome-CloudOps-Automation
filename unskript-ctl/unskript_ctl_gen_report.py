@@ -286,7 +286,7 @@ def send_sendgrid_notification(summary_results: list,
         print(f"Notification sent successfully to {to_email}")
         return True
     except Exception as e:
-        print(f"ERROR: Unable to send notification as email. {e.__str__()}")
+        print(f"ERROR: Unable to send notification as email. {e.str()}")
         return False
 
     return False
