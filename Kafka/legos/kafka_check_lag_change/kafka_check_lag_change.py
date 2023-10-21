@@ -23,10 +23,6 @@ class InputSchema(BaseModel):
         title='Threshold (in hours)',
     )
 
-# This would be a global or persisted store of previous lags at the last check.
-# Format: { "topic-partition": [timestamp, lag] }
-prev_lags = {}
-
 
 def kafka_check_lag_change_printer(output):
     status, issues = output
@@ -52,6 +48,9 @@ def kafka_check_lag_change(handle, group_id: str= "", threshold: int=1) -> Tuple
 
     :return: Tuple containing a status and an optional list of issues with lag.
     """
+    # This would be a global or persisted store of previous lags at the last check.
+    # Format: { "topic-partition": [timestamp, lag] }
+    prev_lags = {}
 
     issues = []
     current_time = time.time()

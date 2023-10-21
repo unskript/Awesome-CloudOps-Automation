@@ -111,6 +111,19 @@ def check_dir_contents(_dir: str, ret_val) -> bool:
     except Exception as e:
         ret_val[_dir] = False
         raise e
+
+    expected_function_definition = f"def {os.path.basename(_dir)}("
+    
+    try:
+        with open(pyfile, 'r') as f:
+            if not any(line.strip().startswith(expected_function_definition) for line in f):
+                print(f"ERROR: FUNCTION DEFINITION in {pyfile} is missing or incorrect. Expecting: {expected_function_definition}")
+                ret_val[_dir] = False
+                return None
+    except Exception as e:
+        print(f"ERROR: Issue while processing {pyfile}. Error: {e}")
+        ret_val[_dir] = False
+        return None
  
     ret_val[_dir] = True
     return None

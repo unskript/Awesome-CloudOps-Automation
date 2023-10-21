@@ -1,0 +1,238 @@
+# unSkript-ctl config file
+#
+# Copyright (c) 2023 unSkript.com
+# All rights reserved.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE
+#
+#
+version: 1.0.0
+
+#
+# Global section
+#
+# Global config
+#
+global:
+   # if enable_runbooks is enabled, jupyterlab is launched so that one can open
+   # runbooks in jupyterlab.
+   enable_runbooks: true
+
+#
+# Checks section
+#
+# Check specific configuration. For eg, arguments.
+#
+checks:
+  # Arguments common to all checks, like region, namespace, etc.
+  arguments:
+    global:
+       region: us-west-2
+
+# Credential section
+#
+# uncomment the relevant sections below to enable respective credential
+#
+credential:
+  # AWS connector details
+  aws:
+   - name: awscreds
+     enable: false
+     access-key: ""
+     secret-access-key: ""
+
+  # Kubernetes connector details
+  k8s:
+   - name: k8screds
+     enable: false
+     kubeconfig: ""
+
+  # GCP connector details
+  gcp:
+   - name: gcpcreds
+     enable: false
+     credential-json: ""
+
+  # Elasticsearch connector details
+  elasticsearch:
+   - name: escreds
+     enable: false
+     server: ""
+     api-key: ""
+     no-verify-ssl: ""
+
+  # Redis connector details
+  redis:
+   - name: rediscreds
+     enable: false
+     server: ""
+     port: ""
+     username: ""
+     password: ""
+     database: ""
+     use-ssl: ""
+
+  # Postgres connector details
+  postgres:
+   - name: postgrescreds
+     enable: false
+     server: ""
+     port: ""
+     username: ""
+     password: ""
+     database: ""
+
+  # Mongodb connector details
+  mongodb:
+   - name: mongodbcreds
+     enable: false
+     server: ""
+     port: ""
+     username: ""
+     password: ""
+
+  # Kafka connector details
+  kafka:
+   - name: kafkacreds
+     enable: false
+     broker: ""
+     username: ""
+     password: ""
+     zookeeper: ""
+
+  # Rest connector details
+  rest:
+   - name: restcreds
+     enable: false
+     base-url: ""
+     username: ""
+     password: ""
+     headers: ""
+
+  # Vault connector details
+  vault:
+   - name: vaultcreds
+     enable: false
+     url: ""
+     token: ""
+
+  # Keycloak connector details
+  keycloak:
+   - name: keycloakcreds
+     enable: false
+     server-url: ""
+     realm: ""
+     client-id: ""
+     username: ""
+     password: ""
+     client-secret: ""
+     no-verify-certs: ""
+
+#
+# Notification section
+#
+# uncomment the relevant sections below to enable either slack or email notification
+notification:
+  # Slack Notification setting
+  Slack:
+    enable: false
+    web-hook-url: ""
+    channel-name: ""
+    verbose: false #Not yet supported
+  Email:
+    verbose: true #Not yet supported
+    enable: false
+    # provider for the email. Possible values:
+    #    - SMTP - SMTP server
+    #    - SES -  AWS SES
+    #    - Sendgrid - Sendgrid
+    provider: ""
+    SMTP:
+      smtp-host: ""
+      smtp-user: ""
+      smtp-password: ""
+      to-email: ""
+      from-email: ""
+    SES:
+      access_key: ""
+      secret_acess: ""
+      region: us-west-2
+      to-email: ""
+      from-email: ""
+    Sendgrid:
+      api_key: ""
+      to-email: ""
+      from-email: support@unskript.com
+
+
+#
+# Job section
+#
+# Job detail contains information about what all unskript-ctl can run.
+jobs:
+  - name: "" # Unique name
+    # The results of the job to be notified or not.
+    notify: true
+    enable: false
+    # Specific checks to run
+    # Not supported: multiple checks, only single check support for now.
+    checks: []
+    # Specific suites to run
+    # Not supported
+    suites: []
+    # connector types whose checks need to be run
+    # Possible values:
+    #   - aws
+    #   - k8s
+    #   - gcp
+    #   - postgresql
+    #   - slack
+    #   - mongodb
+    #   - jenkins
+    #   - mysql
+    #   - jira
+    #   - rest
+    #   - elasticsearch
+    #   - kafka
+    #   - grafana
+    #   - ssh
+    #   - prometheus
+    #   - datadog
+    #   - stripe
+    #   - redis
+    #   - zabbix
+    #   - opensearch
+    #   - pingdom
+    #   - github
+    #   - terraform
+    #   - airflow
+    #   - hadoop
+    #   - mssql
+    #   - snowflake
+    #   - splunk
+    #   - salesforce
+    #   - azure
+    #   - nomad
+    #   - netbox
+    #   - opsgenie
+    connector_types: []
+    # Custom scripts to be run.
+    # Not supported
+    custom_scripts: []
+
+#
+# Scheduler section
+#
+# You can configure multiple schedules.
+scheduler:
+  - enable: false
+    # Cadence is specified in cron syntax. More information about the syntax can
+    # be found in https://crontab.guru
+    # minute  hour  day (of month)  month  day (of week)
+    #   *      *          *           *        *
+    # Example: "*/30 * * * *"   <= This will run every 30 Minutes
+    cadence: "*/60 * * * *"
+    # Name of the job to add to the schedule
+    job_name: ""

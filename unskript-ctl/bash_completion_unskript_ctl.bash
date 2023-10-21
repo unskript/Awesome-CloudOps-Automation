@@ -156,4 +156,3 @@ _unskript-client-completion() {
 
 # Register the completion function for unskript-client.py
 complete -F _unskript-client-completion unskript-ctl.sh
-
