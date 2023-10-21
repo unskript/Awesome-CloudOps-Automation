@@ -11,7 +11,7 @@ _unskript-client-completion() {
 
     # Find the absolute path of unskript-client.py
     local unskript_client_script
-    unskript_client_script="$(which unskript-client.py)"
+    unskript_client_script="$(which unskript_ctl.py)"
 
     if [ -n "$unskript_client_script" ]; then
         # Check if the script exists and save check names
@@ -44,8 +44,7 @@ _unskript-client-completion() {
                             COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
                             ;;
                         *)
-                            #COMPREPLY=( $(compgen -W "--all  --type  --failed  --check" -- "${cur}" -o nospace) )
-                            COMPREPLY=( $(compgen -W "--all  --type  --failed  --check" -o nospace) )
+                            COMPREPLY=( $(compgen -W "--all  --type  --failed  --check" -- "${cur}" -o nospace) )
                             ;;
                     esac
                     return 0
@@ -64,6 +63,12 @@ _unskript-client-completion() {
             return 0
             ;;
 
+        --credential-list)
+            # Provide completion suggestions for list-checks options
+            COMPREPLY=()
+            return 0
+            ;;
+
         -sa|--show-audit-trail)
             # Provide completion suggestions for show-audit-trail options
             COMPREPLY=( $(compgen -W "--all   --type   --execution_id" -- "${cur}" -o nospace) )
@@ -73,6 +78,12 @@ _unskript-client-completion() {
         -dl|--display-failed-logs)
             # Provide completion suggestions for display-failed-logs options
             COMPREPLY=( $(compgen -W "--execution_id" -- "${cur}" -o nospace) )
+            return 0
+            ;;
+
+        -df|--display-failed-checks)
+            # Provide completion suggestions for display-failed-logs options
+            COMPREPLY=( $(compgen -W "--all --type" -- "${cur}" -o nospace) )
             return 0
             ;;
 
@@ -87,7 +98,7 @@ _unskript-client-completion() {
             if [ "${prev}" = "--check" ];
             then
                 cur=${cur#--check}
-                opt2="$(grep -F ${cur} /tmp/checknames.txt)"
+                opt2="$(grep -E "^${cur}" /tmp/checknames.txt)"
                 COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
                 compopt -o nospace
             elif [ "${_cmd}" = "--check" ];
@@ -99,14 +110,17 @@ _unskript-client-completion() {
             elif [[ "${_cmd}" = '-cc' || "${_cmd}" = '--create-credentials' ]];
             then
                 COMPREPLY+=("-k8s <KUBECONFIG_FILE_PATH>")
-            elif [[ "${_cmd}" = '-rc' || "${_cmd}" = '--run-checks' || "${_cmd}" = '--list-checks' || "${_cmd}" = '-lc' ]];
+            elif [[ "${_cmd}" = '-rc' || "${_cmd}" = '--run-checks' || "${_cmd}" = '--list-checks' || "${_cmd}" = '-lc'  || "${_cmd}" = '-df' || "${_cmd}" = '--display-failed-checks' ]];
             then
                 if [ "${prev}" = "--type" ];
                 then
                     COMPREPLY=( $(compgen -W "aws k8s postgres mongodb elasticsearch vault ssh keycloak github redis" -o nospace) )
                 elif [[ "${prev}" = "--all" || "${prev}" = "--failed" ]];
                 then
-                    COMPREPLY+=('--report')
+                    if [[ "${_cmd}" != "-df" && "${_cmd}" != "--display-failed-checks" ]];
+                    then
+                        COMPREPLY+=('--report')
+                    fi
                 fi
             elif [[ "${_cmd}" = "--type" && "${COMP_WORDS[COMP_CWORD-3]}" = '-rc' || "${COMP_WORDS[COMP_CWORD-3]}" = '--run-checks' ]];
             then 
@@ -142,3 +156,4 @@ _unskript-client-completion() {
 
 # Register the completion function for unskript-client.py
 complete -F _unskript-client-completion unskript-ctl.sh
+
