@@ -32,6 +32,9 @@ JOB_CONFIG_CONNECTORS_KEY_NAME = "connector_types"
 JOB_CONFIG_CUSTOM_SCRIPTS_KEY_NAME = "custom_scripts"
 JOB_CONFIG_NOTIFY_KEY_NAME = "notify"
 
+# Credential section related
+CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS = ["no-verify-certs", "no-verify-ssl", "use-ssl"]
+
 class Job():
     def __init__(
             self,
@@ -108,8 +111,11 @@ class ConfigParser():
                     # Skip name and enable keys
                     if cred_key in ['name', 'enable']:
                         continue
-                    #TBD: Take care of arguments with no value
-                    creds_cmd.extend(['--'+cred_key, cred.get(cred_key)])
+                    # Certain arguments dont need extra value part like -no-verify-certs
+                    if cred_key in CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS:
+                        creds_cmd.extend(['--'+cred_key])
+                    else:
+                        creds_cmd.extend(['--'+cred_key, cred.get(cred_key)])
                 if creds_cmd:
                     print_cmd = ' '.join(creds_cmd)
                     print(f"Programming credential, command {print_cmd}")

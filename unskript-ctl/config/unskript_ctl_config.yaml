@@ -38,102 +38,97 @@ checks:
 credential:
   # AWS connector details
   aws:
-    - name: awscreds
-      enable: true
-      access_key: ${UNSKRIPT_CREDS_AWS_ACCESS_KEY}
-      secret_access_key: ${UNSKRIPT_CREDS_AWS_SECRET_KEY}
-    - name: awscreds2
-      enable: true
-      access_key: ${UNSKRIPT_CREDS_AWS_ACCESS_KEY}
-      secret_access_key: ${UNSKRIPT_CREDS_AWS_SECRET_KEY}
+   - name: awscreds
+     enable: true
+     access-key: ${UNSKRIPT_CREDS_AWS_ACCESS_KEY}
+     secret-access-key: ${UNSKRIPT_CREDS_AWS_SECRET_KEY}
 
   # Kubernetes connector details
-  # k8s:
-  #  - name: k8screds
-  #    enable: true
-  #    kubeconfig: ${UNSKRIPT_CREDS_K8S_KUBECONFIG}
+  k8s:
+   - name: k8screds
+     enable: false
+     kubeconfig: ${UNSKRIPT_CREDS_K8S_KUBECONFIG}
 
   # GCP connector details
-  # gcp:
-  #  - name: k8screds
-  #    enable: true
-  #    credential_json: ${UNSKRIPT_CREDS_GCP_CREDENTIAL_JSON}
+  gcp:
+   - name: gcpcreds
+     enable: false
+     credential-json: ${UNSKRIPT_CREDS_GCP_CREDENTIAL_JSON}
 
   # Elasticsearch connector details
-  # elasticsearch:
-  #  - name: k8screds
-  #    enable: true
-  #    server: ${UNSKRIPT_CREDS_ES_SERVER}
-  #    api_key: ${UNSKRIPT_CREDS_ES_KEY}
-  #    no_verify_ssl: ${UNSKRIPT_CREDS_ES_VERIFY_SSL:-true}
+  elasticsearch:
+   - name: escreds
+     enable: false
+     server: ${UNSKRIPT_CREDS_ES_SERVER}
+     api-key: ${UNSKRIPT_CREDS_ES_KEY}
+     no-verify-ssl: ${UNSKRIPT_CREDS_ES_VERIFY_SSL:-true}
 
   # Redis connector details
-  # redis:
-  #  - name: k8screds
-  #    enable: true
-  #    server: ${UNSKRIPT_CREDS_REDIS_SERVER}
-  #    port: ${UNSKRIPT_CREDS_REDIS_PORT}
-  #    username: ${UNSKRIPT_CREDS_REDIS_USERNAME}
-  #    password: ${UNSKRIPT_CREDS_REDIS_PASSWORD}
-  #    database: ${UNSKRIPT_CREDS_REDIS_DATABASE}
-  #    use_ssl: ${UNSKRIPT_CREDS_REDIS_USE_SSL:-false}
+  redis:
+   - name: rediscreds
+     enable: false
+     server: ${UNSKRIPT_CREDS_REDIS_SERVER}
+     port: ${UNSKRIPT_CREDS_REDIS_PORT}
+     username: ${UNSKRIPT_CREDS_REDIS_USERNAME}
+     password: ${UNSKRIPT_CREDS_REDIS_PASSWORD}
+     database: ${UNSKRIPT_CREDS_REDIS_DATABASE}
+     use-ssl: ${UNSKRIPT_CREDS_REDIS_USE_SSL:-false}
 
   # Postgres connector details
-  # postgres:
-  #  - name: k8screds
-  #    enable: true
-  #    server: ${UNSKRIPT_CREDS_POSTGRES_SERVER}
-  #    port: ${UNSKRIPT_CREDS_POSTGRES_PORT}
-  #    username: ${UNSKRIPT_CREDS_POSTGRES_USERNAME}
-  #    password: ${UNSKRIPT_CREDS_POSTGRES_PASSWORD}
-  #    database: ${UNSKRIPT_CREDS_POSTGRES_DATABASE}
+  postgres:
+   - name: postgrescreds
+     enable: false
+     server: ${UNSKRIPT_CREDS_POSTGRES_SERVER}
+     port: ${UNSKRIPT_CREDS_POSTGRES_PORT}
+     username: ${UNSKRIPT_CREDS_POSTGRES_USERNAME}
+     password: ${UNSKRIPT_CREDS_POSTGRES_PASSWORD}
+     database: ${UNSKRIPT_CREDS_POSTGRES_DATABASE}
 
   # Mongodb connector details
-  # mongodb:
-  #  - name: k8screds
-  #    enable: true
-  #    server: ${UNSKRIPT_CREDS_MONGODB_SERVER}
-  #    port: ${UNSKRIPT_CREDS_MONGODB_PORT}
-  #    username: ${UNSKRIPT_CREDS_MONGODB_USERNAME}
-  #    password: ${UNSKRIPT_CREDS_MONGODB_PASSWORD}
+  mongodb:
+   - name: mongodbcreds
+     enable: false
+     server: ${UNSKRIPT_CREDS_MONGODB_SERVER}
+     port: ${UNSKRIPT_CREDS_MONGODB_PORT}
+     username: ${UNSKRIPT_CREDS_MONGODB_USERNAME}
+     password: ${UNSKRIPT_CREDS_MONGODB_PASSWORD}
 
   # Kafka connector details
-  # kafka:
-  #  - name: k8screds
-  #    enable: true
-  #    broker: ${UNSKRIPT_CREDS_KAFKA_BROKER}
-  #    username: ${UNSKRIPT_CREDS_KAFKA_USERNAME}
-  #    password: ${UNSKRIPT_CREDS_KAFKA_PASSWORD}
-  #    zookeeper: ${UNSKRIPT_CREDS_KAFKA_ZOOKEEPER}
+  kafka:
+   - name: kafkacreds
+     enable: true
+     broker: ${UNSKRIPT_CREDS_KAFKA_BROKER}
+     username: ${UNSKRIPT_CREDS_KAFKA_USERNAME}
+     password: ${UNSKRIPT_CREDS_KAFKA_PASSWORD}
+     zookeeper: ${UNSKRIPT_CREDS_KAFKA_ZOOKEEPER}
 
   # Rest connector details
-  # rest:
-  #  - name: k8screds
-  #    enable: true
-  #    base_url: ${UNSKRIPT_CREDS_REST_BASE_URL}
-  #    username: ${UNSKRIPT_CREDS_REST_USERNAME}
-  #    password: ${UNSKRIPT_CREDS_REST_PASSWORD}
-  #    headers: ${UNSKRIPT_CREDS_REST_HEADERS}
+  rest:
+   - name: restcreds
+     enable: true
+     base-url: ${UNSKRIPT_CREDS_REST_BASE_URL}
+     username: ${UNSKRIPT_CREDS_REST_USERNAME}
+     password: ${UNSKRIPT_CREDS_REST_PASSWORD}
+     headers: ${UNSKRIPT_CREDS_REST_HEADERS}
 
   # Vault connector details
-  # vault:
-  #  - name: k8screds
-  #    enable: true
-  #    url: ${UNSKRIPT_CREDS_VAULT_URL}
-  #    token: ${UNSKRIPT_CREDS_VAULT_TOKEN}
+  vault:
+   - name: vaultcreds
+     enable: true
+     url: ${UNSKRIPT_CREDS_VAULT_URL}
+     token: ${UNSKRIPT_CREDS_VAULT_TOKEN}
 
   # Keycloak connector details
-  # keycloak:
-  #  - name: k8screds
-  #    enable: true
-  #    server_url: ${UNSKRIPT_CREDS_KEYCLOAK_SERVER_URL}
-  #    realm: ${UNSKRIPT_CREDS_KEYCLOAK_REALM}
-  #    client-id: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_ID}
-  #    username: ${UNSKRIPT_CREDS_KEYCLOAK_USERNAME}
-  #    password: ${UNSKRIPT_CREDS_KEYCLOAK_PASSWORD}
-  #    client-secret: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_SECRET}
-  #    no-verify-certs: ${UNSKRIPT_CREDS_KEYCLOAK_NO_VERIFY_CERTS:-true}
-
+  keycloak:
+   - name: keycloakcreds
+     enable: true
+     server_url: ${UNSKRIPT_CREDS_KEYCLOAK_SERVER_URL}
+     realm: ${UNSKRIPT_CREDS_KEYCLOAK_REALM}
+     client-id: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_ID}
+     username: ${UNSKRIPT_CREDS_KEYCLOAK_USERNAME}
+     password: ${UNSKRIPT_CREDS_KEYCLOAK_PASSWORD}
+     client-secret: ${UNSKRIPT_CREDS_KEYCLOAK_CLIENT_SECRET}
+     no-verify-certs: ${UNSKRIPT_CREDS_KEYCLOAK_NO_VERIFY_CERTS:-true}
 
 #
 # Notification section
