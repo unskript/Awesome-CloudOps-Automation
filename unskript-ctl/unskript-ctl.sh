@@ -5,4 +5,4 @@
 #     and Run the runbook
 
 cd /usr/local/bin
-/usr/bin/env python ./unskript_ctl.py "$@"
+/opt/conda/bin/python ./unskript_ctl.py "$@"

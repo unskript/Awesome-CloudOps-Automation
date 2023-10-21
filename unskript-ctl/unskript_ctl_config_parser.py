@@ -61,8 +61,6 @@ class Job():
             connector_types_string = ','.join(self.connectors)
             cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --type {connector_types_string} {notify}')
         self.cmds = cmds
-        print(self.cmds)
-
 
 class ConfigParser():
     def __init__(self, config_file: str):
