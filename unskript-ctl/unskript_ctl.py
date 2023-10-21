@@ -78,12 +78,13 @@ def load_or_create_global_configuration():
     if os.path.exists(GLOBAL_CONFIG_PATH) is True:
         # READ EXISTING FILE AND SET ENV VARIABLES
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
-            UNSKRIPT_GLOBALS = yaml.safe_load(f)
+            config_yaml = yaml.safe_load(f)
 
-        if UNSKRIPT_GLOBALS.get('checks'):
-            if UNSKRIPT_GLOBALS.get('checks').get('arguments'):
-                if UNSKRIPT_GLOBALS.get('checks').get('arguments').get('global'):
-                    for k, v in UNSKRIPT_GLOBALS.get('checks').get('arguments').get('global').items():
+        if config_yaml.get('checks'):
+            if config_yaml.get('checks').get('arguments'):
+                if config_yaml.get('checks').get('arguments').get('global'):
+                    UNSKRIPT_GLOBALS['global'] = config_yaml.get('checks').get('arguments').get('global')
+                    for k, v in config_yaml.get('checks').get('arguments').get('global').items():
                         os.environ[k] = json.dumps(v)
 
 def insert_first_and_last_cell(nb: nbformat.NotebookNode) -> nbformat.NotebookNode:
@@ -127,8 +128,8 @@ paramsJson = json.dumps(paramDict)
 nbParamsObj = nbparams.NBParams(paramsJson)
 {runbook_variables}
 '''
-    if UNSKRIPT_GLOBALS.get('globals') and len(UNSKRIPT_GLOBALS.get('globals')):
-        for k,v in UNSKRIPT_GLOBALS.get('globals').items():
+    if UNSKRIPT_GLOBALS.get('global') and len(UNSKRIPT_GLOBALS.get('global')):
+        for k,v in UNSKRIPT_GLOBALS.get('global').items():
             if isinstance(v,str) is True:
                 first_cell_content += f'{k} = \"{v}\"' + '\n'
             else:
@@ -660,7 +661,7 @@ def replace_input_with_globals(inputSchema: str):
     if not inputSchema:
         return None
     retval = ''
-    if UNSKRIPT_GLOBALS.get('globals') and len(UNSKRIPT_GLOBALS.get('globals')):
+    if UNSKRIPT_GLOBALS.get('global') and len(UNSKRIPT_GLOBALS.get('global')):
         input_json_start_line = '''
 task.configure(inputParamsJson=\'\'\'{
         '''
@@ -671,7 +672,7 @@ task.configure(inputParamsJson=\'\'\'{
             schema = inputSchema[0]
             if schema.get('properties'):
                 for key in schema.get('properties').keys():
-                    if key in UNSKRIPT_GLOBALS.get('globals').keys():
+                    if key in UNSKRIPT_GLOBALS.get('global').keys():
                         input_json_line += f"\"{key}\":  \"{key}\" ,"
         except Exception as e:
             print(f"EXCEPTION {e}")

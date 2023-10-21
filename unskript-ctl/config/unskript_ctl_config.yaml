@@ -122,7 +122,7 @@ credential:
   keycloak:
    - name: keycloakcreds
      enable: false
-     server_url: ""
+     server-url: ""
      realm: ""
      client-id: ""
      username: ""
