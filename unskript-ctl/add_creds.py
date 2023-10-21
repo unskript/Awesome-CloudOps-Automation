@@ -906,57 +906,95 @@ credential_schemas = '''
       "url"
     ]
   },
-   {
-      "title": "KeycloakSchema",
-      "type": "object",
-      "properties": {
-        "server_url": {
-          "title": "Keycloak Server URL",
-          "description": "Base URL of the Keycloak instance",
-          "type": "string"
-        },
-        "realm": {
-          "title": "Keycloak Realm",
-          "description": "Name of the realm for authentication",
-          "type": "string"
-        },
-        "client_id": {
-          "title": "Client ID",
-          "description": "Client ID for authentication",
-          "type": "string"
-        },
-        "username": {
-          "title": "Username",
-          "description": "Username for client-based authentication",
-          "type": "string"
-        },
-        "password": {
-          "title": "Password",
-          "description": "Password for client-based authentication",
-          "type": "string",
-          "writeOnly": true,
-          "format": "password"
-        },
-        "client_secret": {
-          "title": "Client Secret",
-          "description": "Client Secret for client-based authentication",
-          "type": "string",
-          "writeOnly": true,
-          "format": "password"
-        },
-        "verify": {
-          "title": "SSL Verification",
-          "description": "Boolean to decide if SSL certificate verification should be performed",
-          "default": true,
-          "type": "boolean"
-        }
+  {
+    "properties": {
+      "server_url": {
+        "description": "Base URL of the Keycloak instance",
+        "title": "Keycloak Server URL",
+        "type": "string"
       },
-      "required": [
-        "server_url",
-        "realm",
-        "client_id"
-      ]
-    }
+      "realm": {
+        "description": "Name of the realm for authentication",
+        "title": "Keycloak Realm",
+        "type": "string"
+      },
+      "client_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Client ID for authentication",
+        "title": "Client ID"
+      },
+      "username": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Username for client-based authentication",
+        "title": "Username"
+      },
+      "password": {
+        "anyOf": [
+          {
+            "format": "password",
+            "type": "string",
+            "writeOnly": true
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Password for client-based authentication",
+        "title": "Password"
+      },
+      "client_secret": {
+        "anyOf": [
+          {
+            "format": "password",
+            "type": "string",
+            "writeOnly": true
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Client Secret for client-based authentication",
+        "title": "Client Secret"
+      },
+      "verify": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": true,
+        "description": "Boolean to decide if SSL certificate verification should be performed",
+        "title": "SSL Verification"
+      }
+    },
+    "required": [
+      "server_url",
+      "realm"
+    ],
+    "title": "KeycloakSchema",
+    "type": "object"
+  }
   ]
 '''
 
@@ -1270,7 +1308,7 @@ class CredentialsAdd():
                           Base URL of the keycloak instance.
                          ''')
       parser.add_argument('-r', '--realm', required=True, help='Name of the realm for authentication')
-      parser.add_argument('-c', '--client-id', required=True, help='Client ID for authentication')
+      parser.add_argument('-c', '--client-id', help='Client ID for authentication')
       parser.add_argument('-u', '--username', help='Username for client-based authentication')
       parser.add_argument('-p', '--password', help='Password for client-based authentication')
       parser.add_argument('-cs', '--client-secret', help='Client secret for client-based authentication')
