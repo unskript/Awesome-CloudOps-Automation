@@ -10,13 +10,13 @@
 #
 
 import json
-import yaml 
+import yaml
 import requests
-import smtplib 
+import smtplib
 import os
 
-from pathlib import Path 
-from datetime import datetime 
+from pathlib import Path
+from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -32,7 +32,7 @@ SMTP_TLS_PORT = 587
 
 def unskript_ctl_config_read_notification(n_type: str):
     """unskript_ctl_config_read_notification: This function reads the configuration
-    and returns the Notification configuration as a python dictionary. 
+    and returns the Notification configuration as a python dictionary.
     """
     if not n_type:
         print("ERROR: Type is mandatory parameters for this function")
@@ -56,31 +56,31 @@ def unskript_ctl_config_read_notification(n_type: str):
                 notify_data = n_dict.get('Email')
                 return notify_data
             else:
-                print("ERROR: Enable flag under Email section is set to false, please change to true and re-run")
+                print("Email notification disabled")
                 return {}
         elif n_type.lower() == 'slack':
             if n_dict.get('Slack').get('enable') is True:
                 return n_dict.get('Slack')
             else:
-                print("ERROR: Enable flag under Slack section is set to false, please change to true and re-run")
+                print("Slack notification disabled")
                 return {}
         else:
             print(f"ERROR: option {n_type} is not supported")
             return {}
     else:
         print(f"No Notification found for {n_type}")
-        return {} 
+        return {}
 
 def send_notification(summary_result_table: list, failed_result: dict):
     """send_notification: This function is called by unskript-ctl or
        unctl to send notification of any given result. The requirement is that
-       the result should be in the form of a list of dictionaries. 
+       the result should be in the form of a list of dictionaries.
     """
     retval = None
     if os.path.exists(GLOBAL_UNSKRIPT_CONFIG_FILE) is False:
         print("ERROR: unskript-ctl configuration is missing. Ensure it exists in /unskript/etc")
-        return 
-    
+        return
+
     slack_settings = unskript_ctl_config_read_notification('Slack')
     mail_settings = unskript_ctl_config_read_notification('Email')
 
@@ -89,11 +89,9 @@ def send_notification(summary_result_table: list, failed_result: dict):
     if len(slack_settings):
         # Slack configuration was found
         s = slack_settings
-        retval = send_slack_notification(summary_result_table, 
+        retval = send_slack_notification(summary_result_table,
                                 s.get('web-hook-url'),
                                 s.get('channel-name'))
-    else:
-        retval = False
 
     if len(mail_settings):
         # Mail cnofiguration aws found
@@ -101,11 +99,6 @@ def send_notification(summary_result_table: list, failed_result: dict):
         retval = send_email_notification(summary_result_table,
                                 failed_result,
                                 m)
-    else:
-        retval = False
-
-    if retval is False:
-        print(f"Notification was not sent. Please check if notification is enabled in the unskript-ctl configuration file")
 
 def send_slack_notification(summary_results: list,
                             webhook_url: str,
@@ -139,7 +132,7 @@ def send_slack_notification(summary_results: list,
     else:
         print("ERROR: Summary Result is Empty, Not sending notification")
         return False
-    
+
     if message:
         message = summary_message + message
         try:
@@ -196,7 +189,7 @@ def send_email_notification(summary_results: list,
                                    c_data.get('to-email'),
                                    c_data.get('from-email'),
                                    c_data.get('region'))
-    else: 
+    else:
         print(f"ERROR: Unknown notification service {creds_data.get('service_provider')}")
 
     return retval
@@ -213,9 +206,9 @@ def send_awsses_notification(summary_results: list,
         print("ERROR: Cannot send AWS SES Notification without access and/or secret_key")
         return  False
 
-    # Boto3 client needs AWS Access Key and Secret Key 
-    # to be able to initialize the SES client. 
-    # We do it by setting  the os.environ variables 
+    # Boto3 client needs AWS Access Key and Secret Key
+    # to be able to initialize the SES client.
+    # We do it by setting  the os.environ variables
     # for access and secret key
     import boto3
     from botocore.exceptions import NoCredentialsError
@@ -242,7 +235,7 @@ def send_awsses_notification(summary_results: list,
     }
     # The AWS SES Client needs from_email address to be set
     # Else the email will not be sent.
-    try: 
+    try:
         response = client.send_email(
                 Source=from_email,
                 Destination={
@@ -314,7 +307,7 @@ def create_email_message(summary_results: list,
             if sd == {}:
                 continue
             tr_message = '''
-                <table border="1">    
+                <table border="1">
                 <tr>
                 <th> CHECK NAME </th>
                 <th> RESULT </th>
@@ -376,14 +369,14 @@ def send_smtp_notification(summary_results: list,
     except Exception as e:
         print(e)
         return False
-    
+
     if len(summary_results):
         message = create_email_message(summary_results, failed_result)
 
     else:
         print("ERROR: Nothing to send, Results Empty")
         return False
-    
+
     if message:
         msg.attach(MIMEText(message, 'html'))
         server.sendmail(smtp_user, to_email, msg.as_string())
