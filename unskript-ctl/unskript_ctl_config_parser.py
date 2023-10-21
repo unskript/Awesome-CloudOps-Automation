@@ -53,9 +53,9 @@ class Job():
         cmds = []
         notify = '--report' if self.notify is True else ''
         #TBD: Add support for suites and custom_scripts
-        if self.checks is not None:
+        if self.checks is not None and len(self.checks) != 0:
             cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --check {self.checks[0]} {notify}')
-        if self.connectors is not None:
+        if self.connectors is not None and len(self.connectors) != 0:
             # Need to construct the unskript-ctl command like
             # unskript-ctl.sh -rc --types aws,k8s
             connector_types_string = ','.join(self.connectors)
@@ -95,7 +95,9 @@ class ConfigParser():
         """configure_credential: This function is used to parse through the creds_dict and
         call the add_creds.sh method to populate the respective credential json
         """
+        print('###################################')
         print('Processing credential section')
+        print('###################################')
         creds_dict = self.parsed_config.get('credential')
         if creds_dict is None:
             print(f"ERROR: Nothing to configure credential with, found empty creds data")
@@ -118,24 +120,24 @@ class ConfigParser():
                         creds_cmd.extend(['--'+cred_key, cred.get(cred_key)])
                 if creds_cmd:
                     print_cmd = ' '.join(creds_cmd)
-                    print(f"Programming credential, command {print_cmd}")
                     self.run_command(creds_cmd)
-                    print(f"Successfully programmed {cred_type}")
+                    print(f"Credential: Successfully programmed {cred_type}, cmd {print_cmd}")
                 else:
-                    print(f"ERROR: No Credential {cred_type} was programmed")
+                    print(f"ERROR: No Credential {cred_type} was programmed, cmd {print_cmd}")
 
 
     def configure_schedule(self):
         """configure_schedule: configures the schedule settings
         """
+        print('###################################')
         print('Processing scheduler section')
+        print('###################################')
         config = self.parsed_config.get('scheduler')
         if config is None:
             print(f"No scheduler configuration found")
             return
 
-        #unskript_crontab_file = "/unskript/etc/unskript_crontab.tab"
-        unskript_crontab_file = "./unskript_crontab.tab"
+        unskript_crontab_file = "/unskript/etc/unskript_crontab.tab"
         crons = []
         try:
             for schedule in config:
@@ -170,7 +172,9 @@ class ConfigParser():
                 raise e
 
     def parse_jobs(self):
+        print('###################################')
         print('Processing jobs section')
+        print('###################################')
         config = self.parsed_config.get('jobs')
         if config is None:
             print(f'No jobs config found')
