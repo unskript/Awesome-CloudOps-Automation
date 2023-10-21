@@ -51,7 +51,7 @@ class Job():
 
     def parse(self):
         cmds = []
-        notify = '--report' if self.notify == True else ''
+        notify = '--report' if self.notify is True else ''
         #TBD: Add support for suites and custom_scripts
         if self.checks is not None:
             cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --check {self.checks[0]} {notify}')
@@ -76,7 +76,7 @@ class ConfigParser():
         """
         retval = {}
 
-        if os.path.exists(self.config_file) == False:
+        if os.path.exists(self.config_file) is False:
             print(f"WARNING: {self.config_file} Not found!")
             return retval
 
@@ -104,7 +104,7 @@ class ConfigParser():
         for cred_type in creds_dict.keys():
             cred_list = creds_dict.get(cred_type)
             for cred in cred_list:
-                if cred.get('enable') == False:
+                if cred.get('enable') is False:
                     continue
                 creds_cmd = ['/usr/local/bin/add_creds.sh', '-c', cred_type]
                 for cred_key in cred:
@@ -139,7 +139,7 @@ class ConfigParser():
         crons = []
         try:
             for schedule in config:
-                if schedule.get('enable') == False:
+                if schedule.get('enable') is False:
                         continue
                 cadence = schedule.get('cadence')
                 job_name = schedule.get('job_name')
@@ -177,7 +177,7 @@ class ConfigParser():
             return
 
         for job in config:
-            if job.get('enable') == False:
+            if job.get('enable') is False:
                 continue
             job_name = job.get('name')
             if job_name is None:
