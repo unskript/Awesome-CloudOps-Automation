@@ -59,7 +59,7 @@ credential:
   elasticsearch:
    - name: escreds
      enable: false
-     server: ""
+     host: ""
      api-key: ""
      no-verify-ssl: ""
 
@@ -67,7 +67,7 @@ credential:
   redis:
    - name: rediscreds
      enable: false
-     server: ""
+     host: ""
      port: ""
      username: ""
      password: ""
@@ -78,7 +78,7 @@ credential:
   postgres:
    - name: postgrescreds
      enable: false
-     server: ""
+     host: ""
      port: ""
      username: ""
      password: ""
@@ -88,7 +88,7 @@ credential:
   mongodb:
    - name: mongodbcreds
      enable: false
-     server: ""
+     host: ""
      port: ""
      username: ""
      password: ""
