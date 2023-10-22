@@ -157,7 +157,7 @@ notification:
       from-email: ""
     SES:
       access_key: ""
-      secret_acess: ""
+      secret_access: ""
       region: us-west-2
       to-email: ""
       from-email: ""
