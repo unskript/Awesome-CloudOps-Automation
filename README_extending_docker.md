@@ -227,4 +227,4 @@ Once configured, you are all set to receive the report whenever check is run wit
 unskript-ctl.sh -rc --type k8s, aws, postgresql --report
 ```
 
-> Here, the checks for all three connectors, k8s, aws and postgresql are run and the result is sent via slack  or email to the recipient.
+Here, the checks for all three connectors, k8s, aws and postgresql are run and the result is sent via slack  or email to the recipient.
