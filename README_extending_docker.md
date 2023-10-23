@@ -22,7 +22,7 @@ To package your unskript-ctl config, do the following:
 * Make your version of unskript_ctl_config.yaml
 * Uncomment the following line in the Dockerfile
 ```
-#COPY unskript_ctl_config.yaml /unskript/etc/unskript_ctl_config.yaml
+#COPY unskript_ctl_config.yaml /etc/unskript/unskript_ctl_config.yaml
 ```
 ---
 
