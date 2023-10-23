@@ -706,7 +706,12 @@ def create_jit_runbook(check_list: list):
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
-        cred_name, cred_id = get_creds_by_connector(s_connector)
+        cred_name, cred_id = None, None
+        for k,v in UNSKRIPT_GLOBALS.get('default_credentials').items():
+            if k == s_connector:
+                cred_name, cred_id = v.get('name'), v.get('id')
+                break
+
         # No point proceeding further if the Credential is incomplete
         if cred_name is None or cred_id is None:
             #print('\x1B[1;20;46m' + f"~~ Skipping {check.get('name')} As {cred_name} Credential is Not Active ~~" + '\x1B[0m')
@@ -1317,6 +1322,7 @@ def create_creds_mapping():
 
        :rtype: None
     """
+    global UNSKRIPT_GLOBALS
     creds_files = os.environ.get('HOME').strip('"') + CREDENTIAL_DIR + '/*.json'
     list_of_creds = glob.glob(creds_files)
     d = {}
@@ -1327,7 +1333,8 @@ def create_creds_mapping():
                 continue
             d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'),
                   "id": c_data.get('id')}
-    upsert_pss_record('default_credential_id', d, False)
+    UNSKRIPT_GLOBALS['default_credentials'] = d
+    #upsert_pss_record('default_credential_id', d, False)
 
 
 def print_runbook_params(properties: dict, required: list, orderInputParameters: list = []):
