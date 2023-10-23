@@ -48,7 +48,7 @@ from ZODB import DB
 
 # LIST OF CONSTANTS USED IN THIS FILE
 UNSKRIPT_GLOBALS = {}
-GLOBAL_CONFIG_PATH="/unskript/etc/unskript_ctl_config.yaml"
+GLOBAL_CONFIG_PATH="/etc/unskript/unskript_ctl_config.yaml"
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"

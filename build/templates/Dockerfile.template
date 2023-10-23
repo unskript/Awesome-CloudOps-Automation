@@ -5,6 +5,6 @@ COPY custom/runbooks/. /unskript/data/runbooks/
 # Copy the unskript_ctl_config.yaml file.
 # Uncomment the below line to copy it to the docker.
 
-#COPY unskript_ctl_config.yaml /unskript/etc/unskript_ctl_config.yaml
+#COPY unskript_ctl_config.yaml /etc/unskript/unskript_ctl_config.yaml
 
 CMD ["./start.sh"]

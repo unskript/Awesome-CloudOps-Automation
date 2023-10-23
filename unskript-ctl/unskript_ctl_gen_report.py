@@ -27,7 +27,7 @@ except Exception as e:
     raise e
 
 # Global Constants used in this file
-GLOBAL_UNSKRIPT_CONFIG_FILE = '/unskript/etc/unskript_ctl_config.yaml'
+GLOBAL_UNSKRIPT_CONFIG_FILE = '/etc/unskript/unskript_ctl_config.yaml'
 SMTP_TLS_PORT = 587
 
 def unskript_ctl_config_read_notification(n_type: str):

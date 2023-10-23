@@ -22,7 +22,7 @@ from pathlib import Path
 #    datefmt='%Y-%m-%d %H:%M:%S',
 #    filename="/tmp/"
 #)
-UNSKRIPT_CTL_CONFIG_FILE="/unskript/etc/unskript_ctl_config.yaml"
+UNSKRIPT_CTL_CONFIG_FILE="/etc/unskript/unskript_ctl_config.yaml"
 UNSKRIPT_CTL_BINARY="/usr/local/bin/unskript-ctl.sh"
 
 # Job config related
