@@ -19,6 +19,9 @@ global:
    # if enable_runbooks is enabled, jupyterlab is launched so that one can open
    # runbooks in jupyterlab.
    enable_runbooks: true
+   # audit_period in days. Number of days worth of audit data to be kept.
+   # Any date older than this number of days, will be deleted.
+   audit_period: 90
 
 #
 # Checks section
