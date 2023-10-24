@@ -35,6 +35,17 @@ JOB_CONFIG_NOTIFY_KEY_NAME = "notify"
 # Credential section related
 CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS = ["no-verify-certs", "no-verify-ssl", "use-ssl"]
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 class Job():
     def __init__(
             self,
@@ -75,9 +86,8 @@ class ConfigParser():
         retval = {}
 
         if os.path.exists(self.config_file) is False:
-            print(f"WARNING: {self.config_file} Not found!")
-            return retval
-
+            print(f"ERROR: {self.config_file} Not found!")
+            raise Exception(f'{self.config_file} not found')
 
         # We use EnvYAML to parse the hook file and give us the
         # dictionary representation of the YAML file
@@ -94,7 +104,7 @@ class ConfigParser():
         call the add_creds.sh method to populate the respective credential json
         """
         print('###################################')
-        print('Processing credential section')
+        print(f'{bcolors.HEADER}Processing credential section{bcolors.ENDC}')
         print('###################################')
         creds_dict = self.parsed_config.get('credential')
         if creds_dict is None:
@@ -104,38 +114,44 @@ class ConfigParser():
         for cred_type in creds_dict.keys():
             cred_list = creds_dict.get(cred_type)
             for cred in cred_list:
+                name = cred.get('name')
                 if cred.get('enable') is False:
+                    print(f'Credential: Skipping type {cred_type}, name {name}')
                     continue
                 creds_cmd = ['/usr/local/bin/add_creds.sh', '-c', cred_type]
-                for cred_key in cred:
-                    # Skip name and enable keys
-                    if cred_key in ['name', 'enable']:
-                        continue
-                    # Certain arguments dont need extra value part like -no-verify-certs
-                    if cred_key in CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS:
-                        creds_cmd.extend(['--'+cred_key])
-                    else:
-                        creds_cmd.extend(['--'+cred_key, cred.get(cred_key)])
-                if creds_cmd:
-                    print_cmd = ' '.join(creds_cmd)
-                    self.run_command(creds_cmd)
-                    print(f"Credential: Successfully programmed {cred_type}, cmd {print_cmd}")
-                else:
-                    print(f"ERROR: No Credential {cred_type} was programmed, cmd {print_cmd}")
+                try:
+                    print(f'Credential: Programming type {cred_type}, name {name}')
+                    for cred_key in cred:
+                        # Skip name and enable keys
+                        if cred_key in ['name', 'enable']:
+                            continue
+                        # Certain arguments dont need extra value part like -no-verify-certs
+                        if cred_key in CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS:
+                            creds_cmd.extend(['--'+cred_key])
+                        else:
+                            creds_cmd.extend(['--'+cred_key, str(cred.get(cred_key))])
+                    if creds_cmd:
+                        print_cmd = ' '.join(creds_cmd)
+                        self.run_command(creds_cmd)
+                        print(f"Credential: Successfully programmed {cred_type}, name {name}, cmd {print_cmd}")
+                except Exception as e:
+                    print(f'{bcolors.FAIL}Credential: Failed to program {cred_type}, name {name}{bcolors.ENDC}')
+                    continue
+
 
 
     def configure_schedule(self):
         """configure_schedule: configures the schedule settings
         """
         print('###################################')
-        print('Processing scheduler section')
+        print(f'{bcolors.HEADER}Processing scheduler section{bcolors.ENDC}')
         print('###################################')
         config = self.parsed_config.get('scheduler')
         if config is None:
             print(f"No scheduler configuration found")
             return
 
-        unskript_crontab_file = "/unskript/etc/unskript_crontab.tab"
+        unskript_crontab_file = "/etc/unskript/unskript_crontab.tab"
         crons = []
         try:
             for schedule in config:
@@ -146,32 +162,39 @@ class ConfigParser():
                 # look up the job name and get the commands
                 job = self.jobs.get(job_name)
                 if job is None:
-                    print(f'ERROR: Unknown job name {job_name}. Please check the jobs section and ensure the job is defined')
+                    print(f'{bcolors.FAIL}Schedule: Unknown job name {job_name}. Please check the jobs section and ensure the job is defined{bcolors.ENDC}')
                     continue
                 script = '; '.join(job.cmds)
                 # TBD: Validate cadence and script is valid
                 crons.append(f'{cadence} {script}')
         except Exception as e:
-            print(f'ERROR: Got error in programming cadence {cadence}, script {script}, {e}')
-            raise e
+            print(f'{bcolors.FAIL}Schedule: Got error in programming cadence {cadence}, script {script}, {e}{bcolors.ENDC}')
+            #raise e
+            return
 
         if crons:
             cmds = []
             crons_per_line = "\n".join(crons)
-            print(f'Schedule section: Programming crontab {crons_per_line}')
+            print(f'Schedule: Programming crontab {crons_per_line}')
             try:
                 with open(unskript_crontab_file, "w") as f:
+                    # Since crontabs dont inherit the environmnent variables, we have to
+                    # do it explicitly.
+                    for name, value in os.environ.items():
+                        if value != "":
+                            f.write(f'{name}={value}')
+                            f.write("\n")
                     f.write('\n'.join(crons))
                     f.write("\n")
                 cmds = ['crontab', unskript_crontab_file]
                 self.run_command(cmds)
             except Exception as e:
-                print(f'Cron programming failed, {e}')
-                raise e
+                print(f'{bcolors.FAIL}Schedule: Cron programming failed, {e}{bcolors.ENDC}')
+                #raise e
 
     def parse_jobs(self):
         print('###################################')
-        print('Processing jobs section')
+        print(f'{bcolors.HEADER}Processing jobs section{bcolors.ENDC}')
         print('###################################')
         config = self.parsed_config.get('jobs')
         if config is None:
@@ -183,11 +206,11 @@ class ConfigParser():
                 continue
             job_name = job.get('name')
             if job_name is None:
-                print("Skiping invalid job, name not found")
+                print(f"{bcolors.OKBLUE}Skipping invalid job, name not found{bcolors.ENDC}")
                 continue
             # Check if the same job name exists
             if job_name in self.jobs:
-                print(f'Skipping job name {job_name}, duplicate entry')
+                print(f'{bcolors.WARNING}Skipping job name {job_name}, duplicate entry{bcolors.ENDC}')
                 continue
             checks = job.get(JOB_CONFIG_CHECKS_KEY_NAME)
             suites = job.get(JOB_CONFIG_SUITES_KEY_NAME)
@@ -211,7 +234,7 @@ class ConfigParser():
                                     capture_output=True,
                                     check=True)
         except Exception as e:
-            print(f'{"".join(cmds)} failed, {e}')
+            print(f'cmd: {" ".join(cmds)} failed, {e}')
             raise e
 
         return str(result.stdout)
