@@ -163,7 +163,7 @@ class ConfigParser():
                     if creds_cmd:
                         print_cmd = ' '.join(creds_cmd)
                         self.run_command(creds_cmd)
-                        print(f"Credential: Successfully programmed {cred_type}, name {name}, cmd {print_cmd}")
+                        print(f"{bcolors.OKGREEN}Credential: Successfully programmed {cred_type}, name {name}, cmd {print_cmd}{bcolors.ENDC}")
                 except Exception as e:
                     print(f'{bcolors.FAIL}Credential: Failed to program {cred_type}, name {name}{bcolors.ENDC}')
                     continue
@@ -196,6 +196,9 @@ class ConfigParser():
                     print(f'{bcolors.FAIL}Schedule: Unknown job name {job_name}. Please check the jobs section and ensure the job is defined{bcolors.ENDC}')
                     continue
                 print(f'Schedule: cadence {cadence}, job name: {job_name}')
+                if len(job.cmds) == 0:
+                    print(f'{bcolors.WARNING}Scheduler: Empty job {job.job_name}, not adding to schedule{bcolors.ENDC}')
+                    continue
                 script = '; '.join(job.cmds)
                 # TBD: Validate cadence and script is valid
                 crons.append(f'{cadence} {script}')
@@ -221,7 +224,7 @@ class ConfigParser():
                 # Add the audit period cron job as well, to be run daily.
                 audit_cadence = "0 0 * * *"
                 delete_old_files_command = f'/usr/bin/find {UNSKRIPT_EXECUTION_DIR} -name "*.ipynb" -type f -mtime +{self.audit_period} -exec rm -f {{}} \;'
-                print(f'Adding audit log deletion cron job entry, {audit_cadence} {delete_old_files_command}')
+                print(f'{bcolors.OKGREEN}Adding audit log deletion cron job entry, {audit_cadence} {delete_old_files_command}{bcolors.ENDC}')
                 f.write(f'{audit_cadence} {delete_old_files_command}')
                 f.write("\n")
 
