@@ -12,6 +12,7 @@ import logging
 import subprocess
 import os
 from envyaml import EnvYAML
+import sys
 
 
 from pathlib import Path
@@ -102,13 +103,12 @@ class ConfigParser():
         # dictionary representation of the YAML file
         try:
             retval = EnvYAML(self.config_file, strict=False)
-
             if not retval:
                 print(f"{bcolors.WARNING} Parsing config file {self.config_file} failed{bcolors.ENDC}")
-                exit(0)
+                sys.exit(0)
         except Exception as e:
             print(f"{bcolors.FAIL} Parsing config file {self.config_file} failed{bcolors.ENDC}")
-            exit(0)
+            sys.exit(0)
 
         self.parsed_config = retval
 
