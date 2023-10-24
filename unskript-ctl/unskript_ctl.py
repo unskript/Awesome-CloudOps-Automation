@@ -253,6 +253,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     except CellExecutionError as e:
         raise e
     finally:
+        os.remove(filename)
         output_file = filename
         output_file = output_file.replace('.ipynb', '_output.ipynb')
         nbformat.write(nb, output_file)
@@ -1821,6 +1822,20 @@ def save_check_names(filename: str):
             f.write(name + '\n')
 
 
+def run_script(script:list[str]):
+    try:
+        result = subprocess.run(script,
+                                capture_output=True,
+                                check=True)
+    except Exception as e:
+        print(f'{"".join(script)} failed, {e}')
+        raise e
+
+
+    print(str(result.stdout))
+    return str(result.stdout)
+
+
 if __name__ == "__main__":
     try:
         if os.environ.get('EXECUTION_DIR') is None:
@@ -1894,6 +1909,9 @@ if __name__ == "__main__":
     parser.add_argument('--save-check-names',
                         type=str,
                         help=SUPPRESS)
+   # parser.add_argument('--run-script',
+   #                     help='Run script',
+   #                     nargs=REMAINDER)
 
     args = parser.parse_args()
 
@@ -1933,5 +1951,7 @@ if __name__ == "__main__":
         stop_debug()
     elif args.save_check_names not in ('', None):
         save_check_names(args.save_check_names)
+    #elif args.run_script not in ('', None):
+    #    run_script(args.run_script)
     else:
         parser.print_help()
