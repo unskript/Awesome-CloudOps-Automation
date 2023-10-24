@@ -97,7 +97,7 @@ class ConfigParser():
 
         if os.path.exists(self.config_file) is False:
             print(f"{bcolors.FAIL} {self.config_file} Not found!{bcolors.ENDC}")
-            exit(0)
+            sys.exit(0)
 
         # We use EnvYAML to parse the hook file and give us the
         # dictionary representation of the YAML file

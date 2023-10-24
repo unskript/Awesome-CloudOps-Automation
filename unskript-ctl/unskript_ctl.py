@@ -1822,18 +1822,18 @@ def save_check_names(filename: str):
             f.write(name + '\n')
 
 
-def run_script(script:list[str]):
-    try:
-        result = subprocess.run(script,
-                                capture_output=True,
-                                check=True)
-    except Exception as e:
-        print(f'{"".join(script)} failed, {e}')
-        raise e
-
-
-    print(str(result.stdout))
-    return str(result.stdout)
+#def run_script(script:list[str]):
+#    try:
+#        result = subprocess.run(script,
+#                                capture_output=True,
+#                                check=True)
+#    except Exception as e:
+#        print(f'{"".join(script)} failed, {e}')
+#        raise e
+#
+#
+#    print(str(result.stdout))
+#    return str(result.stdout)
 
 
 if __name__ == "__main__":
