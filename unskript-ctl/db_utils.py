@@ -10,8 +10,10 @@
 #
 
 import os
+import json
 import re
 import transaction
+import zlib
 import ZODB
 import ZODB.FileStorage
 from ZODB import DB
@@ -84,11 +86,25 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
     with db.transaction() as connection: 
         root = connection.root()
         if overwrite:
-            root[name] = data
+            d = json.loads(data)
+            compressed_d = zlib.compress(d.encode('utf-8'))
+            root[name] = json.dumps(compressed_d)
         else:
             d = root[name]
+
+            if isinstance(d, bytes):
+                d = zlib.decompress(d).decode('utf-8')
+
+            if isinstance(d, str):
+                d = json.loads(d)
+            
+
             d.update(data)
-            root[name] = d
+            if isinstance(d, dict):
+                d = json.dumps(d)
+
+            compressed_d = zlib.compress(d.encode('utf-8'))
+            root[name] = compressed_d
         del root
         del connection 
 
@@ -125,6 +141,10 @@ def get_pss_record(name: str):
     if data is None:
         print(f"ERROR: No records found by the name {name}")
         return {}
+
+    if isinstance(data, bytes):
+        data = zlib.decompress(data).decode('utf-8')
+        data = json.loads(data)
 
     return data
 
@@ -335,4 +355,3 @@ def get_creds_by_connector(connector_type: str):
         retval = (None, None)
 
     return retval
-
