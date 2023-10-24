@@ -95,16 +95,20 @@ class ConfigParser():
         retval = {}
 
         if os.path.exists(self.config_file) is False:
-            print(f"ERROR: {self.config_file} Not found!")
-            raise Exception(f'{self.config_file} not found')
+            print(f"{bcolors.FAIL} {self.config_file} Not found!{bcolors.ENDC}")
+            exit(0)
 
         # We use EnvYAML to parse the hook file and give us the
         # dictionary representation of the YAML file
-        retval = EnvYAML(self.config_file, strict=False)
+        try:
+            retval = EnvYAML(self.config_file, strict=False)
 
-        if not retval:
-            print(f"WARNING: config file {self.config_file} content seems to be empty!")
-            return retval
+            if not retval:
+                print(f"{bcolors.WARNING} Parsing config file {self.config_file} failed{bcolors.ENDC}")
+                exit(0)
+        except Exception as e:
+            print(f"{bcolors.FAIL} Parsing config file {self.config_file} failed{bcolors.ENDC}")
+            exit(0)
 
         self.parsed_config = retval
 
