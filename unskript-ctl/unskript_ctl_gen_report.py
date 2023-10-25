@@ -106,7 +106,7 @@ def send_notification(summary_result_table: list, failed_result: dict, output_me
                                 output_metadata_file,
                                 m)
    
-    if retval == False:
+    if retval is False:
         print("ERROR: Unable to send notification!")
     else:
         print("Notification sent successfully!")
