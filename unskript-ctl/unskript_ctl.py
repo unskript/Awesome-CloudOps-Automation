@@ -148,6 +148,7 @@ try:
         if w.check_run:
             for id,output in w.check_output.items():
                 output = json.loads(output)
+                output['id'] = id
                 print(json.dumps(output))
         else:
             print(json.dumps("Not a check run"))
@@ -362,6 +363,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
 
     print("")
     status_list_of_dict.append(status_dict)
+    dump_execution_result_to_pss(UNSKRIPT_GLOBALS.get('current_execution_status'), nb.dict())
+    dump_check_run_result_to_pss(nb.dict())
 
 
 def run_checks(args: list):
@@ -599,6 +602,7 @@ def update_current_execution(status, id: str, content: dict):
 
        :rtype: None
     """
+    global UNSKRIPT_GLOBALS
     if content == {}:
         print("ERROR: Cannot Update Failed execution with No Content")
         return
@@ -612,20 +616,9 @@ def update_current_execution(status, id: str, content: dict):
 
     prev_status = None
     es = {}
-    try:
-        es = get_pss_record('current_execution_status')
-    except Exception:
-        pass
-    finally:
-        if es != {}:
-            if id in es.get('exec_status').keys():
-                prev_status = es['exec_status'].get(id).get('current_status')
-            else:
-                es['exec_status'][id] = {}
-        else:
-            es['exec_status'] = {}
-            es['exec_status'][id] = {}
-
+    
+    es['exec_status'] = {}
+    es['exec_status'][id] = {}
     es['exec_status'][id]['failed_runbook'] = failed_runbook
     es['exec_status'][id]['check_name'] = str(
         get_action_name_from_id(id, content))
@@ -641,8 +634,21 @@ def update_current_execution(status, id: str, content: dict):
     else:
         es['exec_status'][id]['failed_timestamp'] = str(datetime.now())
 
-    upsert_pss_record('current_execution_status', es)
+    if UNSKRIPT_GLOBALS.get('current_execution_status') == None:
+        UNSKRIPT_GLOBALS['current_execution_status'] = es
+    else:
+        UNSKRIPT_GLOBALS['current_execution_status'].update(es)
 
+    return
+
+def dump_execution_result_to_pss(es, content: dict):
+    upsert_pss_record('current_execution_status', es)
+    id = 'NONE'
+    # Extract Execution ID
+    for k,_ in es.get('exec_status').items():
+        id = k
+
+    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + f"{id}.ipynb"
     # Lets create the failed ipynb
     try:
         nb = nbformat.v4.new_notebook()
@@ -656,6 +662,10 @@ def update_current_execution(status, id: str, content: dict):
 
     if os.path.exists(failed_runbook) is not True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
+
+
+def dump_check_run_result_to_pss(content):
+    upsert_pss_record('check_run_trail', content)
 
 def replace_input_with_globals(inputSchema: str):
     if not inputSchema:
@@ -804,32 +814,34 @@ def update_check_run_trail(
 
        :rtype: None
     """
+    global UNSKRIPT_GLOBALS
     content = {}
-    try:
-        content = get_pss_record('check_run_trail')
-    except Exception:
-        pass
-    finally:
-        k = str(datetime.now())
-        temp_trail = {}
-        temp_trail[id] = {}
-        temp_trail[id]['time_stamp'] = k
-        temp_trail[id]['action_uuid'] = id
-        temp_trail[id]['check_name'] = action_name
-        temp_trail[id]['connector_type'] = connector_type.upper()
-        s = ''
-        if result == CheckOutputStatus.SUCCESS:
-            s = "PASS"
-        elif result == CheckOutputStatus.FAILED:
-            s = "FAILED"
-        elif result == CheckOutputStatus.RUN_EXCEPTION:
-            s = "ERRORED"
-        temp_trail[id]['status'] = s
-        if data != {}:
-            temp_trail[id]['failed_objects'] = data
-        content.update(temp_trail)
+    #try:
+    #    content = get_pss_record('check_run_trail')
+    #except Exception:
+    #    pass
+    #finally:
+    k = str(datetime.now())
+    temp_trail = {}
+    temp_trail[id] = {}
+    temp_trail[id]['time_stamp'] = k
+    temp_trail[id]['action_uuid'] = id
+    temp_trail[id]['check_name'] = action_name
+    temp_trail[id]['connector_type'] = connector_type.upper()
+    s = ''
+    if result == CheckOutputStatus.SUCCESS:
+        s = "PASS"
+    elif result == CheckOutputStatus.FAILED:
+        s = "FAILED"
+    elif result == CheckOutputStatus.RUN_EXCEPTION:
+        s = "ERRORED"
+    temp_trail[id]['status'] = s
+    if data != {}:
+        temp_trail[id]['failed_objects'] = data
+    content.update(temp_trail)
+    UNSKRIPT_GLOBALS['run_trail'] = content
 
-    upsert_pss_record('check_run_trail', content)
+    #upsert_pss_record('check_run_trail', content)
 
 
 def update_audit_trail(status_dict_list: list):
@@ -1935,3 +1947,4 @@ if __name__ == "__main__":
         save_check_names(args.save_check_names)
     else:
         parser.print_help()
+
