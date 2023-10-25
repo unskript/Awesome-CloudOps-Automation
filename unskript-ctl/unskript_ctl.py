@@ -634,7 +634,7 @@ def update_current_execution(status, id: str, content: dict):
     else:
         es['exec_status'][id]['failed_timestamp'] = str(datetime.now())
 
-    if UNSKRIPT_GLOBALS.get('current_execution_status') == None:
+    if UNSKRIPT_GLOBALS.get('current_execution_status') is None:
         UNSKRIPT_GLOBALS['current_execution_status'] = es
     else:
         UNSKRIPT_GLOBALS['current_execution_status'].update(es)
