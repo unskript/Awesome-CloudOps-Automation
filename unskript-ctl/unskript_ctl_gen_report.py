@@ -106,7 +106,7 @@ def send_notification(summary_result_table: list, failed_result: dict, output_me
                                 output_metadata_file,
                                 m)
    
-    if retval is False:
+    if retval == False:
         print("ERROR: Unable to send notification!")
     else:
         print("Notification sent successfully!")
@@ -205,7 +205,7 @@ def send_email_notification(summary_results: list,
                                    c_data.get('from-email'),
                                    c_data.get('region'))
     else:
-        print(f"ERROR: Unknown notification service {creds_data.get('service_provider')}")
+        print(f"ERROR: Unknown notification service {creds_data.get('provider')}")
 
     return retval
 
@@ -262,25 +262,28 @@ def send_awsses_notification(summary_results: list,
             print(f"Notification sent successfully as email to {to_email}")
             return True
         except NoCredentialsError:
-            print("Unable to send email notification to {to_email}, credentials are invalid")
+            print("ERROR: Unable to send email notification to {to_email}, credentials are invalid")
             return False
         except client.exceptions.MessageRejected:
-            print(f"Unable to send email. Message was Rejected from SES server. Please check from email {from_email} is valid")
+            print(f"ERROR: Unable to send email. Message was Rejected from SES server. Please check from email {from_email} is valid")
             return False
         except client.exceptions.MailFromDomainNotVerifiedException:
-            print("Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
+            print("ERROR: Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
             return False 
         except client.exceptions.ConfigurationSetDoesNotExistException:
-            print("Unable to send email. Email Configuration set does not exist. Please check SES policy")
+            print("ERROR: Unable to send email. Email Configuration set does not exist. Please check SES policy")
             return False 
         except client.exceptions.ConfigurationSetSendingPausedException:
-            print(f"Unable to send email. Email sending is paused for the from email id {from_email}!")
+            print(f"ERROR: Unable to send email. Email sending is paused for the from email id {from_email}!")
             return False 
         except client.exceptions.AccountSendingPausedException:
-            print("Unable to send email. Sending email is paused for the AWS Account!")
+            print("ERROR: Unable to send email. Sending email is paused for the AWS Account!")
             return False 
         except client.exceptions.ClientError as e:
-            print(f"Unable to send email out. Invalid Client Token, please verify access and/or secret_key! {e}")
+            print(f"ERROR: Unable to send email out. Invalid Client Token, please verify access and/or secret_key! {e}")
+            return False
+        except Exception as e:
+            print(f"ERROR: {e}")
             return False
         
     elif output_metadata_file:
@@ -298,24 +301,27 @@ def send_awsses_notification(summary_results: list,
                 print(f"Email notification sent to {to_email}")
             return True
         except NoCredentialsError:
-            print("Unable to send email notification to {to_email}, credentials are invalid")
+            print("ERROR: Unable to send email notification to {to_email}, credentials are invalid")
             return False
         except client.exceptions.MessageRejected:
-            print(f"Unable to send email. Message was Rejected from SES server check from email-id {to_email} is valid!")
+            print(f"ERROR: Unable to send email. Message was Rejected from SES server check from email-id {to_email} is valid!")
             return False
         except client.exceptions.MailFromDomainNotVerifiedException:
-            print("Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
+            print("ERROR: Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
             return False 
         except client.exceptions.ConfigurationSetDoesNotExistException:
-            print("Unable to send email. Email Configuration set does not exist. Please check SES policy")
+            print("ERROR: Unable to send email. Email Configuration set does not exist. Please check SES policy")
             return False 
         except client.exceptions.ConfigurationSetSendingPausedException:
-            print(f"Unable to send email. Email sending is paused for the from email id {from_email}!")
+            print(f"ERROR: Unable to send email. Email sending is paused for the from email id {from_email}!")
             return False 
         except client.exceptions.AccountSendingPausedException:
-            print("Unable to send email. Sending email is paused for the AWS Account!")
+            print("ERROR: Unable to send email. Sending email is paused for the AWS Account!")
             return False 
         except client.exceptions.ClientError as e:
+            print(f"ERROR: {e}")
+            return False
+        except Exception as e:
             print(f"ERROR: {e}")
             return False
         
