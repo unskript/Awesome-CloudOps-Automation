@@ -14,11 +14,13 @@ import yaml
 import requests
 import smtplib
 import os
+import base64
 
 from pathlib import Path
 from datetime import datetime
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 
 try:
     from envyaml import EnvYAML
@@ -71,7 +73,7 @@ def unskript_ctl_config_read_notification(n_type: str):
         print(f"No Notification found for {n_type}")
         return {}
 
-def send_notification(summary_result_table: list, failed_result: dict):
+def send_notification(summary_result_table: list, failed_result: dict, output_metadata_file: str = None):
     """send_notification: This function is called by unskript-ctl or
        unctl to send notification of any given result. The requirement is that
        the result should be in the form of a list of dictionaries.
@@ -93,12 +95,21 @@ def send_notification(summary_result_table: list, failed_result: dict):
                                 s.get('web-hook-url'),
                                 s.get('channel-name'))
 
+    # We support sending attachment only in emails. The parameter output_metadata_file
+    # if given, then we shall use that to send the output reading from the metadata file instead
+    # of the summary_result_table or failed_result
     if len(mail_settings):
-        # Mail cnofiguration aws found
+        # Mail configuration was found
         m = mail_settings
         retval = send_email_notification(summary_result_table,
                                 failed_result,
+                                output_metadata_file,
                                 m)
+   
+    if retval is False:
+        print("ERROR: Unable to send notification!")
+    else:
+        print("Notification sent successfully!")
 
 def send_slack_notification(summary_results: list,
                             webhook_url: str,
@@ -124,13 +135,13 @@ def send_slack_notification(summary_results: list,
                     message += f':hash: *{check_name}*  :x: ' + '\n'
                     f += 1
                 elif status == 'ERROR':
-                    message += f':hash: *{check_name}*  :dizzy_face: ' + '\n'
+                    message += f':hash: *{check_name}*  :x: ' + '\n'
                     e += 1
                 else:
                     pass
             summary_message += f':trophy: *(Pass/Fail/Error)* <-> *({p}/{f}/{e})*' + '\n\n'
     else:
-        print("ERROR: Summary Result is Empty, Not sending notification")
+        print("Slack Notification disabled")
         return False
 
     if message:
@@ -156,6 +167,7 @@ def send_slack_notification(summary_results: list,
 
 def send_email_notification(summary_results: list,
                             failed_result: dict,
+                            output_metadata_file: str,
                             creds_data: dict):
     """send_email_notification: This function sends the summary result
        in the form of an email.
@@ -168,6 +180,7 @@ def send_email_notification(summary_results: list,
         c_data = creds_data.get('SMTP')
         retval = send_smtp_notification(summary_results,
                                failed_result,
+                               output_metadata_file,
                                c_data.get('smtp-host'),
                                c_data.get('smtp-user'),
                                c_data.get('smtp-password'),
@@ -177,6 +190,7 @@ def send_email_notification(summary_results: list,
         c_data = creds_data.get('Sendgrid')
         retval = send_sendgrid_notification(summary_results,
                                    failed_result,
+                                   output_metadata_file,
                                    c_data.get('from-email'),
                                    c_data.get('to-email'),
                                    c_data.get('api_key'))
@@ -184,6 +198,7 @@ def send_email_notification(summary_results: list,
         c_data = creds_data.get('SES')
         retval = send_awsses_notification(summary_results,
                                    failed_result,
+                                   output_metadata_file,
                                    c_data.get('access_key'),
                                    c_data.get('secret_access'),
                                    c_data.get('to-email'),
@@ -197,6 +212,7 @@ def send_email_notification(summary_results: list,
 
 def send_awsses_notification(summary_results: list,
                              failed_result: dict,
+                             output_metadata_file: str,
                              access_key: str,
                              secret_key: str,
                              to_email: str,
@@ -211,55 +227,110 @@ def send_awsses_notification(summary_results: list,
     # We do it by setting  the os.environ variables
     # for access and secret key
     import boto3
-    from botocore.exceptions import NoCredentialsError
+    from botocore.exceptions import NoCredentialsError 
+
     os.environ['AWS_ACCESS_KEY_ID'] = access_key
     os.environ['AWS_SECRET_ACCESS_KEY'] = secret_key
-    print(f"REGION: {region}")
     client = boto3.client('ses', region_name=region)
 
     charset='UTF-8'
     message = ''
     if len(summary_results):
         message = create_email_message(summary_results, failed_result)
-    email_template = {
-        'Subject': {
-            'Data': 'unSkript-ctl Check Run result',
-            'Charset': charset
-        },
-        'Body': {
-            'Html': {
-                'Data': message,
+        email_template = {
+            'Subject': {
+                'Data': 'unSkript-ctl Check Run result',
                 'Charset': charset
+            },
+            'Body': {
+                'Html': {
+                    'Data': message,
+                    'Charset': charset
+                }
             }
         }
-    }
-    # The AWS SES Client needs from_email address to be set
-    # Else the email will not be sent.
-    try:
-        response = client.send_email(
+        # The AWS SES Client needs from_email address to be set
+        # Else the email will not be sent.
+        try:
+            response = client.send_email(
+                    Source=from_email,
+                    Destination={
+                        'ToAddresses': [to_email]
+                    },
+                    Message=email_template
+                    )
+            print(f"Notification sent successfully as email to {to_email}")
+            return True
+        except NoCredentialsError:
+            print("Unable to send email notification to {to_email}, credentials are invalid")
+            return False
+        except client.exceptions.MessageRejected:
+            print(f"Unable to send email. Message was Rejected from SES server. Please check from email {from_email} is valid")
+            return False
+        except client.exceptions.MailFromDomainNotVerifiedException:
+            print("Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
+            return False 
+        except client.exceptions.ConfigurationSetDoesNotExistException:
+            print("Unable to send email. Email Configuration set does not exist. Please check SES policy")
+            return False 
+        except client.exceptions.ConfigurationSetSendingPausedException:
+            print(f"Unable to send email. Email sending is paused for the from email id {from_email}!")
+            return False 
+        except client.exceptions.AccountSendingPausedException:
+            print("Unable to send email. Sending email is paused for the AWS Account!")
+            return False 
+        except client.exceptions.ClientError as e:
+            print(f"Unable to send email out. Invalid Client Token, please verify access and/or secret_key! {e}")
+            return False
+        
+    elif output_metadata_file:
+        _, attachment_ = create_email_message_with_attachment(output_metadata_file=output_metadata_file)
+        attachment_['Subject'] = 'unSkript-ctl Check Run result'
+        attachment_['From'] = from_email 
+        attachment_['To'] = to_email
+        try:
+            response = client.send_raw_email(
                 Source=from_email,
-                Destination={
-                    'ToAddresses': [to_email]
-                },
-                Message=email_template
-                )
-        print(f"Notification sent successfully as email to {to_email}")
-        return True
-    except NoCredentialsError:
-        print("Unable to send email notification to {to_email}")
-        return False
-
+                Destinations=[to_email],
+                RawMessage={'Data': attachment_.as_string()}
+            )
+            if response.get('ResponseMetadata') and response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+                print(f"Email notification sent to {to_email}")
+            return True
+        except NoCredentialsError:
+            print("Unable to send email notification to {to_email}, credentials are invalid")
+            return False
+        except client.exceptions.MessageRejected:
+            print(f"Unable to send email. Message was Rejected from SES server check from email-id {to_email} is valid!")
+            return False
+        except client.exceptions.MailFromDomainNotVerifiedException:
+            print("Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
+            return False 
+        except client.exceptions.ConfigurationSetDoesNotExistException:
+            print("Unable to send email. Email Configuration set does not exist. Please check SES policy")
+            return False 
+        except client.exceptions.ConfigurationSetSendingPausedException:
+            print(f"Unable to send email. Email sending is paused for the from email id {from_email}!")
+            return False 
+        except client.exceptions.AccountSendingPausedException:
+            print("Unable to send email. Sending email is paused for the AWS Account!")
+            return False 
+        except client.exceptions.ClientError as e:
+            print(f"ERROR: {e}")
+            return False
+        
     return False
 
 def send_sendgrid_notification(summary_results: list,
                                failed_result: dict,
+                               output_metadata_file: str,
                                from_email: str,
                                to_email: str,
                                api_key: str):
     # Dynamic Load (Import) necessary libraries for sendgrid
     import sendgrid
     from sendgrid import SendGridAPIClient
-    from sendgrid.helpers.mail import Mail
+    from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType
 
     if not from_email or not to_email or not api_key:
         print("ERROR: From Email, To Email and API Key are mandatory parameters to send email notification")
@@ -268,21 +339,120 @@ def send_sendgrid_notification(summary_results: list,
         html_message = ''
         if len(summary_results):
             html_message = create_email_message(summary_results, failed_result)
-        email_message = Mail(
-            from_email=from_email,
-            to_emails=to_email,
-            subject='unSkript-ctl Check Run result',
-            html_content=html_message
-        )
+            email_message = Mail(
+                from_email=from_email,
+                to_emails=to_email,
+                subject='unSkript-ctl Check Run result',
+                html_content=html_message
+            )
+        elif output_metadata_file:
+            html_message, _ = create_email_message_with_attachment(output_metadata_file=output_metadata_file)
+            email_message = Mail(
+                from_email=from_email,
+                to_emails=to_email,
+                subject='unSkript-ctl Script Run result',
+                html_content=html_message
+            )
+            all_attachment_files = []
+            with open(output_metadata_file, 'r') as f:
+                metadata = json.loads(f.read())
+                if metadata:
+                    if isinstance(metadata.get('output'), str):
+                        all_attachment_files.append(metadata.get('output'))
+                    elif isinstance(metadata.get('output'), list):
+                        all_attachment_files = metadata.get('output')
+            file_data = ''
+            for attach_file in all_attachment_files:
+                with open(attach_file, 'rb') as _f:
+                        file_data = _f.read()
+            
+                encoded = base64.b64encode(file_data).decode()
+                attachment = Attachment()
+                attachment.file_content = FileContent(encoded)
+                file_name = os.path.basename(attach_file)
+                attachment.file_name = FileName(file_name)
+                attachment.file_type = FileType('application/text')
+                attachment.disposition = 'attachment'
+                email_message.add_attachment(attachment)
+
         sg = sendgrid.SendGridAPIClient(api_key)
         response = sg.send(email_message)
+        print(response)
         print(f"Notification sent successfully to {to_email}")
         return True
     except Exception as e:
-        print(f"ERROR: Unable to send notification as email. {e.str()}")
+        print(f"ERROR: Unable to send notification as email. {e}")
         return False
 
-    return False
+
+def create_email_message_with_attachment(output_metadata_file: str = None):
+    """create_email_message_with_attachment: This function reads the output_metadata_file
+    to find out the name of the attachment, the output that should be included as the attachment
+    and summary of the test run as listed in the output_metadata_file. 
+    """
+    message = ''
+    if os.path.exists(output_metadata_file) is False:
+        print(f"ERROR: The metadata file is missing, please check if file exists? {output_metadata_file}")
+        return message
+    
+    metadata = ''
+    with open(output_metadata_file, 'r', encoding='utf-8') as f:
+        metadata = json.loads(f.read())
+
+    if not metadata:
+        print(f'ERROR: Metadata is empty for the script. Please check content of {output_metadata_file}')
+        raise ValueError("Metadata is empty")
+    
+    message = f'''
+            <!DOCTYPE html>
+            <html>
+            <head>
+            </head>
+            <body>
+            <center>
+            <h1> unSkript-ctl Script Run result </h1>
+            <h3> <strong>Tested On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
+            </center>
+    
+            <table border="1">
+                <tr>
+                    <th> SCRIPT NAME </th>
+                    <th> TIME TAKEN </th>
+                    <th> LANGUAGE </th>
+                    <th> VERSION </th>
+                </tr>
+                <tr>
+                    <td>{metadata.get('script_name')}</td>
+                    <td>{metadata.get('runtime')}</td>
+                    <td>{metadata.get('language')}</td>
+                    <td>{metadata.get('version')}</td>
+                </tr>
+            </table>
+            </body>
+            </html>
+    '''
+    
+    multipart_content_subtype = 'mixed'
+    attachment_ = MIMEMultipart(multipart_content_subtype)
+    part1 = MIMEText(message, 'html')
+    attachment_.attach(part1)
+    
+    all_files_to_attach = []
+    if isinstance(metadata.get('output'), str):
+        all_files_to_attach.append(metadata.get('output'))
+    elif isinstance(metadata.get('output'), list):
+        all_files_to_attach = metadata.get('output')
+    else:
+        # No other type is supported
+        pass 
+
+    for attach_file in all_files_to_attach: 
+        with open(attach_file, 'r', encoding='utf-8') as f:
+            part = MIMEApplication(f.read())
+            part.add_header('Content-Disposition', 'attachment', filename=os.path.basename(attach_file))
+            attachment_.attach(part)
+
+    return (message, attachment_)
 
 def create_email_message(summary_results: list,
                          failed_result: dict):
@@ -345,6 +515,7 @@ def create_email_message(summary_results: list,
 
 def send_smtp_notification(summary_results: list,
                             failed_result: dict,
+                            output_metadata_file: str, 
                             smtp_host: str,
                             smtp_user: str,
                             smtp_password: str,
@@ -372,18 +543,18 @@ def send_smtp_notification(summary_results: list,
 
     if len(summary_results):
         message = create_email_message(summary_results, failed_result)
-
+        if not message:
+            print("ERROR: Nothing to send, Results Empty")
+            return False
+        msg.attach(MIMEText(message, 'html'))
+    elif output_metadata_file:
+        message, attachment = create_email_message_with_attachment(output_metadata_file=output_metadata_file)
+        msg.attach(attachment)
     else:
         print("ERROR: Nothing to send, Results Empty")
         return False
 
-    if message:
-        msg.attach(MIMEText(message, 'html'))
-        server.sendmail(smtp_user, to_email, msg.as_string())
-        print(f"Notification sent successfully to {to_email}")
-        return True
-    else:
-        print("ERROR: Nothing to send, Results Empty")
-
+    response = server.sendmail(smtp_user, to_email, msg.as_string())
+    print(f"Notification sent successfully to {to_email} {response}")
 
     return False
