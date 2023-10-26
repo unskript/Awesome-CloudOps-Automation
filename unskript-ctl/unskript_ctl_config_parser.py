@@ -232,7 +232,7 @@ class ConfigParser():
                     f.write("\n")
                 # Add the audit period cron job as well, to be run daily.
                 audit_cadence = "0 0 * * *"
-                delete_old_files_command = f'/usr/bin/find {UNSKRIPT_EXECUTION_DIR} -name "*.ipynb" -type f -mtime +{self.audit_period} -exec rm -f {{}} \;'
+                delete_old_files_command = f'/usr/bin/find {UNSKRIPT_EXECUTION_DIR} -type f -mtime +{self.audit_period} -exec rm -f {{}} \;'
                 print(f'{bcolors.OKGREEN}Adding audit log deletion cron job entry, {audit_cadence} {delete_old_files_command}{bcolors.ENDC}')
                 f.write(f'{audit_cadence} {delete_old_files_command}')
                 f.write("\n")
