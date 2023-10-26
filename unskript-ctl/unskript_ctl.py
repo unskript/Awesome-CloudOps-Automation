@@ -1876,7 +1876,7 @@ def run_script(script:list[str]):
         print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
         return
 
-    current_time = datetime.now().isoformat()
+    current_time = datetime.now().isoformat().replace(':', '_')
     # Use the first command as the prefix for the file name.
     # if it contains /, use the last entry
     output_prefix = script[0].split('/')[-1]
