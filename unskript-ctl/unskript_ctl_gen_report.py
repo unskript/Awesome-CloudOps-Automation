@@ -12,6 +12,7 @@
 import json
 import yaml
 import requests
+import subprocess 
 import smtplib
 import os
 import base64
@@ -357,31 +358,45 @@ def send_sendgrid_notification(summary_results: list,
                 subject='unSkript-ctl Custom Script Run result',
                 html_content=html_message
             )
-            all_attachment_files = []
+            target_file_name = None
+            metadata = None 
             with open(output_metadata_file, 'r') as f:
                 metadata = json.loads(f.read())
-                if metadata:
-                    if isinstance(metadata.get('output_file'), str):
-                        all_attachment_files.append(metadata.get('output_file'))
-                    elif isinstance(metadata.get('output_file'), list):
-                        all_attachment_files = metadata.get('output_file')
+                if metadata and metadata.get('output_file'):
+                    target_file_name = os.path.basename(metadata.get('output_file'))
             file_data = ''
-            for attach_file in all_attachment_files:
-                if attach_file != "" or attach_file != None:
-                    with open(attach_file, 'rb') as _f:
-                            file_data = _f.read()
+            if metadata and metadata.get('compress') == True:
+                parent_folder = os.path.dirname(output_metadata_file)
+                target_name = os.path.basename(parent_folder)
+                tar_file_name = f"{target_name}" + '.tar.bz2'
+                tar_cmd = ["tar", "jcvf", tar_file_name , f"--exclude={output_metadata_file}", parent_folder]
+                try:
+                    subprocess.run(tar_cmd,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                check=True)
+                except Exception as e:
+                    print(f"ERROR: {e}")
+                    return False
+                target_file_name = tar_file_name
 
-                    encoded = base64.b64encode(file_data).decode()
-                    attachment = Attachment()
-                    attachment.file_content = FileContent(encoded)
-                    file_name = os.path.basename(attach_file)
-                    attachment.file_name = FileName(file_name)
+            with open(target_file_name, 'rb') as f:
+                file_data = f.read()
+
+                encoded = base64.b64encode(file_data).decode()
+                attachment = Attachment()
+                attachment.file_content = FileContent(encoded)
+                file_name = os.path.basename(target_file_name)
+                attachment.file_name = FileName(file_name)
+                if metadata and metadata.get('compress') == True:
+                    attachment.file_type = FileType('application/zip')
+                else:
                     attachment.file_type = FileType('application/text')
-                    attachment.disposition = 'attachment'
-                    email_message.add_attachment(attachment)
+                attachment.disposition = 'attachment'
+                email_message.add_attachment(attachment)
 
         sg = sendgrid.SendGridAPIClient(api_key)
-        response = sg.send(email_message)
+        sg.send(email_message)
         print(f"Notification sent successfully to {to_email}")
         return True
     except Exception as e:
@@ -440,24 +455,40 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
     part1 = MIMEText(message, 'html')
     attachment_.attach(part1)
 
-    all_files_to_attach = []
-    if isinstance(metadata.get('output_file'), str):
-        all_files_to_attach.append(metadata.get('output_file'))
-    elif isinstance(metadata.get('output_file'), list):
-        all_files_to_attach = metadata.get('output_file')
-    else:
-        # No other type is supported
-        pass
-
-    for attach_file in all_files_to_attach:
-        if attach_file != "" or attach_file != None:
-            with open(attach_file, 'r', encoding='utf-8') as f:
-                part = MIMEApplication(f.read())
-                part.add_header('Content-Disposition', 'attachment', filename=os.path.basename(attach_file))
-                attachment_.attach(part)
+    target_file_name = None
+    if metadata.get('output_file'):
+        target_file_name  = os.path.basename(metadata.get('output_file'))
+    if not target_file_name:
+        print(f"ERROR The Output file name is empty. Cannot progress further")
+    
+    if metadata.get('compress') == True:
+        parent_folder = os.path.dirname(output_metadata_file)
+        target_name = os.path.basename(parent_folder)
+        tar_file_name = target_name + '.tar.bz2'
+        tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", parent_folder]
+        try:
+            subprocess.run(tar_cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            check=True)
+        except Exception as e:
+            print(f"ERROR: {e}")
+            return 
+        target_file_name = tar_file_name
+    
+    with open(target_file_name, 'rb') as f:
+        part = MIMEApplication(f.read())
+        part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
+        attachment_.attach(part)
+    try:
+        if metadata.get('compress') == True:
+            os.remove(target_file_name)
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return 
 
     return (message, attachment_)
-
+    
 def create_email_message(summary_results: list,
                          failed_result: dict):
     """create_email_message: Utility function that parses summary result and failed result
@@ -565,4 +596,5 @@ def send_smtp_notification(summary_results: list,
         print(f"ERROR: {e}")
     finally:
         print(f"Notification sent successfully to {to_email}")
-    return False
+    
+    return True
