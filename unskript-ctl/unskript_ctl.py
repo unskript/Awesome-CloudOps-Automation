@@ -34,6 +34,7 @@ from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutputStatus
 from unskript_ctl_gen_report import *
 from ZODB import DB
+from utils import bcolors, UNSKRIPT_EXECUTION_DIR
 
 # This python client can be used to
 # 1. List all available runbooks
@@ -1823,19 +1824,93 @@ def save_check_names(filename: str):
             f.write(name + '\n')
 
 
-#def run_script(script:list[str]):
-#    try:
-#        result = subprocess.run(script,
-#                                capture_output=True,
-#                                check=True)
-#    except Exception as e:
-#        print(f'{"".join(script)} failed, {e}')
-#        raise e
-#
-#
-#    print(str(result.stdout))
-#    return str(result.stdout)
+def run_script(script:list[str]):
+    """run_script: This function does the following:
+    - Run the provided script
+    - Stores the output of the script in a file
+    - Creates a json for the run, containing some metadata about the script.
+    """
+    parser = ArgumentParser(description='--run-script')
+    parser.add_argument('--run-script',
+                        required=True,
+                        default=True,
+                        help=SUPPRESS,
+                        action="store_true")
+    parser.add_argument('--report',
+                        help="Report script run",
+                        required=False,
+                        action="store_true")
+    parser.add_argument('--script',
+                        help="Script to be run",
+                        nargs=REMAINDER)
 
+    args=parser.parse_args()
+
+
+    if len(sys.argv) == 2:
+        parser.print_help()
+        sys.exit(0)
+
+    if args.report:
+        UNSKRIPT_GLOBALS['report'] = True
+
+    script = args.script
+    if len(args.script) == 0:
+        parser.print_help()
+        sys.exit(0)
+
+    # Do the basic sanity check like file exists and has required permission
+    if not os.path.exists(script[0]):
+        print(f'''
+            {bcolors.FAIL}{script[0]} does not exist. Please ensure that you
+            provide the full path. {bcolors.ENDC}
+            ''')
+        return
+
+    accessmode = os.F_OK | os.X_OK
+    if not os.access(script[0], accessmode):
+        print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
+        return
+
+    current_time = datetime.now().isoformat()
+    # Use the first command as the prefix for the file name.
+    # if it contains /, use the last entry
+    output_file_prefix = script[0].split('/')[-1]
+    output_file = f'{output_file_prefix}-{current_time}'
+    output_file_txt = UNSKRIPT_EXECUTION_DIR + output_file + ".txt"
+    output_file_json = UNSKRIPT_EXECUTION_DIR + output_file + ".json"
+
+    script_to_print = ' '.join(script)
+    print(f'{bcolors.OKGREEN}Executing script {script_to_print}{bcolors.ENDC}')
+    print(f'{bcolors.OKBLUE}OUTPUT FILE: {output_file_txt}{bcolors.ENDC}')
+    st = time.time()
+    status = "SUCCESS"
+    error = None
+    try:
+        with open(output_file_txt, "w") as f:
+            result = subprocess.run(script,
+                                    check=True,
+                                    stdout=f,
+                                    stderr=f)
+    except Exception as e:
+        print(f'{bcolors.FAIL}{" ".join(script)} failed, {e}{bcolors.ENDC}')
+        error = str(e)
+        status = "FAIL"
+
+    et = time.time()
+    elapsed_time = et - st
+
+    json_output = {}
+    json_output['status'] = status
+    json_output['time_taken'] = '%.2f' % elapsed_time
+    json_output['error'] = error
+    json_output['output_file'] = output_file_txt
+
+    with open(output_file_json, "w") as f:
+        json.dump(json_output, fp=f)
+
+    if args.report:
+        send_notification(None, None, output_metadata_file=output_file_json)
 
 if __name__ == "__main__":
     try:
@@ -1910,9 +1985,9 @@ if __name__ == "__main__":
     parser.add_argument('--save-check-names',
                         type=str,
                         help=SUPPRESS)
-   # parser.add_argument('--run-script',
-   #                     help='Run script',
-   #                     nargs=REMAINDER)
+    parser.add_argument('--run-script',
+                        help='Run script',
+                        nargs=REMAINDER)
 
     args = parser.parse_args()
 
@@ -1952,7 +2027,7 @@ if __name__ == "__main__":
         stop_debug()
     elif args.save_check_names not in ('', None):
         save_check_names(args.save_check_names)
-    #elif args.run_script not in ('', None):
-    #    run_script(args.run_script)
+    elif args.run_script not in ('', None):
+        run_script(args.run_script)
     else:
         parser.print_help()
