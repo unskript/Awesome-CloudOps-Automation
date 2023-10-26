@@ -68,6 +68,9 @@ TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
+UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
+UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
+
 parser = ArgumentParser(prog='unskript-ctl')
 
 def load_or_create_global_configuration():
@@ -1822,6 +1825,7 @@ def save_check_names(filename: str):
 def run_script(script:list[str]):
     """run_script: This function does the following:
     - Run the provided script
+    - Creates a directory where all the output will be saved.
     - Stores the output of the script in a file
     - Creates a json for the run, containing some metadata about the script.
     """
@@ -1867,14 +1871,25 @@ def run_script(script:list[str]):
         print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
         return
 
-    current_time = datetime.now().isoformat()
+    current_time = datetime.now().isoformat().replace(':', '_')
     # Use the first command as the prefix for the file name.
     # if it contains /, use the last entry
-    output_file_prefix = script[0].split('/')[-1]
-    output_file = f'{output_file_prefix}-{current_time}'
-    output_file_txt = UNSKRIPT_EXECUTION_DIR + output_file + ".txt"
-    output_file_json = UNSKRIPT_EXECUTION_DIR + output_file + ".json"
+    output_prefix = script[0].split('/')[-1]
+    output_dir = UNSKRIPT_EXECUTION_DIR + f'{output_prefix}-{current_time}'
+    try:
+        os.makedirs(output_dir)
+    except Exception as e:
+        print(f'{bcolors.FAIL} output dir {output_dir} creation failed{bcolors.ENDC}')
+        sys.exit(0)
 
+    output_file = UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME
+    output_file_txt = output_dir + "/" + output_file + ".txt"
+    output_file_json = output_dir + "/" + output_file + ".json"
+
+    # We need to export an env variable, so that the scripts can put their
+    # output in that directory.
+    current_env = os.environ.copy()
+    current_env[UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV] = output_dir
     script_to_print = ' '.join(script)
     print(f'{bcolors.OKGREEN}Executing script {script_to_print}{bcolors.ENDC}')
     print(f'{bcolors.OKBLUE}OUTPUT FILE: {output_file_txt}{bcolors.ENDC}')
@@ -1885,6 +1900,7 @@ def run_script(script:list[str]):
         with open(output_file_txt, "w") as f:
             result = subprocess.run(script,
                                     check=True,
+                                    env=current_env,
                                     stdout=f,
                                     stderr=f)
     except Exception as e:
@@ -1900,12 +1916,17 @@ def run_script(script:list[str]):
     json_output['time_taken'] = '%.2f' % elapsed_time
     json_output['error'] = error
     json_output['output_file'] = output_file_txt
+    json_output['compress'] = True
 
-    with open(output_file_json, "w") as f:
-        json.dump(json_output, fp=f)
+    try:
+        with open(output_file_json, "w") as f:
+            json.dump(json_output, fp=f)
 
-    if args.report:
-        send_notification(None, None, output_metadata_file=output_file_json)
+        if args.report:
+            send_notification(None, None, output_metadata_file=output_file_json)
+    except Exception as e:
+        print(f'{bcolors.FAIL} output file creation failed, {e}{bcolors.ENDC}')
+        sys.exit(0)
 
 if __name__ == "__main__":
     try:
