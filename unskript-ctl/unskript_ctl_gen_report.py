@@ -421,9 +421,9 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
     
             <table border="1">
                 <tr>
-                    <th> STATUS </th>
-                    <th> TIME TAKEN </th>
-                    <th> ERROR </th>
+                    <th> Status </th>
+                    <th> Time (in seconds) </th>
+                    <th> Error </th>
                 </tr>
                 <tr>
                     <td>{metadata.get('status')}</td>
