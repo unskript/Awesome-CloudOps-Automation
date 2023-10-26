@@ -383,7 +383,6 @@ def send_sendgrid_notification(summary_results: list,
 
         sg = sendgrid.SendGridAPIClient(api_key)
         response = sg.send(email_message)
-        print(response)
         print(f"Notification sent successfully to {to_email}")
         return True
     except Exception as e:
