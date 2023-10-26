@@ -89,7 +89,7 @@ class Job():
             if filtered_scripts:
                 combined_script = ';'.join(filtered_scripts)
                 print(f'Job: {self.job_name} contains custom script: {combined_script}')
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} {notify} --script {combined_script}')
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} --run-script {notify} --script {combined_script}')
         self.cmds = cmds
 
 class ConfigParser():

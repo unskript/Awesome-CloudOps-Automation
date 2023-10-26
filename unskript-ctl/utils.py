@@ -9,7 +9,7 @@
 #
 #
 
-UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
+UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/workspace"
 
 class bcolors:
     HEADER = '\033[95m'
