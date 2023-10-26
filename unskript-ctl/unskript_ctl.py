@@ -604,12 +604,12 @@ def update_current_execution(status, id: str, content: dict):
         print("ERROR: Cannot Update Failed execution with No Content")
         return
 
-    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + f"{id}.ipynb"
+    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/' + f"{id}.ipynb"
 
 
     # If failed directory does not exists, lets create it
-    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace') is False:
-        os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace')
+    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"')) is False:
+        os.makedirs(os.environ.get('EXECUTION_DIR').strip('"'))
 
     prev_status = None
     es = {}
@@ -698,12 +698,12 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    if os.path.exists(os.environ.get('EXECUTION_DIR') + '/workspace') is False:
-        os.makedirs(os.environ.get('EXECUTION_DIR') + '/workspace')
+    if os.path.exists(os.environ.get('EXECUTION_DIR')) is False:
+        os.makedirs(os.environ.get('EXECUTION_DIR'))
 
     exec_id = str(uuid.uuid4())
     UNSKRIPT_GLOBALS['exec_id'] = exec_id
-    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/workspace/' + exec_id + '.ipynb'
+    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/' + exec_id + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
@@ -1025,7 +1025,7 @@ def display_failed_logs(args):
 
     # exec_id = args[-1]
     output = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip(
-        '"') + '/workspace/' + f"{exec_id}_output.ipynb"
+        '"') + '/' + f"{exec_id}_output.ipynb"
     if not os.path.exists(output):
         print(
             f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
