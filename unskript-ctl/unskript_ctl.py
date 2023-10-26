@@ -34,7 +34,7 @@ from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutputStatus
 from unskript_ctl_gen_report import *
 from ZODB import DB
-from utils import bcolors, UNSKRIPT_EXECUTION_DIR
+from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
 
 # This python client can be used to
 # 1. List all available runbooks

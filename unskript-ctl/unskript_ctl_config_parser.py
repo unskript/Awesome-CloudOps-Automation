@@ -13,7 +13,7 @@ import subprocess
 import os
 import sys
 from envyaml import EnvYAML
-from utils import bcolors, UNSKRIPT_EXECUTION_DIR
+from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
 
 #logging.basicConfig(
 #    level=logging.DEBUG,
@@ -23,7 +23,7 @@ from utils import bcolors, UNSKRIPT_EXECUTION_DIR
 #)
 UNSKRIPT_CTL_CONFIG_FILE="/etc/unskript/unskript_ctl_config.yaml"
 UNSKRIPT_CTL_BINARY="/usr/local/bin/unskript-ctl.sh"
-UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/workspace/"
+UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
 
 # Job config related
 JOB_CONFIG_CHECKS_KEY_NAME = "checks"
