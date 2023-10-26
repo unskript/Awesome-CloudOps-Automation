@@ -363,10 +363,10 @@ def send_sendgrid_notification(summary_results: list,
             with open(output_metadata_file, 'r') as f:
                 metadata = json.loads(f.read())
                 if metadata:
-                    if isinstance(metadata.get('output'), str):
-                        all_attachment_files.append(metadata.get('output'))
-                    elif isinstance(metadata.get('output'), list):
-                        all_attachment_files = metadata.get('output')
+                    if isinstance(metadata.get('output_file'), str):
+                        all_attachment_files.append(metadata.get('output_file'))
+                    elif isinstance(metadata.get('output_file'), list):
+                        all_attachment_files = metadata.get('output_file')
             file_data = ''
             for attach_file in all_attachment_files:
                 with open(attach_file, 'rb') as _f:
@@ -422,16 +422,14 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
     
             <table border="1">
                 <tr>
-                    <th> SCRIPT NAME </th>
+                    <th> STATUS </th>
                     <th> TIME TAKEN </th>
-                    <th> LANGUAGE </th>
-                    <th> VERSION </th>
+                    <th> ERROR </th>
                 </tr>
                 <tr>
-                    <td>{metadata.get('script_name')}</td>
-                    <td>{metadata.get('runtime')}</td>
-                    <td>{metadata.get('language')}</td>
-                    <td>{metadata.get('version')}</td>
+                    <td>{metadata.get('status')}</td>
+                    <td>{metadata.get('time_taken')}</td>
+                    <td>{metadata.get('error')}</td>
                 </tr>
             </table>
             </body>
@@ -444,10 +442,10 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
     attachment_.attach(part1)
     
     all_files_to_attach = []
-    if isinstance(metadata.get('output'), str):
-        all_files_to_attach.append(metadata.get('output'))
-    elif isinstance(metadata.get('output'), list):
-        all_files_to_attach = metadata.get('output')
+    if isinstance(metadata.get('output_file'), str):
+        all_files_to_attach.append(metadata.get('output_file'))
+    elif isinstance(metadata.get('output_file'), list):
+        all_files_to_attach = metadata.get('output_file')
     else:
         # No other type is supported
         pass 
@@ -560,7 +558,10 @@ def send_smtp_notification(summary_results: list,
         print("ERROR: Nothing to send, Results Empty")
         return False
 
-    response = server.sendmail(smtp_user, to_email, msg.as_string())
-    print(f"Notification sent successfully to {to_email} {response}")
-
+    try:
+        response = server.sendmail(smtp_user, to_email, msg.as_string())
+    except Exception as e:
+        print(f"ERROR: {e}")
+    finally:
+        print(f"Notification sent successfully to {to_email}")
     return False
