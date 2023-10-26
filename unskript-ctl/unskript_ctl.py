@@ -253,6 +253,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     except CellExecutionError as e:
         raise e
     finally:
+        os.remove(filename)
         output_file = filename
         output_file = output_file.replace('.ipynb', '_output.ipynb')
         nbformat.write(nb, output_file)
@@ -1719,36 +1720,37 @@ def list_creds():
        we display on the UI. ACTIVE means the credential data has been filled and ready to go
        INACTIVE means the credential is not yet ready to be used.
     """
-    # Lets get the creds data from PSS instead of reading from the credentials
-    # json files.
-    creds_pss_data = get_pss_record('default_credential_id')
-    creds_data = [["#", "Connector Type", "Connector Name", "Status"]]
-    creds_dir = os.environ.get('HOME') + CREDENTIAL_DIR
-    creds_files = glob.glob(creds_dir + '/*.json',recursive=True)
-    if creds_pss_data:
-        index = 0
-        list_of_creds_active = []
-        for data in creds_pss_data.items():
-            c_type, c_data = data
-            c_name = c_data.get('name')
-            list_of_creds_active.append(c_name)
-            creds_data.append([index, c_type.split('_')[-1], c_name, "Active"])
-            index += 1
-        for c_file in creds_files:
-            c_name = os.path.basename(c_file).replace('.json', '')
-            if c_name not in list_of_creds_active:
-                with open(c_file, 'r', encoding='utf-8') as f:
-                    content = json.loads(f.read())
-                    if content.get('type'):
-                        c_type = content.get('type').replace('CONNECTOR_TYPE_', '')
-                    else:
-                        c_type = "UNDEFINED"
-                    creds_data.append([index, c_type, c_name, "Incomplete"])
-            index += 1
-    else:
-        print("ERROR: No Credential Data saaved in PSS DB. Nothing to display")
+    global UNSKRIPT_GLOBALS
+    default_creds = UNSKRIPT_GLOBALS.get('default_credentials', {})
 
-    print(tabulate(creds_data, headers='firstrow', tablefmt='fancy_grid'))
+    active_creds = []
+    incomplete_creds = []
+
+    creds_files = os.environ.get('HOME').strip('"') + CREDENTIAL_DIR + '/*.json'
+    list_of_creds = glob.glob(creds_files)
+
+    for creds in list_of_creds:
+        with open(creds, 'r') as f:
+            c_data = json.load(f)
+
+            connector_type = c_data.get('metadata').get('type')
+            connector_name = c_data.get('metadata').get('name')
+
+            if default_creds.get(connector_type) and default_creds[connector_type]['name'] == connector_name:
+                active_creds.append((connector_type, connector_name))
+            else:
+                incomplete_creds.append((connector_type, connector_name))
+
+    combined_list = active_creds + incomplete_creds
+
+    headers = ["#", "Connector Type", "Connector Name", "Status"]
+    table_data = [headers]
+
+    for index, (ctype, cname) in enumerate(combined_list, start=1):
+        status = "Active" if index <= len(active_creds) else "Incomplete"
+        table_data.append([index, ctype, cname, status])
+
+    print(tabulate(table_data, headers='firstrow', tablefmt='fancy_grid'))
 
 def start_debug(args):
     """start_debug Starts Debug session. This function takes
@@ -1819,6 +1821,20 @@ def save_check_names(filename: str):
     with open(filename, 'w', encoding='utf-8') as f:
         for name in list_of_names:
             f.write(name + '\n')
+
+
+#def run_script(script:list[str]):
+#    try:
+#        result = subprocess.run(script,
+#                                capture_output=True,
+#                                check=True)
+#    except Exception as e:
+#        print(f'{"".join(script)} failed, {e}')
+#        raise e
+#
+#
+#    print(str(result.stdout))
+#    return str(result.stdout)
 
 
 if __name__ == "__main__":
@@ -1894,6 +1910,9 @@ if __name__ == "__main__":
     parser.add_argument('--save-check-names',
                         type=str,
                         help=SUPPRESS)
+   # parser.add_argument('--run-script',
+   #                     help='Run script',
+   #                     nargs=REMAINDER)
 
     args = parser.parse_args()
 
@@ -1933,5 +1952,7 @@ if __name__ == "__main__":
         stop_debug()
     elif args.save_check_names not in ('', None):
         save_check_names(args.save_check_names)
+    #elif args.run_script not in ('', None):
+    #    run_script(args.run_script)
     else:
         parser.print_help()
