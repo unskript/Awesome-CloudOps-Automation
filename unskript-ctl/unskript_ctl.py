@@ -605,12 +605,10 @@ def update_current_execution(status, id: str, content: dict):
         print("ERROR: Cannot Update Failed execution with No Content")
         return
 
-    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + f"{id}.ipynb"
-
-
-    # If failed directory does not exists, lets create it
-    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace') is False:
-        os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace')
+    try:
+        failed_runbook = UNSKRIPT_EXECUTION_DIR + '/' + f"{id}.ipynb"
+    except:
+        failed_runbook = "/unskript/data/execution/" + f"{id}.ipynb"
 
     prev_status = None
     es = {}
@@ -699,12 +697,10 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    if os.path.exists(os.environ.get('EXECUTION_DIR') + '/workspace') is False:
-        os.makedirs(os.environ.get('EXECUTION_DIR') + '/workspace')
 
     exec_id = str(uuid.uuid4())
     UNSKRIPT_GLOBALS['exec_id'] = exec_id
-    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/workspace/' + exec_id + '.ipynb'
+    failed_notebook = '/unskript/data/execution/' + exec_id + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
@@ -1025,8 +1021,7 @@ def display_failed_logs(args):
         return
 
     # exec_id = args[-1]
-    output = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip(
-        '"') + '/workspace/' + f"{exec_id}_output.ipynb"
+    output = '/unskript/data/execution' + f"{exec_id}_output.ipynb"
     if not os.path.exists(output):
         print(
             f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
@@ -1914,11 +1909,6 @@ def run_script(script:list[str]):
 
 if __name__ == "__main__":
     try:
-        if os.environ.get('EXECUTION_DIR') is None:
-            os.environ['EXECUTION_DIR'] = '/unskript/data/execution'
-            if os.path.exists(os.environ.get('EXECUTION_DIR')) is False:
-                os.makedirs(os.environ.get('EXECUTION_DIR'))
-
         load_or_create_global_configuration()
         create_creds_mapping()
     except Exception as error:
