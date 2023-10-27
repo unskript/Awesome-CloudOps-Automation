@@ -12,7 +12,7 @@
 import json
 import yaml
 import requests
-import subprocess 
+import subprocess
 import smtplib
 import os
 import base64
@@ -359,7 +359,7 @@ def send_sendgrid_notification(summary_results: list,
                 html_content=html_message
             )
             target_file_name = None
-            metadata = None 
+            metadata = None
             with open(output_metadata_file, 'r') as f:
                 metadata = json.loads(f.read())
                 if metadata and metadata.get('output_file'):
@@ -369,7 +369,7 @@ def send_sendgrid_notification(summary_results: list,
                 parent_folder = os.path.dirname(output_metadata_file)
                 target_name = os.path.basename(parent_folder)
                 tar_file_name = f"{target_name}" + '.tar.bz2'
-                tar_cmd = ["tar", "jcvf", tar_file_name , f"--exclude={output_metadata_file}", parent_folder]
+                tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
                 try:
                     subprocess.run(tar_cmd,
                                 stdout=subprocess.PIPE,
@@ -460,12 +460,12 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
         target_file_name  = os.path.basename(metadata.get('output_file'))
     if not target_file_name:
         print(f"ERROR The Output file name is empty. Cannot progress further")
-    
+
     if metadata.get('compress') is True:
         parent_folder = os.path.dirname(output_metadata_file)
         target_name = os.path.basename(parent_folder)
-        tar_file_name = target_name + '.tar.bz2'
-        tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", parent_folder]
+        tar_file_name = f"{target_name}" + '.tar.bz2'
+        tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
         try:
             subprocess.run(tar_cmd,
                             stdout=subprocess.PIPE,
@@ -473,9 +473,9 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
                             check=True)
         except Exception as e:
             print(f"ERROR: {e}")
-            return 
+            return
         target_file_name = tar_file_name
-    
+
     with open(target_file_name, 'rb') as f:
         part = MIMEApplication(f.read())
         part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
@@ -485,10 +485,10 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
             os.remove(target_file_name)
     except Exception as e:
         print(f"ERROR: {e}")
-        return 
+        return
 
     return (message, attachment_)
-    
+
 def create_email_message(summary_results: list,
                          failed_result: dict):
     """create_email_message: Utility function that parses summary result and failed result
@@ -596,5 +596,5 @@ def send_smtp_notification(summary_results: list,
         print(f"ERROR: {e}")
     finally:
         print(f"Notification sent successfully to {to_email}")
-    
+
     return True
