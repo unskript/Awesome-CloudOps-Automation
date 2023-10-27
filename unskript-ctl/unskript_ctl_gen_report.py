@@ -12,6 +12,7 @@
 import json
 import yaml
 import requests
+import subprocess 
 import smtplib
 import os
 import base64
@@ -88,7 +89,7 @@ def send_notification(summary_result_table: list, failed_result: dict, output_me
 
     # Currently it is coded for Either / Or scenario, we can always
     # make it both if need be
-    if len(slack_settings):
+    if len(slack_settings) and summary_result_table is not None:
         # Slack configuration was found
         s = slack_settings
         retval = send_slack_notification(summary_result_table,
@@ -105,11 +106,9 @@ def send_notification(summary_result_table: list, failed_result: dict, output_me
                                 failed_result,
                                 output_metadata_file,
                                 m)
-   
+
     if retval is False:
         print("ERROR: Unable to send notification!")
-    else:
-        print("Notification sent successfully!")
 
 def send_slack_notification(summary_results: list,
                             webhook_url: str,
@@ -227,7 +226,7 @@ def send_awsses_notification(summary_results: list,
     # We do it by setting  the os.environ variables
     # for access and secret key
     import boto3
-    from botocore.exceptions import NoCredentialsError 
+    from botocore.exceptions import NoCredentialsError
 
     os.environ['AWS_ACCESS_KEY_ID'] = access_key
     os.environ['AWS_SECRET_ACCESS_KEY'] = secret_key
@@ -235,7 +234,7 @@ def send_awsses_notification(summary_results: list,
 
     charset='UTF-8'
     message = ''
-    if len(summary_results):
+    if summary_results and len(summary_results):
         message = create_email_message(summary_results, failed_result)
         email_template = {
             'Subject': {
@@ -269,27 +268,27 @@ def send_awsses_notification(summary_results: list,
             return False
         except client.exceptions.MailFromDomainNotVerifiedException:
             print("ERROR: Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
-            return False 
+            return False
         except client.exceptions.ConfigurationSetDoesNotExistException:
             print("ERROR: Unable to send email. Email Configuration set does not exist. Please check SES policy")
-            return False 
+            return False
         except client.exceptions.ConfigurationSetSendingPausedException:
             print(f"ERROR: Unable to send email. Email sending is paused for the from email id {from_email}!")
-            return False 
+            return False
         except client.exceptions.AccountSendingPausedException:
             print("ERROR: Unable to send email. Sending email is paused for the AWS Account!")
-            return False 
+            return False
         except client.exceptions.ClientError as e:
             print(f"ERROR: Unable to send email out. Invalid Client Token, please verify access and/or secret_key! {e}")
             return False
         except Exception as e:
             print(f"ERROR: {e}")
             return False
-        
+
     elif output_metadata_file:
         _, attachment_ = create_email_message_with_attachment(output_metadata_file=output_metadata_file)
         attachment_['Subject'] = 'unSkript-ctl Check Run result'
-        attachment_['From'] = from_email 
+        attachment_['From'] = from_email
         attachment_['To'] = to_email
         try:
             response = client.send_raw_email(
@@ -308,23 +307,23 @@ def send_awsses_notification(summary_results: list,
             return False
         except client.exceptions.MailFromDomainNotVerifiedException:
             print("ERROR: Unable to send email. Domain of from email-id is not verified!, Please use a valid from email-id")
-            return False 
+            return False
         except client.exceptions.ConfigurationSetDoesNotExistException:
             print("ERROR: Unable to send email. Email Configuration set does not exist. Please check SES policy")
-            return False 
+            return False
         except client.exceptions.ConfigurationSetSendingPausedException:
             print(f"ERROR: Unable to send email. Email sending is paused for the from email id {from_email}!")
-            return False 
+            return False
         except client.exceptions.AccountSendingPausedException:
             print("ERROR: Unable to send email. Sending email is paused for the AWS Account!")
-            return False 
+            return False
         except client.exceptions.ClientError as e:
             print(f"ERROR: {e}")
             return False
         except Exception as e:
             print(f"ERROR: {e}")
             return False
-        
+
     return False
 
 def send_sendgrid_notification(summary_results: list,
@@ -343,7 +342,7 @@ def send_sendgrid_notification(summary_results: list,
         return False
     try:
         html_message = ''
-        if len(summary_results):
+        if summary_results and len(summary_results):
             html_message = create_email_message(summary_results, failed_result)
             email_message = Mail(
                 from_email=from_email,
@@ -356,33 +355,48 @@ def send_sendgrid_notification(summary_results: list,
             email_message = Mail(
                 from_email=from_email,
                 to_emails=to_email,
-                subject='unSkript-ctl Script Run result',
+                subject='unSkript-ctl Custom Script Run result',
                 html_content=html_message
             )
-            all_attachment_files = []
+            target_file_name = None
+            metadata = None 
             with open(output_metadata_file, 'r') as f:
                 metadata = json.loads(f.read())
-                if metadata:
-                    if isinstance(metadata.get('output_file'), str):
-                        all_attachment_files.append(metadata.get('output_file'))
-                    elif isinstance(metadata.get('output_file'), list):
-                        all_attachment_files = metadata.get('output_file')
+                if metadata and metadata.get('output_file'):
+                    target_file_name = os.path.basename(metadata.get('output_file'))
             file_data = ''
-            for attach_file in all_attachment_files:
-                with open(attach_file, 'rb') as _f:
-                        file_data = _f.read()
-            
+            if metadata and metadata.get('compress') is True:
+                parent_folder = os.path.dirname(output_metadata_file)
+                target_name = os.path.basename(parent_folder)
+                tar_file_name = f"{target_name}" + '.tar.bz2'
+                tar_cmd = ["tar", "jcvf", tar_file_name , f"--exclude={output_metadata_file}", parent_folder]
+                try:
+                    subprocess.run(tar_cmd,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                check=True)
+                except Exception as e:
+                    print(f"ERROR: {e}")
+                    return False
+                target_file_name = tar_file_name
+
+            with open(target_file_name, 'rb') as f:
+                file_data = f.read()
+
                 encoded = base64.b64encode(file_data).decode()
                 attachment = Attachment()
                 attachment.file_content = FileContent(encoded)
-                file_name = os.path.basename(attach_file)
+                file_name = os.path.basename(target_file_name)
                 attachment.file_name = FileName(file_name)
-                attachment.file_type = FileType('application/text')
+                if metadata and metadata.get('compress') is True:
+                    attachment.file_type = FileType('application/zip')
+                else:
+                    attachment.file_type = FileType('application/text')
                 attachment.disposition = 'attachment'
                 email_message.add_attachment(attachment)
 
         sg = sendgrid.SendGridAPIClient(api_key)
-        response = sg.send(email_message)
+        sg.send(email_message)
         print(f"Notification sent successfully to {to_email}")
         return True
     except Exception as e:
@@ -393,13 +407,13 @@ def send_sendgrid_notification(summary_results: list,
 def create_email_message_with_attachment(output_metadata_file: str = None):
     """create_email_message_with_attachment: This function reads the output_metadata_file
     to find out the name of the attachment, the output that should be included as the attachment
-    and summary of the test run as listed in the output_metadata_file. 
+    and summary of the test run as listed in the output_metadata_file.
     """
     message = ''
     if os.path.exists(output_metadata_file) is False:
         print(f"ERROR: The metadata file is missing, please check if file exists? {output_metadata_file}")
         return message
-    
+
     metadata = ''
     with open(output_metadata_file, 'r', encoding='utf-8') as f:
         metadata = json.loads(f.read())
@@ -407,7 +421,7 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
     if not metadata:
         print(f'ERROR: Metadata is empty for the script. Please check content of {output_metadata_file}')
         raise ValueError("Metadata is empty")
-    
+
     message = f'''
             <!DOCTYPE html>
             <html>
@@ -415,10 +429,10 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
             </head>
             <body>
             <center>
-            <h1> unSkript-ctl Script Run result </h1>
+            <h1> unSkript-ctl Custom Script Run result </h1>
             <h3> <strong>Tested On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
             </center>
-    
+
             <table border="1">
                 <tr>
                     <th> Status </th>
@@ -434,29 +448,47 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
             </body>
             </html>
     '''
-    
+
+    # if the status is FAIL, then there is no file to attach, so just send the message.
     multipart_content_subtype = 'mixed'
     attachment_ = MIMEMultipart(multipart_content_subtype)
     part1 = MIMEText(message, 'html')
     attachment_.attach(part1)
-    
-    all_files_to_attach = []
-    if isinstance(metadata.get('output_file'), str):
-        all_files_to_attach.append(metadata.get('output_file'))
-    elif isinstance(metadata.get('output_file'), list):
-        all_files_to_attach = metadata.get('output_file')
-    else:
-        # No other type is supported
-        pass 
 
-    for attach_file in all_files_to_attach: 
-        with open(attach_file, 'r', encoding='utf-8') as f:
-            part = MIMEApplication(f.read())
-            part.add_header('Content-Disposition', 'attachment', filename=os.path.basename(attach_file))
-            attachment_.attach(part)
+    target_file_name = None
+    if metadata.get('output_file'):
+        target_file_name  = os.path.basename(metadata.get('output_file'))
+    if not target_file_name:
+        print(f"ERROR The Output file name is empty. Cannot progress further")
+    
+    if metadata.get('compress') is True:
+        parent_folder = os.path.dirname(output_metadata_file)
+        target_name = os.path.basename(parent_folder)
+        tar_file_name = target_name + '.tar.bz2'
+        tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", parent_folder]
+        try:
+            subprocess.run(tar_cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            check=True)
+        except Exception as e:
+            print(f"ERROR: {e}")
+            return 
+        target_file_name = tar_file_name
+    
+    with open(target_file_name, 'rb') as f:
+        part = MIMEApplication(f.read())
+        part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
+        attachment_.attach(part)
+    try:
+        if metadata.get('compress') is True:
+            os.remove(target_file_name)
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return 
 
     return (message, attachment_)
-
+    
 def create_email_message(summary_results: list,
                          failed_result: dict):
     """create_email_message: Utility function that parses summary result and failed result
@@ -518,7 +550,7 @@ def create_email_message(summary_results: list,
 
 def send_smtp_notification(summary_results: list,
                             failed_result: dict,
-                            output_metadata_file: str, 
+                            output_metadata_file: str,
                             smtp_host: str,
                             smtp_user: str,
                             smtp_password: str,
@@ -544,7 +576,7 @@ def send_smtp_notification(summary_results: list,
         print(e)
         return False
 
-    if len(summary_results):
+    if summary_results and len(summary_results):
         message = create_email_message(summary_results, failed_result)
         if not message:
             print("ERROR: Nothing to send, Results Empty")
@@ -552,15 +584,17 @@ def send_smtp_notification(summary_results: list,
         msg.attach(MIMEText(message, 'html'))
     elif output_metadata_file:
         message, attachment = create_email_message_with_attachment(output_metadata_file=output_metadata_file)
-        msg.attach(attachment)
+        if attachment:
+            msg.attach(attachment)
     else:
         print("ERROR: Nothing to send, Results Empty")
         return False
 
     try:
-        response = server.sendmail(smtp_user, to_email, msg.as_string())
+        server.sendmail(smtp_user, to_email, msg.as_string())
     except Exception as e:
         print(f"ERROR: {e}")
     finally:
         print(f"Notification sent successfully to {to_email}")
-    return False
+    
+    return True
