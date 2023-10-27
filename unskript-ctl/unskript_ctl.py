@@ -1910,7 +1910,8 @@ def run_script(script:list[str]):
 
     json_output = {}
     json_output['status'] = status
-    json_output['time_taken'] = '%.2f' % elapsed_time
+    # json_output['time_taken'] = '%.2f' % elapsed_time
+    json_output['time_taken'] = f'{elapsed_time:.2f}'
     json_output['error'] = error
     json_output['output_file'] = output_file_txt
     json_output['compress'] = True
