@@ -89,7 +89,7 @@ def send_notification(summary_result_table: list, failed_result: dict, output_me
 
     # Currently it is coded for Either / Or scenario, we can always
     # make it both if need be
-    if len(slack_settings) and summary_result_table != None:
+    if len(slack_settings) and summary_result_table is not None:
         # Slack configuration was found
         s = slack_settings
         retval = send_slack_notification(summary_result_table,
@@ -365,7 +365,7 @@ def send_sendgrid_notification(summary_results: list,
                 if metadata and metadata.get('output_file'):
                     target_file_name = os.path.basename(metadata.get('output_file'))
             file_data = ''
-            if metadata and metadata.get('compress') == True:
+            if metadata and metadata.get('compress') is True:
                 parent_folder = os.path.dirname(output_metadata_file)
                 target_name = os.path.basename(parent_folder)
                 tar_file_name = f"{target_name}" + '.tar.bz2'
@@ -388,7 +388,7 @@ def send_sendgrid_notification(summary_results: list,
                 attachment.file_content = FileContent(encoded)
                 file_name = os.path.basename(target_file_name)
                 attachment.file_name = FileName(file_name)
-                if metadata and metadata.get('compress') == True:
+                if metadata and metadata.get('compress') is True:
                     attachment.file_type = FileType('application/zip')
                 else:
                     attachment.file_type = FileType('application/text')
@@ -461,7 +461,7 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
     if not target_file_name:
         print(f"ERROR The Output file name is empty. Cannot progress further")
     
-    if metadata.get('compress') == True:
+    if metadata.get('compress') is True:
         parent_folder = os.path.dirname(output_metadata_file)
         target_name = os.path.basename(parent_folder)
         tar_file_name = target_name + '.tar.bz2'
@@ -481,7 +481,7 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
         part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
         attachment_.attach(part)
     try:
-        if metadata.get('compress') == True:
+        if metadata.get('compress') is True:
             os.remove(target_file_name)
     except Exception as e:
         print(f"ERROR: {e}")
@@ -584,14 +584,14 @@ def send_smtp_notification(summary_results: list,
         msg.attach(MIMEText(message, 'html'))
     elif output_metadata_file:
         message, attachment = create_email_message_with_attachment(output_metadata_file=output_metadata_file)
-        if attachment != None:
+        if attachment:
             msg.attach(attachment)
     else:
         print("ERROR: Nothing to send, Results Empty")
         return False
 
     try:
-        response = server.sendmail(smtp_user, to_email, msg.as_string())
+        server.sendmail(smtp_user, to_email, msg.as_string())
     except Exception as e:
         print(f"ERROR: {e}")
     finally:
