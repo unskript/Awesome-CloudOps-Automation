@@ -608,10 +608,7 @@ def update_current_execution(status, id: str, content: dict):
         print("ERROR: Cannot Update Failed execution with No Content")
         return
 
-    try:
-        failed_runbook = UNSKRIPT_EXECUTION_DIR + '/' + f"{id}.ipynb"
-    except:
-        failed_runbook = "/unskript/data/execution/" + f"{id}.ipynb"
+    failed_runbook = UNSKRIPT_EXECUTION_DIR + '/' + f"{id}.ipynb"
 
     prev_status = None
     es = {}
@@ -703,7 +700,7 @@ def create_jit_runbook(check_list: list):
 
     exec_id = str(uuid.uuid4())
     UNSKRIPT_GLOBALS['exec_id'] = exec_id
-    failed_notebook = '/unskript/data/execution/' + exec_id + '.ipynb'
+    failed_notebook = UNSKRIPT_EXECUTION_DIR + exec_id + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
