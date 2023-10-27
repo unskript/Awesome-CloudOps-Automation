@@ -11,11 +11,9 @@
 import logging
 import subprocess
 import os
-from envyaml import EnvYAML
 import sys
-
-
-from pathlib import Path
+from envyaml import EnvYAML
+from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
 
 #logging.basicConfig(
 #    level=logging.DEBUG,
@@ -25,7 +23,7 @@ from pathlib import Path
 #)
 UNSKRIPT_CTL_CONFIG_FILE="/etc/unskript/unskript_ctl_config.yaml"
 UNSKRIPT_CTL_BINARY="/usr/local/bin/unskript-ctl.sh"
-UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/workspace/"
+UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
 
 # Job config related
 JOB_CONFIG_CHECKS_KEY_NAME = "checks"
@@ -41,16 +39,7 @@ CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS = ["no-verify-certs", "no-verify-ssl"
 GLOBAL_CONFIG_AUDIT_PERIOD_KEY_NAME = "audit_period"
 GLOBAL_DEFAULT_AUDIT_PERIOD = 90
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+
 
 class Job():
     def __init__(
@@ -71,16 +60,36 @@ class Job():
     def parse(self):
         cmds = []
         notify = '--report' if self.notify is True else ''
-        #TBD: Add support for suites and custom_scripts
+        #TBD: Add support for custom_scripts
         if self.checks is not None and len(self.checks) != 0:
             cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --check {self.checks[0]} {notify}')
             print(f'Job: {self.job_name} contains check: {self.checks[0]}')
+
         if self.connectors is not None and len(self.connectors) != 0:
             # Need to construct the unskript-ctl command like
             # unskript-ctl.sh -rc --types aws,k8s
             connector_types_string = ','.join(self.connectors)
             print(f'Job: {self.job_name} contains connector types: {connector_types_string}')
             cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --type {connector_types_string} {notify}')
+
+        accessmode = os.F_OK | os.X_OK
+        if self.custom_scripts is not None and len(self.custom_scripts) != 0:
+            # Do basic checks, like the binary exists, permission is fine.
+            filtered_scripts = []
+            for script in self.custom_scripts:
+                if not os.path.exists(script[0]):
+                    print(f'''{bcolors.FAIL}{script[0]} does not exist. Please ensure that you
+                         provide the full path. {bcolors.ENDC}
+                        ''')
+                    continue
+                if not os.access(script[0], accessmode):
+                    print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
+                    continue
+                filtered_scripts.append(script)
+            if filtered_scripts:
+                combined_script = ';'.join(filtered_scripts)
+                print(f'Job: {self.job_name} contains custom script: {combined_script}')
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} --run-script {notify} --script {combined_script}')
         self.cmds = cmds
 
 class ConfigParser():
@@ -161,9 +170,9 @@ class ConfigParser():
                         else:
                             creds_cmd.extend(['--'+cred_key, str(cred.get(cred_key))])
                     if creds_cmd:
-                        print_cmd = ' '.join(creds_cmd)
+                        #print_cmd = ' '.join(creds_cmd)
                         self.run_command(creds_cmd)
-                        print(f"{bcolors.OKGREEN}Credential: Successfully programmed {cred_type}, name {name}, cmd {print_cmd}{bcolors.ENDC}")
+                        print(f"{bcolors.OKGREEN}Credential: Successfully programmed {cred_type}, name {name}{bcolors.ENDC}")
                 except Exception as e:
                     print(f'{bcolors.FAIL}Credential: Failed to program {cred_type}, name {name}{bcolors.ENDC}')
                     continue
@@ -223,7 +232,7 @@ class ConfigParser():
                     f.write("\n")
                 # Add the audit period cron job as well, to be run daily.
                 audit_cadence = "0 0 * * *"
-                delete_old_files_command = f'/usr/bin/find {UNSKRIPT_EXECUTION_DIR} -name "*.ipynb" -type f -mtime +{self.audit_period} -exec rm -f {{}} \;'
+                delete_old_files_command = f'/usr/bin/find {UNSKRIPT_EXECUTION_DIR} -type f -mtime +{self.audit_period} -exec rm -f {{}} \;'
                 print(f'{bcolors.OKGREEN}Adding audit log deletion cron job entry, {audit_cadence} {delete_old_files_command}{bcolors.ENDC}')
                 f.write(f'{audit_cadence} {delete_old_files_command}')
                 f.write("\n")
@@ -260,7 +269,6 @@ class ConfigParser():
             connectors = job.get(JOB_CONFIG_CONNECTORS_KEY_NAME)
             custom_scripts = job.get(JOB_CONFIG_CUSTOM_SCRIPTS_KEY_NAME)
             notify = job.get(JOB_CONFIG_NOTIFY_KEY_NAME, False)
-
             if checks is not None and len(checks) > 1:
                 print(f'{job_name}: NOT SUPPORTED: more than 1 check')
                 continue

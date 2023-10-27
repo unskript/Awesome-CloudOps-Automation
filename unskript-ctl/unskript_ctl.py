@@ -34,6 +34,7 @@ from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutputStatus
 from unskript_ctl_gen_report import *
 from ZODB import DB
+from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
 
 # This python client can be used to
 # 1. List all available runbooks
@@ -66,6 +67,9 @@ TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
 TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
+
+UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
+UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 
 parser = ArgumentParser(prog='unskript-ctl')
 
@@ -608,12 +612,7 @@ def update_current_execution(status, id: str, content: dict):
         print("ERROR: Cannot Update Failed execution with No Content")
         return
 
-    failed_runbook = os.environ.get('EXECUTION_DIR').strip('"') + '/workspace/' + f"{id}.ipynb"
-
-
-    # If failed directory does not exists, lets create it
-    if os.path.exists(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace') is False:
-        os.makedirs(os.environ.get('EXECUTION_DIR').strip('"') + '/workspace')
+    failed_runbook = UNSKRIPT_EXECUTION_DIR + '/' + f"{id}.ipynb"
 
     prev_status = None
     es = {}
@@ -708,12 +707,10 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
-    if os.path.exists(os.environ.get('EXECUTION_DIR') + '/workspace') is False:
-        os.makedirs(os.environ.get('EXECUTION_DIR') + '/workspace')
 
     exec_id = str(uuid.uuid4())
     UNSKRIPT_GLOBALS['exec_id'] = exec_id
-    failed_notebook = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip('"') + '/workspace/' + exec_id + '.ipynb'
+    failed_notebook = UNSKRIPT_EXECUTION_DIR + exec_id + '.ipynb'
     for check in check_list:
         s_connector = check.get('metadata').get('action_type')
         s_connector = s_connector.replace('LEGO', 'CONNECTOR')
@@ -1036,8 +1033,7 @@ def display_failed_logs(args):
         return
 
     # exec_id = args[-1]
-    output = os.environ.get('EXECUTION_DIR', '/unskript/data/execution').strip(
-        '"') + '/workspace/' + f"{exec_id}_output.ipynb"
+    output = '/unskript/data/execution' + f"{exec_id}_output.ipynb"
     if not os.path.exists(output):
         print(
             f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
@@ -1835,27 +1831,115 @@ def save_check_names(filename: str):
             f.write(name + '\n')
 
 
-#def run_script(script:list[str]):
-#    try:
-#        result = subprocess.run(script,
-#                                capture_output=True,
-#                                check=True)
-#    except Exception as e:
-#        print(f'{"".join(script)} failed, {e}')
-#        raise e
-#
-#
-#    print(str(result.stdout))
-#    return str(result.stdout)
+def run_script(script:list[str]):
+    """run_script: This function does the following:
+    - Run the provided script
+    - Creates a directory where all the output will be saved.
+    - Stores the output of the script in a file
+    - Creates a json for the run, containing some metadata about the script.
+    """
+    parser = ArgumentParser(description='--run-script')
+    parser.add_argument('--run-script',
+                        required=True,
+                        default=True,
+                        help=SUPPRESS,
+                        action="store_true")
+    parser.add_argument('--report',
+                        help="Report script run",
+                        required=False,
+                        action="store_true")
+    parser.add_argument('--script',
+                        help="Script to be run",
+                        nargs=REMAINDER)
 
+    args=parser.parse_args()
+
+
+    if len(sys.argv) == 2:
+        parser.print_help()
+        sys.exit(0)
+
+    if args.report:
+        UNSKRIPT_GLOBALS['report'] = True
+
+    script = args.script
+    if len(args.script) == 0:
+        parser.print_help()
+        sys.exit(0)
+
+    # Do the basic sanity check like file exists and has required permission
+    if not os.path.exists(script[0]):
+        print(f'''
+            {bcolors.FAIL}{script[0]} does not exist. Please ensure that you
+            provide the full path. {bcolors.ENDC}
+            ''')
+        return
+
+    accessmode = os.F_OK | os.X_OK
+    if not os.access(script[0], accessmode):
+        print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
+        return
+
+    current_time = datetime.now().isoformat().replace(':', '_')
+    # Use the first command as the prefix for the file name.
+    # if it contains /, use the last entry
+    output_prefix = script[0].split('/')[-1]
+    output_dir = UNSKRIPT_EXECUTION_DIR + f'{output_prefix}-{current_time}'
+    try:
+        os.makedirs(output_dir)
+    except Exception as e:
+        print(f'{bcolors.FAIL} output dir {output_dir} creation failed{bcolors.ENDC}')
+        sys.exit(0)
+
+    output_file = UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME
+    output_file_txt = output_dir + "/" + output_file + ".txt"
+    output_file_json = output_dir + "/" + output_file + ".json"
+
+    # We need to export an env variable, so that the scripts can put their
+    # output in that directory.
+    current_env = os.environ.copy()
+    current_env[UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV] = output_dir
+    script_to_print = ' '.join(script)
+    print(f'{bcolors.OKGREEN}Executing script {script_to_print}{bcolors.ENDC}')
+    print(f'{bcolors.OKBLUE}OUTPUT FILE: {output_file_txt}{bcolors.ENDC}')
+    st = time.time()
+    status = "SUCCESS"
+    error = None
+    try:
+        with open(output_file_txt, "w") as f:
+            result = subprocess.run(script,
+                                    check=True,
+                                    env=current_env,
+                                    stdout=f,
+                                    stderr=f)
+    except Exception as e:
+        print(f'{bcolors.FAIL}{" ".join(script)} failed, {e}{bcolors.ENDC}')
+        error = str(e)
+        status = "FAIL"
+
+    et = time.time()
+    elapsed_time = et - st
+
+    json_output = {}
+    json_output['status'] = status
+    # json_output['time_taken'] = '%.2f' % elapsed_time
+    json_output['time_taken'] = f'{elapsed_time:.2f}'
+    json_output['error'] = error
+    json_output['output_file'] = output_file_txt
+    json_output['compress'] = True
+
+    try:
+        with open(output_file_json, "w") as f:
+            json.dump(json_output, fp=f)
+
+        if args.report:
+            send_notification(None, None, output_metadata_file=output_file_json)
+    except Exception as e:
+        print(f'{bcolors.FAIL} output file creation failed, {e}{bcolors.ENDC}')
+        sys.exit(0)
 
 if __name__ == "__main__":
     try:
-        if os.environ.get('EXECUTION_DIR') is None:
-            os.environ['EXECUTION_DIR'] = '/unskript/data/execution'
-            if os.path.exists(os.environ.get('EXECUTION_DIR')) is False:
-                os.makedirs(os.environ.get('EXECUTION_DIR'))
-
         load_or_create_global_configuration()
         create_creds_mapping()
     except Exception as error:
@@ -1922,9 +2006,9 @@ if __name__ == "__main__":
     parser.add_argument('--save-check-names',
                         type=str,
                         help=SUPPRESS)
-   # parser.add_argument('--run-script',
-   #                     help='Run script',
-   #                     nargs=REMAINDER)
+    parser.add_argument('--run-script',
+                        help='Run script',
+                        nargs=REMAINDER)
 
     args = parser.parse_args()
 
@@ -1964,8 +2048,8 @@ if __name__ == "__main__":
         stop_debug()
     elif args.save_check_names not in ('', None):
         save_check_names(args.save_check_names)
-    #elif args.run_script not in ('', None):
-    #    run_script(args.run_script)
+    elif args.run_script not in ('', None):
+        run_script(args.run_script)
     else:
         parser.print_help()
 

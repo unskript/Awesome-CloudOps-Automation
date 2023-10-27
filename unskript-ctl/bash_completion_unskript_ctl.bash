@@ -24,7 +24,7 @@ _unskript-client-completion() {
         fi
     fi
     # Define options with each option on a separate line using newline characters
-    opts="--list-runbooks --run-runbook --run-checks --display-failed-checks --list-checks --show-audit-trail --display-failed-logs --create-credentials --credential-list --start-debug --stop-debug" 
+    opts="--list-runbooks --run-runbook --run-checks --display-failed-checks --list-checks --show-audit-trail --display-failed-logs --create-credentials --credential-list --start-debug --stop-debug --run-script"
 
     # Completion logic
     case "${prev}" in
@@ -34,10 +34,16 @@ _unskript-client-completion() {
             return 0
             ;;
 
+        --run-script)
+            # Provide completion suggestions for running script
+            COMPREPLY=( $(compgen -f -- "${cur}" -o nospace) )
+            return 0
+            ;;
+
         -rc|--run-checks)
             case ${prev} in
                 -rc|--run-checks)
-                    case ${cur} in 
+                    case ${cur} in
                         --check)
                             cur=${cur#--check}
                             opt2="$(cat /tmp/checknames.txt)"
@@ -102,7 +108,7 @@ _unskript-client-completion() {
                 COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
                 compopt -o nospace
             elif [ "${_cmd}" = "--check" ];
-            then 
+            then
                 COMPREPLY=( $(compgen -W "--report" -o nospace) )
             elif [ "${cur}" = "--report" ];
             then
@@ -123,7 +129,7 @@ _unskript-client-completion() {
                     fi
                 fi
             elif [[ "${_cmd}" = "--type" && "${COMP_WORDS[COMP_CWORD-3]}" = '-rc' || "${COMP_WORDS[COMP_CWORD-3]}" = '--run-checks' ]];
-            then 
+            then
                 for item in "${connector_list[@]}";
                 do
                     if [ "$item" == "${prev}" ];
@@ -131,7 +137,7 @@ _unskript-client-completion() {
                         COMPREPLY+=("--report")
                         break
                     fi
-                done 
+                done
             elif [[ "${_cmd}" = '-sa' || "${_cmd}" = '--show-audit-trail' ]];
             then
                 if [ "${prev}" = '--type' ];
@@ -142,7 +148,7 @@ _unskript-client-completion() {
                     COMPREPLY=( $(compgen -W "<EXECUTION_ID>" -o nospace) )
                 fi
             else
-                if [ "${#COMP_WORDS[@]}" != "2" ]; 
+                if [ "${#COMP_WORDS[@]}" != "2" ];
                 then
                     return 0
                 fi
