@@ -1,9 +1,10 @@
 FROM unskript/awesome-runbooks:latest as base
-COPY custom/actions/. /unskript/data/actions/
-COPY custom/runbooks/. /unskript/data/runbooks/
+COPY custom/actions/. /tmp/custom/actions/
+COPY custom/runbooks/. /tmp/custom/runbooks/
 
-# Copy the populate_credentials.sh file to ./
-COPY populate_credentials.sh .
-RUN chmod +x populate_credentials.sh
+# Copy the unskript_ctl_config.yaml file.
+# Uncomment the below line to copy it to the docker.
+
+#COPY unskript_ctl_config.yaml /etc/unskript/unskript_ctl_config.yaml
 
 CMD ["./start.sh"]
