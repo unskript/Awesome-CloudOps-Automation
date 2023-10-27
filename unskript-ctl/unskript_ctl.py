@@ -316,7 +316,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
                             )
                     elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
                         failed_objects = payload.get('objects')
-                        failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                        c_name = get_connector_name_from_id(ids[idx], nb.dict()) + ':' + get_action_name_from_id(ids[idx], nb.dict())
+                        failed_result[c_name] = failed_objects
                         result_table.append([
                             get_action_name_from_id(ids[idx], nb.dict()),
                             TBL_CELL_CONTENT_FAIL,
@@ -333,7 +334,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
                     elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                         if payload.get('error') is not None:
                             failed_objects = payload.get('error')
-                            failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                            c_name = get_connector_name_from_id(ids[idx], nb.dict()) + ':' + get_action_name_from_id(ids[idx], nb.dict())
+                            failed_result[c_name] = failed_objects
                         result_table.append([
                             get_action_name_from_id(ids[idx], nb.dict()),
                             TBL_CELL_CONTENT_ERROR,
@@ -1910,7 +1912,6 @@ def run_script(script:list[str]):
 
     json_output = {}
     json_output['status'] = status
-    # json_output['time_taken'] = '%.2f' % elapsed_time
     json_output['time_taken'] = f'{elapsed_time:.2f}'
     json_output['error'] = error
     json_output['output_file'] = output_file_txt
