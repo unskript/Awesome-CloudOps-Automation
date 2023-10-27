@@ -369,6 +369,7 @@ def send_sendgrid_notification(summary_results: list,
                 parent_folder = os.path.dirname(output_metadata_file)
                 target_name = os.path.basename(parent_folder)
                 tar_file_name = f"{target_name}" + '.tar.bz2'
+                output_metadata_file = output_metadata_file.split('/')[-1]
                 tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
                 try:
                     subprocess.run(tar_cmd,
@@ -394,6 +395,12 @@ def send_sendgrid_notification(summary_results: list,
                     attachment.file_type = FileType('application/text')
                 attachment.disposition = 'attachment'
                 email_message.add_attachment(attachment)
+
+            try:
+                if metadata.get('compress') is True:
+                    os.remove(target_file_name)
+            except Exception as e:
+                print(f"ERROR: {e}")
 
         sg = sendgrid.SendGridAPIClient(api_key)
         sg.send(email_message)
@@ -465,6 +472,7 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
         parent_folder = os.path.dirname(output_metadata_file)
         target_name = os.path.basename(parent_folder)
         tar_file_name = f"{target_name}" + '.tar.bz2'
+        output_metadata_file = output_metadata_file.split('/')[-1]
         tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
         try:
             subprocess.run(tar_cmd,
@@ -485,7 +493,6 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
             os.remove(target_file_name)
     except Exception as e:
         print(f"ERROR: {e}")
-        return
 
     return (message, attachment_)
 
