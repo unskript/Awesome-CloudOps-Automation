@@ -46,9 +46,6 @@ def init_pss_db() -> DB:
         with db.transaction() as connection:
             root = connection.root()
             root['audit_trail'] = {}
-            root['default_credential_id'] = {}
-            root['check_run_trail'] = {}
-            root['current_execution_status'] = {}
             del root
             del connection
 
@@ -77,10 +74,10 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
        :rtype: None in case of success or Error
     """
     if name in ("", None):
-        raise Exception("Name cannot be Empty")
+        raise ValueError("Name cannot be Empty")
 
     if isinstance(data, dict) is not True:
-        raise Exception(f"Data is expected to be of type Dictionary type, found {type(data)}")
+        raise TypeError(f"Data is expected to be of type Dictionary type, found {type(data)}")
 
     db = init_pss_db()
     with db.transaction() as connection: 
@@ -105,9 +102,11 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
 
             compressed_d = zlib.compress(d.encode('utf-8'))
             root[name] = compressed_d
+ 
         del root
         del connection 
-
+    
+    db.pack() 
     db.close()
 
 
@@ -316,42 +315,3 @@ def get_check_by_name(name: str):
     snippet_list = [x for x in all_snippets if x.get('metadata').get('action_entry_function') == name]
 
     return snippet_list 
-
-def get_creds_by_connector(connector_type: str):
-    """get_creds_by_connector This function queries ZoDB and returns the
-    credential data in the form of a tuple of (cred_name, cred_id).
-
-    :type connector_type: string
-    :param connector_type: Connector Type like CONNECTOR_TYPE_AWS, etc..
-    
-    :rtype: Tuple (cred_name, cred_id)
-    """
-    retval = ()
-
-    if connector_type in ('', None):
-        return retval
-
-    db = init_pss_db()
-    tm = transaction.TransactionManager()
-    connection = db.open(tm)
-    root = connection.root()
-    try:
-        creds_dict = root.get('default_credential_id')
-    except Exception:
-        pass
-    if creds_dict is None:
-        pass
-    else:
-        for cred in creds_dict.keys():
-            if cred == connector_type:
-                retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
-                break
-    tm.commit()
-    del root
-    connection.close()
-    db.close()
-
-    if not retval:
-        retval = (None, None)
-
-    return retval
