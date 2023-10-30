@@ -984,7 +984,6 @@ def show_audit_trail(args):
     elif args.execution_id not in ('', None):
         filter = args.execution_id
         print_execution_result_table(pss_content=pss_content, execution_id=filter)
-    return
 
 
 
