@@ -28,7 +28,9 @@ def clean_db() -> DB:
     try:
         if os.path.exists(GLOBAL_CTL_CONFIG) == True:
             with open(GLOBAL_CTL_CONFIG, 'r', encoding='utf-8') as f:
-                audit_period = (yaml.load(f.read())).get('global').get('audit_period')        
+                data = yaml.load(f.read())
+                if data and data.get('global') and data.get('global').get('audit_period'):
+                    audit_period = data.get('global').get('audit_period')
     except:
         # We use 90 days as the default period to cleanup  then.
         pass 
@@ -37,7 +39,7 @@ def clean_db() -> DB:
         db = DB(PSS_DB_PATH)
         db.pack(days=audit_period)
         db.close()
-        # print("Cleaned up successful")
+        print("Cleaned up successful")
     except Exception as e:
         print(f"ERROR: {e}")
 
