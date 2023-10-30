@@ -28,7 +28,7 @@ def clean_db() -> DB:
     try:
         if os.path.exists(GLOBAL_CTL_CONFIG) is True:
             with open(GLOBAL_CTL_CONFIG, 'r', encoding='utf-8') as f:
-                data = yaml.load(f.read())
+                data = yaml.safeload(f.read())
                 if data and data.get('global') and data.get('global').get('audit_period'):
                     audit_period = data.get('global').get('audit_period')
     except:
