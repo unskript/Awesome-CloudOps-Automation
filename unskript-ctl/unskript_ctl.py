@@ -726,7 +726,6 @@ def update_audit_trail(status_dict_list: list):
         pass
     finally:
         k = str(datetime.now())
-        failed_check_obj_list = [x for x in UNSKRIPT_GLOBALS.get('failed_result').items()]
         p = f = e = 0
         if UNSKRIPT_GLOBALS.get('exec_id') is None:
             id = uuid.uuid4()
@@ -918,12 +917,8 @@ def display_failed_logs(args):
     if args.execution_id not in ('', None):
         exec_id = args.execution_id
 
-    if not args:
-        return
-
-    # exec_id = args[-1]
     output = '/unskript/data/execution/' + f"{exec_id}_output.ipynb"
-    if os.path.exists(output) == False:
+    if os.path.exists(output) is False:
         print(
             f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
         return
