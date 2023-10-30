@@ -324,15 +324,10 @@ def send_sendgrid_notification(summary_results: list,
                 target_name = os.path.basename(parent_folder)
                 tar_file_name = f"{target_name}" + '.tar.bz2'
                 output_metadata_file = output_metadata_file.split('/')[-1]
-                tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
-                try:
-                    subprocess.run(tar_cmd,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                check=True)
-                except Exception as e:
-                    print(f"ERROR: {e}")
-                    return False
+                if create_tarball_archive(tar_file_name=tar_file_name,
+                                          output_metadata_file=output_metadata_file,
+                                          parent_folder=parent_folder) is False: 
+                    raise ValueError("ERROR: Archiving attachments failed!")
                 target_file_name = tar_file_name
 
         email_message = Mail(
@@ -450,15 +445,10 @@ def create_email_message_with_attachment(output_metadata_file: str = None):
         target_name = os.path.basename(parent_folder)
         tar_file_name = f"{target_name}" + '.tar.bz2'
         output_metadata_file = output_metadata_file.split('/')[-1]
-        tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
-        try:
-            subprocess.run(tar_cmd,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            check=True)
-        except Exception as e:
-            print(f"ERROR: {e}")
-            return
+        if create_tarball_archive(tar_file_name=tar_file_name,
+                                  output_metadata_file=output_metadata_file,
+                                  parent_folder=parent_folder) is False:
+            raise ValueError("ERROR: Archiving attachments failed!")
         target_file_name = tar_file_name
 
     with open(target_file_name, 'rb') as f:
@@ -559,6 +549,22 @@ def create_temp_files_of_failed_results(failed_result: dir):
                 list_of_failed_files.append(f'/tmp/{connector}.txt')
         
     return list_of_failed_files
+
+
+def create_tarball_archive(tar_file_name: str, 
+                           output_metadata_file: str,
+                           parent_folder: str):
+    tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
+    try:
+        subprocess.run(tar_cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        check=True)
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return False
+    
+    return True
 
 def send_smtp_notification(summary_results: list,
                             failed_result: dict,
