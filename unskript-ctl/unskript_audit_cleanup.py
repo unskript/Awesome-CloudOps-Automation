@@ -16,11 +16,8 @@ import datetime
 import ZODB.FileStorage
 from ZODB import DB
 
-# LIST OF CONSTANTS USED IN THIS FILE
+from unskript_utils import *
 
-PSS_DB_PATH="/unskript/db/unskript_pss.db"
-EXECUTION_DIRECTORY="/unskript/data/execution"
-GLOBAL_CTL_CONFIG="/etc/unskript/unskript_ctl_config.yaml"
 
 def remove_old_ipynb_files():
     # Read the Audit period from config file
@@ -28,9 +25,9 @@ def remove_old_ipynb_files():
     current_date = datetime.datetime.now()
     threshold_date = current_date - datetime.timedelta(days=audit_period)
     files_deleted = False
-    for ipynb_file in os.listdir(EXECUTION_DIRECTORY):
+    for ipynb_file in os.listdir(UNSKRIPT_EXECUTION_DIR):
         if ipynb_file.endswith('.ipynb'):
-            file_path = os.path.join(EXECUTION_DIRECTORY, ipynb_file)
+            file_path = os.path.join(UNSKRIPT_EXECUTION_DIR, ipynb_file)
             file_ts = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
             if file_ts < threshold_date:
                 try:

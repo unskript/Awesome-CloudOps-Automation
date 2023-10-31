@@ -40,11 +40,7 @@ def init_pss_db() -> DB:
     if not os.path.exists(PSS_DB_PATH):
         pss = ZODB.FileStorage.FileStorage(PSS_DB_PATH, pack_keep_old=False)
         db = DB(pss)
-        db.cacheMin = 1000
-        db.cacheSize = 5000
 
-        # connection = db.open()
-        # root = connection.root()
         with db.transaction() as connection:
             root = connection.root()
             root['audit_trail'] = {}

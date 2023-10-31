@@ -917,7 +917,7 @@ def display_failed_logs(args):
     if args.execution_id not in ('', None):
         exec_id = args.execution_id
 
-    output = '/unskript/data/execution/' + f"{exec_id}_output.ipynb"
+    output = UNSKRIPT_EXECUTION_DIR + "/" + f"{exec_id}_output.ipynb"
     if os.path.exists(output) is False:
         print(
             f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
@@ -969,11 +969,11 @@ def show_audit_trail(args):
 
     pss_content = get_pss_record('audit_trail')
 
-    s = '\x1B[1;20;42m' + "~~~~ CLI Used ~~~~" + '\x1B[0m'
+    s = bcolors.ARG_START + "~~~~ CLI Used ~~~~" + bcolors.ARG_END
     print("")
     print(s)
     print("")
-    print(f"\033[1m {sys.argv[0:]} \033[0m")
+    print(f"{bcolors.BOLD} {sys.argv[0:]} {bcolors.ENDC}")
     print("")
 
     if args.all:
