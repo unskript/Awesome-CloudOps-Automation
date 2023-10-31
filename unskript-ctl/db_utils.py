@@ -38,16 +38,21 @@ def init_pss_db() -> DB:
         os.mkdir(PSS_DB_DIR)
 
     if not os.path.exists(PSS_DB_PATH):
-        pss = ZODB.FileStorage.FileStorage(PSS_DB_PATH)
+        pss = ZODB.FileStorage.FileStorage(PSS_DB_PATH, pack_keep_old=False)
         db = DB(pss)
+        db.cacheMin = 1000
+        db.cacheSize = 5000
 
         # connection = db.open()
         # root = connection.root()
         with db.transaction() as connection:
             root = connection.root()
             root['audit_trail'] = {}
+            connection.transaction_manager.commit()
+            connection.close()
             del root
             del connection
+
 
     else:
         db = DB(PSS_DB_PATH)
@@ -79,7 +84,11 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
     if isinstance(data, dict) is not True:
         raise TypeError(f"Data is expected to be of type Dictionary type, found {type(data)}")
 
-    db = init_pss_db()
+    if not os.path.exists(PSS_DB_PATH):
+        db = init_pss_db()
+    else:
+        db = DB(PSS_DB_PATH)
+
     with db.transaction() as connection: 
         root = connection.root()
         if overwrite:
@@ -102,11 +111,13 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
 
             compressed_d = zlib.compress(d.encode('utf-8'))
             root[name] = compressed_d
- 
+
+        connection.transaction_manager.commit()
+        connection.close()
+
         del root
         del connection 
     
-    db.pack() 
     db.close()
 
 
@@ -315,3 +326,4 @@ def get_check_by_name(name: str):
     snippet_list = [x for x in all_snippets if x.get('metadata').get('action_entry_function') == name]
 
     return snippet_list 
+
