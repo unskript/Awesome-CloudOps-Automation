@@ -12,6 +12,8 @@
 UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
 PSS_DB_PATH="/unskript/db/unskript_pss.db"
 GLOBAL_CTL_CONFIG="/etc/unskript/unskript_ctl_config.yaml"
+CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
+
 
 class bcolors:
     HEADER = '\033[95m'
