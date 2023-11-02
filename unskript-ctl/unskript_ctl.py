@@ -64,8 +64,10 @@ TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Failed Check Name / TS \033[0m"
 TBL_HDR_DSPL_CHKS_UUID="\033[1m Failed Check UUID \033[0m"
+TBL_HDR_DSPL_EXEC_ID="\033[1m Execution ID \033[0m"
 TBL_HDR_CHKS_UUID="\033[1m Check UUID \033[0m"
 TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
+TBL_HDR_FAILED_OBJECTS="\033[1m Failed Objects \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
 UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
@@ -152,6 +154,7 @@ try:
         if w.check_run:
             for id,output in w.check_output.items():
                 output = json.loads(output)
+                output['id'] = id
                 print(json.dumps(output))
         else:
             print(json.dumps("Not a check run"))
@@ -316,7 +319,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
                             )
                     elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
                         failed_objects = payload.get('objects')
-                        failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                        c_name = get_connector_name_from_id(ids[idx], nb.dict()) + ':' + get_action_name_from_id(ids[idx], nb.dict())
+                        failed_result[c_name] = failed_objects
                         result_table.append([
                             get_action_name_from_id(ids[idx], nb.dict()),
                             TBL_CELL_CONTENT_FAIL,
@@ -333,7 +337,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
                     elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                         if payload.get('error') is not None:
                             failed_objects = payload.get('error')
-                            failed_result[get_action_name_from_id(ids[idx], nb.dict())] = failed_objects
+                            c_name = get_connector_name_from_id(ids[idx], nb.dict()) + ':' + get_action_name_from_id(ids[idx], nb.dict())
+                            failed_result[c_name] = failed_objects
                         result_table.append([
                             get_action_name_from_id(ids[idx], nb.dict()),
                             TBL_CELL_CONTENT_ERROR,
@@ -349,12 +354,6 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
                 except Exception:
                     pass
 
-                update_current_execution(payload.get('status'), ids[idx], nb.dict())
-                update_check_run_trail(ids[idx],
-                                    get_action_name_from_id(ids[idx], nb.dict()),
-                                    get_connector_name_from_id(ids[idx], nb.dict()),
-                                    CheckOutputStatus(payload.get('status')),
-                                    failed_result)
                 idx += 1
     if filter == 'k8s':
         for check in hardcoded_checks:
@@ -588,74 +587,6 @@ def print_run_summary(status_list_of_dict):
     print(tabulate(summary_table, headers='firstrow', tablefmt='fancy_grid'))
 
 
-def update_current_execution(status, id: str, content: dict):
-    """update_failed_execution This function gets execution id that has failed and will
-       create a dynamic failed runbook. And update the execution_summary.yaml file
-       to record the last failed run status
-
-       :type status: CheckOutputStatus
-       :param status: Enum of type CheckOutputStatus that has the current status
-
-       :type id: string
-       :param id: The Execution ID (Action UUID that failed)
-
-       :type content: dict
-       :param content: The NotebookNode dictionary that has all the cell contents
-
-       :rtype: None
-    """
-    if content == {}:
-        print("ERROR: Cannot Update Failed execution with No Content")
-        return
-
-    failed_runbook = UNSKRIPT_EXECUTION_DIR + '/' + f"{id}.ipynb"
-
-    prev_status = None
-    es = {}
-    try:
-        es = get_pss_record('current_execution_status')
-    except Exception:
-        pass
-    finally:
-        if es != {}:
-            if id in es.get('exec_status').keys():
-                prev_status = es['exec_status'].get(id).get('current_status')
-            else:
-                es['exec_status'][id] = {}
-        else:
-            es['exec_status'] = {}
-            es['exec_status'][id] = {}
-
-    es['exec_status'][id]['failed_runbook'] = failed_runbook
-    es['exec_status'][id]['check_name'] = str(
-        get_action_name_from_id(id, content))
-    es['exec_status'][id]['current_status'] = status
-    es['exec_status'][id]['connector_type'] = str(
-        get_connector_name_from_id(id, content))
-
-    if status == prev_status:
-        pass
-
-    if CheckOutputStatus(status) == CheckOutputStatus.SUCCESS:
-        es['exec_status'][id]['passed_timestamp'] = str(datetime.now())
-    else:
-        es['exec_status'][id]['failed_timestamp'] = str(datetime.now())
-
-    upsert_pss_record('current_execution_status', es)
-
-    # Lets create the failed ipynb
-    try:
-        nb = nbformat.v4.new_notebook()
-        for c in content.get('cells'):
-            if c.get('metadata').get('action_uuid') == id:
-                nb['cells'].append(c)
-    except Exception:
-        pass
-    finally:
-        nbformat.write(nb, failed_runbook)
-
-    if os.path.exists(failed_runbook) is not True:
-        print(f"ERROR Unable to create failed runbook at {failed_runbook}")
 
 def replace_input_with_globals(inputSchema: str):
     if not inputSchema:
@@ -776,59 +707,6 @@ task.configure(credentialsJson=\'\'\'{
 
 
 
-def update_check_run_trail(
-        id: str,
-        action_name: str,
-        connector_type: str,
-        result: CheckOutputStatus,
-        data : dict = None
-        ):
-    """update_check_run_trail This function updates PSS for checks_run_trail entry
-
-       :type id: str
-       :param id: Action UUID to update entry in the audit log
-
-       :type action_name: str
-       :param action_name: Action Name
-
-       :type connector_type: str
-       :param connector_type: Connector Type like AWS, GCP, etc...
-
-       :type result: CheckOutputStatus
-       :param result: Output Status as an Enum of type CheckOutputStatus
-
-       :type data: dict (Optional Variable)
-       :param data: Data in the form of a python Dictionary.
-
-       :rtype: None
-    """
-    content = {}
-    try:
-        content = get_pss_record('check_run_trail')
-    except Exception:
-        pass
-    finally:
-        k = str(datetime.now())
-        temp_trail = {}
-        temp_trail[id] = {}
-        temp_trail[id]['time_stamp'] = k
-        temp_trail[id]['action_uuid'] = id
-        temp_trail[id]['check_name'] = action_name
-        temp_trail[id]['connector_type'] = connector_type.upper()
-        s = ''
-        if result == CheckOutputStatus.SUCCESS:
-            s = "PASS"
-        elif result == CheckOutputStatus.FAILED:
-            s = "FAILED"
-        elif result == CheckOutputStatus.RUN_EXCEPTION:
-            s = "ERRORED"
-        temp_trail[id]['status'] = s
-        if data != {}:
-            temp_trail[id]['failed_objects'] = data
-        content.update(temp_trail)
-
-    upsert_pss_record('check_run_trail', content)
-
 
 def update_audit_trail(status_dict_list: list):
     """update_audit_trail This function will update the status of each run of the runbook
@@ -839,6 +717,7 @@ def update_audit_trail(status_dict_list: list):
 
        :rtype: None
     """
+    global UNSKRIPT_GLOBALS
     trail_data = {}
     id = ''
     try:
@@ -855,6 +734,7 @@ def update_audit_trail(status_dict_list: list):
         trail_data = {}
         trail_data[id] = {}
         trail_data[id]['time_stamp'] = k
+        trail_data[id]['runbook'] = id + '_output.ipynb'
         trail_data[id]['check_status'] = {}
         for sd in status_dict_list:
             if sd == {}:
@@ -871,10 +751,27 @@ def update_audit_trail(status_dict_list: list):
                 trail_data[id]['check_status'][check_id]['check_name'] = check_name
                 trail_data[id]['check_status'][check_id]['status'] = status
                 trail_data[id]['check_status'][check_id]['connector'] = connector
+                if UNSKRIPT_GLOBALS.get('failed_result'):
+                    c_name = connector + ':' + check_name 
+                    for name, obj in UNSKRIPT_GLOBALS.get('failed_result').items():
+                        if name in (c_name, check_name):
+                            trail_data[id]['check_status'][check_id]['failed_objects'] = obj
 
         trail_data[id]['summary'] = f"Summary (total/p/f/e): {p+e+f}/{p}/{f}/{e}"
     upsert_pss_record('audit_trail', trail_data)
     return id
+
+def format_size(size_bytes):
+    # Define the size units
+    size_units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+
+    # Find the appropriate unit
+    index = 0
+    while size_bytes >= 1024 and index < len(size_units) - 1:
+        size_bytes /= 1024
+        index += 1
+
+    return f"{size_bytes:.2f} {size_units[index]}"
 
 
 def list_checks_by_connector(args):
@@ -951,10 +848,6 @@ def display_failed_checks(args):
         parser.print_help()
         sys.exit(0)
 
-    if not args:
-        print("ERROR: Either -all or --type connector <CONNECTOR_TYPE> needed")
-        return
-
     connector = "all"
     if args.all is True:
         connector = 'all'
@@ -963,31 +856,38 @@ def display_failed_checks(args):
     else:
         connector = 'all'
 
-    pss_content = get_pss_record('current_execution_status')
-    exec_status = pss_content.get('exec_status')
-    failed_exec_list = []
-    if exec_status is not None:
-        for k,v in exec_status.items():
-            if v.get('current_status') == 2:
-                d = {}
-                d['check_name'] = v.get('check_name')
-                d['timestamp'] = v.get('failed_timestamp')
-                d['execution_id'] = k
-                if connector == 'all':
-                    failed_exec_list.append(d)
-                elif connector and v.get('connector_type').lower() == connector.lower():
-                    # Append only when connector type matches
-                    failed_exec_list.append(d)
-                else:
-                    print(f"NO RESULTS FOUND TYPE: {connector}")
-                    return
+    s = '\x1B[1;20;42m' + "~~~~ CLI Used ~~~~" + '\x1B[0m'
+    print("")
+    print(s)
+    print("")
+    print(f"\033[1m {sys.argv[0:]} \033[0m")
+    print("")
 
-    failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_DSPL_CHKS_UUID]]
-    for failed in failed_exec_list:
-        failed_checks_table.append([
-            failed.get('check_name') + '\n' + '( Last Failed On: ' + failed.get('timestamp') +' )',
-            failed.get('execution_id')
-            ])
+
+    pss_content = {}
+    try: 
+        pss_content = get_pss_record('audit_trail')
+    except:
+        pass 
+
+    failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_FAILED_OBJECTS, TBL_HDR_DSPL_EXEC_ID]]
+    
+    for exec_id in pss_content.keys():
+        execution_id = exec_id 
+        for check_id in pss_content.get(exec_id).get('check_status').keys():
+            if pss_content.get(exec_id).get('check_status').get(check_id).get('status').lower() == "fail":
+                if connector == 'all':
+                    failed_checks_table += [[
+                        pss_content.get(exec_id).get('check_status').get(check_id).get('check_name') + '\n' + f"(Test Failed on: {pss_content.get(exec_id).get('time_stamp')})",
+                        pprint.pformat(pss_content.get(exec_id).get('check_status').get(check_id).get('failed_objects'), width=10),
+                        execution_id
+                    ]]
+                elif connector.lower() == pss_content.get(exec_id).get('check_status').get(check_id).get('connector').lower():
+                    failed_checks_table += [[
+                        pss_content.get(exec_id).get('check_status').get(check_id).get('check_name') + '\n' + f"(Test Failed on: {pss_content.get(exec_id).get('time_stamp')})",
+                        pprint.pformat(pss_content.get(exec_id).get('check_status').get(check_id).get('failed_objects'), width=10),
+                        execution_id
+                    ]]
 
     print("")
     print(tabulate(failed_checks_table, headers='firstrow', tablefmt='fancy_grid'))
@@ -1017,27 +917,26 @@ def display_failed_logs(args):
     if args.execution_id not in ('', None):
         exec_id = args.execution_id
 
-    if not args:
-        return
-
-    # exec_id = args[-1]
-    output = '/unskript/data/execution' + f"{exec_id}_output.ipynb"
-    if not os.path.exists(output):
+    output = UNSKRIPT_EXECUTION_DIR + "/" + f"{exec_id}_output.ipynb"
+    if os.path.exists(output) is False:
         print(
             f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
         return
 
     with open(output, 'r') as f:
         nb = nbformat.read(f, as_version=4)
-    output = ''
+    d_output = ''
     for cell in nb.get('cells'):
         if cell.get('outputs'):
-            cell_output = cell.get('outputs')[0]
-            if cell.get('metadata').get('name'):
-                output += f"\033[1m {cell.get('metadata').get('name')} \033[0m" + '\n'
-                if cell_output.get('text'):
-                    output += cell_output.get('text') + '\n'
-    print(output)
+            cell_output = cell.get('outputs')
+            for output in cell_output:
+                name = cell.get('metadata').get('name')
+                if name:
+                    d_output +=  name + '\n'
+                o = output.dict()
+                if o.get('text'):
+                    d_output += o.get('text') + '\n'
+    print(d_output)
 
 
 def show_audit_trail(args):
@@ -1054,6 +953,7 @@ def show_audit_trail(args):
                         default=True,
                         action='store_true')
     parser.add_argument('--all',
+                        dest="all",
                         help="List Logs of All check across all connectors",
                         action="store_true")
     parser.add_argument('--type',
@@ -1065,117 +965,88 @@ def show_audit_trail(args):
                         help='Execution ID for which the audit trail should be shown')
 
     args = parser.parse_args()
-    # if not args:
-    #     print(f"ERROR: Audit Trial needs --all or --type <CONNECTOR_TYPE>")
-    #     return
-    if args.all is True:
-        filter = 'all'
-    elif args.connector_type not in ('', None):
-        filter = args.connector_type
-    elif args.execution_id not in ('', None):
-        filter = args.execution_id
-    else:
-        filter = 'all'
+    filter = 'all'
 
     pss_content = get_pss_record('audit_trail')
 
-    s = '\x1B[1;20;42m' + "~~~~ CLI Used ~~~~" + '\x1B[0m'
+    s = bcolors.ARG_START + "~~~~ CLI Used ~~~~" + bcolors.ARG_END
     print("")
     print(s)
     print("")
-    print(f"\033[1m {sys.argv[0:]} \033[0m")
+    print(f"{bcolors.BOLD} {sys.argv[0:]} {bcolors.ENDC}")
     print("")
 
-    if filter.lower() == 'all':
-        all_result_table = [["\033[1m Execution ID \033[0m",
-                             "\033[1m Execution Summary \033[0m",
-                             "\033[1m Execution Timestamp \033[0m"]]
-        for item in pss_content.items():
-            k, v = item
-            summary_text = "\033[1m" + v.get('summary') + "\033[0m"
-            check_names = "\033[1m" + str(k) + '\n' + "\033[0m"
-            for k1, v1 in v.get('check_status').items():
-                check_names += "    " + v1.get('check_name') + ' ['
-                check_names += "\033[1m" + \
-                    v1.get('status') + "\033[0m" + ']' + '\n'
-            each_row = [[check_names, summary_text, v.get('time_stamp')]]
-            all_result_table += each_row
+    if args.all:
+        print_all_result_table(pss_content=pss_content)
+    elif args.connector_type not in ('', None):
+        filter = args.connector_type
+        print_connector_result_table(pss_content=pss_content, connector=filter)
+    elif args.execution_id not in ('', None):
+        filter = args.execution_id
+        print_execution_result_table(pss_content=pss_content, execution_id=filter)
 
-        print(tabulate(all_result_table, headers='firstrow', tablefmt='fancy_grid'))
-        return
 
-    exec_content = {}
-    try:
-        exec_content = get_pss_record('check_run_trail')
-    except Exception:
-        pass
-    finally:
-        if exec_content == {}:
-            print("ERROR: No Audit Logs Found in the System")
-            return
-    connector_result_table = [["\033[1m Check Name \033[0m",
-                               "\033[1m Run Status \033[0m",
-                               "\033[1m Time Stamp \033[0m",
-                               "\033[1m Execution ID \033[0m"]]
-    single_result_table = [["\033[1m Execution ID \033[0m",
-                            "\033[1m Check ID \033[0m \n \033[1m (Check Name)/(Connector) \033[0m",
-                            "\033[1m Run Status \033[0m",
-                            "\033[1m Time Stamp \033[0m"]]
-    runbook_result_table = [["\033[1m Check Name \033[0m",
-                             "\033[1m Failed Objects \033[0m",
-                             "\033[1m Run Status \033[0m",
-                             "\033[1m Time Stamp \033[0m"]]
-    flag = -1
-    e2c_mapping = {}
+
+def print_all_result_table(pss_content: dict):
+    if not pss_content:
+        return 
+    
+    all_result_table = [["\033[1m Execution ID \033[0m",
+                        "\033[1m Execution Summary \033[0m",
+                        "\033[1m Execution Timestamp \033[0m"]]
     for item in pss_content.items():
         k, v = item
-        e2c_mapping[str(k)] = []
-        for l, m in v.items():
-            if l == 'check_status':
-                for k1, v1 in m.items():
-                    e2c_mapping[str(k)].append(str(k1))
-                    if filter.lower() == k1:
-                        flag = 1
-                        single_result_table += [[k,
-                                                 k1 + '\n' +
-                                                 '( ' + v1.get('check_name') + ' )' +
-                                                 f"( {exec_content.get(filter).get('connector_type')} )",
-                                                 v1.get('status'),
-                                                 v.get('time_stamp')]]
-                        break
-                    elif filter.lower() == v1.get('connector'):
-                        flag = 2
-                        connector_result_table += [[v1.get('check_name'),
-                                                    v1.get('status'),
-                                                    v.get('time_stamp'),
-                                                    k]]
-        if flag == -1:
-            if str(k) == filter:
-                flag = 3
-                exec_status = get_pss_record('current_execution_status')
-                if exec_status:
-                    if filter in e2c_mapping:
-                        for _f in e2c_mapping.get(filter):
-                            c_name = exec_content.get(_f).get('check_name')
-                            if not exec_content.get(_f).get('failed_objects') or not exec_content.get(_f).get('failed_objects').get(c_name):
-                                continue
-                            runbook_result_table += [[c_name,
-                                                      pprint.pformat(exec_content.get(_f).get(
-                                                          'failed_objects').get(c_name)),
-                                                      exec_content.get(
-                                                          _f).get('status'),
-                                                      exec_content.get(
-                                                          _f).get('time_stamp')
-                                                      ]]
+        summary_text = "\033[1m" + v.get('summary') + "\033[0m"
+        check_names = "\033[1m" + str(k) + '\n' + "\033[0m"
+        for k1, v1 in v.get('check_status').items():
+            check_names += "    " + v1.get('check_name') + ' ['
+            check_names += "\033[1m" + \
+                v1.get('status') + "\033[0m" + ']' + '\n'
+        each_row = [[check_names, summary_text, v.get('time_stamp')]]
+        all_result_table += each_row
 
-    if flag == 1:
-        print(tabulate(single_result_table,
+    print(tabulate(all_result_table, headers='firstrow', tablefmt='fancy_grid'))
+
+
+def print_connector_result_table(pss_content: dict, connector: str):
+    if not pss_content:
+        return 
+    
+    connector_result_table = [["\033[1m Check Name \033[0m",
+                            "\033[1m Run Status \033[0m",
+                            "\033[1m Time Stamp \033[0m",
+                            "\033[1m Execution ID \033[0m"]]
+    
+    for exec_id in pss_content.keys():
+        execution_id = exec_id
+        if pss_content.get(exec_id).get('check_status'):
+            for check_id in pss_content.get(exec_id).get('check_status').keys():
+                if pss_content.get(exec_id).get('check_status').get(check_id).get('connector').lower() == connector.lower():
+                    connector_result_table += [[pss_content.get(exec_id).get('check_status').get(check_id).get('check_name'),
+                                               pss_content.get(exec_id).get('check_status').get(check_id).get('status'),
+                                               pss_content.get(exec_id).get('time_stamp'),
+                                               execution_id]]
+
+    print(tabulate(connector_result_table,
               headers='firstrow', tablefmt='fancy_grid'))
-    elif flag == 2:
-        print(tabulate(connector_result_table,
-              headers='firstrow', tablefmt='fancy_grid'))
-    elif flag == 3:
-        print(tabulate(runbook_result_table,
+    return 
+
+
+def print_execution_result_table(pss_content: dict, execution_id: str):
+    execution_result_table = [["\033[1m Check Name \033[0m",
+                            "\033[1m Failed Objects \033[0m",
+                            "\033[1m Run Status \033[0m",
+                            "\033[1m Time Stamp \033[0m"]]
+    for exec_id in pss_content.keys():
+        if exec_id == execution_id:
+            ts = pss_content.get(exec_id).get('time_stamp')
+            for check_ids in pss_content.get(exec_id).get('check_status').keys():
+                execution_result_table += [[pss_content.get(exec_id).get('check_status').get(check_ids).get('check_name'),
+                                            pprint.pformat(pss_content.get(exec_id).get('check_status').get(check_ids).get('failed_objects'), 30),
+                                            pss_content.get(exec_id).get('check_status').get(check_ids).get('status'),
+                                            ts]]
+
+    print(tabulate(execution_result_table,
               headers='firstrow', tablefmt='fancy_grid'))
 
 
@@ -1310,12 +1181,8 @@ def get_connector_name_from_id(action_uuid: str, content: dict) -> str:
 
 
 def create_creds_mapping():
-    """create_creds_mapping This function creates a credential ZoDB collection with the name
-       default_credential_id. The mapping will be based on the Credential TYPE, he mapping would
-       be a list of dictionaries with {"name", "id"}
-
-       This function reads the credentials directory for all the available credentials and updates
-       the ZoDB with the mapping.
+    """create_creds_mapping This function creates a mapping based on the Credential TYPE, 
+       the mapping would be a list of dictionaries with {"name", "id"}
 
        :rtype: None
     """
@@ -1331,7 +1198,6 @@ def create_creds_mapping():
             d[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'),
                   "id": c_data.get('id')}
     UNSKRIPT_GLOBALS['default_credentials'] = d
-    #upsert_pss_record('default_credential_id', d, False)
 
 
 def print_runbook_params(properties: dict, required: list, orderInputParameters: list = []):

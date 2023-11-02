@@ -10,6 +10,8 @@
 #
 
 UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
+PSS_DB_PATH="/unskript/db/unskript_pss.db"
+GLOBAL_CTL_CONFIG="/etc/unskript/unskript_ctl_config.yaml"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -21,3 +23,5 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    ARG_START = '\x1B[1;20;42m'
+    ARG_END = '\x1B[0m'
