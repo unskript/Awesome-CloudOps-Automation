@@ -110,7 +110,7 @@ def debug_session_main():
     
     if dpargs.start not in ('', None):
         start_debug(dpargs.start)
-    elif dpargs.stop is True:
+    elif dpargs.stop == True:
         stop_debug()
 
     pass

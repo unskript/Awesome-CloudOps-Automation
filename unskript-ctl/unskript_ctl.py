@@ -65,8 +65,6 @@ TBL_CELL_CONTENT_SKIPPED="\033[1m SKIPPED \033[0m"
 TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
 TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
 
-UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
-UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 
 # parser = ArgumentParser(prog='unskript-ctl')
 
@@ -75,7 +73,6 @@ def load_or_create_global_configuration():
        and sets os.env variables which we shall use it in the subsequent functions.
        :rpath: None
     """
-    # global UNSKRIPT_GLOBAL
     if os.path.exists(GLOBAL_CONFIG_PATH) is True:
         # READ EXISTING FILE AND SET ENV VARIABLES
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
@@ -1344,16 +1341,14 @@ def run_script(script:list[str]):
         print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
         return
 
-    current_time = datetime.now().isoformat().replace(':', '_')
-    # Use the first command as the prefix for the file name.
-    # if it contains /, use the last entry
-    output_prefix = script[0].split('/')[-1]
-    output_dir = UNSKRIPT_EXECUTION_DIR + f'{output_prefix}-{current_time}'
-    try:
-        os.makedirs(output_dir)
-    except Exception as e:
-        print(f'{bcolors.FAIL} output dir {output_dir} creation failed{bcolors.ENDC}')
-        sys.exit(0)
+    if not UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
+        # Use the first command as the prefix for the file name.
+        # if it contains /, use the last entry
+        # output_prefix = script[0].split('/')[-1]
+        # output_dir = create_execution_run_directory(output_prefix)
+        output_dir = create_execution_run_directory()
+    else:
+        output_dir = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')
 
     output_file = UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME
     output_file_txt = output_dir + "/" + output_file + ".txt"
@@ -1363,6 +1358,7 @@ def run_script(script:list[str]):
     # output in that directory.
     current_env = os.environ.copy()
     current_env[UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV] = output_dir
+
     script_to_print = ' '.join(script)
     print(f'{bcolors.OKGREEN}Executing script {script_to_print}{bcolors.ENDC}')
     print(f'{bcolors.OKBLUE}OUTPUT FILE: {output_file_txt}{bcolors.ENDC}')
@@ -1446,15 +1442,20 @@ def run_main():
     if args.script not in ('', None):
         run_script(args.script)
 
-    if UNSKRIPT_GLOBALS.get('report') is True:
-        # First find out if UNSKRIPT GLOBALS has failed objects. If yes, then start generating files 
-        # Next check if --script option was used, in that case find out the directory that was created 
-        # and make that as the source directory to create the tar.bz2 archive 
+    if UNSKRIPT_GLOBALS.get('report') is True or args.report is True:
+        output_dir = create_execution_run_directory()
+        summary_result = None
+        failed_objects = None
         if args.check:
-            print("PREPARING REPORT FOR CHECKS RUN")
+            summary_result = UNSKRIPT_GLOBALS.get('status_of_runs')
+            failed_objects = UNSKRIPT_GLOBALS.get('failed_result')
+            output_json_file = None
         if args.script:
-            print("PREPARING REPORT FOR SCRIPT RUN")
-        pass 
+            output_json_file = output_dir + '/' + UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME + '.json'
+        
+        send_notification(summary_result_table=summary_result,
+                          failed_result=failed_objects,
+                          output_metadata_file=output_json_file)
 
 
 if __name__ == "__main__":

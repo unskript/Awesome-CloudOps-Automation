@@ -8,11 +8,19 @@
 # FOR A PARTICULAR PURPOSE
 #
 #
+import os
+import sys 
+
+from datetime import datetime 
 
 UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
 PSS_DB_PATH="/unskript/db/unskript_pss.db"
 GLOBAL_CTL_CONFIG="/etc/unskript/unskript_ctl_config.yaml"
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
+
+UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
+UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
+
 
 # Unskript Global is a singleton class that
 # will replace the Global variable UNSKRIPT_GLOBAL
@@ -67,7 +75,8 @@ class UnskriptGlobals(metaclass=GenericSingleton):
 
 
 # Lets create an Alias so that any reference to UNSKRIPT_GLOBAL
-# refers to the class
+# refers to the class. In this way no change has to be done
+# when UNSKRIPT_GLOBALS variable is used. 
 UNSKRIPT_GLOBALS = UnskriptGlobals()
 
 class bcolors:
@@ -82,3 +91,24 @@ class bcolors:
     UNDERLINE = '\033[4m'
     ARG_START = '\x1B[1;20;42m'
     ARG_END = '\x1B[0m'
+
+# Utility Functions
+def create_execution_run_directory(file_prefix: str = None):
+    if UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY') is None:
+        current_time = datetime.now().isoformat().replace(':', '_')
+        if not file_prefix:
+            output_dir = UNSKRIPT_EXECUTION_DIR + f"{UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME}-{current_time}"
+        else:
+            output_dir = UNSKRIPT_EXECUTION_DIR +  f"{file_prefix}-{current_time}"
+
+        try:
+            os.makedirs(output_dir)
+        except Exception as e:
+            print(f'{bcolors.FAIL} output dir {output_dir} creation failed{bcolors.ENDC}')
+            sys.exit(0)
+        finally:
+            UNSKRIPT_GLOBALS.create_property('CURRENT_EXECUTION_RUN_DIRECTORY')
+            UNSKRIPT_GLOBALS['CURRENT_EXECUTION_RUN_DIRECTORY'] = output_dir
+    else:
+        output_dir = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')    
+    return output_dir
