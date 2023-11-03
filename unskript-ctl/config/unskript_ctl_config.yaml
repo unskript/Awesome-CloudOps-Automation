@@ -18,10 +18,10 @@ version: 1.0.0
 global:
    # if enable_runbooks is enabled, jupyterlab is launched so that one can open
    # runbooks in jupyterlab.
-   enable_runbooks: true
+  enable_runbooks: true
    # audit_period in days. Number of days worth of audit data to be kept.
    # Any date older than this number of days, will be deleted.
-   audit_period: 90
+  audit_period: 90
 
 #
 # Checks section
@@ -32,109 +32,9 @@ checks:
   # Arguments common to all checks, like region, namespace, etc.
   arguments:
     global:
-       region: us-west-2
+      region: us-west-2
        #matrix:
        #  namespace: [n1, n2]
-
-# Credential section
-#
-# uncomment the relevant sections below to enable respective credential
-#
-credential:
-  # AWS connector details
-  aws:
-   - name: awscreds
-     enable: false
-     access-key: ""
-     secret-access-key: ""
-
-  # Kubernetes connector details
-  k8s:
-   - name: k8screds
-     enable: false
-     kubeconfig: ""
-
-  # GCP connector details
-  gcp:
-   - name: gcpcreds
-     enable: false
-     credential-json: ""
-
-  # Elasticsearch connector details
-  elasticsearch:
-   - name: escreds
-     enable: false
-     host: ""
-     api-key: ""
-     no-verify-ssl: ""
-
-  # Redis connector details
-  redis:
-   - name: rediscreds
-     enable: false
-     host: ""
-     port: ""
-     username: ""
-     password: ""
-     database: ""
-     use-ssl: ""
-
-  # Postgres connector details
-  postgres:
-   - name: postgrescreds
-     enable: false
-     host: ""
-     port: ""
-     username: ""
-     password: ""
-     database: ""
-
-  # Mongodb connector details
-  mongodb:
-   - name: mongodbcreds
-     enable: false
-     host: ""
-     port: ""
-     username: ""
-     password: ""
-
-  # Kafka connector details
-  kafka:
-   - name: kafkacreds
-     enable: false
-     broker: ""
-     username: ""
-     password: ""
-     zookeeper: ""
-
-  # Rest connector details
-  rest:
-   - name: restcreds
-     enable: false
-     base-url: ""
-     username: ""
-     password: ""
-     headers: ""
-
-  # Vault connector details
-  vault:
-   - name: vaultcreds
-     enable: false
-     url: ""
-     token: ""
-
-  # Keycloak connector details
-  keycloak:
-   - name: keycloakcreds
-     enable: false
-     server-url: ""
-     realm: ""
-     client-id: ""
-     username: ""
-     password: ""
-     client-secret: ""
-     no-verify-certs: ""
-
 #
 # Notification section
 #
@@ -143,8 +43,8 @@ notification:
   # Slack Notification setting
   Slack:
     enable: false
-    web-hook-url: ""
-    channel-name: ""
+    web-hook-url: ''
+    channel-name: ''
     verbose: false #Not yet supported
   Email:
     verbose: true #Not yet supported
@@ -154,90 +54,280 @@ notification:
     #    - SMTP - SMTP server
     #    - SES -  AWS SES
     #    - Sendgrid - Sendgrid
-    provider: ""
+    provider: ''
     SMTP:
-      smtp-host: ""
-      smtp-user: ""
-      smtp-password: ""
-      to-email: ""
-      from-email: ""
+      smtp-host: ''
+      smtp-user: ''
+      smtp-password: ''
+      to-email: ''
+      from-email: ''
     SES:
-      access_key: ""
-      secret_access: ""
-      region: ""
-      to-email: ""
-      from-email: ""
+      access_key: ''
+      secret_access: ''
+      region: ''
+      to-email: ''
+      from-email: ''
     Sendgrid:
-      api_key: ""
-      to-email: ""
-      from-email: ""
-
+      api_key: ''
+      to-email: ''
+      from-email: ''
 #
 # Job section
 #
 # Job detail contains information about what all unskript-ctl can run.
 jobs:
-  - name: "" # Unique name
+- name: ''   # Unique name
     # The results of the job to be notified or not.
-    notify: true
-    #notify_sink: foo
-    enable: false
-    # Specific checks to run
-    # Not supported: multiple checks, only single check support for now.
-    checks: []
-    # Specific suites to run
-    # Not supported
-    suites: []
-    # connector types whose checks need to be run
-    # Possible values:
-    #   - aws
-    #   - k8s
-    #   - gcp
-    #   - postgresql
-    #   - slack
-    #   - mongodb
-    #   - jenkins
-    #   - mysql
-    #   - jira
-    #   - rest
-    #   - elasticsearch
-    #   - kafka
-    #   - grafana
-    #   - ssh
-    #   - prometheus
-    #   - datadog
-    #   - stripe
-    #   - redis
-    #   - zabbix
-    #   - opensearch
-    #   - pingdom
-    #   - github
-    #   - terraform
-    #   - airflow
-    #   - hadoop
-    #   - mssql
-    #   - snowflake
-    #   - splunk
-    #   - salesforce
-    #   - azure
-    #   - nomad
-    #   - netbox
-    #   - opsgenie
-    connector_types: []
-    # Custom scripts to be run.
-    custom_scripts: []
+  notify: true
+  #notify_sink: foo
+  enable: false
+  # Specific checks to run
+  # Not supported: multiple checks, only single check support for now.
+  checks: []
+  # Specific suites to run
+  # Not supported
+  suites: []
+  # connector types whose checks need to be run
+  # Possible values:
+  #   - aws
+  #   - k8s
+  #   - gcp
+  #   - postgresql
+  #   - slack
+  #   - mongodb
+  #   - jenkins
+  #   - mysql
+  #   - jira
+  #   - rest
+  #   - elasticsearch
+  #   - kafka
+  #   - grafana
+  #   - ssh
+  #   - prometheus
+  #   - datadog
+  #   - stripe
+  #   - redis
+  #   - zabbix
+  #   - opensearch
+  #   - pingdom
+  #   - github
+  #   - terraform
+  #   - airflow
+  #   - hadoop
+  #   - mssql
+  #   - snowflake
+  #   - splunk
+  #   - salesforce
+  #   - azure
+  #   - nomad
+  #   - netbox
+  #   - opsgenie
+  connector_types: []
+  # Custom scripts to be run.
+  custom_scripts: []
 
 #
 # Scheduler section
 #
 # You can configure multiple schedules.
 scheduler:
-  - enable: false
+- enable: false
     # Cadence is specified in cron syntax. More information about the syntax can
     # be found in https://crontab.guru
     # minute  hour  day (of month)  month  day (of week)
     #   *      *          *           *        *
     # Example: "*/30 * * * *"   <= This will run every 30 Minutes
-    cadence: "*/60 * * * *"
+  cadence: '*/60 * * * *'
     # Name of the job to add to the schedule
-    job_name: ""
+  job_name: ''
+
+# Credential section
+#
+# uncomment the relevant sections below to enable respective credential
+#
+credential:
+  aws:
+  - name: awscreds
+    enable: false
+    discriminator: auth_type
+    AccessKeySchema:
+      enable: false
+      auth_type: Access Key
+      access_key: ''
+      secret_access_key: ''
+  gcp:
+  - name: gcpcreds
+    enable: false
+    credentials: ''
+  elasticsearch:
+  - name: elasticsearchcreds
+    enable: false
+    host: ''
+    username: ''
+    password: ''
+    api_key: ''
+  grafana:
+  - name: grafanacreds
+    enable: false
+    api_key: ''
+    username: ''
+    password: ''
+    host: ''
+  redis:
+  - name: rediscreds
+    enable: false
+    db: 0
+    host: ''
+    username: ''
+    password: ''
+    port: 6379
+    use_ssl: false
+  jenkins:
+  - name: jenkinscreds
+    enable: false
+    url: ''
+    user_name: ''
+    password: ''
+  github:
+  - name: githubcreds
+    enable: false
+    token: ''
+    hostname: ''
+  netbox:
+  - name: netboxcreds
+    enable: false
+    host: ''
+    token: ''
+    threading: false
+  nomad:
+  - name: nomadcreds
+    enable: false
+    host: ''
+    timeout: 5
+    token: ''
+    verify_certs: false
+    secure: false
+    namespace: ''
+  chatgpt:
+  - name: chatgptcreds
+    enable: false
+    organization: ''
+    api_token: ''
+  opsgenie:
+  - name: opsgeniecreds
+    enable: false
+    api_token: ''
+  jira:
+  - name: jiracreds
+    enable: false
+    url: ''
+    email: ''
+    api_token: ''
+  k8s:
+  - name: k8screds
+    enable: false
+    kubeconfig: ''
+  kafka:
+  - name: kafkacreds
+    enable: false
+    broker: ''
+    sasl_username: ''
+    sasl_password: ''
+  mongodb:
+  - name: mongodbcreds
+    enable: false
+    host: ''
+    port: 27017
+    discriminator: auth_type
+    AtlasSchema:
+      enable: false
+      auth_type: Atlas Administrative API using HTTP Digest Authentication
+      atlas_public_key: ''
+      atlas_private_key: ''
+    AuthSchema:
+      enable: false
+      auth_type: Basic Auth
+      user_name: ''
+      password: ''
+  mysql:
+  - name: mysqlcreds
+    enable: false
+    DBName: ''
+    User: ''
+    Password: ''
+    Host: ''
+    Port: 5432
+  postgresql:
+  - name: postgresqlcreds
+    enable: false
+    DBName: ''
+    User: ''
+    Password: ''
+    Host: ''
+    Port: 5432
+  rest:
+  - name: restcreds
+    enable: false
+    base_url: ''
+    username: ''
+    password: ''
+    headers: {}
+  slack:
+  - name: slackcreds
+    enable: false
+    bot_user_oauth_token: ''
+  ssh:
+  - name: sshcreds
+    enable: false
+    port: 22
+    username: ''
+    proxy_host: ''
+    proxy_user: ''
+    proxy_port: 22
+    discriminator: auth_type
+    AuthSchema:
+      enable: false
+      auth_type: Basic Auth
+      password: ''
+      proxy_password: ''
+    PrivateKeySchema:
+      enable: false
+      auth_type: API Token
+      private_key: ''
+      proxy_private_key: ''
+    VaultSchema:
+      enable: false
+      auth_type: Vault
+      vault_url: ''
+      vault_secret_path: ''
+      vault_role: ''
+    KerberosSchema:
+      enable: false
+      auth_type: Kerberos
+      user_with_realm: ''
+      kdc_server: ''
+      admin_server: ''
+      password: ''
+      proxy_password: ''
+  salesforce:
+  - name: salesforcecreds
+    enable: false
+    Username: ''
+    Password: ''
+    Security_Token: ''
+  vault:
+  - name: vaultcreds
+    enable: false
+    url: ''
+    token: ''
+    verify_ssl: false
+  keycloak:
+  - name: keycloakcreds
+    enable: false
+    server_url: ''
+    realm: ''
+    client_id: ''
+    username: ''
+    password: ''
+    client_secret: ''
+    verify: true

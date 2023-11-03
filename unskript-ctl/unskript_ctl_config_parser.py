@@ -10,6 +10,7 @@
 #
 import logging
 import subprocess
+import json
 import os
 import sys
 from envyaml import EnvYAML
@@ -137,9 +138,9 @@ class Job():
 
 class ConfigParser():
     def __init__(self, config_file: str):
-        self.config_file = config_file
         # Dictionary of jobs, with job name being the key.
         self.jobs = {}
+        self.config_file = config_file
 
     def parse_config_yaml(self) -> dict:
         """parse_config_yaml: This function parses the config yaml file and converts the
@@ -221,24 +222,51 @@ class ConfigParser():
         for cred_type in creds_dict.keys():
             cred_list = creds_dict.get(cred_type)
             for cred in cred_list:
+                discriminator = cred.get('discriminator')
                 name = cred.get('name')
                 if cred.get('enable') is False:
                     print(f'Credential: Skipping type {cred_type}, name {name}')
                     continue
                 creds_cmd = ['/usr/local/bin/add_creds.sh', '-c', cred_type]
+                schema_enabled = False
                 try:
                     print(f'Credential: Programming type {cred_type}, name {name}')
-                    for cred_key in cred:
-                        # Skip name and enable keys
-                        if cred_key in ['name', 'enable']:
+                    for cred_key, cred_details in cred.items():
+                        if schema_enabled:
+                            continue
+                        # If the nested field is a dict, then parse it and add the keys and values as cli commands.
+                        # (We only do this once to avoid user trying to program multiple credentials with different schemas)
+                        if isinstance(cred_details, dict) and discriminator:
+                            for prop_name, prop_value in cred_details.items():
+                                # If the schema is enabled, then only parse it
+                                if prop_name == 'enable' and not prop_value:
+                                    break
+                                elif prop_name == 'enable' and prop_value:
+                                    schema_enabled = True
+                                    continue
+                                # Certain arguments dont need extra value part like -no-verify-certs
+                                if prop_name in CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS:
+                                    creds_cmd.extend(['--'+prop_name])
+                                else:
+                                    creds_cmd.extend(['--'+prop_name, str(prop_value)])
+                                # The subcommand has to be added after the discriminator field
+                                if prop_name == discriminator:
+                                    creds_cmd.extend([ cred_key ])
+                            continue
+                        # Special case to handle cases where we need to pass a dictionary as an argument value in cli 
+                        # Eg: Headers field in Rest connector
+                        if isinstance(cred_details, dict) and discriminator is None:
+                            creds_cmd.extend(['--'+cred_key, json.dumps(cred_details)]) 
+                            continue
+                        # Skip name, enable and discriminator keys
+                        if cred_key in ['name', 'enable', 'discriminator']:
                             continue
                         # Certain arguments dont need extra value part like -no-verify-certs
                         if cred_key in CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS:
                             creds_cmd.extend(['--'+cred_key])
                         else:
-                            creds_cmd.extend(['--'+cred_key, str(cred.get(cred_key))])
+                            creds_cmd.extend(['--'+cred_key, str(cred.get(cred_key))])  
                     if creds_cmd:
-                        #print_cmd = ' '.join(creds_cmd)
                         self.run_command(creds_cmd)
                         print(f"{bcolors.OKGREEN}Credential: Successfully programmed {cred_type}, name {name}{bcolors.ENDC}")
                 except Exception as e:
@@ -365,7 +393,6 @@ def main():
     """
     config_parser = ConfigParser(UNSKRIPT_CTL_CONFIG_FILE)
     config_parser.parse_config_yaml()
-
     config_parser.parse_global()
     config_parser.parse_checks()
     config_parser.configure_credential()
