@@ -37,7 +37,7 @@ from unskript_ctl_debug import *
 from unskript_ctl_show import * 
 from unskript_ctl_list import *
 from ZODB import DB
-from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
+from unskript_utils import *
 
 # This python client can be used to
 # 1. List all available runbooks
@@ -51,7 +51,7 @@ from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
 #   installed before using this script.
 
 # LIST OF CONSTANTS USED IN THIS FILE
-UNSKRIPT_GLOBALS = {}
+# UNSKRIPT_GLOBALS = {}
 GLOBAL_CONFIG_PATH="/etc/unskript/unskript_ctl_config.yaml"
 ZODB_DB_PATH="/var/unskript/snippets.db"
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
@@ -75,7 +75,7 @@ def load_or_create_global_configuration():
        and sets os.env variables which we shall use it in the subsequent functions.
        :rpath: None
     """
-    global UNSKRIPT_GLOBALS
+    # global UNSKRIPT_GLOBAL
     if os.path.exists(GLOBAL_CONFIG_PATH) is True:
         # READ EXISTING FILE AND SET ENV VARIABLES
         with open(GLOBAL_CONFIG_PATH, 'r') as f:
@@ -349,6 +349,14 @@ def run_checks():
     parser.add_argument('--check',
                         action='store_true',
                         help=SUPPRESS)
+    parser.add_argument('--script',
+                        type=str,
+                        nargs=1,
+                        help=SUPPRESS)
+    parser.add_argument('--runbook',
+                        type=str,
+                        nargs=1,
+                        help=SUPPRESS)
     parser.add_argument('--name',
                         type=str,
                         dest='function_name',
@@ -367,6 +375,7 @@ def run_checks():
                         action="store_true",
                         required=False,
                         help='Report check runs')
+    
     args = parser.parse_args()
 
     if len(sys.argv) == 2:
@@ -458,8 +467,10 @@ def run_checks():
             pprint.pprint(v)
             print('\x1B[1;4m', '\x1B[0m')
 
-    if UNSKRIPT_GLOBALS.get('report') is True:
-        send_notification(status_of_runs, UNSKRIPT_GLOBALS.get('failed_result'))
+    UNSKRIPT_GLOBALS['status_of_runs'] = status_of_runs
+
+    # if UNSKRIPT_GLOBALS.get('report') is True:
+    #     send_notification(status_of_runs, UNSKRIPT_GLOBALS.get('failed_result'))
 
 
 def run_suites(suite_name: str):
@@ -1291,7 +1302,8 @@ def run_script(script:list[str]):
     - Creates a json for the run, containing some metadata about the script.
     """
     parser = ArgumentParser(description='--run-script')
-    parser.add_argument('--run-script',
+    parser.add_argument('-r',
+                        '--run',
                         required=True,
                         default=True,
                         help=SUPPRESS,
@@ -1300,19 +1312,19 @@ def run_script(script:list[str]):
                         help="Report script run",
                         required=False,
                         action="store_true")
+    parser.add_argument('--check',
+                        nargs='*',
+                        help=SUPPRESS)
     parser.add_argument('--script',
                         help="Script to be run",
-                        nargs=REMAINDER)
+                        nargs='*')
 
-    args=parser.parse_args()
-
+    # Parse Arguments
+    args, _ = parser.parse_known_args()
 
     if len(sys.argv) == 2:
         parser.print_help()
         sys.exit(0)
-
-    if args.report:
-        UNSKRIPT_GLOBALS['report'] = True
 
     script = args.script
     if len(args.script) == 0:
@@ -1383,11 +1395,70 @@ def run_script(script:list[str]):
         with open(output_file_json, "w") as f:
             json.dump(json_output, fp=f)
 
-        if args.report:
-            send_notification(None, None, output_metadata_file=output_file_json)
+        # if args.report:
+        #     send_notification(None, None, output_metadata_file=output_file_json)
     except Exception as e:
         print(f'{bcolors.FAIL} output file creation failed, {e}{bcolors.ENDC}')
         sys.exit(0)
+
+def _rearrange_argv():
+    temp_argv = [sys.argv[0]]
+    # chk_start_idx = chk_end_idx = -1
+    # provide_report = False
+    # for item in sys.argv[1:]:
+    #     if item in ('-r', '--run'):
+    #         temp_argv.append(item)
+    #         continue
+    #     if item in ('--runbook'):
+    #         idx = sys.argv.index('--runbook')
+    #         temp_argv.append(sys.argv[idx])
+    #         temp_argv.append(sys.argv[idx+1])
+    #         if chk_start_idx != -1 or check_flag_seen:
+    #             chk_end_idx = idx 
+    #         continue 
+    #     if item in ('--script'):
+    #         idx = sys.argv.index('--script')
+    #         temp_argv.append(sys.argv[idx])
+    #         temp_argv.append(sys.argv[idx+1])
+    #         if chk_start_idx != -1 or check_flag_seen:
+    #             chk_end_idx = idx 
+    #         continue
+    #     if item in ('--check'):
+    #         chk_start_idx = sys.argv.index('--check')
+    #         check_flag_seen = True 
+    #         continue
+    #     if item in ('--report'):
+    #         provide_report = True 
+        
+    #     pass
+    # if chk_start_idx != -1 and chk_end_idx != -1:
+    #     for item in sys.argv[chk_start_idx:chk_end_idx]:
+    #         temp_argv.append(item)
+    # if provide_report:
+    #     temp_argv.append('--report')
+    chk_idx = script_idx = runbook_idx = report_idx = -1
+    if '--check' in sys.argv:
+        print("CHECK")
+        chk_idx = sys.argv.index('--check')
+    if '--script' in sys.argv:
+        print("SCRIPT")
+        script_idx = sys.argv.index('--script')
+    if '--runbook' in sys.argv:
+        print("RUNBOOK")
+        runbook_idx = sys.argv.index('--runbook')
+    if '--report' in sys.argv:
+        print("REPORT")
+        report_idx = sys.argv.index('--report')
+
+    if chk_idx < script_idx: 
+        # CHK is earlier to script and/or runbook
+        temp_argv = sys.argv[0:chk_idx] + sys.argv[script_idx:report_idx - 1] 
+        temp_argv += sys.argv[chk_idx:script_idx]
+    
+    if report_idx:
+        temp_argv.append('--report')
+        
+    return temp_argv 
 
 
 def run_main():
@@ -1397,42 +1468,51 @@ def run_main():
                         '--run',
                         help='Run Options',
                         action="store_true")
-    parser.add_argument('--checks',
-                        help='Run checks',
-                        type=str,
-                        nargs=REMAINDER)
-    parser.add_argument('--runbook',
-                        type=str,
-                        nargs=REMAINDER,
-                        help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
     parser.add_argument('--script',
                         help='Run script',
-                        nargs=REMAINDER)
+                        nargs=1)
+    parser.add_argument('--runbook',
+                        type=str,
+                        nargs='*',
+                        help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
+    parser.add_argument('--check',
+                        help='Run checks',
+                        type=str,
+                        nargs='*')
     parser.add_argument('--report',
                         help="Report results",
                         action='store_true')
     
-    args = parser.parse_args()
 
+    args,additional_args = parser.parse_known_args()
+    if len(additional_args) > 0:
+        args.check = additional_args
     if len(sys.argv) <= 2:
         parser.print_help()
         sys.exit(1)
     
-    if args.checks not in ('', None):
+    if args.check not in ('', None):
         run_checks()
-    elif args.runbook not in ('', None):
+
+    if args.runbook not in ('', None):
         if len(args.runbook) == 0:
             parser.print_help()
             sys.exit(0)
         else:
             # TBD: Dynamic Parser
             parse_runbook_param(args.runbook)
-    elif args.script not in ('', None):
-        run_script(args.script)
-    else:
-        pass 
 
-    if args.report is True:
+    if args.script not in ('', None):
+        run_script(args.script)
+
+    if UNSKRIPT_GLOBALS.get('report') is True:
+        # First find out if UNSKRIPT GLOBALS has failed objects. If yes, then start generating files 
+        # Next check if --script option was used, in that case find out the directory that was created 
+        # and make that as the source directory to create the tar.bz2 archive 
+        if args.check:
+            print("PREPARING REPORT FOR CHECKS RUN")
+        if args.script:
+            print("PREPARING REPORT FOR SCRIPT RUN")
         pass 
 
 
