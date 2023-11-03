@@ -1401,65 +1401,6 @@ def run_script(script:list[str]):
         print(f'{bcolors.FAIL} output file creation failed, {e}{bcolors.ENDC}')
         sys.exit(0)
 
-def _rearrange_argv():
-    temp_argv = [sys.argv[0]]
-    # chk_start_idx = chk_end_idx = -1
-    # provide_report = False
-    # for item in sys.argv[1:]:
-    #     if item in ('-r', '--run'):
-    #         temp_argv.append(item)
-    #         continue
-    #     if item in ('--runbook'):
-    #         idx = sys.argv.index('--runbook')
-    #         temp_argv.append(sys.argv[idx])
-    #         temp_argv.append(sys.argv[idx+1])
-    #         if chk_start_idx != -1 or check_flag_seen:
-    #             chk_end_idx = idx 
-    #         continue 
-    #     if item in ('--script'):
-    #         idx = sys.argv.index('--script')
-    #         temp_argv.append(sys.argv[idx])
-    #         temp_argv.append(sys.argv[idx+1])
-    #         if chk_start_idx != -1 or check_flag_seen:
-    #             chk_end_idx = idx 
-    #         continue
-    #     if item in ('--check'):
-    #         chk_start_idx = sys.argv.index('--check')
-    #         check_flag_seen = True 
-    #         continue
-    #     if item in ('--report'):
-    #         provide_report = True 
-        
-    #     pass
-    # if chk_start_idx != -1 and chk_end_idx != -1:
-    #     for item in sys.argv[chk_start_idx:chk_end_idx]:
-    #         temp_argv.append(item)
-    # if provide_report:
-    #     temp_argv.append('--report')
-    chk_idx = script_idx = runbook_idx = report_idx = -1
-    if '--check' in sys.argv:
-        print("CHECK")
-        chk_idx = sys.argv.index('--check')
-    if '--script' in sys.argv:
-        print("SCRIPT")
-        script_idx = sys.argv.index('--script')
-    if '--runbook' in sys.argv:
-        print("RUNBOOK")
-        runbook_idx = sys.argv.index('--runbook')
-    if '--report' in sys.argv:
-        print("REPORT")
-        report_idx = sys.argv.index('--report')
-
-    if chk_idx < script_idx: 
-        # CHK is earlier to script and/or runbook
-        temp_argv = sys.argv[0:chk_idx] + sys.argv[script_idx:report_idx - 1] 
-        temp_argv += sys.argv[chk_idx:script_idx]
-    
-    if report_idx:
-        temp_argv.append('--report')
-        
-    return temp_argv 
-
 
 def run_main():
     parser = ArgumentParser()
@@ -1532,60 +1473,6 @@ if __name__ == "__main__":
     description = description + str(f"\t\t   VERSION: {version_number} \n")
     parser.description = description
 
-    # parser.add_argument('-lr',
-    #                     '--list-runbooks',
-    #                     help='List Available Runbooks',
-    #                     action='store_true')
-    # parser.add_argument('-rr',
-    #                     '--run-runbook',
-    #                     type=str,
-    #                     nargs=REMAINDER,
-    #                     help='Run the given runbook FILENAME [-RUNBOOK_PARM1 VALUE1] etc..')
-    # parser.add_argument('-rc',
-    #                     '--run-checks',
-    #                     type=str,
-    #                     nargs=REMAINDER,
-    #                     help='Run all available checks [--all | --type <CONNECTOR_TYPE> | --failed | --check check_name]')
-    # parser.add_argument('-df',
-    #                     '--display-failed-checks',
-    #                     type=str,
-    #                     nargs=REMAINDER,
-    #                     help='Display Failed Checks [--all | --type <CONNECTOR_TYPE>]')
-    # parser.add_argument('-lc',
-    #                     '--list-checks',
-    #                     type=str,
-    #                     nargs=REMAINDER,
-    #                     help='List available checks, [--all | --type <CONNECTOR_TYPE>]')
-    # parser.add_argument('-sa',
-    #                     '--show-audit-trail',
-    #                     type=str,
-    #                     nargs=REMAINDER,
-    #                     help='Show audit trail [--all | --type <CONNECTOR_TYPE> | --execution_id <EXECUTION_ID>]')
-    # parser.add_argument('-dl',
-    #                     '--display-failed-logs',
-    #                     type=str,
-    #                     nargs=REMAINDER,
-    #                     help='Display failed logs  [execution_id]')
-    # parser.add_argument('--create-credentials',
-    #                     type=str,
-    #                     nargs=REMAINDER,
-    #                     help='Create Credential [-creds-type creds_file_path]')
-    # parser.add_argument('--credential-list',
-    #                     help='Credential List',
-    #                     action='store_true')
-    # parser.add_argument('--start-debug',
-    #                     help='Start Debug Session. Example: [--start-debug --config /tmp/config.ovpn]',
-    #                     type=str,
-    #                     nargs=REMAINDER)
-    # parser.add_argument('--stop-debug',
-    #                     help='Stop Current Debug Session',
-    #                     action='store_true')
-    # parser.add_argument('--save-check-names',
-    #                     type=str,
-    #                     help=SUPPRESS)
-    # parser.add_argument('--run-script',
-    #                     help='Run script',
-    #                     nargs=REMAINDER)
     parser.add_argument('-l',
                         '--list',
                         dest="list_option",
