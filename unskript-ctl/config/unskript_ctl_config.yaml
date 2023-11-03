@@ -33,106 +33,6 @@ checks:
   arguments:
     global:
        region: us-west-2
-
-# Credential section
-#
-# uncomment the relevant sections below to enable respective credential
-#
-credential:
-  # AWS connector details
-  aws:
-   - name: awscreds
-     enable: false
-     access-key: ""
-     secret-access-key: ""
-
-  # Kubernetes connector details
-  k8s:
-   - name: k8screds
-     enable: false
-     kubeconfig: ""
-
-  # GCP connector details
-  gcp:
-   - name: gcpcreds
-     enable: false
-     credential-json: ""
-
-  # Elasticsearch connector details
-  elasticsearch:
-   - name: escreds
-     enable: false
-     host: ""
-     api-key: ""
-     no-verify-ssl: ""
-
-  # Redis connector details
-  redis:
-   - name: rediscreds
-     enable: false
-     host: ""
-     port: ""
-     username: ""
-     password: ""
-     database: ""
-     use-ssl: ""
-
-  # Postgres connector details
-  postgres:
-   - name: postgrescreds
-     enable: false
-     host: ""
-     port: ""
-     username: ""
-     password: ""
-     database: ""
-
-  # Mongodb connector details
-  mongodb:
-   - name: mongodbcreds
-     enable: false
-     host: ""
-     port: ""
-     username: ""
-     password: ""
-
-  # Kafka connector details
-  kafka:
-   - name: kafkacreds
-     enable: false
-     broker: ""
-     username: ""
-     password: ""
-     zookeeper: ""
-
-  # Rest connector details
-  rest:
-   - name: restcreds
-     enable: false
-     base-url: ""
-     username: ""
-     password: ""
-     headers: ""
-
-  # Vault connector details
-  vault:
-   - name: vaultcreds
-     enable: false
-     url: ""
-     token: ""
-
-  # Keycloak connector details
-  keycloak:
-   - name: keycloakcreds
-     enable: false
-     server-url: ""
-     realm: ""
-     client-id: ""
-     username: ""
-     password: ""
-     client-secret: ""
-     no-verify-certs: ""
-
 #
 # Notification section
 #
@@ -237,3 +137,7 @@ scheduler:
     cadence: "*/60 * * * *"
     # Name of the job to add to the schedule
     job_name: ""
+# Credential section
+#
+# uncomment the relevant sections below to enable respective credential
+#

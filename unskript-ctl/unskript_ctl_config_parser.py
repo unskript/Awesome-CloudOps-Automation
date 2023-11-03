@@ -14,6 +14,10 @@ import os
 import sys
 from envyaml import EnvYAML
 from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
+import add_creds
+import json
+import ruamel.yaml
+import sys
 
 #logging.basicConfig(
 #    level=logging.DEBUG,
@@ -94,9 +98,70 @@ class Job():
 
 class ConfigParser():
     def __init__(self, config_file: str):
-        self.config_file = config_file
         # Dictionary of jobs, with job name being the key.
         self.jobs = {}
+        self.config_file = config_file
+        self.generate_credentials(config_file)
+    
+    # Add credentials details to the config file based on the credential schemas
+    def generate_credentials(self, config_file):
+        try:
+            schema_json = json.loads(add_creds.credential_schemas)
+        except Exception as e:
+            print(f"Exception occured {e}")
+            return
+        yaml = ruamel.yaml.YAML()
+        with open(config_file) as fp:
+            unskript_ctl_config_yaml_data = yaml.load(fp)
+            if 'credential' in unskript_ctl_config_yaml_data:
+                return
+            credentials_details = {}
+            for schema in schema_json:
+                credential_name = schema.get('title').replace('Schema', '').lower()
+                properties = schema.get('properties', {})
+                params_info = {"name": credential_name+"creds", "enable": False}
+                for prop, prop_info in properties.items():
+                    if prop_info.get('discriminator') is not None:
+                        continue
+                    prop_value = None
+                    if prop_info.get('default') is not None:
+                        prop_value = prop_info.get('default')
+                    else:
+                        prop_value = self.get_default_value_for_param(prop_info.get('type'))
+                    params_info[prop] = prop_value
+                if schema.get('definitions') is not None:
+                     definitions = schema.get('definitions')
+                     for schema_name, schema_definition in definitions.items():
+                         schema_properties = schema_definition.get('properties', {})
+                         for schema_prop, schema_prop_info in schema_properties.items():
+                            schema_prop_value = None
+                            if schema_prop_info.get('default') is not None:
+                                schema_prop_value = schema_prop_info.get('default')
+                            else:
+                                schema_prop_value = self.get_default_value_for_param(schema_prop_info.get('type'))
+                            params_info[schema_prop] = schema_prop_value
+                credentials_details[credential_name] = [params_info]
+            unskript_ctl_config_yaml_data['credential'] = credentials_details
+            # Redirect stdout to a file. Dumping yaml to stdout ensures formatting and comments are retained
+            with open(config_file, 'w') as output_file:
+                sys.stdout = output_file
+                yaml.dump(unskript_ctl_config_yaml_data, sys.stdout)
+        # Reset stdout to the original sys.stdout
+        sys.stdout = sys.__stdout__
+
+        self.config_file = config_file
+
+    def get_default_value_for_param(self, parameter_type) -> any:
+        default_value = ""
+        if parameter_type == "number":
+            default_value = 0
+        if parameter_type == "boolean":
+            default_value = False
+        if parameter_type == "array":
+            default_value = []
+        if parameter_type == "object":
+            default_value = {}
+        return default_value
 
     def parse_config_yaml(self) -> dict:
         """parse_config_yaml: This function parses the config yaml file and converts the
@@ -168,7 +233,12 @@ class ConfigParser():
                         if cred_key in CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS:
                             creds_cmd.extend(['--'+cred_key])
                         else:
-                            creds_cmd.extend(['--'+cred_key, str(cred.get(cred_key))])
+                            value = cred.get(cred_key)
+                            cred_value = str(value)
+                            if value is not None and type(value) == str:
+                                if len(value.split(" ")) > 1:
+                                    cred_value = '\\ '.join(value.split(" "))
+                            creds_cmd.extend(['--'+cred_key, cred_value])
                     if creds_cmd:
                         #print_cmd = ' '.join(creds_cmd)
                         self.run_command(creds_cmd)
@@ -297,7 +367,6 @@ def main():
     """
     config_parser = ConfigParser(UNSKRIPT_CTL_CONFIG_FILE)
     config_parser.parse_config_yaml()
-
     config_parser.parse_global()
     config_parser.configure_credential()
     config_parser.parse_jobs()
