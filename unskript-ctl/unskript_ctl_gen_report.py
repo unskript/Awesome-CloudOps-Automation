@@ -540,7 +540,7 @@ def create_temp_files_of_failed_results(failed_result: dict):
     if failed_result and len(failed_result):
         connectors_list = [x.split(':')[0] for x in failed_result.keys()]
         for connector in connectors_list:
-            connector_file = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY') + f'/{connector}.txt'
+            connector_file = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY') + f'/{connector}_failed_objects.txt'
             with open(connector_file, 'w', encoding='utf-8') as f:
                 for c_name, f_obj in failed_result.items():
                     if c_name.startswith(connector):
