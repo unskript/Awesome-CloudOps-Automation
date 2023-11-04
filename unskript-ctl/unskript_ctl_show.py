@@ -89,7 +89,7 @@ def show_audit_trail():
                         type=str,
                         help='Execution ID for which the audit trail should be shown')
 
-    args = parser.parse_args()
+    args = parser.parse_args(sys.argv[1:])
     filter = 'all'
 
     pss_content = get_pss_record('audit_trail')
@@ -184,7 +184,7 @@ def show_main():
     sp = ArgumentParser()
     sp.add_argument("-s",
                     "--show",
-                    help="Show Options",
+                    help=SUPPRESS,
                     action="store_true")
     sp.add_argument("--audit-trail",
                     help="Show Audit Trail",
@@ -195,7 +195,7 @@ def show_main():
                     type=str,
                     nargs=REMAINDER)
     
-    spargs = sp.parse_args()
+    spargs = sp.parse_args(sys.argv[1:])
 
     if len(sys.argv) <= 2:
         sp.print_help()

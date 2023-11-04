@@ -92,9 +92,9 @@ def debug_session_main():
     """
     dp = ArgumentParser()
     dp.add_argument("-d",
-                        "--debug-session",
-                        action="store_true",
-                        help="Debug Options")
+                    "--debug-session",
+                    action="store_true",
+                    help=SUPPRESS)
     dp.add_argument('--start',
                     help='Start debug session. Example [--start --config /tmp/config.ovpn]',
                     type=str,
@@ -103,7 +103,7 @@ def debug_session_main():
                     help="Stop current debug session",
                     action='store_true')
     
-    dpargs = dp.parse_args()
+    dpargs = dp.parse_args(sys.argv[1:])
     if len(sys.argv) <= 2:
         dp.print_help()
         sys.exit(1)

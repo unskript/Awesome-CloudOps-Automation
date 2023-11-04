@@ -342,7 +342,7 @@ def run_checks():
     parser.add_argument('-r',
                         '--run',
                         action='store_true',
-                        help='Run options')
+                        help=SUPPRESS)
     parser.add_argument('--check',
                         action='store_true',
                         help=SUPPRESS)
@@ -373,7 +373,7 @@ def run_checks():
                         required=False,
                         help='Report check runs')
     
-    args = parser.parse_args()
+    args = parser.parse_args(sys.argv[1:])
 
     if len(sys.argv) == 2:
         parser.print_help()
@@ -1403,7 +1403,7 @@ def run_main():
 
     parser.add_argument('-r',
                         '--run',
-                        help='Run Options',
+                        help=SUPPRESS,
                         action="store_true")
     parser.add_argument('--script',
                         help='Run script',

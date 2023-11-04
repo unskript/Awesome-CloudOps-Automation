@@ -52,7 +52,7 @@ def display_failed_checks():
                         choices=CONNECTOR_LIST,
                         help="Connector Type to display the failed check against",
                         type=str)
-    args = parser.parse_args()
+    args = parser.parse_args(sys.argv[1:])
 
     if len(sys.argv) == 2:
         parser.print_help()
@@ -227,7 +227,7 @@ def list_main():
     lp.add_argument('-l',
                     '--list',
                     action='store_true',
-                    help='List Options')
+                    help=SUPPRESS)
     lp.add_argument('-r',
                     '--runbooks',
                     action='store_true',
@@ -243,7 +243,7 @@ def list_main():
     lp.add_argument('--credential',
                     action="store_true",
                     help="List Credential")
-    largs = lp.parse_args()
+    largs = lp.parse_args(sys.argv[1:])
     
     
     if len(sys.argv) <= 2:
