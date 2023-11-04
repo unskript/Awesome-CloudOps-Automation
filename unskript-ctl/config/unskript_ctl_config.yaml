@@ -33,6 +33,8 @@ checks:
   arguments:
     global:
        region: us-west-2
+       matrix:
+         namespace: [n1, n2]
 
 # Credential section
 #
@@ -147,6 +149,7 @@ notification:
   Email:
     verbose: true #Not yet supported
     enable: false
+    email_subject_line: ""
     # provider for the email. Possible values:
     #    - SMTP - SMTP server
     #    - SES -  AWS SES
@@ -168,6 +171,7 @@ notification:
       api_key: ""
       to-email: ""
       from-email: ""
+
 #
 # Job section
 #
@@ -176,6 +180,7 @@ jobs:
   - name: "" # Unique name
     # The results of the job to be notified or not.
     notify: true
+    #notify_sink: foo
     enable: false
     # Specific checks to run
     # Not supported: multiple checks, only single check support for now.
@@ -220,7 +225,6 @@ jobs:
     #   - opsgenie
     connector_types: []
     # Custom scripts to be run.
-    # Not supported
     custom_scripts: []
 
 #

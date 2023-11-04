@@ -87,6 +87,11 @@ def load_or_create_global_configuration():
         if config_yaml.get('checks'):
             if config_yaml.get('checks').get('arguments'):
                 if config_yaml.get('checks').get('arguments').get('global'):
+                    # Handle matrix
+                    matrix = config_yaml.get('checks').get('arguments').get('global').get('matrix')
+                    if matrix != None:
+                        UNSKRIPT_GLOBALS['matrix'] = matrix
+                        UNSKRIPT_GLOBALS['uuid_mapping'] = {}
                     UNSKRIPT_GLOBALS['global'] = config_yaml.get('checks').get('arguments').get('global')
                     for k, v in config_yaml.get('checks').get('arguments').get('global').items():
                         os.environ[k] = json.dumps(v)
@@ -134,10 +139,26 @@ nbParamsObj = nbparams.NBParams(paramsJson)
 '''
     if UNSKRIPT_GLOBALS.get('global') and len(UNSKRIPT_GLOBALS.get('global')):
         for k,v in UNSKRIPT_GLOBALS.get('global').items():
+            # skip matrix
+            if k == "matrix":
+                continue
             if isinstance(v,str) is True:
                 first_cell_content += f'{k} = \"{v}\"' + '\n'
             else:
                 first_cell_content += f'{k} = {v}' + '\n'
+    # Handle matrix arguments. Basically for matrix arguments, here is the
+    # logic:
+    # - Define n variables, n being the length of the matrix argument. For eg
+    #   namespace0, namespace1, etc. with different value.
+    # - Duplicate the cells which use matrix argument and use each variable
+    #   in that cell.
+    # - Next, since the cells are duplicated, combine the output from the
+    #   duplicated cells to show a uniform view.
+    if UNSKRIPT_GLOBALS.get('matrix'):
+        for k, v in UNSKRIPT_GLOBALS.get('matrix').items():
+            if v != None:
+                for index, value in enumerate(v):
+                    first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
 
     first_cell_content += f'''
 w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={ids})'''
@@ -239,9 +260,10 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     # We store the Status of runbook execution in status_dict
     status_dict = {}
     status_dict['runbook'] = filename
+    output_file = filename.replace('.ipynb', '_output.ipynb')
     status_dict['result'] = []
     r_name = '\x1B[1;20;42m' + "Executing Runbook -> " + \
-        filename.strip() + '\x1B[0m'
+        output_file.strip() + '\x1B[0m'
     print(r_name)
 
 
@@ -268,6 +290,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         if len(outputs) == 0:
             print("ERROR: Output of the cell execution is empty. Is the credential configured?")
 
+    # TBD: why do we this, the output in the last cell has the check uuid, should use that instead
     ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
     if UNSKRIPT_GLOBALS.get('skipped'):
@@ -295,11 +318,11 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     if ids:
         for output in outputs:
             r = output.get('text')
-            for result in r.split('\n'):
-                if result == '':
+            r = output_after_merging_checks(r.split('\n'), ids)
+            for result in r:
+                if result.get('skip') and result.get('skip') is True:
                     continue
-                payload = json.loads(result)
-
+                payload = result
                 try:
                     if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
                         result_table.append([
@@ -367,6 +390,64 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
 
     print("")
     status_list_of_dict.append(status_dict)
+
+
+def output_after_merging_checks(outputs: list, ids: list) -> list:
+    """output_after_merging_checks: this function combines the output from duplicated
+    checks and stores the combined output.
+    TBD: What if one duplicated check returns an ERROR
+    """
+    new_outputs = []
+    # Remove empty strings
+    filtered_output = []
+    for output in outputs:
+        if output == '':
+            continue
+        payload = json.loads(output)
+        filtered_output.append(payload)
+
+    outputs = filtered_output
+    if UNSKRIPT_GLOBALS.get('uuid_mapping') is None:
+        return outputs
+    for index in range(len(outputs)):
+        if UNSKRIPT_GLOBALS['uuid_mapping'].get(ids[index]) is None:
+            new_outputs.append(payload)
+        else:
+            parent_index = index - 1
+            while index < len(outputs):
+                if UNSKRIPT_GLOBALS['uuid_mapping'].get(ids[index]):
+                    payload['skip'] = True
+                    new_outputs.append(payload)
+                    index = index + 1
+                else:
+                    break
+            combined_output = calculate_combined_check_status(new_outputs[parent_index:index])
+            # Combined output should be the output of the parent check, so
+            # overwrite it.
+            print(f'parent_index {parent_index}, index {index}, combined_output {combined_output}')
+            new_outputs[parent_index] = combined_output
+    return new_outputs
+
+def calculate_combined_check_status(outputs:list):
+    combined_output = {}
+    status = CheckOutputStatus.SUCCESS
+    failed_objects = []
+    error = None
+    for output in outputs:
+        if CheckOutputStatus(output.get('status')) == CheckOutputStatus.FAILED:
+            status = CheckOutputStatus.FAILED
+            failed_objects.append(output.get('objects'))
+        elif CheckOutputStatus(output.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
+            status = CheckOutputStatus.RUN_EXCEPTION
+            error = output.get('error')
+
+    combined_output['status'] = status
+    combined_output['objects'] = failed_objects
+    combined_output['error'] = error
+    return combined_output
+
+
+
 
 
 def run_checks(args: list):
@@ -475,7 +556,10 @@ def run_checks(args: list):
     if args.report:
         UNSKRIPT_GLOBALS['report'] = True
 
+    # If there is a matrix argument, we need to replicate the check which has
+    # that argument, that many times.
     if len(check_list) > 0:
+        check_list = create_checks_for_matrix_argument(check_list)
         runbooks.append(create_jit_runbook(check_list))
 
     status_of_runs = []
@@ -498,6 +582,64 @@ def run_checks(args: list):
     if UNSKRIPT_GLOBALS.get('report') is True:
         send_notification(status_of_runs, UNSKRIPT_GLOBALS.get('failed_result'))
 
+def create_checks_for_matrix_argument(checks: list):
+    """create_checks_for_matrix_argument: This function generates the inputJson line of
+    code for a check. It handles the matrix case wherein you need to use the
+    appropriate variable name for argument assignment.
+    """
+    checks_list = []
+    for check in checks:
+        input_schema = check.get('inputschema')
+        if input_schema is None:
+            checks_list.append(check)
+            continue
+        add_check_to_list = True
+        if UNSKRIPT_GLOBALS.get('global') and len(UNSKRIPT_GLOBALS.get('global')):
+#            input_json_start_line = '''
+#task.configure(inputParamsJson=\'\'\'{
+#            '''
+#            input_json_end_line = '''}\'\'\')
+#            '''
+            input_json_line = ''
+            try:
+                schema = input_schema[0]
+                if schema.get('properties'):
+                    for key in schema.get('properties').keys():
+                        # Check if the property is a matrix argument.
+                        # If thats the case, replicate the check the number
+                        # of entries in  that argument.
+                        duplicate_count = 1
+                        if UNSKRIPT_GLOBALS.get('matrix'):
+                            matrix_value = UNSKRIPT_GLOBALS.get('matrix').get(key)
+                            if matrix_value != None:
+                                duplicate_count += len(matrix_value)
+                                # Duplicate this check len(matrix_argument) times.
+                                # Also, for each check, you need to use a different
+                                # argument, so store that in a field named
+                                # matrixinputline
+                                is_first = True
+                                for dup in range(duplicate_count-1):
+                                    add_check_to_list = False
+                                    input_json_line = ''
+                                    input_json_line += f"\"{key}\":  \"{key}{dup}\" ,"
+                                    newcheck = check.copy()
+                                    if is_first is False:
+                                        # Maintain the uuid mapping that this uuid is the same as
+                                        # as the one its copied from.
+                                        new_uuid = str(uuid.uuid4())
+                                        UNSKRIPT_GLOBALS["uuid_mapping"][new_uuid] = check["uuid"]
+                                        newcheck['uuid'] = new_uuid
+                                        newcheck['id'] = str(uuid.uuid4())[:8]
+                                        print(f'Adding duplicate check {new_uuid}, parent_uuid {check.get("uuid")}')
+                                    newcheck['matrixinputline'] = input_json_line.rstrip(',')
+                                    checks_list.append(newcheck)
+                                    is_first = False
+            except Exception as e:
+                print(f"EXCEPTION {e}")
+                pass
+        if add_check_to_list:
+                checks_list.append(check)
+    return checks_list
 
 def run_suites(suite_name: str):
     """run_suites This function takes the suite_name as an argument
@@ -657,7 +799,8 @@ def update_current_execution(status, id: str, content: dict):
     if os.path.exists(failed_runbook) is not True:
         print(f"ERROR Unable to create failed runbook at {failed_runbook}")
 
-def replace_input_with_globals(inputSchema: str):
+def replace_input_with_globals(check):
+    inputSchema = check.get('inputschema')
     if not inputSchema:
         return None
     retval = ''
@@ -677,7 +820,10 @@ task.configure(inputParamsJson=\'\'\'{
         except Exception as e:
             print(f"EXCEPTION {e}")
             pass
-
+        # Handle the matrix argument related line
+        matrix_argument_line = check.get('matrixinputline')
+        if matrix_argument_line:
+            input_json_line += matrix_argument_line
         retval = input_json_start_line + input_json_line.rstrip(',') + '\n' + input_json_end_line
 
     return retval
@@ -697,6 +843,7 @@ def create_jit_runbook(check_list: list):
        :rtype: None
     """
     nb = nbformat.v4.new_notebook()
+    unknown_attrs = ['description', 'uuid', 'name', 'type', 'inputschema', 'version', 'orderProperties', 'tags', 'language', 'matrixinputline']
 
     exec_id = str(uuid.uuid4())
     UNSKRIPT_GLOBALS['exec_id'] = exec_id
@@ -725,7 +872,7 @@ task.configure(credentialsJson=\'\'\'{
         \"credential_name\":''' + f" \"{cred_name}\"" + ''',
         \"credential_type\":''' + f" \"{s_connector}\"" + '''}\'\'\')
         '''
-        input_json = replace_input_with_globals(check.get('inputschema'))
+        input_json = replace_input_with_globals(check)
         if input_json:
             task_lines += input_json
         try:
@@ -746,12 +893,13 @@ task.configure(credentialsJson=\'\'\'{
             check['metadata']['name'] = check['name']
             cc = nbformat.v4.new_code_cell(check.get('code'))
             for k, v in check.items():
-                if k != 'code':
+                if k != 'code' and k not in unknown_attrs:
                     cc[k] = check[k]
             nb['cells'].append(cc)
 
         except Exception as e:
-            raise e
+            print(f'{bcolors.FAIL} Runbook creation failed, code {c}, {e}')
+            sys.exit(0)
     # The Recent Version of Docker, the unskript-ctl spews a lot of errors like this:
     #
     # ERROR:traitlets:Notebook JSON is invalid: Additional properties are not allowed ('orderProperties', 'description',
@@ -761,14 +909,13 @@ task.configure(credentialsJson=\'\'\'{
     # This is because the nbformat.write() complains about unknown attributes that are present
     # in the IPYNB file. We dont need these attributes when we run the notebook via the Command Line.
     # So we surgically eliminate these keys from the NB dictionary.
-    unknown_attrs = ['description', 'uuid', 'name', 'type', 'inputschema', 'version', 'orderProperties', 'tags', 'language']
     for cell in nb.get('cells'):
         if cell.get('cell_type') == "code":
             # This check is needed because the ID value is by default saved
             # as integer in our code-snippets to enable drag-and-drop
             cell['id'] = str(cell.get('id'))
-        for attr in unknown_attrs:
-            del cell[attr]
+#        for attr in unknown_attrs:
+#            del cell[attr]
     nbformat.write(nb, failed_notebook)
 
 

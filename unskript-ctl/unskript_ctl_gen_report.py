@@ -175,6 +175,7 @@ def send_email_notification(summary_results: list,
     if not creds_data:
         print("ERROR: Mail Notification setting is empty. Cannot send Mail out")
 
+    subject = creds_data.get('email_subject_line', 'Run Result')
     if creds_data.get('provider').lower() == "smtp":
         c_data = creds_data.get('SMTP')
         retval = send_smtp_notification(summary_results,
@@ -184,7 +185,8 @@ def send_email_notification(summary_results: list,
                                c_data.get('smtp-user'),
                                c_data.get('smtp-password'),
                                c_data.get('to-email'),
-                               c_data.get('from-email'))
+                               c_data.get('from-email'),
+                               subject)
     elif creds_data.get('provider').lower() == "sendgrid":
         c_data = creds_data.get('Sendgrid')
         retval = send_sendgrid_notification(summary_results,
@@ -192,7 +194,8 @@ def send_email_notification(summary_results: list,
                                    output_metadata_file,
                                    c_data.get('from-email'),
                                    c_data.get('to-email'),
-                                   c_data.get('api_key'))
+                                   c_data.get('api_key'),
+                                   subject)
     elif creds_data.get('provider').lower() == "ses":
         c_data = creds_data.get('SES')
         retval = send_awsses_notification(summary_results,
@@ -202,7 +205,8 @@ def send_email_notification(summary_results: list,
                                    c_data.get('secret_access'),
                                    c_data.get('to-email'),
                                    c_data.get('from-email'),
-                                   c_data.get('region'))
+                                   c_data.get('region'),
+                                   subject)
     else:
         print(f"ERROR: Unknown notification service {creds_data.get('provider')}")
 
@@ -216,7 +220,8 @@ def send_awsses_notification(summary_results: list,
                              secret_key: str,
                              to_email: str,
                              from_email: str,
-                             region: str):
+                             region: str,
+                             subject: str):
     if not access_key or not secret_key:
         print("ERROR: Cannot send AWS SES Notification without access and/or secret_key")
         return  False
@@ -238,7 +243,7 @@ def send_awsses_notification(summary_results: list,
         message = create_email_message(summary_results, failed_result)
         email_template = {
             'Subject': {
-                'Data': 'unSkript-ctl Check Run result',
+                'Data': subject,
                 'Charset': charset
             },
             'Body': {
@@ -287,7 +292,7 @@ def send_awsses_notification(summary_results: list,
 
     elif output_metadata_file:
         _, attachment_ = create_email_message_with_attachment(output_metadata_file=output_metadata_file)
-        attachment_['Subject'] = 'unSkript-ctl Check Run result'
+        attachment_['Subject'] = subject
         attachment_['From'] = from_email
         attachment_['To'] = to_email
         try:
@@ -331,7 +336,8 @@ def send_sendgrid_notification(summary_results: list,
                                output_metadata_file: str,
                                from_email: str,
                                to_email: str,
-                               api_key: str):
+                               api_key: str,
+                               subject: str):
     # Dynamic Load (Import) necessary libraries for sendgrid
     import sendgrid
     from sendgrid import SendGridAPIClient
@@ -347,7 +353,7 @@ def send_sendgrid_notification(summary_results: list,
             email_message = Mail(
                 from_email=from_email,
                 to_emails=to_email,
-                subject='unSkript-ctl Check Run result',
+                subject=subject,
                 html_content=html_message
             )
         elif output_metadata_file:
@@ -355,7 +361,7 @@ def send_sendgrid_notification(summary_results: list,
             email_message = Mail(
                 from_email=from_email,
                 to_emails=to_email,
-                subject='unSkript-ctl Custom Script Run result',
+                subject=subject,
                 html_content=html_message
             )
             target_file_name = None
@@ -562,7 +568,8 @@ def send_smtp_notification(summary_results: list,
                             smtp_user: str,
                             smtp_password: str,
                             to_email: str,
-                            from_email: str):
+                            from_email: str,
+                            subject: str):
     """send_smtp_notification: This function sends the summary result
        in the form of an email for smtp option.
     """
@@ -574,7 +581,7 @@ def send_smtp_notification(summary_results: list,
         msg['From'] = smtp_user
 
     msg['To'] = to_email
-    msg['Subject'] = 'unSkript-ctl Check Run result'
+    msg['Subject'] = subject
     try:
         server = smtplib.SMTP(smtp_host, SMTP_TLS_PORT)
         server.starttls()
