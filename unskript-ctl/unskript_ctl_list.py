@@ -31,12 +31,6 @@ TBL_HDR_FAILED_OBJECTS="\033[1m Failed Objects \033[0m"
 TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 
-# FIXME:
-CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
-CONNECTOR_LIST=["aws", "redis", "postgres", "elasticsearch", "mongodb"]
-
-# GLOBAL
-global UNSKRIPT_GLOBAL
 
 def display_failed_checks():
     """display_failed_checks This function reads the execution_summary.yaml and displays

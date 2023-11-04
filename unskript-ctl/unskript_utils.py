@@ -22,6 +22,29 @@ UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
 UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 
 
+CONNECTOR_LIST = [
+    'aws', 
+    'gcp', 
+    'k8s', 
+    'elasticsearch', 
+    'grafana', 
+    'redis', 
+    'jenkins', 
+    'github', 
+    'netbox', 
+    'nomad', 
+    'jira', 
+    'kafka', 
+    'mongodb', 
+    'mysql', 
+    'postgresql', 
+    'rest', 
+    'slack', 
+    'ssh', 
+    'vault',
+    'salesforce'
+]
+
 # Unskript Global is a singleton class that
 # will replace the Global variable UNSKRIPT_GLOBAL
 # It becomes essential to use this class to keep the spread of 
