@@ -319,8 +319,10 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         for output in outputs:
             r = output.get('text')
             r = output_after_merging_checks(r.split('\n'), ids)
+            print(f'new_output {r}, len_r {len(r)}, ids {ids}, len_ids  {len(ids)}')
             for result in r:
                 if result.get('skip') and result.get('skip') is True:
+                    idx += 1
                     continue
                 payload = result
                 try:
@@ -409,19 +411,22 @@ def output_after_merging_checks(outputs: list, ids: list) -> list:
     outputs = filtered_output
     if UNSKRIPT_GLOBALS.get('uuid_mapping') is None:
         return outputs
-    for index in range(len(outputs)):
+
+    index = 0
+    while index < len(outputs):
         if UNSKRIPT_GLOBALS['uuid_mapping'].get(ids[index]) is None:
-            new_outputs.append(payload)
+            new_outputs.append(outputs[index])
+            index = index+1
         else:
             parent_index = index - 1
             while index < len(outputs):
                 if UNSKRIPT_GLOBALS['uuid_mapping'].get(ids[index]):
-                    payload['skip'] = True
-                    new_outputs.append(payload)
+                    outputs[index]['skip'] = True
+                    new_outputs.append(outputs[index])
                     index = index + 1
                 else:
                     break
-            combined_output = calculate_combined_check_status(new_outputs[parent_index:index])
+            combined_output = calculate_combined_check_status(outputs[parent_index:index])
             # Combined output should be the output of the parent check, so
             # overwrite it.
             print(f'parent_index {parent_index}, index {index}, combined_output {combined_output}')
