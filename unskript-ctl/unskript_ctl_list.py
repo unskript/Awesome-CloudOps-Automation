@@ -122,9 +122,10 @@ def list_runbooks():
     table = [[TBL_HDR_RUNBOOK_FILENAME,  TBL_HDR_RUNBOOK_NAME]]
     for runbook in runbooks:
         contents = None
-        with open(runbook, 'r') as f:
-            contents = f.read()
+
         try:
+            with open(runbook, 'r') as f:
+                contents = f.read()
             if contents:
                 contents = json.loads(contents)
                 if contents.get('metadata') \
