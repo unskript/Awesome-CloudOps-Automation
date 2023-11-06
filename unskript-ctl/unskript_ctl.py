@@ -284,7 +284,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         for output in outputs:
             r = output.get('text')
             r = output_after_merging_checks(r.split('\n'), ids)
-            print(f'new_output {r}, len_r {len(r)}, ids {ids}, len_ids  {len(ids)}')
+            #print(f'new_output {r}, len_r {len(r)}, ids {ids}, len_ids  {len(ids)}')
             for result in r:
                 if result.get('skip') and result.get('skip') is True:
                     idx += 1
@@ -364,7 +364,7 @@ def output_after_merging_checks(outputs: list, ids: list) -> list:
     # Remove empty strings
     filtered_output = []
     for output in outputs:
-        if output == '':
+        if not output:
             continue
         payload = json.loads(output)
         filtered_output.append(payload)
@@ -390,7 +390,7 @@ def output_after_merging_checks(outputs: list, ids: list) -> list:
             combined_output = calculate_combined_check_status(outputs[parent_index:index])
             # Combined output should be the output of the parent check, so
             # overwrite it.
-            print(f'parent_index {parent_index}, index {index}, combined_output {combined_output}')
+            #print(f'parent_index {parent_index}, index {index}, combined_output {combined_output}')
             new_outputs[parent_index] = combined_output
     return new_outputs
 
@@ -603,7 +603,7 @@ def create_checks_for_matrix_argument(checks: list):
                                         UNSKRIPT_GLOBALS["uuid_mapping"][new_uuid] = check["uuid"]
                                         newcheck['uuid'] = new_uuid
                                         newcheck['id'] = str(uuid.uuid4())[:8]
-                                        print(f'Adding duplicate check {new_uuid}, parent_uuid {check.get("uuid")}')
+                                        #print(f'Adding duplicate check {new_uuid}, parent_uuid {check.get("uuid")}')
                                     newcheck['matrixinputline'] = input_json_line.rstrip(',')
                                     checks_list.append(newcheck)
                                     is_first = False
