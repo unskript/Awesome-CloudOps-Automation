@@ -17,13 +17,13 @@ def test_{{ check_function_name }}():
     # credentialsJson will be inserted by the jupyter extension on connector selection from the drop down.
     credentialsJson = """{"credential_type": "CONNECTOR_TYPE_{{ check_type_upper_case }}", "credential_id":"{{ check_type }}creds", "credential_name": "{{ check_type }}creds" }"""
 
-    inputParamsJson = ""
+    inputParamsJson = "{}"
     # Fill inputParamsJson depending upon the arguments you have for the check function.
     # For eg:
     # inputParamsJson = '''
     #            {
-    #                "lifetime_tag": "\\"aws:autoscaling:groupName\\"",
-    #                "region": "\\"us-west-2\\""
+    #                "lifetime_tag": "aws:autoscaling:groupName",
+    #                "region": "us-west-2"
     #            }
     #            '''
     t = Task(Workflow())

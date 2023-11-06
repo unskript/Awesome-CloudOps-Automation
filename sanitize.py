@@ -98,7 +98,9 @@ def check_sanity(ipynbFile: str = '') -> bool:
 
     cells = nb.get("cells")
     for cell in cells:
-
+        cell_name = cell.get('metadata').get('name')
+        if cell_name is None:
+            cell_name = cell.get('metadata').get('title')
         if cell.get('cell_type') == 'markdown':
             continue
 
@@ -133,6 +135,9 @@ def check_sanity(ipynbFile: str = '') -> bool:
         # "task.configure(credentialsJson='''{\"credential_type\": \"" + md.action_type + "\",}''')"
 
         if cell.get('metadata').get('legotype') is None:
+            if cell.get('metadata').get('actionNeedsCredential'):
+                print(f"Failed actionNeedsCredential check for cell '{cell_name}'")
+                rc = False
             continue
 
         action_type = cell.get('metadata').get('legotype').replace("LEGO", "CONNECTOR")
@@ -197,8 +202,13 @@ def sanitize(ipynbFile: str = '') -> bool:
             continue
 
         if cell.get('metadata').get('legotype') is None:
-            print(f"Skipping cell without legotype {cell.get('metadata').get('name')}")
-            new_cells.append(cell)
+            if cell.get('metadata').get('actionNeedsCredential'):
+                cell['metadata']['actionNeedsCredential'] = False
+                cell['metadata']['actionSupportsIteration'] = False
+                cell['metadata']['actionSupportsPoll'] = False
+                new_cells.append(cell)
+            else:
+                print(f"Skipping cell without legotype {cell.get('metadata').get('name')}")
             continue
 
         # Reset InputSchema

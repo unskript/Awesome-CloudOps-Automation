@@ -1,0 +1,15 @@
+{
+  "action_title": "Check the status of K8s CronJob pods",
+  "action_description": "This action checks the status of CronJob pods",
+  "action_type": "LEGO_TYPE_K8S",
+  "action_entry_function": "k8s_check_cronjob_pod_status",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+  "action_is_check": true,
+  "action_next_hop": [
+    ""
+  ],
+  "action_next_hop_parameter_mapping": {},
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}

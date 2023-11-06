@@ -3,24 +3,37 @@
 # All rights reserved.
 #
 
-import pprint
-from typing import Dict
+from typing import Optional, Tuple
 from pydantic import BaseModel, Field
+from tabulate import tabulate
 
 class InputSchema(BaseModel):
-    size_in_bytes: int = Field(
+    size_in_bytes: Optional[int] = Field(
+        500,
         title='Size in Bytes',
         description='Threshold Size of Key in Bytes')
 
 
 def redis_list_large_keys_printer(output):
-    if output is None:
+    status, data = output
+
+    if status:
         print("There are no large keys")
         return
-    pprint.pprint(output)
+    else:
+        flattened_data = []
+        for item in data:
+            for key, value in item.items():
+                flattened_data.append([key.decode(), value])
+
+        headers = ["Key Name", "Key Size (Bytes)"]
+
+        print("Large keys:")
+        print(tabulate(flattened_data, headers=headers, tablefmt="grid"))
 
 
-def redis_list_large_keys(handle, size_in_bytes: int) -> Dict :
+
+def redis_list_large_keys(handle, size_in_bytes: int = 500) -> Tuple :
     """redis_list_large_keys returns deleted stale keys greater than given a threshold time
 
        :type size_in_bytes: int
@@ -29,12 +42,16 @@ def redis_list_large_keys(handle, size_in_bytes: int) -> Dict :
        :rtype: Dict of Large keys 
     """
     try:
-        result = {}
+        result = []
+        large_keys = {}
         keys = handle.keys('*')
         for key in keys:
             value = handle.memory_usage(key)
             if value > int(size_in_bytes):
-                result[key]= value
+                large_keys[key]= value
+                result.append(large_keys)
     except Exception as e:
-        result["error"] = e
-    return result
+        raise e
+    if result:
+        return (False, result)
+    return (True, None)

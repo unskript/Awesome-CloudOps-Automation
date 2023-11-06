@@ -10,8 +10,10 @@
 #
 
 import os
+import json
 import re
 import transaction
+import zlib
 import ZODB
 import ZODB.FileStorage
 from ZODB import DB
@@ -36,19 +38,17 @@ def init_pss_db() -> DB:
         os.mkdir(PSS_DB_DIR)
 
     if not os.path.exists(PSS_DB_PATH):
-        pss = ZODB.FileStorage.FileStorage(PSS_DB_PATH)
+        pss = ZODB.FileStorage.FileStorage(PSS_DB_PATH, pack_keep_old=False)
         db = DB(pss)
 
-        # connection = db.open()
-        # root = connection.root()
         with db.transaction() as connection:
             root = connection.root()
             root['audit_trail'] = {}
-            root['default_credential_id'] = {}
-            root['check_run_trail'] = {}
-            root['current_execution_status'] = {}
+            connection.transaction_manager.commit()
+            connection.close()
             del root
             del connection
+
 
     else:
         db = DB(PSS_DB_PATH)
@@ -75,23 +75,45 @@ def upsert_pss_record(name: str, data: dict, overwrite: bool=False):
        :rtype: None in case of success or Error
     """
     if name in ("", None):
-        raise Exception("Name cannot be Empty")
+        raise ValueError("Name cannot be Empty")
 
     if isinstance(data, dict) is not True:
-        raise Exception(f"Data is expected to be of type Dictionary type, found {type(data)}")
+        raise TypeError(f"Data is expected to be of type Dictionary type, found {type(data)}")
 
-    db = init_pss_db()
+    if not os.path.exists(PSS_DB_PATH):
+        db = init_pss_db()
+    else:
+        db = DB(PSS_DB_PATH)
+
     with db.transaction() as connection: 
         root = connection.root()
         if overwrite:
-            root[name] = data
+            d = json.loads(data)
+            compressed_d = zlib.compress(d.encode('utf-8'))
+            root[name] = json.dumps(compressed_d)
         else:
             d = root[name]
+
+            if isinstance(d, bytes):
+                d = zlib.decompress(d).decode('utf-8')
+
+            if isinstance(d, str):
+                d = json.loads(d)
+            
+
             d.update(data)
-            root[name] = d
+            if isinstance(d, dict):
+                d = json.dumps(d)
+
+            compressed_d = zlib.compress(d.encode('utf-8'))
+            root[name] = compressed_d
+
+        connection.transaction_manager.commit()
+        connection.close()
+
         del root
         del connection 
-
+    
     db.close()
 
 
@@ -125,6 +147,10 @@ def get_pss_record(name: str):
     if data is None:
         print(f"ERROR: No records found by the name {name}")
         return {}
+
+    if isinstance(data, bytes):
+        data = zlib.decompress(data).decode('utf-8')
+        data = json.loads(data)
 
     return data
 
@@ -242,7 +268,7 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
         if connector_name.lower() != 'all' and not re.match(connector_name.lower(), s_connector):
             continue
         if full_snippet is False:
-            list_checks.append([s_connector.capitalize(), d.get('name'), d.get('uuid')])
+            list_checks.append([s_connector.capitalize(), d.get('name'), d.get('metadata').get('action_entry_function')])
         else:
             list_checks.append(d)
 
@@ -252,42 +278,48 @@ def get_checks_by_connector(connector_name: str, full_snippet: bool = False):
     db.close()
     return list_checks
 
-def get_creds_by_connector(connector_type: str):
-    """get_creds_by_connector This function queries ZoDB and returns the
-    credential data in the form of a tuple of (cred_name, cred_id).
+def get_all_check_names():
+    """get_all_check_names This function queries the snippets DB for
+       checks and returns the Names
 
-    :type connector_type: string
-    :param connector_type: Connector Type like CONNECTOR_TYPE_AWS, etc..
-    
-    :rtype: Tuple (cred_name, cred_id)
+       :rtype: List containing names of all check
     """
-    retval = ()
-
-    if connector_type is ('', None):
-        return retval
-
-    db = init_pss_db()
+    try:
+        db = DB(CS_DB_PATH)
+    except Exception as e:
+        raise e
     tm = transaction.TransactionManager()
     connection = db.open(tm)
     root = connection.root()
-    try:
-        creds_dict = root.get('default_credential_id')
-    except Exception:
-        pass
-    if creds_dict is None:
-        pass
-    else:
-        for cred in creds_dict.keys():
-            if cred == connector_type:
-                retval = (creds_dict.get(cred).get('name'), creds_dict.get(cred).get('id'))
-                break
+    cs = root.get('unskript_cs')
+    list_check_names = []
+    if cs is None:
+        raise Exception("Code Snippets Are missing")
+    for s in cs:
+        d = s
+        if d.get('metadata').get('action_is_check') is False:
+            continue
+        list_check_names.append(d.get('metadata').get('action_entry_function'))
+        
+
     tm.commit()
     del root
     connection.close()
     db.close()
+    return list_check_names
 
-    if not retval:
-        retval = (None, None)
+def get_check_by_name(name: str):
+    """get_check_by_name This function utilizes the function get_check_by_connector
+       with `all` filter and finds out the check that matches the name and returns 
+       the code snippet that matches the name.
 
-    return retval
+       :type name: str
+       :param name: Check name 
+
+       :rtype: Returns the Check
+    """
+    all_snippets = get_checks_by_connector('all', True)
+    snippet_list = [x for x in all_snippets if x.get('metadata').get('action_entry_function') == name]
+
+    return snippet_list 
 

@@ -1,0 +1,11 @@
+{
+  "action_title": "Get MongoDB potential write conflicts",
+  "action_description": "This action retrieves potential write conflict metrics from the serverStatus command.",
+  "action_type": "LEGO_TYPE_MONGODB",
+  "action_entry_function": "mongodb_get_write_conflicts",
+  "action_needs_credential": true,
+  "action_output_type": "ACTION_OUTPUT_TYPE_DICT",
+  "action_is_check": false,
+  "action_supports_iteration": true,
+  "action_supports_poll": true
+}

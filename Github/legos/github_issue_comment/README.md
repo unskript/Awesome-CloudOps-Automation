@@ -8,7 +8,7 @@ This Action adds a comment to the desired issue
 
 ## Lego Details
 
-    def github_comment_on_issue(handle, owner:str, repository:str, issue_number:str, issue_comment:str) -> str:
+    def github_issue_comment(handle, owner:str, repository:str, issue_number:str, issue_comment:str) -> str:
 
         handle: Object of type unSkript Github Connector
         owner: String, Username of the GitHub user. Eg: "johnwick"

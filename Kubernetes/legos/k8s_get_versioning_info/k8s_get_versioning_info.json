@@ -1,0 +1,11 @@
+{
+    "action_title": "Get versioning info",
+    "action_description": "This action gets the kubectl, Kubernetes cluster, and Docker version if available.",
+    "action_type": "LEGO_TYPE_K8S",
+    "action_entry_function": "k8s_get_versioning_info",
+    "action_needs_credential": true,
+    "action_supports_poll": true,
+    "action_supports_iteration": true,
+    "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
+    "action_categories": ["CATEGORY_TYPE_K8S", "CATEGORY_TYPE_DEVOPS"]
+}
