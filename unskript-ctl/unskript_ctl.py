@@ -83,7 +83,7 @@ def load_or_create_global_configuration():
                 if config_yaml.get('checks').get('arguments').get('global'):
                     # Handle matrix
                     matrix = config_yaml.get('checks').get('arguments').get('global').get('matrix')
-                    if matrix != None:
+                    if matrix is not None:
                         UNSKRIPT_GLOBALS['matrix'] = matrix
                         UNSKRIPT_GLOBALS['uuid_mapping'] = {}
                     UNSKRIPT_GLOBALS['global'] = config_yaml.get('checks').get('arguments').get('global')
@@ -150,7 +150,7 @@ nbParamsObj = nbparams.NBParams(paramsJson)
     #   duplicated cells to show a uniform view.
     if UNSKRIPT_GLOBALS.get('matrix'):
         for k, v in UNSKRIPT_GLOBALS.get('matrix').items():
-            if v != None:
+            if v is not None:
                 for index, value in enumerate(v):
                     first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
 
@@ -584,7 +584,7 @@ def create_checks_for_matrix_argument(checks: list):
                         duplicate_count = 1
                         if UNSKRIPT_GLOBALS.get('matrix'):
                             matrix_value = UNSKRIPT_GLOBALS.get('matrix').get(key)
-                            if matrix_value != None:
+                            if matrix_value is not None:
                                 duplicate_count += len(matrix_value)
                                 # Duplicate this check len(matrix_argument) times.
                                 # Also, for each check, you need to use a different
