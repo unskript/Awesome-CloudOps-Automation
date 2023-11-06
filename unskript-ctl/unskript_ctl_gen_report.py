@@ -76,8 +76,8 @@ def unskript_ctl_config_read_notification(n_type: str):
         print(f"No Notification found for {n_type}")
         return {}
 
-def send_notification(summary_result_table: list, 
-                      failed_result: dict, 
+def send_notification(summary_result_table: list,
+                      failed_result: dict,
                       output_metadata_file: str = None):
     """send_notification: This function is called by unskript-ctl or
        unctl to send notification of any given result. The requirement is that
@@ -228,17 +228,17 @@ def prepare_to_send_awsses_notification(summary_results: list,
     if not access_key or not secret_key:
         print("ERROR: Cannot send AWS SES Notification without access and/or secret_key")
         return  False
-    
+
     # WE CAN TAKE A TITLE AS WELL, IF WE WANT CUSTOM TITLE IN THE REPORT
     attachment_ = MIMEMultipart('mixed')
-    attachment_['Subject'] = 'unSkript ctl Run Result'
-    
+    attachment_['Subject'] = subject
+
     attachment_ = prepare_combined_email(summary_results=summary_results,
                                          failed_result=failed_result,
                                          output_metadata_file=output_metadata_file,
                                          title=None,
                                          attachment=attachment_)
-    
+
     return do_send_awsses_email(from_email=from_email,
                                 to_email=to_email,
                                 attachment_=attachment_,
@@ -311,21 +311,21 @@ def send_sendgrid_notification(summary_results: list,
     if not from_email or not to_email or not api_key:
         print("ERROR: From Email, To Email and API Key are mandatory parameters to send email notification")
         return False
-    
+
     html_message = ''
-    email_subject = 'unSkript-ctl Check Run result'
+    email_subject = subject
     parent_folder = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')
     target_name = os.path.basename(parent_folder)
     tar_file_name = f"{target_name}" + '.tar.bz2'
     target_file_name = None
     metadata = None
-    try: 
+    try:
         # We can have custom Title here
         html_message += create_email_header(title=None)
         if summary_results and len(summary_results):
             html_message += create_checks_summary_message(summary_results=summary_results,
                                                           failed_result=failed_result)
-            create_temp_files_of_failed_results(failed_result=failed_result)            
+            create_temp_files_of_failed_results(failed_result=failed_result)
         if output_metadata_file:
             html_message += create_script_summary_message(output_metadata_file=output_metadata_file)
             with open(output_metadata_file, 'r') as f:
@@ -339,23 +339,23 @@ def send_sendgrid_notification(summary_results: list,
             output_metadata_file = output_metadata_file.split('/')[-1]
             if create_tarball_archive(tar_file_name=tar_file_name,
                                         output_metadata_file=output_metadata_file,
-                                        parent_folder=parent_folder) is False: 
+                                        parent_folder=parent_folder) is False:
                 raise ValueError("ERROR: Archiving attachments failed!")
             target_file_name = tar_file_name
         else:
             if create_tarball_archive(tar_file_name=tar_file_name,
                                         output_metadata_file=None,
-                                        parent_folder=parent_folder) is False: 
+                                        parent_folder=parent_folder) is False:
                 raise ValueError("ERROR: Archiving attachments failed!")
             target_file_name = tar_file_name
-        
+
         email_message = Mail(
             from_email=from_email,
             to_emails=to_email,
             subject=email_subject,
             html_content=html_message
         )
-        if target_file_name: 
+        if target_file_name:
             email_message = sendgrid_add_email_attachment(email_message=email_message,
                                                         file_to_attach=target_file_name,
                                                         compress=True)
@@ -371,10 +371,10 @@ def send_sendgrid_notification(summary_results: list,
     except Exception as e:
         print(f"ERROR: Unable to send notification as email. {e}")
         return False
-    
+
     return True
 
-def sendgrid_add_email_attachment(email_message, 
+def sendgrid_add_email_attachment(email_message,
                                   file_to_attach: str,
                                   compress: bool = True):
     from sendgrid.helpers.mail import Attachment, FileContent, FileName, FileType
@@ -392,7 +392,7 @@ def sendgrid_add_email_attachment(email_message,
             attachment.file_type = FileType('application/text')
         attachment.disposition = 'attachment'
         email_message.add_attachment(attachment)
-    
+
     return email_message
 
 
@@ -419,7 +419,7 @@ def create_checks_summary_message(summary_results: list,
     message = ''
     if not summary_results or not failed_result:
         return message
-    
+
     if len(summary_results):
         p = f = e = 0
         tr_message = ''
@@ -470,7 +470,7 @@ def create_script_summary_message(output_metadata_file: str):
     if not metadata:
         print(f'ERROR: Metadata is empty for the script. Please check content of {output_metadata_file}')
         raise ValueError("Metadata is empty")
-        
+
     message += f'''
             <br>
             <h3> Custom Script Run Result </h3>
@@ -487,7 +487,7 @@ def create_script_summary_message(output_metadata_file: str):
                 </tr>
             </table>
     '''
-    return message 
+    return message
 
 
 def create_email_attachment(output_metadata_file: str = None):
@@ -542,7 +542,7 @@ def create_temp_files_of_failed_results(failed_result: dict):
     list_of_failed_files = []
     if not failed_result:
         return list_of_failed_files
-    
+
     if failed_result and len(failed_result):
         connectors_list = [x.split(':')[0] for x in failed_result.keys()]
         for connector in connectors_list:
@@ -554,11 +554,11 @@ def create_temp_files_of_failed_results(failed_result: dict):
                         f.write(yaml.dump(f_obj, default_flow_style=False))
             if connector_file not in list_of_failed_files:
                 list_of_failed_files.append(connector_file)
-        
+
     return list_of_failed_files
 
 
-def create_tarball_archive(tar_file_name: str, 
+def create_tarball_archive(tar_file_name: str,
                            output_metadata_file: str,
                            parent_folder: str):
     if not output_metadata_file:
@@ -572,7 +572,7 @@ def create_tarball_archive(tar_file_name: str,
     except Exception as e:
         print(f"ERROR: {e}")
         return False
-    
+
     return True
 
 def send_smtp_notification(summary_results: list,
@@ -603,13 +603,13 @@ def send_smtp_notification(summary_results: list,
     except Exception as e:
         print(e)
         return False
-    
+
     msg = prepare_combined_email(summary_results=summary_results,
                                  failed_result=failed_result,
                                  output_metadata_file=output_metadata_file,
                                  title=None,
                                  attachment=msg)
-    
+
     try:
         server.sendmail(smtp_user, to_email, msg.as_string())
     except Exception as e:
@@ -625,7 +625,7 @@ def prepare_combined_email(summary_results: list,
                            title: str,
                            attachment: MIMEMultipart):
     message = create_email_header(title=title)
-    temp_attachment = msg = None 
+    temp_attachment = msg = None
     if summary_results and len(summary_results):
         message += create_checks_summary_message(summary_results=summary_results,
                                                  failed_result=failed_result)
@@ -635,7 +635,7 @@ def prepare_combined_email(summary_results: list,
         tar_file_name = f"{target_name}" + '.tar.bz2'
         if create_tarball_archive(tar_file_name=tar_file_name,
                                 output_metadata_file=None,
-                                parent_folder=parent_folder) is False: 
+                                parent_folder=parent_folder) is False:
             raise ValueError("ERROR: Archiving attachments failed!")
         target_file_name = tar_file_name
         msg = MIMEMultipart('mixed')
@@ -643,11 +643,11 @@ def prepare_combined_email(summary_results: list,
             part = MIMEApplication(f.read())
             part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
             msg.attach(part)
-        
+
     if output_metadata_file:
         message += create_script_summary_message(output_metadata_file=output_metadata_file)
         temp_attachment = create_email_attachment(output_metadata_file=output_metadata_file)
-        
+
     if failed_result and len(failed_result):
         message += '<br> <ul>' + '\n'
         message += '<h3> DETAILS ABOUT THE FAILED OBJECTS CAN BE FOUND IN THE ATTACHMENTS FOR EACH CONNECTORS </h3>' + '\n'
@@ -658,5 +658,5 @@ def prepare_combined_email(summary_results: list,
         attachment.attach(temp_attachment)
     elif msg:
         attachment.attach(msg)
-    
+
     return attachment
