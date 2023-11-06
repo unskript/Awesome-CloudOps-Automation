@@ -23,7 +23,7 @@ from unskript_utils import bcolors, UNSKRIPT_EXECUTION_DIR
 #)
 UNSKRIPT_CTL_CONFIG_FILE="/etc/unskript/unskript_ctl_config.yaml"
 UNSKRIPT_CTL_BINARY="/usr/local/bin/unskript-ctl.sh"
-UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
+
 
 # Job config related
 JOB_CONFIG_CHECKS_KEY_NAME = "checks"
@@ -39,7 +39,18 @@ CREDENTIAL_CONFIG_SKIP_VALUE_FOR_ARGUMENTS = ["no-verify-certs", "no-verify-ssl"
 GLOBAL_CONFIG_AUDIT_PERIOD_KEY_NAME = "audit_period"
 GLOBAL_DEFAULT_AUDIT_PERIOD = 90
 
+# Checks section related
+CHECKS_ARGUMENTS_KEY_NAME = "arguments"
+CHECKS_GLOBAL_KEY_NAME = "global"
+CHECKS_MATRIX_KEY_NAME = "matrix"
 
+# Config top level keys
+CONFIG_GLOBAL = "global"
+CONFIG_CHECKS = "checks"
+CONFIG_CREDENTIAL = "credential"
+CONFIG_NOTIFICATION = "notification"
+CONFIG_JOBS = "jobs"
+CONFIG_SCHEDULER = "scheduler"
 
 class Job():
     def __init__(
@@ -127,7 +138,7 @@ class ConfigParser():
         print('###################################')
         print(f'{bcolors.HEADER}Processing global section{bcolors.ENDC}')
         print('###################################')
-        config = self.parsed_config.get('global')
+        config = self.parsed_config.get(CONFIG_GLOBAL)
         if config is None:
             print(f"{bcolors.WARNING}Global: Nothing to configure credential with, found empty creds data{bcolors.ENDC}")
             return
@@ -137,6 +148,31 @@ class ConfigParser():
         print(f'Global: audit period {audit_period} days')
         self.audit_period = audit_period
 
+    def parse_checks(self):
+        """parse_checks: This function parses the checks section of the config.
+        """
+        print('###################################')
+        print(f'{bcolors.HEADER}Processing checks section{bcolors.ENDC}')
+        print('###################################')
+        config = self.parsed_config.get(CONFIG_CHECKS)
+        if config is None:
+            print(f"{bcolors.WARNING}Checks: No checks config{bcolors.ENDC}")
+            return
+        arguments = config.get(CHECKS_ARGUMENTS_KEY_NAME)
+        if arguments is None:
+            print(f"{bcolors.WARNING}Checks: No arguments config{bcolors.ENDC}")
+            return
+        global_args = arguments.get(CHECKS_GLOBAL_KEY_NAME)
+        if global_args is None:
+            print(f"{bcolors.WARNING}Checks: No global config{bcolors.ENDC}")
+            return
+        # Ensure we atmost have ONLY one matrix argument
+        matrix_args = global_args.get(CHECKS_MATRIX_KEY_NAME)
+        if matrix_args is None:
+            return
+        if len(matrix_args) > 1:
+            print(f'{bcolors.FAIL} Only one matrix argument supported {bcolors.ENDC}')
+            return
 
     def configure_credential(self):
         """configure_credential: This function is used to parse through the creds_dict and
@@ -145,7 +181,7 @@ class ConfigParser():
         print('###################################')
         print(f'{bcolors.HEADER}Processing credential section{bcolors.ENDC}')
         print('###################################')
-        creds_dict = self.parsed_config.get('credential')
+        creds_dict = self.parsed_config.get(CONFIG_CREDENTIAL)
         if creds_dict is None:
             print(f"{bcolors.WARNING}Credential: Nothing to configure credential with, found empty creds data{bcolors.ENDC}")
             return
@@ -185,7 +221,7 @@ class ConfigParser():
         print('###################################')
         print(f'{bcolors.HEADER}Processing scheduler section{bcolors.ENDC}')
         print('###################################')
-        config = self.parsed_config.get('scheduler')
+        config = self.parsed_config.get(CONFIG_SCHEDULER)
         if config is None:
             print(f"{bcolors.WARNING}Scheduler: No scheduler configuration found{bcolors.ENDC}")
             return
@@ -248,7 +284,7 @@ class ConfigParser():
         print('###################################')
         print(f'{bcolors.HEADER}Processing jobs section{bcolors.ENDC}')
         print('###################################')
-        config = self.parsed_config.get('jobs')
+        config = self.parsed_config.get(CONFIG_JOBS)
         if config is None:
             print(f'{bcolors.WARNING}Jobs: No jobs config found{bcolors.ENDC}')
             return
@@ -299,6 +335,7 @@ def main():
     config_parser.parse_config_yaml()
 
     config_parser.parse_global()
+    config_parser.parse_checks()
     config_parser.configure_credential()
     config_parser.parse_jobs()
     config_parser.configure_schedule()
