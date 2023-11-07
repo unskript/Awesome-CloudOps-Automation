@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 _unskript-client-completion() {
     local cur prev opts
     COMPREPLY=()
@@ -24,139 +23,234 @@ _unskript-client-completion() {
         fi
     fi
     # Define options with each option on a separate line using newline characters
-    opts="--list-runbooks --run-runbook --run-checks --display-failed-checks --list-checks --show-audit-trail --display-failed-logs --create-credentials --credential-list --start-debug --stop-debug --run-script"
+    opts="--run --list --show --debug --create-credential"
 
     # Completion logic
     case "${prev}" in
-        -rr|--run-runbook)
+        -r|--run)
             # Provide completion suggestions for runbook filenames
-            COMPREPLY=( $(compgen -f -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--script --runbook --check" -- "${cur}" -o nospace) )
             return 0
             ;;
 
-        --run-script)
+        -l|--list)
             # Provide completion suggestions for running script
-            COMPREPLY=( $(compgen -f -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--runbooks --failed-checks --checks --credential" -- "${cur}" -o nospace) )
             return 0
             ;;
 
-        -rc|--run-checks)
+        -s|--show)
             case ${prev} in
-                -rc|--run-checks)
-                    case ${cur} in
-                        --check)
-                            cur=${cur#--check}
-                            opt2="$(cat /tmp/checknames.txt)"
-                            COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
-                            ;;
-                        *)
-                            COMPREPLY=( $(compgen -W "--all  --type  --failed  --check" -- "${cur}" -o nospace) )
-                            ;;
-                    esac
-                    return 0
+                --audit-trail)
+                    COMPREPLY=( $(compgen -W "--all --type --execution-id" -- "${cur}" -o nospace) )
+                    ;;
+                --failed-logs)
+                    COMPREPLY=( $(compgen -W "--execution-id <EXECUTION_ID>" -- "${cur}" -o nospace) )
                     ;;
                 *)
-                    COMPREPLY=( $(compgen -W "${opts}" "${cur}" -o nospace) )
+                    COMPREPLY=( $(compgen -W "--audit-trail --failed-logs" -- "${cur}" -o nospace) )
                     ;;
-
-            esac
+            esac 
+            return 0
+            ;;
+        -d|--debug)
+            COMPREPLY=( $(compgen -W "--start --stop" -- "${cur}" -o nospace) )    
             return 0
             ;;
 
-        -lc|--list-checks)
-            # Provide completion suggestions for list-checks options
-            COMPREPLY=( $(compgen -W "--all   --type" -- "${cur}" -o nospace) )
-            return 0
-            ;;
-
-        --credential-list)
-            # Provide completion suggestions for list-checks options
-            COMPREPLY=()
-            return 0
-            ;;
-
-        -sa|--show-audit-trail)
-            # Provide completion suggestions for show-audit-trail options
-            COMPREPLY=( $(compgen -W "--all   --type   --execution_id" -- "${cur}" -o nospace) )
-            return 0
-            ;;
-
-        -dl|--display-failed-logs)
-            # Provide completion suggestions for display-failed-logs options
-            COMPREPLY=( $(compgen -W "--execution_id" -- "${cur}" -o nospace) )
-            return 0
-            ;;
-
-        -df|--display-failed-checks)
-            # Provide completion suggestions for display-failed-logs options
-            COMPREPLY=( $(compgen -W "--all --type" -- "${cur}" -o nospace) )
-            return 0
-            ;;
-
-        -cc|--create-credentials)
-            # Provide completion suggestions for create-credentials options
-            COMPREPLY=( $(compgen -W "--type" -- "${cur}" -o nospace) )
-            return 0
-            ;;
-
-        *)  # Default: Provide completion suggestions for global options
-            _cmd="${COMP_WORDS[COMP_CWORD-2]}"
-            if [ "${prev}" = "--check" ];
+        *)  # Default: Provide completion suggestions for global options             
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --check --name "* )\
+                 || (" ${COMP_WORDS[*]} " == *"--run --check --name "* ) \
+                 || (" ${COMP_WORDS[*]} " =~ *"--run [^[:space:]]+ --check --name "* ) \
+                 || (" ${COMP_WORDS[*]} " =~ *"-run  [^[:space:]]+ --check --name "* ) \
+                 || (" ${COMP_WORDS[*]} " == *"--check --name "* ) ]];
             then
                 cur=${cur#--check}
+                cur=${cur#--name}
                 opt2="$(grep -E "^${cur}" /tmp/checknames.txt)"
                 COMPREPLY=( $(compgen -W "${opt2}" -o nospace) )
                 compopt -o nospace
-            elif [ "${_cmd}" = "--check" ];
+                return 0
+            fi
+            if [[ (" ${COMP_WORDS[*]} " =~ *"--check --name [^[:space:]]+ "* )  \
+                   || (" ${COMP_WORDS[*]} " == *"--check --all"* )  \
+                   || (" ${COMP_WORDS[*]} " == *"--check --type \ [^[:space:]]+ "* )  \
+                   || (" ${COMP_WORDS[*]} " == *"--check --type \ [^[:space:]]+ "* ) ]];
             then
-                COMPREPLY=( $(compgen -W "--report" -o nospace) )
-            elif [ "${cur}" = "--report" ];
-            then
-                COMPREPLY=()
-            elif [[ "${_cmd}" = '-cc' || "${_cmd}" = '--create-credentials' ]];
-            then
-                COMPREPLY+=("-k8s <KUBECONFIG_FILE_PATH>")
-            elif [[ "${_cmd}" = '-rc' || "${_cmd}" = '--run-checks' || "${_cmd}" = '--list-checks' || "${_cmd}" = '-lc'  || "${_cmd}" = '-df' || "${_cmd}" = '--display-failed-checks' ]];
-            then
-                if [ "${prev}" = "--type" ];
-                then
-                    COMPREPLY=( $(compgen -W "aws k8s postgres mongodb elasticsearch vault ssh keycloak github redis" -o nospace) )
-                elif [[ "${prev}" = "--all" || "${prev}" = "--failed" ]];
-                then
-                    if [[ "${_cmd}" != "-df" && "${_cmd}" != "--display-failed-checks" ]];
-                    then
-                        COMPREPLY+=('--report')
-                    fi
-                fi
-            elif [[ "${_cmd}" = "--type" && "${COMP_WORDS[COMP_CWORD-3]}" = '-rc' || "${COMP_WORDS[COMP_CWORD-3]}" = '--run-checks' ]];
-            then
-                for item in "${connector_list[@]}";
-                do
-                    if [ "$item" == "${prev}" ];
-                    then
-                        COMPREPLY+=("--report")
-                        break
-                    fi
-                done
-            elif [[ "${_cmd}" = '-sa' || "${_cmd}" = '--show-audit-trail' ]];
-            then
-                if [ "${prev}" = '--type' ];
-                then
-                    COMPREPLY=( $(compgen -W "aws k8s postgres mongodb elasticsearch vault ssh keycloak github redis" -o nospace) )
-                elif [ "${prev}" = '--execution_id' ];
-                then
-                    COMPREPLY=( $(compgen -W "<EXECUTION_ID>" -o nospace) )
-                fi
-            else
-                if [ "${#COMP_WORDS[@]}" != "2" ];
-                then
-                    return 0
-                fi
-                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}" -o nospace) )
+                COMPREPLY=( $(compgen -W "--script SCRIPT_NAME" -- "${cur}" -o nospace) )
+                return 0
             fi
 
-        return 0
-        ;;
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --check --type "* )  \
+                  || (" ${COMP_WORDS[*]} " == *"--run --check --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"-l --checks --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"--list --checks --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"-l --failed-checks --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"--list --failed-checks --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"-s --audit-trail --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"--show --audit-trail --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"--check --type "* ) \
+                  ]];
+
+            then
+                COMPREPLY=( $(compgen -W "aws k8s postgres mongodb elasticsearch vault ssh keycloak redis" -o nospace) )
+                return 0
+            fi
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --check --all "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run --check --all "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"--check --all "* ) \
+                  && (" ${COMP_WORDS[*]} " != *"--run --check --all --report"* ) ]];
+            then
+                COMPREPLY=( $(compgen -W "--script SCRIPT_NAME --report" -o nospace) )
+                return 0
+            fi
+            if [[ (" ${COMP_WORDS[*]} " == *"-r [^[:space:]]+ --check "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run [^[:space:]]+ --check "*) ]];
+            then
+                COMPREPLY=( $(compgen -W "--all --type --name" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-l --failed-checks --all"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--list --failed-checks --all"*) \
+                  || (" ${COMP_WORDS[*]} " == *"-l --checks --all"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--list --checks --all"*) \
+                  || (" ${COMP_WORDS[*]} " == *"-s --audit-trail --all"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--show --audit-trail --all"*) \
+                  ]];
+            then
+                return 0
+            fi
+
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-l --failed-checks "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--list --failed-checks "*)]];
+            then
+                COMPREPLY=( $(compgen -W "--all --type" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-l --checks "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--list --checks "*)]];
+            then
+                COMPREPLY=( $(compgen -W "--all --type" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+           
+            if [[ (" ${COMP_WORDS[*]} " == *"-s --audit-trail --execution_id"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--show --audit-trail --execution_id"*) \
+                  && (" ${COMP_WORDS[*]} " != *"--show --audit-trail --execution_id EXECUTION_ID"*) \
+                  && (" ${COMP_WORDS[*]} " != *"--show --audit-trail --execution_id EXECUTION_ID"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "EXECUTION_ID" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-s --failed-logs"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--show --failed-logs "*) ]];
+            then
+                COMPREPLY=( $(compgen -W "--execution_id EXECUTION_ID" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-s --audit-trail "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--show --audit-trail "*)]];
+            then
+                COMPREPLY=( $(compgen -W "--all --type --execution_id" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --runbook "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run --runbook "*) \
+                  && (" ${COMP_WORDS[*]} " != *"--run --runbook RUNBOOK"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "RUNBOOK" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --script "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run --script "*) \
+                  && (" ${COMP_WORDS[*]} " != *"--run --script SCRIPT_FILE"*) \
+                  && (" ${COMP_WORDS[*]} " != *"-r --script SCRIPT_FILE"*) \
+                  && (" ${COMP_WORDS[*]} " != *"--check "*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "SCRIPT_FILE" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " =~ *"-r --script  [^[:space:]]+"*) \
+                  || (" ${COMP_WORDS[*]} " =~ *"--run --script  [^[:space:]]+"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "--check" -- "${cur}" -o nospace) ) 
+                echo "D1"
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --script \ [^[:space:]]+ --check"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run --script \ [^[:space:]]+ --check"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "--type --all --name" -- "${cur}" -o nospace) ) 
+                echo "D2"
+                return 0
+            fi
+
+
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --check --all --report"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run --check --all --report "*)]];
+            then
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-d --start"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--debug --start "*) \
+                  && (" ${COMP_WORDS[*]} " != *"--debug --start --config OVPNFILE"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "--config OVPNFILE" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-d --stop"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--debug --stop "*) \
+                  ]];
+            then
+                return 0
+            fi
+
+            if [[  " ${COMP_WORDS[*]} " == *"--create-credential"* ]];
+            then
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"--run"* ) \
+                || (" ${COMP_WORDS[*]} " == *"-r"* ) \
+                && ( "${COMP_WORDS[*]} " != *"--check"* ) \
+                && (" ${COMP_WORDS[*]} " == *"--script \ [^[:space:]]+"* )]];
+            then
+                if [[ " ${COMP_WORDS[*]} " == *"--check"* ]];
+                then 
+                    COMPREPLY=( $(compgen -W "--all --type --name" -- "${cur}" -o nospace) )
+                else 
+                    COMPREPLY=( $(compgen -W "--check" -- "${cur}" -o nospace) )
+                fi
+                return 0
+            fi
+
+            if [ "${#COMP_WORDS[@]}" != "1" ];
+            then 
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}" -o nospace) )
+                return 0
+            fi
+
+            return 0
+            ;;
     esac
 }
 

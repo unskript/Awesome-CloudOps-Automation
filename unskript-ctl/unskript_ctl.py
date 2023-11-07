@@ -1656,6 +1656,9 @@ if __name__ == "__main__":
                         nargs=REMAINDER,
                         help='Create Credential [-creds-type creds_file_path]')
 
+    parser.add_argument('--save-check-names',
+                        type=str,
+                        help=SUPPRESS)
     args = parser.parse_args()
 
     if len(sys.argv) <= 2:
@@ -1675,5 +1678,7 @@ if __name__ == "__main__":
             display_creds_ui()
         else:
             parse_creds(args.create_credential)
+    elif args.save_check_names not in ('', None):
+        save_check_names(args.save_check_names)
     else:
         parser.print_help()
