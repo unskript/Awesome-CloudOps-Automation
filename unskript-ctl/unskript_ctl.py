@@ -1446,7 +1446,7 @@ def run_script(script:list[str]):
     - Stores the output of the script in a file
     - Creates a json for the run, containing some metadata about the script.
     """
-    parser = ArgumentParser(description='--run-script')
+    parser = ArgumentParser(description='--script')
     parser.add_argument('-r',
                         '--run',
                         required=True,
@@ -1477,17 +1477,17 @@ def run_script(script:list[str]):
         sys.exit(0)
 
     # Do the basic sanity check like file exists and has required permission
-    if not os.path.exists(script[0]):
-        print(f'''
-            {bcolors.FAIL}{script[0]} does not exist. Please ensure that you
-            provide the full path. {bcolors.ENDC}
-            ''')
-        return
+    #if not os.path.exists(script[0]):
+    #    print(f'''
+    #        {bcolors.FAIL}{script[0]} does not exist. Please ensure that you
+    #        provide the full path. {bcolors.ENDC}
+    #        ''')
+    #    return
 
-    accessmode = os.F_OK | os.X_OK
-    if not os.access(script[0], accessmode):
-        print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
-        return
+    #accessmode = os.F_OK | os.X_OK
+    #if not os.access(script[0], accessmode):
+    #    print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
+    #    return
 
     if not UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
         # Use the first command as the prefix for the file name.
@@ -1518,6 +1518,7 @@ def run_script(script:list[str]):
             result = subprocess.run(script,
                                     check=True,
                                     env=current_env,
+                                    shell=True,
                                     stdout=f,
                                     stderr=f)
     except Exception as e:
