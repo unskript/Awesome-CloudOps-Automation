@@ -59,7 +59,10 @@ _unskript-client-completion() {
             ;;
 
         *)  # Default: Provide completion suggestions for global options             
-            if [[ " ${COMP_WORDS[*]} " == *"-r --check --name "*  || " ${COMP_WORDS[*]} " == *"--run --check --name "* ]];
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --check --name "* )\
+                 || (" ${COMP_WORDS[*]} " == *"--run --check --name "* ) \
+                 || (" ${COMP_WORDS[*]} " == *"--check --name "* ) \
+                 && (" ${COMP_WORDS[*]} " =~ *"--check --name  [^[:space:]]+"* ) ]];
             then
                 cur=${cur#--check}
                 cur=${cur#--name}
@@ -68,6 +71,15 @@ _unskript-client-completion() {
                 compopt -o nospace
                 return 0
             fi
+            if [[ (" ${COMP_WORDS[*]} " =~ *"--check --name [^[:space:]]+ "* )  \
+                   || (" ${COMP_WORDS[*]} " == *"--check --all"* )  \
+                   || (" ${COMP_WORDS[*]} " == *"--check --type \ [^[:space:]]+ "* )  \
+                   || (" ${COMP_WORDS[*]} " == *"--check --type \ [^[:space:]]+ "* ) ]];
+            then
+                COMPREPLY=( $(compgen -W "--script SCRIPT_NAME" -- "${cur}" -o nospace) )
+                return 0
+            fi
+
             if [[ (" ${COMP_WORDS[*]} " == *"-r --check --type "* )  \
                   || (" ${COMP_WORDS[*]} " == *"--run --check --type "* ) \
                   || (" ${COMP_WORDS[*]} " == *"-l --checks --type "* ) \
@@ -76,6 +88,7 @@ _unskript-client-completion() {
                   || (" ${COMP_WORDS[*]} " == *"--list --failed-checks --type "* ) \
                   || (" ${COMP_WORDS[*]} " == *"-s --audit-trail --type "* ) \
                   || (" ${COMP_WORDS[*]} " == *"--show --audit-trail --type "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"--check --type "* ) \
                   ]];
 
             then
@@ -84,9 +97,10 @@ _unskript-client-completion() {
             fi
             if [[ (" ${COMP_WORDS[*]} " == *"-r --check --all "*) \
                   || (" ${COMP_WORDS[*]} " == *"--run --check --all "* ) \
+                  || (" ${COMP_WORDS[*]} " == *"--check --all "* ) \
                   && (" ${COMP_WORDS[*]} " != *"--run --check --all --report"* ) ]];
             then
-                COMPREPLY=( $(compgen -W "--report" -o nospace) )
+                COMPREPLY=( $(compgen -W "--script SCRIPT_NAME --report" -o nospace) )
                 return 0
             fi
             if [[ (" ${COMP_WORDS[*]} " == *"-r --check "*) \
@@ -159,11 +173,30 @@ _unskript-client-completion() {
             if [[ (" ${COMP_WORDS[*]} " == *"-r --script "*) \
                   || (" ${COMP_WORDS[*]} " == *"--run --script "*) \
                   && (" ${COMP_WORDS[*]} " != *"--run --script SCRIPT_FILE"*) \
+                  && (" ${COMP_WORDS[*]} " != *"-r --script SCRIPT_FILE"*) \
                   ]];
             then
                 COMPREPLY=( $(compgen -W "SCRIPT_FILE" -- "${cur}" -o nospace) ) 
                 return 0
             fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --script \ [^[:space:]]+"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run --script \ [^[:space:]]+"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "--check" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " == *"-r --script \ [^[:space:]]+ --check"*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run --script \ [^[:space:]]+ --check"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "--type --all --name" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+
 
             if [[ (" ${COMP_WORDS[*]} " == *"-r --check --all --report"*) \
                   || (" ${COMP_WORDS[*]} " == *"--run --check --all --report "*)]];
@@ -192,6 +225,14 @@ _unskript-client-completion() {
                 return 0
             fi
 
+            if [[ (" ${COMP_WORDS[*]} " == *"--run"* ) \
+                || (" ${COMP_WORDS[*]} " == *"-r"* ) \
+                && ( "${COMP_WORDS[*]} " == *"--check"* ) \
+                && (" ${COMP_WORDS[*]} " == *"--script \ [^[:space:]]+"* )]];
+            then
+                COMPREPLY=( $(compgen -W "--all --type --name" -- "${cur}" -o nospace) )
+                return 0
+            fi
 
             if [ "${#COMP_WORDS[@]}" != "1" ];
             then 
