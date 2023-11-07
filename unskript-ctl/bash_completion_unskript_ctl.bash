@@ -61,8 +61,9 @@ _unskript-client-completion() {
         *)  # Default: Provide completion suggestions for global options             
             if [[ (" ${COMP_WORDS[*]} " == *"-r --check --name "* )\
                  || (" ${COMP_WORDS[*]} " == *"--run --check --name "* ) \
-                 || (" ${COMP_WORDS[*]} " == *"--check --name "* ) \
-                 && (" ${COMP_WORDS[*]} " =~ *"--check --name  [^[:space:]]+"* ) ]];
+                 || (" ${COMP_WORDS[*]} " =~ *"--run [^[:space:]]+ --check --name "* ) \
+                 || (" ${COMP_WORDS[*]} " =~ *"-run  [^[:space:]]+ --check --name "* ) \
+                 || (" ${COMP_WORDS[*]} " == *"--check --name "* ) ]];
             then
                 cur=${cur#--check}
                 cur=${cur#--name}
@@ -174,6 +175,7 @@ _unskript-client-completion() {
                   || (" ${COMP_WORDS[*]} " == *"--run --script "*) \
                   && (" ${COMP_WORDS[*]} " != *"--run --script SCRIPT_FILE"*) \
                   && (" ${COMP_WORDS[*]} " != *"-r --script SCRIPT_FILE"*) \
+                  && (" ${COMP_WORDS[*]} " != *"--check "*) \
                   ]];
             then
                 COMPREPLY=( $(compgen -W "SCRIPT_FILE" -- "${cur}" -o nospace) ) 
