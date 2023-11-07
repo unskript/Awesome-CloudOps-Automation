@@ -104,8 +104,8 @@ _unskript-client-completion() {
                 COMPREPLY=( $(compgen -W "--script SCRIPT_NAME --report" -o nospace) )
                 return 0
             fi
-            if [[ (" ${COMP_WORDS[*]} " == *"-r --check "*) \
-                  || (" ${COMP_WORDS[*]} " == *"--run --check "*) ]];
+            if [[ (" ${COMP_WORDS[*]} " == *"-r [^[:space:]]+ --check "*) \
+                  || (" ${COMP_WORDS[*]} " == *"--run [^[:space:]]+ --check "*) ]];
             then
                 COMPREPLY=( $(compgen -W "--all --type --name" -- "${cur}" -o nospace) ) 
                 return 0
@@ -182,11 +182,12 @@ _unskript-client-completion() {
                 return 0
             fi
 
-            if [[ (" ${COMP_WORDS[*]} " == *"-r --script \ [^[:space:]]+"*) \
-                  || (" ${COMP_WORDS[*]} " == *"--run --script \ [^[:space:]]+"*) \
+            if [[ (" ${COMP_WORDS[*]} " =~ *"-r --script  [^[:space:]]+"*) \
+                  || (" ${COMP_WORDS[*]} " =~ *"--run --script  [^[:space:]]+"*) \
                   ]];
             then
                 COMPREPLY=( $(compgen -W "--check" -- "${cur}" -o nospace) ) 
+                echo "D1"
                 return 0
             fi
 
@@ -195,6 +196,7 @@ _unskript-client-completion() {
                   ]];
             then
                 COMPREPLY=( $(compgen -W "--type --all --name" -- "${cur}" -o nospace) ) 
+                echo "D2"
                 return 0
             fi
 
@@ -229,10 +231,15 @@ _unskript-client-completion() {
 
             if [[ (" ${COMP_WORDS[*]} " == *"--run"* ) \
                 || (" ${COMP_WORDS[*]} " == *"-r"* ) \
-                && ( "${COMP_WORDS[*]} " == *"--check"* ) \
+                && ( "${COMP_WORDS[*]} " != *"--check"* ) \
                 && (" ${COMP_WORDS[*]} " == *"--script \ [^[:space:]]+"* )]];
             then
-                COMPREPLY=( $(compgen -W "--all --type --name" -- "${cur}" -o nospace) )
+                if [[ " ${COMP_WORDS[*]} " == *"--check"* ]];
+                then 
+                    COMPREPLY=( $(compgen -W "--all --type --name" -- "${cur}" -o nospace) )
+                else 
+                    COMPREPLY=( $(compgen -W "--check" -- "${cur}" -o nospace) )
+                fi
                 return 0
             fi
 
