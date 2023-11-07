@@ -71,9 +71,29 @@ class Job():
     def parse(self):
         cmds = []
         notify = '--report' if self.notify is True else ''
-        #TBD: Add support for custom_scripts
+        # Today, we dont support
+        # --check --name <> --check --type k8s --script
+        # So, if both check names and types are configured, we will split it
+        # into 2 commands.
+        # We will combine script with --types and make the --name as separate
+        # command.
+
+        combine_check_types_and_script = False
+        combine_check_names_and_script = False
+        if self.checks is not None and len(self.checks) != 0 and self.custom_scripts is not None and len(self.custom_scripts) != 0:
+            combine_check_names_and_script = True
+        if self.connectors is not None and len(self.connectors) != 0 and self.custom_scripts is not None and len(self.custom_scripts) != 0:
+            combine_check_names_and_script = False
+            combine_check_types_and_script = True
+
+        # full_command will contain the full command if both --check and --script
+        # are specified.
+        full_command = None
         if self.checks is not None and len(self.checks) != 0:
-            cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --name {self.checks[0]} {notify}')
+            if combine_check_names_and_script:
+                full_command = f'{UNSKRIPT_CTL_BINARY} -r --check --name {self.checks[0]}'
+            else:
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --name {self.checks[0]} {notify}')
             print(f'Job: {self.job_name} contains check: {self.checks[0]}')
 
         if self.connectors is not None and len(self.connectors) != 0:
@@ -81,7 +101,10 @@ class Job():
             # unskript-ctl.sh -rc --types aws,k8s
             connector_types_string = ','.join(self.connectors)
             print(f'Job: {self.job_name} contains connector types: {connector_types_string}')
-            cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --type {connector_types_string} {notify}')
+            if combine_check_types_and_script:
+                full_command = f'{UNSKRIPT_CTL_BINARY} -r --check --type {connector_types_string}'
+            else:
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --type {connector_types_string} {notify}')
 
         accessmode = os.F_OK | os.X_OK
         if self.custom_scripts is not None and len(self.custom_scripts) != 0:
@@ -102,7 +125,14 @@ class Job():
             if filtered_scripts:
                 combined_script = ';'.join(filtered_scripts)
                 print(f'Job: {self.job_name} contains custom script: {combined_script}')
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --script "{combined_script}" {notify}')
+                if combine_check_types_and_script or combine_check_names_and_script:
+                    full_command += f' --script "{combined_script}" {notify}'
+                else:
+                    cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --script "{combined_script}" {notify}')
+
+        if full_command is not None:
+            cmds.append(full_command)
+
         self.cmds = cmds
 
 class ConfigParser():
