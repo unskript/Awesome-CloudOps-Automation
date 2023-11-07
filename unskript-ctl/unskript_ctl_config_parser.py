@@ -73,7 +73,7 @@ class Job():
         notify = '--report' if self.notify is True else ''
         #TBD: Add support for custom_scripts
         if self.checks is not None and len(self.checks) != 0:
-            cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --check {self.checks[0]} {notify}')
+            cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --name {self.checks[0]} {notify}')
             print(f'Job: {self.job_name} contains check: {self.checks[0]}')
 
         if self.connectors is not None and len(self.connectors) != 0:
@@ -81,26 +81,28 @@ class Job():
             # unskript-ctl.sh -rc --types aws,k8s
             connector_types_string = ','.join(self.connectors)
             print(f'Job: {self.job_name} contains connector types: {connector_types_string}')
-            cmds.append(f'{UNSKRIPT_CTL_BINARY} -rc --type {connector_types_string} {notify}')
+            cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --type {connector_types_string} {notify}')
 
         accessmode = os.F_OK | os.X_OK
         if self.custom_scripts is not None and len(self.custom_scripts) != 0:
             # Do basic checks, like the binary exists, permission is fine.
             filtered_scripts = []
-            for script in self.custom_scripts:
-                if not os.path.exists(script[0]):
-                    print(f'''{bcolors.FAIL}{script[0]} does not exist. Please ensure that you
-                         provide the full path. {bcolors.ENDC}
-                        ''')
-                    continue
-                if not os.access(script[0], accessmode):
-                    print(f'{bcolors.FAIL}{script[0]} is not executable. {bcolors.ENDC}')
-                    continue
-                filtered_scripts.append(script)
+            filtered_scripts = self.custom_scripts
+            #for script in self.custom_scripts:
+            #    command = script.split(' ')
+            #    if not os.path.exists(command[0]):
+            #        print(f'''{bcolors.FAIL}{command[0]} does not exist. Please ensure that you
+            #             provide the full path. {bcolors.ENDC}
+            #            ''')
+            #        continue
+            #    if not os.access(command, accessmode):
+            #        print(f'{bcolors.FAIL}{command} is not executable. {bcolors.ENDC}')
+            #        continue
+            #    filtered_scripts.append(script)
             if filtered_scripts:
                 combined_script = ';'.join(filtered_scripts)
                 print(f'Job: {self.job_name} contains custom script: {combined_script}')
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} --run-script {notify} --script {combined_script}')
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --script "{combined_script}" {notify}')
         self.cmds = cmds
 
 class ConfigParser():
