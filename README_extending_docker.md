@@ -191,6 +191,23 @@ You can specify the values for the arguments that are used in the Checks in the 
 
 > Here namespace is the argument used in the checks and "awesome-ops" is the value assigned to that argument.
 
+#### Multiple values support
+You can specify multiple values for an argument, using the keyword **matrix**. For eg:
+```
+checks:
+  # Arguments common to all checks, like region, namespace, etc.
+  arguments:
+    global:
+      matrix:
+       namespace: [n1, n2]
+```
+
+The above config makes unskript-ctl run for 2 values of namespace.
+---
+**NOTE**
+
+We support exactly ONE argument of type **matrix**.
+---
 
 ### Creating a schedule for checks to run periodically
 
@@ -224,7 +241,7 @@ For email, we support 3 providers:
 
 Once configured, you are all set to receive the report whenever check is run with `--report` option
 ```
-unskript-ctl.sh -rc --type k8s, aws, postgresql --report
+unskript-ctl.sh -r --check --type k8s, aws, postgresql --report
 ```
 
 Here, the checks for all three connectors, k8s, aws and postgresql are run and the result is sent via slack  or email to the recipient.
