@@ -203,11 +203,8 @@ checks:
 ```
 
 The above config makes unskript-ctl run for 2 values of namespace.
----
-**NOTE**
 
-We support exactly ONE argument of type **matrix**.
----
+**NOTE**: We support exactly ONE argument of type **matrix**.
 
 ### Creating a schedule for checks to run periodically
 
