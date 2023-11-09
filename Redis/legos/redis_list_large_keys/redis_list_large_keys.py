@@ -43,13 +43,12 @@ def redis_list_large_keys(handle, size_in_bytes: int = 500) -> Tuple :
     """
     try:
         result = []
-        large_keys = {}
         keys = handle.keys('*')
         for key in keys:
             value = handle.memory_usage(key)
             if value > int(size_in_bytes):
-                large_keys[key]= value
-                result.append(large_keys)
+                large_key = {key.decode('utf-8'): value}
+                result.append(large_key)
     except Exception as e:
         raise e
     if result:
