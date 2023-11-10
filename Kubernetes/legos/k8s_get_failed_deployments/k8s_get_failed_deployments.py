@@ -2,10 +2,9 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
+import json
 from typing import Tuple
 from pydantic import BaseModel, Field
-from kubernetes.client.rest import ApiException
-import json
 
 
 class InputSchema(BaseModel):
@@ -44,7 +43,7 @@ def k8s_get_failed_deployments(handle, namespace: str = '') -> Tuple:
     if response is None:
         print(f"Error while executing command ({kubectl_command}) (empty response)")
     if response.stderr:
-        raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr}")
+        raise Exception(f"Error occurred while executing command {kubectl_command} {response.stderr}")
 
     result = []
     try:

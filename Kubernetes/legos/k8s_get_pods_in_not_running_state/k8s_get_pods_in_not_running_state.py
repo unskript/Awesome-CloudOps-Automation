@@ -4,7 +4,6 @@
 #
 from typing import Tuple
 from pydantic import BaseModel, Field
-from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -32,7 +31,7 @@ def k8s_get_pods_in_not_running_state(handle, namespace: str = '') -> Tuple:
        :rtype: Tuple Result in tuple format.  
     """
     if handle.client_side_validation is not True:
-        raise ApiException(f"K8S Connector is invalid {handle}")
+        raise Exception(f"K8S Connector is invalid {handle}")
 
     if not namespace:
         kubectl_command =("kubectl get pods --all-namespaces --field-selector=status.phase!=Running"
@@ -43,7 +42,7 @@ def k8s_get_pods_in_not_running_state(handle, namespace: str = '') -> Tuple:
     result = handle.run_native_cmd(kubectl_command)
 
     if result.stderr:
-        raise ApiException(f"Error occurred while executing command {kubectl_command} {result.stderr}")
+        raise Exception(f"Error occurred while executing command {kubectl_command} {result.stderr}")
 
     if result.stdout:
         return (False, [{'name': result.stdout.split()[0], 'namespace': result.stdout.split()[-1]}])

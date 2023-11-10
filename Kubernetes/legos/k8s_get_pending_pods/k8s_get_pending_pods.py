@@ -5,7 +5,6 @@
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 import json
-from kubernetes.client.rest import ApiException
 from tabulate import tabulate
 
 
@@ -49,7 +48,7 @@ def k8s_get_pending_pods(handle, namespace:str="") -> Tuple:
     result = handle.run_native_cmd(cmd)
 
     if result.stderr:
-        raise ApiException(f"Error occurred while executing command {cmd} {result.stderr}")
+        raise Exception(f"Error occurred while executing command {cmd} {result.stderr}")
 
     pods = json.loads(result.stdout)['items']
     pending_pods = []

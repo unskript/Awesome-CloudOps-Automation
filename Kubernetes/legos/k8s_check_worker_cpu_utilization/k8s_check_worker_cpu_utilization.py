@@ -6,7 +6,6 @@ from __future__ import annotations
 #
 from pydantic import BaseModel, Field
 from typing import Optional, Tuple
-from kubernetes.client.rest import ApiException
 
 
 
@@ -47,7 +46,7 @@ def k8s_check_worker_cpu_utilization(handle, threshold: float=70.0) -> Tuple:
     response = handle.run_native_cmd(kubectl_command)
 
     if response is None or response.stderr:
-        raise ApiException(f"Error while executing command ({kubectl_command}): {response.stderr if response else 'empty response'}")
+        raise Exception(f"Error while executing command ({kubectl_command}): {response.stderr if response else 'empty response'}")
 
     lines = response.stdout.split('\n')
     for line in lines:
