@@ -2,10 +2,9 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
+import json
 from typing import Tuple
 from pydantic import BaseModel
-from kubernetes.client.rest import ApiException
-import json
 
 
 class InputSchema(BaseModel):
@@ -39,7 +38,7 @@ def k8s_get_offline_nodes(handle) -> Tuple:
     result = handle.run_native_cmd(cmd)
 
     if result.stderr:
-        raise ApiException(f"Error occurred while executing command {cmd} {result.stderr}")
+        raise Exception(f"Error occurred while executing command {cmd} {result.stderr}")
 
     nodes = json.loads(result.stdout)['items']
     offline_nodes = []

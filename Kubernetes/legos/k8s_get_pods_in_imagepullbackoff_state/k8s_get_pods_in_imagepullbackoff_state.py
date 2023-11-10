@@ -9,7 +9,6 @@ from typing import Optional, Tuple
 from collections import defaultdict
 from pydantic import BaseModel, Field
 
-from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -55,7 +54,7 @@ def k8s_get_pods_in_imagepullbackoff_state(handle, namespace: str = '') -> Tuple
         return False, None
 
     if response.stderr:
-        raise ApiException(
+        raise Exception(
             f"Error occurred while executing command {kubectl_command} {response.stderr}")
 
     temp = response.stdout

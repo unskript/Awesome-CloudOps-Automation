@@ -5,7 +5,6 @@
 import json
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from kubernetes.client.rest import ApiException
 
 
 
@@ -42,7 +41,7 @@ def k8s_get_frequently_restarting_pods(handle, restart_threshold:int=90) -> Tupl
             f"Error while executing command ({cmd}) (empty response)")
 
     if response.stderr:
-        raise ApiException(
+        raise Exception(
             f"Error occurred while executing command {cmd} {response.stderr}")
 
     all_pods_data = json.loads(response.stdout)

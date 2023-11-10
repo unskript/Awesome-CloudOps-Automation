@@ -5,7 +5,6 @@
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from tabulate import tabulate
-from kubernetes.client.rest import ApiException
 
 
 
@@ -96,16 +95,16 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
     :return: Status, list of exceeding services if any service has exceeded the threshold,
     """
     if handle.client_side_validation is False:
-        raise ApiException(f"K8S Connector is invalid: {handle}")
+        raise Exception(f"K8S Connector is invalid: {handle}")
 
     if services and not namespace:
-        raise ApiException("Namespace must be provided if services are specified.")
+        raise Exception("Namespace must be provided if services are specified.")
 
     if not namespace:
         kubectl_command = "kubectl get namespace -o=jsonpath='{.items[*].metadata.name}'"
         response = handle.run_native_cmd(kubectl_command)
         if response is None or response.stderr:
-            raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
+            raise Exception(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
         namespaces = response.stdout.strip().split(' ')
     else:
         namespaces = [namespace]
@@ -117,7 +116,7 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
             kubectl_command = f"kubectl get pods -n {nmspace} -o=jsonpath='{{.items[*].metadata.name}}'"
             response = handle.run_native_cmd(kubectl_command)
             if response is None or response.stderr:
-                raise ApiException(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
+                raise Exception(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
             services_to_check = response.stdout.strip().split(' ')
         else:
             services_to_check = services
