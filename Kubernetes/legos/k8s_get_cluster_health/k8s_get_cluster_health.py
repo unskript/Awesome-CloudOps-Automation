@@ -2,10 +2,9 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
+import json
 from typing import Tuple
 from pydantic import BaseModel, Field
-from kubernetes import client
-from kubernetes.client.rest import ApiException
 from tabulate import tabulate
 
 try:
@@ -60,26 +59,7 @@ def k8s_get_cluster_health_printer(output):
 
 
 
-def k8s_get_abnormal_events(node_api, node_name: str, security_level: str = "Warning") -> str:
-    """k8s_get_abnormal_events This is a helper function that is called by the main function to
-       get abnormal events with a filter. Default filter (security_level) is set to Warning
-    """
-    field_selector = f"involvedObject.kind=Node,involvedObject.name={node_name},type={security_level}"
-    event_string = ''
-    try:
-        events = node_api.list_event_for_all_namespaces(field_selector=field_selector)
-
-        # Print the details of each event
-        for event in events.items:
-            event_string = event_string + f"Event: {event.metadata.name} - {event.type} - \
-                {event.reason} - {event.message} - {event.last_timestamp}" + '\n'
-
-    except ApiException as e:
-        raise e
-
-    return event_string
-
-def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
+def k8s_get_cluster_health(handle, threshold: int = 80) -> Tuple:
     """k8s_get_cluster_health This function takes the Handle as an input parameter,
        finds out all the Nodes present in the Cluster, Finds out the following
        * Any abnormal events seen on the node
@@ -87,35 +67,41 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
        * Node Status & Pod Status
 
        :type handle: object
-       :param handle: Object returned from task.validator(...)
+       :param handle: Object returned from task.validate(...) method
 
        :type threshold: int
-       :param threshold: CPU and Memory Threshold 
+       :param threshold: CPU and Memory Threshold
 
        :rtype: Tuple
-       :param: Tuple that contains result and any errors   
+       :param: Tuple that contains result and any errors
     """
-
     retval = {}
     not_ready_nodes = []
     not_ready_pods = []
     abnormal_nodes = []
 
-    node_api = pods_api = client.CoreV1Api(api_client=handle)
-    nodes = node_api.list_node()
-    
-    for node in nodes.items:
+    # Get node information
+    get_nodes_command = "kubectl get nodes -o=json"
+    try:
+        response = handle.run_native_cmd(get_nodes_command)
+        nodes_info = json.loads(response.stdout)
+    except Exception as e:
+        raise Exception(f"Error fetching node information: {e.stderr}") from e
+
+    for node_info in nodes_info['items']:
+        node_name = node_info['metadata']['name']
         skip_remaining_checks = False
+
         # Get Node Status
-        conditions = node.status.conditions
+        conditions = node_info['status']['conditions']
         for condition in conditions:
-            if condition.type == 'Ready' and condition.status == 'False':
+            if condition['type'] == 'Ready' and condition['status'] == 'False':
                 not_ready_nodes.append({
-                    'name': node.metadata.name,
-                    'condition_type': condition.type,
-                    'condition_status': condition.status,
-                    'condition_reason': condition.reason,
-                    'condition_message': condition.message
+                    'name': node_name,
+                    'condition_type': condition['type'],
+                    'condition_status': condition['status'],
+                    'condition_reason': condition.get('reason', ''),
+                    'condition_message': condition.get('message', '')
                 })
                 skip_remaining_checks = True
                 break
@@ -124,27 +110,40 @@ def k8s_get_cluster_health(handle, threshold:int = 80) -> Tuple:
         if skip_remaining_checks:
             continue
 
-        # Lets get abnormal events. Lets go with `warning` as the default level
-        events = k8s_get_abnormal_events(node_api, node.metadata.name)
-        if events != '':
-            abnormal_nodes.append({'name': node.metadata.name, 'events': events})
+        # Get abnormal events for the node
+        get_node_events_command = f"kubectl get events --field-selector involvedObject.name={node_name} --all-namespaces -o=json"
+        try:
+            response = handle.run_native_cmd(get_node_events_command)
+            events_info = json.loads(response.stdout)
+            events = [event for event in events_info['items'] if event['type'] == 'Warning']
+            if events:
+                abnormal_nodes.append({'name': node_name, 'events': events})
+        except Exception as e:
+            print(f"Error fetching events for node {node_name}: {e.stderr}")
 
     # Check the status of the Kubernetes pods
-    pods = pods_api.list_pod_for_all_namespaces()
-    for pod in pods.items:
+    get_pods_command = "kubectl get pods --all-namespaces -o=json"
+    try:
+        response = handle.run_native_cmd(get_pods_command)
+        pods_info = json.loads(response.stdout)
+    except Exception as e:
+        raise Exception(f"Error fetching pod information: {e.stderr}") from e
+
+    for pod_info in pods_info['items']:
         # Skip completed one-time jobs
-        if pod.status.phase == 'Succeeded':
+        if pod_info['status']['phase'] == 'Succeeded':
             continue
-        conditions = pod.status.conditions
+
+        conditions = pod_info['status']['conditions']
         for condition in conditions:
-            if condition.type == 'Ready' and condition.status == 'False':
+            if condition['type'] == 'Ready' and condition['status'] == 'False':
                 not_ready_pods.append({
-                    'name': pod.metadata.name,
-                    'namespace': pod.metadata.namespace,
-                    'condition_type': condition.type,
-                    'condition_status': condition.status,
-                    'condition_reason': condition.reason,
-                    'condition_message': condition.message
+                    'name': pod_info['metadata']['name'],
+                    'namespace': pod_info['metadata']['namespace'],
+                    'condition_type': condition['type'],
+                    'condition_status': condition['status'],
+                    'condition_reason': condition.get('reason', ''),
+                    'condition_message': condition.get('message', '')
                 })
                 break
 
