@@ -2,14 +2,14 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from pydantic import BaseModel, Field
-from typing import Optional, Tuple
+import json 
 import base64
 import datetime
+
+from pydantic import BaseModel, Field
+from typing import Optional, Tuple
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
-from kubernetes import client, watch
-from kubernetes.client.rest import ApiException
 from tabulate import tabulate
 from unskript.legos.kubernetes.k8s_kubectl_command.k8s_kubectl_command import k8s_kubectl_command
 
@@ -54,43 +54,37 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
         tuple: Status, a list of expiring certificate names.
     """
     result = []
-    all_namespaces = [namespace]
 
-    cmd = "kubectl get ns  --no-headers -o custom-columns=':metadata.name'"
+    # If namespace is provided, get secrets from the specified namespace
+    if namespace:
+        get_secrets_command = f"kubectl get secrets -n {namespace} --field-selector type=kubernetes.io/tls -o=json"
+    # If namespace is not provided, get secrets from all namespaces
+    else:
+        get_secrets_command = "kubectl get secrets --all-namespaces --field-selector type=kubernetes.io/tls -o=json"
 
-    if namespace is None or len(namespace) == 0:
-        response = handle.run_native_cmd(cmd)
-        if response is None:
-            print(
-                f"Error while executing command ({cmd}) (empty response)")
+    try:
+        # Execute the kubectl command to get secret information
+        response = handle.run_native_cmd(get_secrets_command)
+        secrets_info = json.loads(response.stdout)
+    except Exception as e:
+        raise Exception(f"Error fetching secret information: {e.stderr}") from e
 
-        if response.stderr:
-            raise ApiException(
-                f"Error occurred while executing command {cmd} {response.stderr}")
-        kubernetes_namespaces = response.stdout
-        replaced_str = kubernetes_namespaces.replace("\n", " ")
-        stripped_str = replaced_str.strip()
-        all_namespaces = stripped_str.split(" ")
+    for secret_info in secrets_info['items']:
+        secret_name = secret_info['metadata']['name']
+        namespace = secret_info['metadata'].get('namespace', '')
 
-    coreApiClient = client.CoreV1Api(api_client=handle)
-    for n in all_namespaces:
-        coreApiClient.read_namespace_status(n, pretty=True)
-        secrets = coreApiClient.list_namespaced_secret(n, watch=False, limit=200).items
-
-        for secret in secrets:
-            # Check if the secret contains a certificate
-            if secret.type == "kubernetes.io/tls":
-                # Get the certificate data
-                cert_data = secret.data.get("tls.crt")
-                if cert_data:
-                    # Decode the certificate data
-                    cert_data_decoded = base64.b64decode(cert_data).decode("utf-8")
-                    # Parse the certificate expiration date
-                    cert_exp = get_expiry_date(cert_data_decoded)
-                    if cert_exp and cert_exp < datetime.datetime.now() + datetime.timedelta(days=expiring_threshold):
-                        result.append({"secret_name": secret.metadata.name, "namespace": n})
+        # Check if the secret contains a certificate
+        cert_data = secret_info['data'].get('tls.crt')
+        if cert_data:
+            # Decode the certificate data
+            cert_data_decoded = base64.b64decode(cert_data).decode("utf-8")
+            # Parse the certificate expiration date
+            cert_exp = get_expiry_date(cert_data_decoded)
+            if cert_exp and cert_exp < datetime.datetime.now() + datetime.timedelta(days=expiring_threshold):
+                result.append({"secret_name": secret_name, "namespace": namespace})
 
     if len(result) != 0:
         return (False, result)
+
     return (True, None)
     
