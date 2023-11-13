@@ -6,8 +6,6 @@
 import pprint
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
-from kubernetes.client.rest import ApiException
-from kubernetes import client, watch
 
 
 class InputSchema(BaseModel):
@@ -34,25 +32,42 @@ def k8s_get_error_pods_from_all_jobs(handle, namespace:str="") -> Tuple:
        :rtype: Tuple Result in tuple format.
     """
     result = []
-    coreApiClient = client.CoreV1Api(api_client=handle)
-    BatchApiClient = client.BatchV1Api(api_client=handle)
+
     # If namespace is provided, get jobs from the specified namespace
     if namespace:
-        jobs = BatchApiClient.list_namespaced_job(namespace,watch=False, limit=200).items
+        get_jobs_command = f"kubectl get jobs -n {namespace} --no-headers -o custom-columns=NAME:.metadata.name"
     # If namespace is not provided, get jobs from all namespaces
     else:
-        jobs = BatchApiClient.list_job_for_all_namespaces(watch=False, limit=200).items
+        get_jobs_command = "kubectl get jobs --all-namespaces --no-headers -o custom-columns=NAME:.metadata.name"
 
-    for job in jobs:
+    try:
+        # Execute the kubectl command to get job names
+        #response = subprocess.run(get_jobs_command.split(), capture_output=True, text=True, check=True)
+        response = handle.run_native_cmd(get_jobs_command)
+        job_names = response.stdout.splitlines()
+    except Exception as e:
+        raise Exception(f"Error fetching job names: {e.stderr}") from e
+
+    for job_name in job_names:
         # Fetching all the pods associated with the current job
-        pods = coreApiClient.list_namespaced_pod(job.metadata.namespace, label_selector=f"job-name={job.metadata.name}",watch=False, limit=200).items
+        get_pods_command = f"kubectl get pods -n {namespace} -l job-name={job_name} --no-headers -o custom-columns=NAME:.metadata.name,PHASE:.status.phase"
+        
+        try:
+            # Execute the kubectl command to get pod names and phases
+            #response = subprocess.run(get_pods_command.split(), capture_output=True, text=True, check=True)
+            response = handle.run_native_cmd(get_pods_command)
+            pod_info = [line.split() for line in response.stdout.splitlines()]
+        except Exception as e:
+            raise Exception(f"Error fetching pods for job {job_name}: {e.stderr}") from e
 
         # Checking the status of each pod
-        for pod in pods:
-            # If the pod status is 'Failed', print its namespace and name
-            if pod.status.phase != "Succeeded":
-                result.append({"namespace":pod.metadata.namespace,"pod_name":pod.metadata.name})
+        for pod_name, pod_phase in pod_info:
+            # If the pod status is not 'Succeeded', add it to the result list
+            if pod_phase != "Succeeded":
+                result.append({"namespace": namespace, "pod_name": pod_name})
+
     if len(result) != 0:
-        return (False, result)
+        return False, result
     else:
-        return (True, None)
+        return True, None
+
