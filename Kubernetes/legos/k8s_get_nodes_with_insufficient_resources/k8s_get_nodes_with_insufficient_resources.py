@@ -3,11 +3,11 @@
 # All rights reserved.
 #
 import pprint
+import json
 from typing import Tuple
 from pydantic import BaseModel, Field
 from tabulate import tabulate
-from kubernetes import client
-from kubernetes.client.rest import ApiException
+
 
 try:
     from unskript.legos.kubernetes.k8s_utils import normalize_cpu, normalize_memory, normalize_storage
@@ -42,42 +42,58 @@ def k8s_get_nodes_with_insufficient_resources_printer(output):
 def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tuple:
     """k8s_get_failed_deployments Returns the list of all failed deployments across all namespaces
 
-    :type handle: Object
-    :param handle: Object returned from task.validate(...) function
+    :type handle: object
+    :param handle: Object returned from task.validate(...) method
 
     :type threshold: int
     :param threshold: Threshold in Percentage. Default value being 85.
-    Any node resource exceeding that threshold
+                      Any node resource exceeding that threshold
                       is flagged as having insufficient resource.
 
     :rtype: Tuple of the result
     """
-    if handle.client_side_validation is not True:
-        raise ApiException(f"K8S Connector is invalid {handle}")
-
-    api_client = client.CoreV1Api(api_client=handle)
     retval = []
-    nodes = api_client.list_node().items
-    for node in nodes:
-        cpu_allocatable = normalize_cpu(node.status.allocatable.get('cpu'))
-        cpu_capacity = normalize_cpu(node.status.capacity.get('cpu'))
-        mem_allocatable = normalize_memory(node.status.allocatable.get('memory'))
-        mem_capacity = normalize_memory(node.status.capacity.get('memory'))
-        storage_allocatable = normalize_storage(node.status.allocatable.get('ephemeral-storage'))
-        storage_capacity = normalize_storage(node.status.capacity.get('ephemeral-storage'))
-        cpu_usage_percent = (cpu_capacity - cpu_allocatable)/cpu_capacity * 100
-        mem_usage_percent = (mem_capacity - mem_allocatable)/mem_capacity * 100
-        storage_usage_percent = (storage_capacity - storage_allocatable)/storage_capacity * 100
-        if cpu_usage_percent >= threshold \
-            or mem_usage_percent >= threshold \
-            or storage_usage_percent >= threshold:
-            retval.append({
-                'name': node.metadata.name,
-                'allocatable': node.status.allocatable,
-                'capacity': node.status.capacity
-                })
 
-    if  retval:
-        return(False, retval)
+    # Get node information
+    get_nodes_command = "kubectl get nodes -o=json"
+    try:
+        #response = subprocess.run(get_nodes_command.split(), capture_output=True, text=True, check=True)
+        response = handle.run_native_cmd(get_nodes_command)
+        nodes_info = json.loads(response.stdout)
+    except Exception as e:
+        raise Exception(f"Error fetching node information: {e.stderr}") from e
+
+    for node_info in nodes_info['items']:
+        node_name = node_info['metadata']['name']
+        cpu_allocatable = normalize_cpu(node_info['status']['allocatable'].get('cpu', 0))
+        cpu_capacity = normalize_cpu(node_info['status']['capacity'].get('cpu', 0))
+        mem_allocatable = normalize_memory(node_info['status']['allocatable'].get('memory', 0))
+        mem_capacity = normalize_memory(node_info['status']['capacity'].get('memory', 0))
+        storage_allocatable = normalize_storage(node_info['status']['allocatable'].get('ephemeral-storage', 0))
+        storage_capacity = normalize_storage(node_info['status']['capacity'].get('ephemeral-storage', 0))
+        cpu_usage_percent = (cpu_capacity - cpu_allocatable) / cpu_capacity * 100
+        mem_usage_percent = 0
+        storage_usage_percent = 0
+        if not storage_allocatable:
+            storage_allocatable = 0
+        if not mem_allocatable:
+            mem_allocatable = 0
+
+        if mem_capacity:
+            mem_usage_percent = (mem_capacity - mem_allocatable) / mem_capacity * 100
+        if storage_capacity:
+            storage_usage_percent = (storage_capacity - storage_allocatable) / storage_capacity * 100
+
+
+        if cpu_usage_percent >= threshold or mem_usage_percent >= threshold or storage_usage_percent >= threshold:
+            retval.append({
+                'name': node_name,
+                'allocatable': node_info['status'].get('allocatable', {}),
+                'capacity': node_info['status'].get('capacity', {})
+            })
+
+
+    if retval:
+        return (False, retval)
 
     return (True, [])
