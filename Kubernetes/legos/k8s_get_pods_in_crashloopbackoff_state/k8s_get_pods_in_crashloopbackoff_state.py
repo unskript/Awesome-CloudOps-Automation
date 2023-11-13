@@ -3,10 +3,10 @@
 # All rights reserved.
 #
 
+import json 
+
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
-from kubernetes import client
-from kubernetes.client.rest import ApiException
 from tabulate import tabulate
 
 
@@ -31,37 +31,35 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '') -> Tuple
     """
     k8s_get_pods_in_crashloopbackoff_state returns the pods that have CrashLoopBackOff state in their container statuses.
 
-    :type handle: Object
-    :param handle: Object returned from the task.validate(...) function
-
     :type namespace: str
     :param namespace: (Optional) String, K8S Namespace as python string
 
     :rtype: Status, List of objects of pods, namespaces, and containers that are in CrashLoopBackOff state
     """
     result = []
-    if handle.client_side_validation is not True:
-        raise ApiException(f"K8S Connector is invalid {handle}")
 
-    v1 = client.CoreV1Api(api_client=handle)
+    # If namespace is provided, get pods from the specified namespace
+    if namespace:
+        get_pods_command = f"kubectl get pods -n {namespace} -o=json"
+    # If namespace is not provided, get pods from all namespaces
+    else:
+        get_pods_command = "kubectl get pods --all-namespaces -o=json"
 
     try:
-        if namespace:
-            pods = v1.list_namespaced_pod(namespace).items
-        else:
-            pods = v1.list_pod_for_all_namespaces().items
-    except ApiException as e:
-        raise e
+        # Execute the kubectl command to get pod information
+        response = handle.run_native_cmd(get_pods_command)
+        pods_info = json.loads(response.stdout)
+    except Exception as e:
+        raise Exception(f"Error fetching pod information: {e.stderr}") from e
 
-    for pod in pods:
-        pod_name = pod.metadata.name
-        namespace = pod.metadata.namespace
-        container_statuses = pod.status.container_statuses
-        if container_statuses is None:
-            continue
+    for pod_info in pods_info['items']:
+        pod_name = pod_info['metadata']['name']
+        namespace = pod_info['metadata'].get('namespace', '')
+
+        container_statuses = pod_info['status'].get('containerStatuses', [])
         for container_status in container_statuses:
-            container_name = container_status.name
-            if container_status.state and container_status.state.waiting and container_status.state.waiting.reason == "CrashLoopBackOff":
+            container_name = container_status.get('name', '')
+            if container_status.get('state', {}).get('waiting', {}).get('reason') == "CrashLoopBackOff":
                 result.append({"pod": pod_name, "namespace": namespace, "container": container_name})
 
     return (False, result) if result else (True, None)
