@@ -2,10 +2,9 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
+import json 
 from typing import Tuple
 from pydantic import BaseModel, Field
-from kubernetes import client
-from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -32,42 +31,38 @@ def k8s_get_unbound_pvcs(handle, namespace:str = '') -> Tuple:
        :rtype: Tuple Result in tuple format.  
     """
     if handle.client_side_validation is not True:
-        raise ApiException(f"K8S Connector is invalid {handle}")
+        raise Exception(f"K8S Connector is invalid {handle}")
 
-    v1 = client.CoreV1Api(api_client=handle)
+    result = []
 
     # Get all PVCs in the cluster
     if not namespace:
-        pvc_list = v1.list_persistent_volume_claim_for_all_namespaces().items
-        pod_list = v1.list_pod_for_all_namespaces().items
+        get_pvc_command = "kubectl get pvc --all-namespaces -o=json"
+        get_pod_command = "kubectl get pods --all-namespaces -o=json"
     else:
-        pvc_list = v1.list_namespaced_persistent_volume_claim(namespace).items
-        pod_list = v1.list_namespaced_pod(namespace).items
+        get_pvc_command = f"kubectl get pvc -n {namespace} -o=json"
+        get_pod_command = f"kubectl get pods -n {namespace} -o=json"
 
-    retval = []
-    mounted_volume = []
-    list_all_volumes = []
-    # Iterate through each PVC
-    for pvc in pvc_list:
-        list_all_volumes.append([pvc.metadata.name, pvc.metadata.namespace])
+    try:
+        # Execute the kubectl commands to get PVC and Pod information
+        response_pvc = handle.run_native_cmd(get_pvc_command)
+        response_pod = handle.run_native_cmd(get_pod_command)
+        pvc_info = json.loads(response_pvc.stdout)
+        pod_info = json.loads(response_pod.stdout)
+    except Exception as e:
+        raise Exception(f"Error fetching PVC or Pod information: {e.stderr}") from e
 
-    for pod in pod_list:
-        for volume in pod.spec.volumes:
-                if volume.persistent_volume_claim is not None:
-                    mounted_volume.append([
-                        volume.persistent_volume_claim.claim_name,
-                        pod.metadata.namespace
-                        ])
+    # Extract PVC names and namespaces
+    pvc_list = [(item['metadata']['name'], item['metadata']['namespace']) for item in pvc_info.get('items', [])]
 
-    if len(mounted_volume) != len(list_all_volumes):
-        unmounted_volumes = {x[0] for x in list_all_volumes} - {x[0] for x in mounted_volume}
-        for um in unmounted_volumes:
-            n = [x for x in list_all_volumes if x[0] == um][0]
-            unmounted_pvc_name = n[0]
-            unmounted_pvc_namespace = n[1]
-            retval.append({'name': unmounted_pvc_name, 'namespace': unmounted_pvc_namespace})
+    # Extract mounted PVCs from Pod information
+    mounted_volumes = [(volume['persistentVolumeClaim']['claimName'], pod['metadata']['namespace']) for pod in pod_info.get('items', [])
+                       for volume in pod['spec']['volumes'] if 'persistentVolumeClaim' in volume]
 
-    if retval:
-        return (False, retval)
+    # Identify unbound PVCs
+    unbound_pvcs = set(pvc_list) - set(mounted_volumes)
 
-    return (True, [])
+    for pvc in unbound_pvcs:
+        result.append({'name': pvc[0], 'namespace': pvc[1]})
+
+    return (False, result) if result else (True, [])
