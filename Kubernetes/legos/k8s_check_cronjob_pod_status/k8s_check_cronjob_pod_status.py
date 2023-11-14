@@ -23,7 +23,7 @@ def k8s_check_cronjob_pod_status_printer(output):
             print(f"CronJob '{issue['cronjob_name']}' Alert: {issue['message']}")
 
 
-def k8s_check_cronjob_pod_status_new(handle, namespace: str = '') -> Tuple:
+def k8s_check_cronjob_pod_status(handle, namespace: str = '') -> Tuple:
     """
     Checks the status of the CronJob pods.
 
