@@ -3,7 +3,6 @@
 # All rights reserved.
 #
 from datetime import datetime, timezone
-from kubernetes import client
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from croniter import croniter
