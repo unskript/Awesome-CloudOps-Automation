@@ -69,6 +69,7 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
     if not isinstance(service_names, list):
         service_names = [service_names]
 
+    visited_pods = []
     for service_name in service_names:
         # Get service's pod based on its labels
         get_service_labels_command = f"kubectl get service {service_name} -n {namespace} -o=jsonpath={{.spec.selector}}"
@@ -98,9 +99,14 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
         
         if not isinstance(pod_names, list):
             pod_names = [pod_names]
+            
 
         for pod_name in pod_names:
-            # Fetch and analyze logs for the given in all containers of the given pod
+            if pod_name in visited_pods:
+                continue
+
+            visited_pods.append(pod_name)
+            # Fetch and analyze logs for the given pod
             log_cmd = f"kubectl logs {pod_name} --all-containers=true -n {namespace} --tail={tail_lines}"
             try:
                 response = handle.run_native_cmd(log_cmd)
