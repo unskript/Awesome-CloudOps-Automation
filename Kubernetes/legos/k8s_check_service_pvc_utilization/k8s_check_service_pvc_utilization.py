@@ -35,24 +35,6 @@ def k8s_check_service_pvc_utilization_printer(output):
             print(f"PVC: {pvc['pvc_name']} - Utilized: {pvc['used']} of {pvc['capacity']}")
         print("-" * 40)
 
-def extract_mount_paths(describe_output):
-    mount_paths = []
-
-    # Find the section that starts with 'Mounts:'
-    mounts_section = re.search(r"Mounts:(.*?)(Volumes:|$)", describe_output, re.DOTALL)
-    if not mounts_section:
-        return mount_paths
-
-    # Extract all lines that contain mount paths
-    for line in mounts_section.group(1).splitlines():
-        match = re.search(r"\s+/(\S+)\s+from\s+(\S+)", line)
-        if match:
-            # Extract and store the mount path
-            mount_path = match.group(1)
-            mount_paths.append(mount_path)
-
-    return mount_paths
-
 
 def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace: str = "", threshold: int = 80) -> Tuple:
     """
