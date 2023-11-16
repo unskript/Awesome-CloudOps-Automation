@@ -118,67 +118,63 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
         if not pvc_names:
             services_without_pvcs.append(svc)
             continue
-        # Fetch PVC names and their mount paths
-        get_pvc_and_mounts_command = f"kubectl get pod {pod_name} -n {namespace} -o json"
-        response = handle.run_native_cmd(get_pvc_and_mounts_command)
-        if not response or response.stderr:
-            raise ApiException(f"Error while executing command ({get_pvc_and_mounts_command}): {response.stderr if response else 'empty response'}")
 
-        # Fetch the entire pod specification
-        get_pod_spec_command = f"kubectl get pod {pod_name} -n {namespace} -o json"
-        pod_spec_output = handle.run_native_cmd(get_pod_spec_command)
-        if not pod_spec_output or pod_spec_output.stderr:
-            raise ApiException(f"Error fetching pod spec for {pod_name}: {pod_spec_output.stderr if pod_spec_output else 'empty response'}")
+        # Fetch the Pod JSON
+        get_pod_json_command = f"kubectl get pod {pod_name} -n {namespace} -o json"
+        pod_json_output = handle.run_native_cmd(get_pod_json_command)
+        if not pod_json_output or pod_json_output.stderr:
+            raise ApiException(f"Error fetching pod json for {pod_name}: {pod_json_output.stderr if pod_json_output else 'empty response'}")
+        pod_data = json.loads(pod_json_output.stdout)
 
-        pod_spec = json.loads(pod_spec_output.stdout)
+        # Process the Pod JSON to find PVC mounts
+        pvc_mounts = []
+        for container in pod_data['spec']['containers']:
+            container_name = container['name']
+            for mount in container.get('volumeMounts', []):
+                mount_path = mount['mountPath']
+                volume_name = mount['name']
+                # Match the volume name with PVCs in the Pod spec
+                for volume in pod_data['spec']['volumes']:
+                    if 'persistentVolumeClaim' in volume and volume['name'] == volume_name:
+                        pvc_name = volume['persistentVolumeClaim']['claimName']
+                        pvc_mounts.append({"container_name": container_name, "mount_path": mount_path, "pvc_name": pvc_name})
+        alert_pvcs = []
+        # Iterate over pvc_mounts to calculate used space
+        for mount in pvc_mounts:
+            container_name = mount['container_name']
+            mount_path = mount['mount_path']
+            pvc_name = mount['pvc_name']
 
-        # Define pvc_mounts here
-        pvc_mounts = {}
-        for volume in pod_spec['spec']['volumes']:
-            if 'persistentVolumeClaim' in volume:
-                pvc_name = volume['persistentVolumeClaim']['claimName']
-                for container in pod_spec['spec']['containers']:
-                    for mount in container.get('volumeMounts', []):
-                        if mount['name'] == volume['name']:
-                            pvc_mounts[mount['mountPath']] = pvc_name
-
-        for mount_path, pvc_name in pvc_mounts.items():
-            containers_with_mount = [container['name'] for container in pod_spec['spec']['containers'] if any(mount['mountPath'] == mount_path for mount in container.get('volumeMounts', []))]
-            if not containers_with_mount:
-                print(f"Mount path {mount_path} not found in any container of pod {pod_name}. Skipping...")
+            # Execute the du command
+            du_command = f"kubectl exec -n {namespace} {pod_name} -c {container_name} -- du -sh {mount_path}"
+            du_output = handle.run_native_cmd(du_command)
+            if not du_output or du_output.stderr:
+                print(f"Error while calculating used space for mount path {mount_path} in container {container_name}: {du_output.stderr if du_output else 'empty response'}")
                 continue
-            alert_pvcs =[]
-            for container in containers_with_mount:
-                # Execute the du command
-                du_command = f"kubectl exec -n {namespace} {pod_name} -c {container} -- du -sh {mount_path}"
-                du_output = handle.run_native_cmd(du_command)
-                if not du_output or du_output.stderr:
-                    print(f"Error while calculating used space for mount path {mount_path} in container {container}: {du_output.stderr if du_output else 'empty response'}")
-                    continue
 
-                used_space = du_output.stdout.split()[0]
-                if used_space[-1] == "G":
-                    used_space_gib = float(used_space[:-1])
-                elif used_space[-1] == "M":
-                    used_space_gib = float(used_space[:-1]) / 1024
-                elif used_space[-1] == "K":
-                    used_space_gib = float(used_space[:-1]) / (1024 * 1024)
-                else:
-                    raise ValueError("Unexpected unit in du output")
+            used_space = du_output.stdout.split()[0]
+            if used_space[-1] == "G":
+                used_space_gib = float(used_space[:-1])
+            elif used_space[-1] == "M":
+                used_space_gib = float(used_space[:-1]) / 1024
+            elif used_space[-1] == "K":
+                used_space_gib = float(used_space[:-1]) / (1024 * 1024)
+            else:
+                raise ValueError("Unexpected unit in du output")
 
-                get_pvc_capacity_command = f"kubectl get pvc {pvc_name} -n {namespace} -o=jsonpath='{{.status.capacity.storage}}'"
-                response = handle.run_native_cmd(get_pvc_capacity_command)
-                if not response or response.stderr:
-                    raise ApiException(f"Error while executing command ({get_pvc_capacity_command}): {response.stderr if response else 'empty response'}")
+            get_pvc_capacity_command = f"kubectl get pvc {pvc_name} -n {namespace} -o=jsonpath='{{.status.capacity.storage}}'"
+            response = handle.run_native_cmd(get_pvc_capacity_command)
+            if not response or response.stderr:
+                raise ApiException(f"Error while executing command ({get_pvc_capacity_command}): {response.stderr if response else 'empty response'}")
 
-                total_capacity_str = response.stdout.strip()
-                total_capacity_gib = float(re.findall(r"(\d+)", total_capacity_str)[0])
-                used_percentage = (used_space_gib / total_capacity_gib) * 100
+            total_capacity_str = response.stdout.strip()
+            total_capacity_gib = float(re.findall(r"(\d+)", total_capacity_str)[0])
+            used_percentage = (used_space_gib / total_capacity_gib) * 100
 
-                if used_percentage > threshold:
-                    alert_pvcs.append({"pvc_name": pvc_name, "mount_path": mount_path, "used": used_space, "capacity": total_capacity_str})
+            if used_percentage > threshold:
+                alert_pvcs.append({"pvc_name": pvc_name, "mount_path": mount_path, "used": used_space, "capacity": total_capacity_str})
 
-            alert_pvcs_all_services.extend(alert_pvcs)
+        alert_pvcs_all_services.extend(alert_pvcs)
     if services_without_pvcs:
         print("Following services do not have any PVCs attached:")
         for service in services_without_pvcs:
