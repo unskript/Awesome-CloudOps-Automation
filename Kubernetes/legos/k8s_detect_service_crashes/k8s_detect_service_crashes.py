@@ -31,12 +31,13 @@ def k8s_detect_service_crashes_printer(output):
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
 
+
 def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 100) -> Tuple:
     """
     k8s_detect_service_crashes detects service crashes by checking the logs of each pod for specific error messages.
 
     :type handle: object
-    :param handle: Object returned from the task.validate(...) 
+    :param handle: Object returned from the task.validate(...)
 
     :type namespace: str
     :param namespace: (Optional) String, K8S Namespace as python string
@@ -84,45 +85,50 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
         except Exception as e:
             raise Exception(f"Error while fetching labels for service {service_name}: {e.stderr}") from e
 
-        # Fetch the pod attached to this service
-        get_pod_command = f"kubectl get pods -n {namespace} -l {label_selector} -o=jsonpath={{.items[0].metadata.name}}"
-        pod_names = []
+        # Fetch the pod attached to this service along and its container
+        pod_and_container_cmd = f"kubectl get pods -n {namespace} -l {label_selector}" + " -o=jsonpath=\"{range .items[*]}{.metadata.name}:{range .spec.containers[*]}{.name}{' '}{end}{end}\""
         try:
             # Execute the kubectl command to get pod name
-            response = handle.run_native_cmd(get_pod_command)
+            response = handle.run_native_cmd(pod_and_container_cmd)
             if not response.stdout.strip():
                 # No pods found for a particular service. Skipping...
                 continue
-            pod_names = response.stdout.strip()
+            pod_name_with_container = response.stdout.strip()
         except Exception as e:
             raise Exception(f"Error while fetching pod for service {service_name}: {e.stderr}") from e
-        
-        if not isinstance(pod_names, list):
-            pod_names = [pod_names]
-            
 
-        for pod_name in pod_names:
+        p_and_c_list = []
+        if not isinstance(pod_name_with_container, list):
+            if len(pod_name_with_container.split(':')) > 2:
+                for pc in pod_name_with_container.split(' '):
+                    p_and_c_list.append(pc)
+            else:
+                p_and_c_list = [pod_name_with_container]
+
+        for pod_and_container in p_and_c_list:
+            pod_name, container = pod_and_container.split(':')
             if pod_name in visited_pods:
                 continue
 
             visited_pods.append(pod_name)
             # Fetch and analyze logs for the given pod
-            log_cmd = f"kubectl logs {pod_name} --all-containers=true -n {namespace} --tail={tail_lines}"
-            try:
-                response = handle.run_native_cmd(log_cmd)
-                if response and not response.stderr:
-                    log_output = response.stdout.splitlines()
-                    for line in log_output:
-                        for pattern in ERROR_PATTERNS:
-                            if pattern in line:
-                                timestamp = line.split(']')[0].strip('[').split()[0] if ']' in line else "Unknown Time"
-                                crash_logs.append({
-                                    "pod": pod_name,
-                                    "namespace": namespace,
-                                    "error": pattern,
-                                    "timestamp": timestamp,
-                                })
-            except Exception as e:
-                print(f"Error while fetching logs for pod {pod_name}: {e.stderr}")
+            for c in container.split(' '):
+                log_cmd = f"kubectl logs {pod_name} -c {c} -n {namespace} --tail={tail_lines}"
+                try:
+                    response = handle.run_native_cmd(log_cmd)
+                    if response and not response.stderr:
+                        log_output = response.stdout.splitlines()
+                        for line in log_output:
+                            for pattern in ERROR_PATTERNS:
+                                if pattern in line:
+                                    timestamp = line.split(']')[0].strip('[').split()[0] if ']' in line else "Unknown Time"
+                                    crash_logs.append({
+                                        "pod": pod_name,
+                                        "namespace": namespace,
+                                        "error": pattern,
+                                        "timestamp": timestamp,
+                                    })
+                except Exception as e:
+                    print(f"Error while fetching logs for pod {pod_name}: {e}")
 
     return (False, crash_logs) if crash_logs else (True, None)
