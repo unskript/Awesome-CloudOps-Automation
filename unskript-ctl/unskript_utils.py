@@ -215,7 +215,7 @@ def create_jit_python_script(content: list = None):
         f.write('if __name__ == "__main__":' + '\n')
         f.write('    do_run_()' + '\n')
 
-    if os.path.exists(file_name) is True:
+    if os.path.exists(JIT_PYTHON_SCRIPT) is True:
         return True
 
     return False

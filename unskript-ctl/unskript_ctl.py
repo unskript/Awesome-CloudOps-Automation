@@ -505,7 +505,7 @@ def run_checks():
                 for tc in temp_check_list:
                     if tc.get('uuid') == k:
                         check_list.append(tc)
-    elif filter in ('--name'):
+    elif filter in '--name':
         # If it is a `-c` option, lets get the second part of the args which
         # Will be the name of the check that need to be run and lets run it
         check_name = args.function_name
