@@ -243,6 +243,7 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
 
     # client = NotebookClient(nb=nb, kernel_name="python3")
     ids = get_code_cell_action_uuids(nb.dict())
+    outputs = ''
     try:
         # execution = client.execute()
         if "/tmp" not in sys.path:
