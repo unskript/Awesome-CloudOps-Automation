@@ -565,7 +565,8 @@ def run_checks():
             check_name = '\x1B[1;4m' + k + '\x1B[0m'
             print(check_name)
             print("Failed Objects:")
-            pprint.pprint(v)
+            # pprint.pprint(v)
+            print(yaml.safe_dump(v))
             print('\x1B[1;4m', '\x1B[0m')
 
     UNSKRIPT_GLOBALS['status_of_runs'] = status_of_runs
