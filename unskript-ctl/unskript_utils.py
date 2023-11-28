@@ -20,6 +20,7 @@ CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 
 UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
 UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
+JIT_PYTHON_SCRIPT = "/tmp/jit_script.py"
 
 
 CONNECTOR_LIST = [
@@ -135,3 +136,86 @@ def create_execution_run_directory(file_prefix: str = None):
     else:
         output_dir = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')    
     return output_dir
+
+
+# Utility Function.
+# This function expects the content that is list of sources for each Cell/Check.
+# The calling function would extract the source section of the NotebookNode client
+# and send the same as a list to this function
+def create_jit_python_script(content: list = None):
+    if not content:
+        print("ERROR: Content is empty. Cannot create a JIT python script")
+        return
+
+    if len(content) < 2:
+        print("ERROR: No checks found to create a JIT python script")
+        return
+
+    # Lets create a JIT Python script. Create it in the /tmp/
+    with open(JIT_PYTHON_SCRIPT, 'w', encoding='utf-8') as f:
+        # We dump the First cell content as is in the File
+        # As globals
+        for c in content[0]:
+            f.write(c + '\n')
+
+        f.write('\n')
+
+        for idx,c in enumerate(content[1:]):
+            idx += 1
+            if idx == len(content) - 1:
+                check_name = "def last_cell():"
+            else:
+                check_name = f"def check_{idx}():"
+            f.write(check_name + '\n')
+            f.write('    global w' + '\n')
+            for line in c:
+                for l in line.split('\n'):
+                    if l.startswith("from __future__") is True:
+                        continue
+                    f.write('    ' + l + '\n')
+        f.write('\n')
+        # Create a wrapper that runs the function
+        f.write('def _run_function(fn):' + '\n')
+        f.write('    import io' + '\n')
+        f.write('    import os' + '\n')
+        f.write('    import sys' + '\n')
+        f.write('    global w' + '\n')
+        f.write('    l_cell = False' + '\n')
+        f.write('    if fn == "last_cell":' + '\n')
+        f.write('        l_cell = True' + '\n')
+        f.write('    fn = fn + "()"' + '\n')
+        f.write('    output = None' + '\n')
+        f.write('    output_buffer = io.StringIO()' + '\n')
+        # Redirect the output so we dont need to capture 
+        # the output
+        f.write('    sys.stdout = output_buffer' + '\n')
+        f.write('    if l_cell is True:' + '\n')
+        f.write('        last_cell()' + '\n')
+        f.write('        output = output_buffer.getvalue()' + '\n')
+        f.write('    else:' + '\n')
+        f.write('        eval(fn)' + '\n')
+        # Reset the Redirection
+        f.write('    sys.stdout = sys.__stdout__' + '\n')
+        f.write('    return output' + '\n')
+        f.write('\n')
+        f.write('def do_run_():' + '\n')
+        f.write('    import sys' + '\n')
+        f.write('    from tqdm import tqdm' + '\n')
+        c_len = len(content)
+        f.write('    output = None' + '\n')
+        f.write(f'    for i in tqdm(range({c_len}), desc="Running", leave=True, ncols=100):' + '\n')
+        f.write(f'        if i == {c_len - 1}:' + '\n')
+        f.write('             fn = "last_cell"' + '\n')
+        f.write('        else:' + '\n')
+        f.write('            fn = "check_" + str(i)' + '\n')
+        f.write('        if hasattr(globals().get(fn), "__call__"):' + '\n')
+        f.write('            output = _run_function(fn)' + '\n')
+        f.write('    return output' + '\n')
+        f.write('\n')
+        f.write('if __name__ == "__main__":' + '\n')
+        f.write('    do_run_()' + '\n')
+
+    if os.path.exists(file_name) is True:
+        return True
+
+    return False

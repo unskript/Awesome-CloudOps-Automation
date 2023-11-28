@@ -225,9 +225,9 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     # We store the Status of runbook execution in status_dict
     status_dict = {}
     status_dict['runbook'] = filename
-    output_file = filename.replace('.ipynb', '_output.ipynb')
+    output_file = filename.replace('.ipynb', '_output.txt')
     status_dict['result'] = []
-    r_name = '\x1B[1;20;42m' + "Executing Runbook -> " + \
+    r_name = '\x1B[1;20;42m' + "Executing & Logging to -> " + \
         output_file.strip() + '\x1B[0m'
     print(r_name)
 
@@ -236,27 +236,42 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         raise Exception("Unable to Run the Ipynb file, internal service error")
 
     nb = insert_first_and_last_cell(nb)
+    c_l = [[x.get('source')] for x in nb.dict().get('cells')]
+    if create_jit_python_script(c_l) is False:
+        print("ERROR: Unable to create JIT python script!")
+        return
 
-    client = NotebookClient(nb=nb, kernel_name="python3")
-
+    # client = NotebookClient(nb=nb, kernel_name="python3")
+    ids = get_code_cell_action_uuids(nb.dict())
     try:
-        execution = client.execute()
-    except CellExecutionError as e:
+        # execution = client.execute()
+        if "/tmp" not in sys.path:
+            sys.path.append("/tmp/")
+        from jit_script import do_run_
+        temp_output = do_run_()
+        output_list = []
+        for o in temp_output.split('\n'):
+            if not o:
+                continue 
+            d = json.loads(json.dumps(o))
+            if isinstance(d, dict) is False:
+                d = json.loads(d)
+            d['name'] = get_action_name_from_id(ids[ids.index(d.get('id'))], nb.dict())
+            output_list.append(d)
+        outputs = output_list
+    except Exception as e:
         raise e
     finally:
         os.remove(filename)
         output_file = filename
-        output_file = output_file.replace('.ipynb', '_output.ipynb')
-        nbformat.write(nb, output_file)
-        new_nb = None
-        with open(output_file, "r") as f:
-            new_nb = nbformat.read(f, as_version=4)
-        outputs = get_last_code_cell_output(new_nb.dict())
+        output_file = output_file.replace('.ipynb', '_output.txt')
+        with open(output_file, "w") as f:
+            f.write(json.dumps(outputs))
         if len(outputs) == 0:
             print("ERROR: Output of the cell execution is empty. Is the credential configured?")
+            return 
 
     # TBD: why do we this, the output in the last cell has the check uuid, should use that instead
-    ids = get_code_cell_action_uuids(nb.dict())
     result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
     if UNSKRIPT_GLOBALS.get('skipped'):
         for check_name,connector in UNSKRIPT_GLOBALS.get('skipped'):
@@ -282,7 +297,9 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
 
     if ids:
         for output in outputs:
-            r = output.get('text')
+            if isinstance(output, dict) is True:
+                output = json.dumps(output)
+            r = output
             r = output_after_merging_checks(r.split('\n'), ids)
             #print(f'new_output {r}, len_r {len(r)}, ids {ids}, len_ids  {len(ids)}')
             for result in r:
