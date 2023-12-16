@@ -11,13 +11,13 @@
 import sys
 import os
 import time
-import psutil 
-import subprocess 
+import psutil
+import subprocess
 
 from tabulate import tabulate
 from argparse import ArgumentParser, REMAINDER, SUPPRESS
 from unskript_utils import *
-from db_utils import * 
+from db_utils import *
 
 def start_debug(args):
     """start_debug Starts Debug session. This function takes
@@ -26,32 +26,44 @@ def start_debug(args):
     """
     if not args:
         print("ERROR: Insufficient information provided")
-        return 
-    
+        return
+
     remote_config = args[0]
     remote_config = remote_config.replace('-','')
 
     if remote_config != "config":
         print(f"ERROR:The Allowed Parameter is --config, Given Flag is not recognized, --{remote_config}")
-        return 
+        return
     try:
         remote_config_file = args[1]
     except:
         print(f"ERROR: Not able to find the configuration to start debug session")
-        return 
-    
+        return
+
     if os.path.exists(remote_config_file) is False:
         print(f"ERROR: Required Remote Configuration not present. Ensure {remote_config_file} file is present.")
-        return 
-    
-    command = [f"openvpn --config {remote_config_file}"]
-    process = subprocess.Popen(command,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               shell=True)
+        return
+
+    openvpn_log_file = "/tmp/openvpn_client.log"
+    command = [f"openvpn --config {remote_config_file} > {openvpn_log_file}"]
+    try:
+        process = subprocess.Popen(command,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   shell=True)
+    except Exception as e:
+        print(f"ERROR: Unable to run the command {command}, error {e}")
+        return
 
     # Lets give few seconds for the subprocess to spawn
-    time.sleep(5)
+    try:
+        outs, errs = process.communicate(timeout=10)
+    except subprocess.TimeoutExpired:
+        # This is expected as the ovpn command needs to run indefinitely.
+        pass
+    except Exception as e:
+        print(f'ERROR: Unable to communicate to child process, {e}')
+        return
 
     # Lets verify if the openvpn process is really running
     running = False
@@ -59,17 +71,27 @@ def start_debug(args):
         # Search for openvpn process.
         if proc.info['name'] == "openvpn":
             # Lets make sure we ensure Tunnel Interface is Created and Up!
-            intf_up_result = subprocess.run(["ip", "link", "show", "tun0"],
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE)
-            if intf_up_result.returncode == 0:
-                running = True
-            break
+            try:
+                intf_up_result = subprocess.run(["ip", "link", "show", "tun0"],
+                                                stdout=subprocess.PIPE,
+                                                stderr=subprocess.PIPE)
+                if intf_up_result.returncode == 0:
+                    running = True
+                break
+            except Exception as e:
+                print(f'ERROR: ip link show tun0 command failed, {e}')
 
     if running is True:
         print ("Successfully Started the Debug Session")
     else:
-        print (f"Error Occured while starting the Debug Session {process}")
+        print (f"{bcolors.FAIL}Error Occured while starting the Debug Session. Here are the logs from openvpn{bcolors.ENDC}")
+        print("===============================================================================================")
+        with open(openvpn_log_file, "r") as fp:
+            print(fp.read())
+        # Bring down the ovpn process
+        print("===============================================================================================")
+        stop_debug()
+
 
 def stop_debug():
     """stop_debug Stops the Active Debug session.
@@ -102,12 +124,12 @@ def debug_session_main():
     dp.add_argument('--stop',
                     help="Stop current debug session",
                     action='store_true')
-    
+
     dpargs = dp.parse_args(sys.argv[1:])
     if len(sys.argv) <= 2:
         dp.print_help()
         sys.exit(1)
-    
+
     if dpargs.start not in ('', None):
         start_debug(dpargs.start)
     elif dpargs.stop is True:
@@ -125,9 +147,9 @@ if __name__ == '__main__':
                         help="Debug Options")
     args = parser.parse_args()
 
-    if len(sys.argv) <= 2: 
+    if len(sys.argv) <= 2:
         parser.print_help()
         sys.exit(1)
-    
+
     if args.debug_session:
         debug_session_main()
