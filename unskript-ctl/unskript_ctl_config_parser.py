@@ -51,6 +51,7 @@ CONFIG_CREDENTIAL = "credential"
 CONFIG_NOTIFICATION = "notification"
 CONFIG_JOBS = "jobs"
 CONFIG_SCHEDULER = "scheduler"
+CONFIG_REMOTE_DEBUGGING = "remote_debugging"
 
 class Job():
     def __init__(
@@ -306,6 +307,15 @@ class ConfigParser():
                 f.write(f'{audit_cadence} {delete_old_files_command}')
                 f.write("\n")
 
+                # If there is remote_debugging commands, add them too
+                if self.tunnel_up_cmd:
+                    print()
+                    f.write(self.tunnel_up_cmd)
+                    f.write("\n")
+                if self.tunnel_down_cmd:
+                    f.write(self.tunnel_down_cmd)
+                    f.write("\n")
+
             cmds = ['crontab', unskript_crontab_file]
             self.run_command(cmds)
         except Exception as e:
@@ -359,6 +369,30 @@ class ConfigParser():
 
         return str(result.stdout)
 
+    def parse_remote_debugging(self):
+        print('###################################')
+        print(f'{bcolors.HEADER}Processing remote debugging section{bcolors.ENDC}')
+        print('###################################')
+        config = self.parsed_config.get(CONFIG_REMOTE_DEBUGGING)
+        if config is None:
+            print(f'{bcolors.WARNING}Remote_debugging: No remote_debugging config found{bcolors.ENDC}')
+            return
+        if config.get('enable') is False:
+            print(f'{bcolors.WARNING} Skipping remote_debugging section{bcolors.ENDC}')
+            return
+        ovpn_file = config.get('ovpn_file', None)
+        if ovpn_file is None:
+            print(f'{bcolors.FAIL}Please mention the ovpn file location{bcolors.ENDC}')
+            return
+        tunnel_up_cadence = config.get('tunnel_up_cadence', None)
+        tunnel_down_cadence = config.get('tunnel_down_cadence', None)
+        # Check both of them are present.
+        if (tunnel_up_cadence is None and tunnel_down_cadence is not None) or (tunnel_up_cadence is not None and tunnel_down_cadence is None):
+            print(f'{bcolors.FAIL} Please ensure both tunnel_up_cadence and tunnel_down_cadence is configured{bcolors.ENDC}')
+            return
+        self.tunnel_up_cmd = f'{tunnel_up_cadence} /usr/local/bin/unskript-ctl.sh --debug --start --config {ovpn_file}'
+        self.tunnel_down_cmd = f'{tunnel_down_cadence} /usr/local/bin/unskript-ctl.sh --debug --stop'
+
 def main():
     """main: This is the main function that gets called by the start.sh function
     to parse the unskript_ctl_config.yaml file and program credential and schedule as configured
@@ -370,6 +404,7 @@ def main():
     config_parser.parse_checks()
     config_parser.configure_credential()
     config_parser.parse_jobs()
+    config_parser.parse_remote_debugging()
     config_parser.configure_schedule()
 
 if __name__ == '__main__':
