@@ -241,3 +241,24 @@ scheduler:
     cadence: "*/60 * * * *"
     # Name of the job to add to the schedule
     job_name: ""
+
+remote_debugging:
+  enable: false
+  # ovpn file location
+  ovpn_file: ""
+  # Cadence at which tunnel needs to be brought up.
+  # Cadence is specified in cron syntax. More information about the syntax can
+  # be found in https://crontab.guru
+  # minute  hour  day (of month)  month  day (of week)
+  #   *      *          *           *        *
+  # Example: "*/30 * * * *"   <= This will run every 30 Minutes
+  #
+  tunnel_up_cadence: ""
+  # Cadence at which tunnel needs to be brought down.
+  # Cadence is specified in cron syntax. More information about the syntax can
+  # be found in https://crontab.guru
+  # minute  hour  day (of month)  month  day (of week)
+  #   *      *          *           *        *
+  # Example: "*/30 * * * *"   <= This will run every 30 Minutes
+  #
+  tunnel_down_cadence: ""
