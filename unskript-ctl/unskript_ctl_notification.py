@@ -49,7 +49,7 @@ class SlackNotification(NotificationFactory):
             return False 
 
     def notify(self, **kwargs):
-        summary_results = kwargs.get('summary_result_table', None)
+        summary_results = kwargs.get('summary_results', None)
 
         if self.slack_config.get('enable') is False:
             self.logger.error("Slack Notification disabled")
@@ -653,41 +653,88 @@ class SmtpNotification(EmailNotification):
 
         return True
     
-    # Usage:
-    # n = Notification()
-    # n.notify(
-    #          mode='slack',   # slack, email or both, Mandatory parameter
-    #          data_type='checks',  # checks, script or both, Mandatory parameter
-    #          failed_objects=failed_objects,  # Failed objects from the checks run, Mandatory parameter
-    #          output_metadata_file=None,  # Metadata that is generated after script run, Optional 
-    #          summary_result=summary_result,  # Summary result of the run that includes pass,fail,error, Mandatory parameter
-    #          to_email=to_email,   # Only applicable for `email` mode, Optional
-    #          from_email=from_email,  # Only applicable for `email` mode, Optional
-    #          subject=subject, # Only applicable for `email` mode, Optional
-    #          access_key=access_key, # Only applicable for AWS SES email, Optional
-    #          secret_access=secret_access,  # Only applicable for AWS SES email, Optional
-    #          api_key=api_key, # Only applicable for sendgrid email, Optional
-    #          smtp_host=smtp_host, # Only applicable for SMTP email, Optional
-    #          smtp_user=smtp_user, # Only applicable for SMTP email, Optional
-    #          smtp_password=smtp_password # Only applicable for SMTP email, Optional
-    #          )
-    class Notification(NotificationFactory):
-        def __init__(self, **kwargs):
-            pass
-            super().__init__(**kwargs)
+# Usage:
+# n = Notification()
+# n.notify(
+#          mode='slack',   # slack, email or both, Mandatory parameter
+#          failed_objects=failed_objects,  # Failed objects from the checks run, Mandatory parameter
+#          output_metadata_file=None,  # Metadata that is generated after script run, Optional 
+#          summary_result=summary_result,  # Summary result of the run that includes pass,fail,error, Mandatory parameter
+#          to_email=to_email,   # Only applicable for `email` mode, Optional
+#          from_email=from_email,  # Only applicable for `email` mode, Optional
+#          subject=subject, # Email Subject, Optional
+#          subject=subject, # Only applicable for `email` mode, Optional
+#          access_key=access_key, # Only applicable for AWS SES email, Optional
+#          secret_access=secret_access,  # Only applicable for AWS SES email, Optional
+#          api_key=api_key, # Only applicable for sendgrid email, Optional
+#          smtp_host=smtp_host, # Only applicable for SMTP email, Optional
+#          smtp_user=smtp_user, # Only applicable for SMTP email, Optional
+#          smtp_password=smtp_password # Only applicable for SMTP email, Optional
+#          )
+#
 
-        def notify(self, **kwargs):
-            mode = kwargs.get('mode', 'slack')
-            result_type = kwargs.get('result_type', 'checks')
-            result = kwargs.get('result', {})
-            summary_result = kwargs.get('summary_result', [])
-            output_metadata_file = kwargs.get('output_metadata_file')
+class Notification(NotificationFactory):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.notify_config = self._config.get_notification()
+        self.email_config = self.notify_config.get('Email')
 
-            if mode.lower() == 'slack':
-                pass 
-            elif mode.lower() == 'email':
-                pass 
-            elif mode.lower() == 'both':
-                pass 
-            
-            pass 
+    def notify(self, **kwargs):
+        retval = False 
+        mode = kwargs.get('mode', 'slack')
+        failed_objects = kwargs.get('failed_objects', {})
+        summary_result = kwargs.get('summary_result', [])
+
+        if mode.lower() == 'slack':
+            retval = SlackNotification().notify(summary_results=summary_result)
+        elif mode.lower() == 'email':
+            retval = self._send_email(summary_results=summary_result,
+                                        failed_objects=failed_objects,
+                                        **kwargs)
+        elif mode.lower() == 'both':
+            retval = SlackNotification().notify(summary_results=summary_result)
+            retval = self._send_email(summary_results=summary_result,
+                                        failed_objects=failed_objects,
+                                        **kwargs)
+        return retval 
+
+    def _send_email(self, summary_results, failed_objects, **kwargs):
+        retval = False
+        if self.email_config.get('provider').lower() == 'smtp':
+            smtp = self.email_config.get('SMTP')
+            retval = SmtpNotification().notify(
+                        summary_result = summary_results,
+                        failed_result = failed_objects,
+                        output_metadata_file = kwargs.get('output_metadata_file'),
+                        smtp_host = kwargs.get('smtp_host', smtp.get('smtp-host')), 
+                        smtp_user = kwargs.get('smtp_user', smtp.get('smtp-user')),
+                        smtp_password = kwargs.get('smtp_password', smtp.get('smtp-password')),
+                        to_email = kwargs.get('to_email', smtp.get('to-email')),
+                        from_email = kwargs.get('from_email', smtp.get('from-email')),
+                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                        ) 
+        elif self.email_config.get('provider').lower() == 'sendgrid':
+            sendgrid = self.email_config.get('Sendgrid')
+            retval = SendgridNotification().notify(
+                        summary_result = summary_results,
+                        failed_result = failed_objects,
+                        output_metadata_file = kwargs.get('output_metadata_file'),
+                        from_email = kwargs.get('from_email', sendgrid.get('from-email')),
+                        to_email = kwargs.get('to_email', sendgrid.get('to-email')),
+                        api_key = kwargs.get('api_key', sendgrid.get('api_key')), 
+                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                        ) 
+        elif self.email_config.get('provider').lower() == 'ses':
+            aws = self.email_config.get('SES')
+            retval = AWSEmailNotification().notify(            
+                        summary_result = summary_results,
+                        failed_result = failed_objects,
+                        output_metadata_file = kwargs.get('output_metadata_file'),
+                        access_key = kwargs.get('access_key', aws.get('access_key')), 
+                        secret_access = kwargs.get('secret_access', aws.get('secret_access')),
+                        to_email = kwargs.get('to_email', aws.get('to-email')),
+                        from_email = kwargs.get('from_email', aws.get('from-email')),
+                        region = kwargs.get('region', aws.get('region')),
+                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                        ) 
+        return retval
