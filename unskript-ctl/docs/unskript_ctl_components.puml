@@ -1,0 +1,17 @@
+@startmindmap
+*[#Orange] unskript_ctl 
+**[#lightgreen] Database 
+***[#lightgreen] PSS 
+***[#lightgreen] Legos
+**[#lightblue] Run
+***[#lightblue] Check
+***[#lightblue] Runbook
+***[#lightblue] Script
+**[#lightgray] Notification 
+***[#lightgray] Slack
+***[#lightgray] Email
+**[#lightblue] Debug Session
+***[#lightblue] Start
+***[#lightblue] Stop
+
+@endmindmap

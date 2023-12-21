@@ -1,0 +1,86 @@
+@startuml
+state Main #LightGoldenRodYellow {
+
+    state ArgumentParser {
+        ArgumentParser : ShowRunOptions()
+        ArgumentParser : ShowListOptions()
+        ArgumentParser : ShowShowOptions() 
+        ArgumentParser : ShowDebugOptions()
+    }
+
+    state ConfigParser {
+        ConfigParser : ReadYAMLFile
+        ConfigParser : ParseGlobalConfig
+        ConfigParser : ParseJobsConfig
+        ConfigParser : ParseScheduleConfig
+        ConfigParser : ParseCredentialConfig
+        ConfigParser : ParseNotificationConfig
+    } 
+    state Instance #LightCoral
+}
+
+ConfigParser --> Instance : InValid : Exit
+Instance --> ConfigParser : Valid
+
+Instance --> ArgumentParser
+ArgumentParser --> Instance 
+
+state Runner {
+    state ChecksRunner {
+        ChecksRunner : RunChecksByName
+        ChecksRunner : RunChecks
+    }
+    state ScriptsRunner {
+        ScriptsRunner : RunScript
+    }
+    state RunbookRunner {
+        RunbookRunner : RunRunbook
+    }
+}
+Instance --> Runner 
+Runner --> Instance 
+
+
+state Notification {
+    Notification : SlackNotify : notify(*args, **kwargs)
+    Notification : EmailNotify : notify(*args, **kwargs)
+}
+
+Notification --> ConfigParser
+ConfigParser --> Notification
+
+Instance -> Notification : \t\t\t\tEnable
+Notification -> Instance : Disabled
+
+state DatabaseInterface {
+    DatabaseInterface : create(data)
+    DatabaseInterface : update(data)
+    DatabaseInterface : delete(data)
+    DatabaseInterface : read(data) 
+}
+
+Instance --> DatabaseInterface : AuditTrail 
+DatabaseInterface --> Instance 
+
+Runner --> DatabaseInterface
+DatabaseInterface --> Runner 
+
+
+state unskriptCtl #LightGreen {
+}
+
+state unctl #LightBlue {
+}
+
+unctl --> Runner 
+Runner --> unctl 
+unctl --> ConfigParser
+ConfigParser --> unctl 
+unctl --> Notification 
+Notification --> unctl 
+unctl --> DatabaseInterface
+DatabaseInterface --> unctl 
+
+unskriptCtl --> Main 
+Main --> unskriptCtl
+@enduml

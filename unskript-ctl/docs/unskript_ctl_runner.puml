@@ -1,0 +1,26 @@
+@startuml
+abstract class RunnerFactory {
+    - abstract init()
+    - abstract run()
+}
+
+class ChecksRunner extends RunnerFactory {
+    - init()
+    + run()
+}
+
+class ScriptsRunner extends RunnerFactory {
+    - init()
+    + run()
+}
+
+class RunInterface {
+    - _sr : ScriptsRunner()
+    - _cr : ChecksRunner()
+    + run_check_by_name(check_name: str, config_file: str)
+    + run(checks: list[str], config: str)
+}
+
+ScriptsRunner o-- RunInterface
+ChecksRunner o-- RunInterface
+@enduml
