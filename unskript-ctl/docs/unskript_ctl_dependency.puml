@@ -1,0 +1,8 @@
+@startuml
+participant  unskript_ctl
+participant unctl
+entity unskript_ctl_config
+
+unskript_ctl -> unskript_ctl_config
+unctl -> unskript_ctl_config
+@enduml

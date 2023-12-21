@@ -1,0 +1,30 @@
+@startuml
+abstract class NotificationFactory {
+    - abstract init()
+    - abstract getConfig()
+    - abstract notify()
+}
+
+class SlackNotification extends NotificationFactory {
+    - init()
+    + getConfig()
+    + notify()
+}
+
+class EmailNotification extends NotificationFactory {
+    - init()
+    + getConfig()
+    + notify()
+}
+
+class NotificationInterface {
+    - slack: SlackNotification()
+    - email: EmailNotification()
+
+    + getConfig()
+    + notify()
+}
+
+NotificationInterface --o SlackNotification
+NotificationInterface --o EmailNotification
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+class TestNotifications {
+    + test_slack_notification()
+    + test_email_notification()
+    + test_notification_interface()
+}
+
+TestNotifications ..> SlackNotification : test_slack_notification()
+TestNotifications ..> EmailNotification : test_email_notification()
+TestNotifications ..> NotificationInterface : test_notification_interface()
+@enduml

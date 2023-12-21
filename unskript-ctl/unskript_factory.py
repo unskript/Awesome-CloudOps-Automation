@@ -68,14 +68,15 @@ class ScriptsFactory(UnskriptFactory):
     def run(self, *args, **kwargs):
         pass
 
-class ReportsFactory(UnskriptFactory):
-    def __init__(self):
-        super().__init__()
+class NotificationFactory(UnskriptFactory):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self._config = ConfigParserFactory()
         pass
 
-    def run(self, *args, **kwargs):
-        pass
+    def notify(self, **kwargs):
+        pass 
 
 class DatabaseFactory(UnskriptFactory):
     def __init__(self):
