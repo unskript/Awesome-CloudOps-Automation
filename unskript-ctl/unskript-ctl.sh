@@ -5,4 +5,10 @@
 #     and Run the runbook
 
 cd /usr/local/bin
-/opt/conda/bin/python ./unskript_ctl.py "$@"
+if [ -f "/opt/conda/bin/python" ];
+then
+    /opt/conda/bin/python ./unskript_ctl.py "$@"
+elif [ -f "/opt/unskript/bin/python" ];
+then
+    /opt/unskript/bin/python ./unskript_ctl.py "$@"
+fi
