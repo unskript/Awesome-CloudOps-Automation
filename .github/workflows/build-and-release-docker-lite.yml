@@ -1,4 +1,4 @@
-name: Build and Release Docker
+name: Build and Release Docker Lite
 
 on:
   workflow_call:
