@@ -53,6 +53,7 @@ class ChecksFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
         self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self._config = ConfigParserFactory()
         pass 
 
     def run(self, *args, **kwargs):
@@ -63,6 +64,7 @@ class ScriptsFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
         self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self._config = ConfigParserFactory()
         pass
 
     def run(self, *args, **kwargs):

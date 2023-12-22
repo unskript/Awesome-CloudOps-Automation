@@ -112,7 +112,7 @@ class TestNotification(unittest.TestCase):
         from_email = 'sender@example.com'  # Provide a sample sender email
         subject = 'Test Subject'  # Provide a sample subject
         notification = Notification()
-        result = notification.notify(mode='email', summary_result=summary_result, failed_objects=failed_objects,
+        result = notification.notify(mode='email', summary_result=summary_result,
                                      to_email=to_email, from_email=from_email, subject=subject)
         mock_smtp_notify.assert_called_once_with(
             summary_result=summary_result,
@@ -139,7 +139,7 @@ class TestNotification(unittest.TestCase):
         from_email = 'sender@example.com'  # Provide a sample sender email
         subject = 'Test Subject'  # Provide a sample subject
         notification = Notification()
-        result = notification.notify(mode='both', summary_result=summary_result, failed_objects=failed_objects,
+        result = notification.notify(mode='both', summary_result=summary_result,
                                      to_email=to_email, from_email=from_email, subject=subject)
         self.assertTrue(result)  # Assert that both Slack and Email notifications were successful
 
