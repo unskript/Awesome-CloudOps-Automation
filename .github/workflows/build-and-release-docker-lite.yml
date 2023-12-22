@@ -432,7 +432,7 @@ jobs:
 
       - name: Prepare to Build
         run: |
-          cd $HOME/devops/dockers/jupyterlab/oss_docker
+          cd $HOME/devops/dockers/jupyterlab/oss_docker_lite
 
           ls -l /tmp/unskript/
           # ls -l /tmp/elyra/
@@ -466,11 +466,11 @@ jobs:
           docker buildx use mybuilder
           docker buildx inspect --bootstrap
           docker buildx ls
-          cd $HOME/devops/dockers/jupyterlab/oss_docker
+          cd $HOME/devops/dockers/jupyterlab/oss_docker_lite
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
           make copy
-          cd $HOME/devops/dockers/jupyterlab/oss_docker/
+          cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
@@ -479,11 +479,11 @@ jobs:
           git checkout ${{ inputs.awesome_branch }}
           cd ..
           make syncrunbooks
-          cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker/
-          cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker/
-          cp awesome/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/template.ipynb
-          cp awesome/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker/runbooks/Welcome.ipynb
-          cd $HOME/devops/dockers/jupyterlab/oss_docker/
+          cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
+          cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
+          cp awesome/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker_lite/runbooks/template.ipynb
+          cp awesome/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker_lite/runbooks/Welcome.ipynb
+          cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cp $HOME/devops/dockers/jupyterlab/common/install_utils.sh .
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
