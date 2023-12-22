@@ -103,55 +103,55 @@ permissions:
   contents: read
 
 jobs:
-  build-elyra:
-    runs-on: ubuntu-latest
-    if: ${{ inputs.enabled }}
-    strategy:
-      fail-fast: false
+  # build-elyra:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ inputs.enabled }}
+  #   strategy:
+  #     fail-fast: false
 
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
-        with:
-          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+  #   steps:
+  #     - name: Harden Runner
+  #       uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
+  #       with:
+  #         egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
-      - name: Install system dependencies
-        run: |
-          pip install shyaml
+  #     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
+  #     - name: Get current date
+  #       id: date
+  #       run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+  #     - name: Install system dependencies
+  #       run: |
+  #         pip install shyaml
 
-      - name: Update Spy2 to workaround for repo timeout issue
-        run: |
-           sudo gem install apt-spy2
-           sudo apt-spy2 fix --commit --launchpad --country=US
-           sudo apt-get update
+  #     - name: Update Spy2 to workaround for repo timeout issue
+  #       run: |
+  #          sudo gem install apt-spy2
+  #          sudo apt-spy2 fix --commit --launchpad --country=US
+  #          sudo apt-get update
 
-      - name: Set up Python 3.x
-        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
-        with:
-          python-version: '3.7'
+  #     - name: Set up Python 3.x
+  #       uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
+  #       with:
+  #         python-version: '3.7'
 
-      - name: Checkout & Build Code
-        run: |
-          cd $HOME
-          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/elyra.git elyra
-          cd elyra
-          git checkout ${{ inputs.elyra_branch }}
-          python3 ./setup.py sdist
-          mv dist/elyra*.tar.gz /tmp
+  #     - name: Checkout & Build Code
+  #       run: |
+  #         cd $HOME
+  #         git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/elyra.git elyra
+  #         cd elyra
+  #         git checkout ${{ inputs.elyra_branch }}
+  #         python3 ./setup.py sdist
+  #         mv dist/elyra*.tar.gz /tmp
 
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          name: elyra-${{ github.run_id }}
-          path: /tmp/elyra-3.0.0.dev0.tar.gz
+  #     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+  #       with:
+  #         name: elyra-${{ github.run_id }}
+  #         path: /tmp/elyra-3.0.0.dev0.tar.gz
 
   build-unskript:
     runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
-    needs: [build-elyra]
+    # needs: [build-elyra]
     strategy:
       fail-fast: false
 
@@ -197,7 +197,7 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
-          /usr/bin/env python -m pip install /tmp/elyra/*.tar.gz
+          # /usr/bin/env python -m pip install /tmp/elyra/*.tar.gz
           # We use the --upgrade-strage only-if-needed and --use-deprecated=legacy-resolver to avoid
           # PIP dependency loop. Since we are asking the git runner to be of ubuntu-latest, it becomes
           # a moving target for us hence we want to restrict the packages that are needed for unskript
@@ -232,117 +232,117 @@ jobs:
           path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
 
 
-  build-jlab-celltoolbar:
-    runs-on: ubuntu-20.04
-    if: ${{ inputs.enabled }}
-    strategy:
-      fail-fast: false
+  # build-jlab-celltoolbar:
+  #   runs-on: ubuntu-20.04
+  #   if: ${{ inputs.enabled }}
+  #   strategy:
+  #     fail-fast: false
 
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
-        with:
-          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+  #   steps:
+  #     - name: Harden Runner
+  #       uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
+  #       with:
+  #         egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+  #     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
+  #     - name: Get current date
+  #       id: date
+  #       run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
 
-      - name: Update Spy2 to workaround for repo timeout issue
-        run: |
-           sudo gem install apt-spy2
-           sudo apt-spy2 fix --commit --launchpad --country=US
-           sudo apt-get update
+  #     - name: Update Spy2 to workaround for repo timeout issue
+  #       run: |
+  #          sudo gem install apt-spy2
+  #          sudo apt-spy2 fix --commit --launchpad --country=US
+  #          sudo apt-get update
 
-      - name: Set up Python 3.x
-        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
-        with:
-          python-version: '3.7'
+  #     - name: Set up Python 3.x
+  #       uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
+  #       with:
+  #         python-version: '3.7'
 
-      - name: Install system dependencies
-        run: |
-          pip install shyaml
-          sudo apt install nodejs npm
-          pip install jupyterlab
+  #     - name: Install system dependencies
+  #       run: |
+  #         pip install shyaml
+  #         sudo apt install nodejs npm
+  #         pip install jupyterlab
 
-      - name: Checkout Code
-        run: |
-          cd $HOME
-          export NODE_OPTIONS=--openssl-legacy-provider
-          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jlab-enhanced-cell-toolbar.git jlab-enhanced-cell-toolbar
-          cd jlab-enhanced-cell-toolbar
-          git checkout ${{ inputs.celltoolbar_branch }}
-          /usr/bin/env python -m pip install jupyter-packaging
-          /usr/bin/env python -m pip install --upgrade markupsafe
-          /usr/bin/env python -m pip install --upgrade jinja2
-          jlpm install
-          /usr/bin/env python ./setup.py bdist_wheel
-          mv dist/*.whl /tmp
-
-
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          name: toolbar-${{ github.run_id }}
-          path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
-
-  build-code-snippets:
-    runs-on: ubuntu-20.04
-    if: ${{ inputs.enabled }}
-    strategy:
-      fail-fast: false
-
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
-        with:
-          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
-
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
-
-      - name: Update Spy2 to workaround for repo timeout issue
-        run: |
-           sudo gem install apt-spy2
-           sudo apt-spy2 fix --commit --launchpad --country=US
-           sudo apt-get update
-
-      - name: Set up Python 3.x
-        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
-        with:
-          python-version: '3.7'
-
-      - name: Install system dependencies
-        run: |
-          pip install shyaml
-          sudo apt install nodejs npm
-          pip install jupyterlab
-
-      - name: Checkout Code
-        run: |
-          cd $HOME
-          git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jupyterlab-code-snippets.git jupyterlab-code-snippets
-          cd jupyterlab-code-snippets
-          git checkout ${{ inputs.snippet_branch }}
-          /usr/bin/env python -m pip install jupyter-packaging
-          /usr/bin/env python -m pip install --upgrade markupsafe
-          /usr/bin/env python -m pip install --upgrade jinja2
-          jlpm install
-          /usr/bin/env python ./setup.py bdist_wheel
-          mv dist/*.whl /tmp
+  #     - name: Checkout Code
+  #       run: |
+  #         cd $HOME
+  #         export NODE_OPTIONS=--openssl-legacy-provider
+  #         git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jlab-enhanced-cell-toolbar.git jlab-enhanced-cell-toolbar
+  #         cd jlab-enhanced-cell-toolbar
+  #         git checkout ${{ inputs.celltoolbar_branch }}
+  #         /usr/bin/env python -m pip install jupyter-packaging
+  #         /usr/bin/env python -m pip install --upgrade markupsafe
+  #         /usr/bin/env python -m pip install --upgrade jinja2
+  #         jlpm install
+  #         /usr/bin/env python ./setup.py bdist_wheel
+  #         mv dist/*.whl /tmp
 
 
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          name: code-snippets-${{ github.run_id }}
-          path: /tmp/jupyterlab_code_snippets-2.1.1-py3-none-any.whl
+  #     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+  #       with:
+  #         name: toolbar-${{ github.run_id }}
+  #         path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
+
+  # build-code-snippets:
+  #   runs-on: ubuntu-20.04
+  #   if: ${{ inputs.enabled }}
+  #   strategy:
+  #     fail-fast: false
+
+  #   steps:
+  #     - name: Harden Runner
+  #       uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
+  #       with:
+  #         egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+  #     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
+  #     - name: Get current date
+  #       id: date
+  #       run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
+
+  #     - name: Update Spy2 to workaround for repo timeout issue
+  #       run: |
+  #          sudo gem install apt-spy2
+  #          sudo apt-spy2 fix --commit --launchpad --country=US
+  #          sudo apt-get update
+
+  #     - name: Set up Python 3.x
+  #       uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
+  #       with:
+  #         python-version: '3.7'
+
+  #     - name: Install system dependencies
+  #       run: |
+  #         pip install shyaml
+  #         sudo apt install nodejs npm
+  #         pip install jupyterlab
+
+  #     - name: Checkout Code
+  #       run: |
+  #         cd $HOME
+  #         git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/jupyterlab-code-snippets.git jupyterlab-code-snippets
+  #         cd jupyterlab-code-snippets
+  #         git checkout ${{ inputs.snippet_branch }}
+  #         /usr/bin/env python -m pip install jupyter-packaging
+  #         /usr/bin/env python -m pip install --upgrade markupsafe
+  #         /usr/bin/env python -m pip install --upgrade jinja2
+  #         jlpm install
+  #         /usr/bin/env python ./setup.py bdist_wheel
+  #         mv dist/*.whl /tmp
+
+
+  #     - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+  #       with:
+  #         name: code-snippets-${{ github.run_id }}
+  #         path: /tmp/jupyterlab_code_snippets-2.1.1-py3-none-any.whl
 
   build-docker:
     runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
-    needs: [build-unskript, build-elyra, build-jlab-celltoolbar, build-code-snippets]
+    needs: [build-unskript]
     strategy:
       fail-fast: false
 
@@ -395,15 +395,15 @@ jobs:
           pwd
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/devops.git devops
 
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          name: code-snippets-${{ github.run_id }}
-          path: /tmp/code_snippet
+      # - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      #   with:
+      #     name: code-snippets-${{ github.run_id }}
+      #     path: /tmp/code_snippet
 
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          name: toolbar-${{ github.run_id }}
-          path: /tmp/jlab_enhanced_cell_toolbar
+      # - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      #   with:
+      #     name: toolbar-${{ github.run_id }}
+      #     path: /tmp/jlab_enhanced_cell_toolbar
 
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
@@ -415,25 +415,25 @@ jobs:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript
 
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          name: elyra-${{ github.run_id }}
-          path: /tmp/elyra
+      # - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      #   with:
+      #     name: elyra-${{ github.run_id }}
+      #     path: /tmp/elyra
 
       - name: Prepare to Build
         run: |
           cd $HOME/devops/dockers/jupyterlab/oss_docker
 
           ls -l /tmp/unskript/
-          ls -l /tmp/elyra/
-          ls -l /tmp/jlab_enhanced_cell_toolbar/
-          ls -l /tmp/code_snippet/
+          # ls -l /tmp/elyra/
+          # ls -l /tmp/jlab_enhanced_cell_toolbar/
+          # ls -l /tmp/code_snippet/
           tar xf /tmp/unskript/code_snippet_schemas.tar
           cd downloads
           mv /tmp/unskript/*.whl .
-          mv /tmp/code_snippet/*.whl .
-          mv /tmp/jlab_enhanced_cell_toolbar/*.whl .
-          mv /tmp/elyra/elyra*tar.gz .
+          # mv /tmp/code_snippet/*.whl .
+          # mv /tmp/jlab_enhanced_cell_toolbar/*.whl .
+          # mv /tmp/elyra/elyra*tar.gz .
           if [[ ${{ inputs.latest }} == "true" ]]; then
               bt="${{ env.DOCKER_IMAGE }}:${{ inputs.build_number }} -t ${{ env.DOCKER_IMAGE }}:latest"
           else
@@ -444,8 +444,8 @@ jobs:
       - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af # v2.0.0
         with:
           name: |
-            elyra-${{ github.run_id }}
-            toolbar-${{ github.run_id }}
+            # elyra-${{ github.run_id }}
+            # toolbar-${{ github.run_id }}
             code-snippets-${{ github.run_id }}
             unskript-${{ github.run_id }}
             schema-${{ github.run_id }}
@@ -500,8 +500,8 @@ jobs:
       - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af # v2.0.0
         with:
           name: |
-            elyra-${{ github.run_id }}
-            toolbar-${{ github.run_id }}
-            code-snippets-${{ github.run_id }}
+            # elyra-${{ github.run_id }}
+            # toolbar-${{ github.run_id }}
+            # code-snippets-${{ github.run_id }}
             unskript-${{ github.run_id }}
             schema-${{ github.run_id }}
