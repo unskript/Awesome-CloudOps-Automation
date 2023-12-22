@@ -227,8 +227,8 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
     status_dict['runbook'] = filename
     output_file = filename.replace('.ipynb', '_output.txt')
     status_dict['result'] = []
-    r_name = '\x1B[1;20;42m' + "Executing & Logging to -> " + \
-        output_file.strip() + '\x1B[0m'
+    r_name = '\x1B[1;20;42m' + "Executing... " + filename + '\x1B[0m' + '\n'
+    r_name += '\x1B[1;20;42m' + "Logging to... " + output_file.strip() + '\x1B[0m' + '\n'
     print(r_name)
 
 
