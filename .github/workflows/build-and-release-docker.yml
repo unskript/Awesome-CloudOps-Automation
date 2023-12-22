@@ -103,6 +103,7 @@ permissions:
   contents: read
 
 jobs:
+  # EN-5207: for this ticket we need only build-unskript and build docker job
   # build-elyra:
   #   runs-on: ubuntu-latest
   #   if: ${{ inputs.enabled }}
@@ -151,6 +152,7 @@ jobs:
   build-unskript:
     runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
+    # EN-5207: for this ticket we need only build-unskript and build docker job
     # needs: [build-elyra]
     strategy:
       fail-fast: false
@@ -162,10 +164,12 @@ jobs:
           egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-        with:
-          name: elyra-${{ github.run_id }}
-          path: /tmp/elyra
+
+      # EN-5207: for this ticket we need only build-unskript and build docker job
+      # - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      #   with:
+      #     name: elyra-${{ github.run_id }}
+      #     path: /tmp/elyra
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
@@ -197,7 +201,10 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/unskript.git unskript
           cd unskript
           git checkout ${{ inputs.unskript_branch }}
+
+          # EN-5207: for this ticket we need only build-unskript and build docker job
           # /usr/bin/env python -m pip install /tmp/elyra/*.tar.gz
+
           # We use the --upgrade-strage only-if-needed and --use-deprecated=legacy-resolver to avoid
           # PIP dependency loop. Since we are asking the git runner to be of ubuntu-latest, it becomes
           # a moving target for us hence we want to restrict the packages that are needed for unskript
@@ -231,7 +238,7 @@ jobs:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
 
-
+  # EN-5207: for this ticket we need only build-unskript and build docker job
   # build-jlab-celltoolbar:
   #   runs-on: ubuntu-20.04
   #   if: ${{ inputs.enabled }}
@@ -286,6 +293,7 @@ jobs:
   #         name: toolbar-${{ github.run_id }}
   #         path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
 
+  # EN-5207: for this ticket we need only build-unskript and build docker job
   # build-code-snippets:
   #   runs-on: ubuntu-20.04
   #   if: ${{ inputs.enabled }}
@@ -395,6 +403,7 @@ jobs:
           pwd
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/devops.git devops
 
+      # EN-5207: for this ticket we need only build-unskript and build docker job
       # - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
       #   with:
       #     name: code-snippets-${{ github.run_id }}
@@ -415,6 +424,7 @@ jobs:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript
 
+      # EN-5207: for this ticket we need only build-unskript and build docker job
       # - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
       #   with:
       #     name: elyra-${{ github.run_id }}
