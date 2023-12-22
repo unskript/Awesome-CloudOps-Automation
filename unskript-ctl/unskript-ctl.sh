@@ -11,4 +11,6 @@ then
 elif [ -f "/opt/unskript/bin/python" ];
 then
     /opt/unskript/bin/python ./unskript_ctl.py "$@"
+else
+    /usr/bin/env python ./unskript_ctl.py "$@"
 fi
