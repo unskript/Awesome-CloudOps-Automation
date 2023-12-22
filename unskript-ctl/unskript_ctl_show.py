@@ -8,7 +8,8 @@
 # FOR A PARTICULAR PURPOSE
 #
 #
-import nbformat
+import yaml
+import json
 import os
 import pprint 
 import sys
@@ -43,26 +44,23 @@ def display_failed_logs():
         parser.print_help()
         sys.exit(0)
     
-    output = UNSKRIPT_EXECUTION_DIR + "/" + f"{exec_id}_output.ipynb"
+    output = UNSKRIPT_EXECUTION_DIR + "/" + f"{exec_id}_output.txt"
     if os.path.exists(output) is False:
         print(
             f"\033[1m No Execution Log Found for Execution ID: {exec_id} \033[0m")
         return
-
+    d_output = []
     with open(output, 'r') as f:
-        nb = nbformat.read(f, as_version=4)
-    d_output = ''
-    for cell in nb.get('cells'):
-        if cell.get('outputs'):
-            cell_output = cell.get('outputs')
-            for output in cell_output:
-                name = cell.get('metadata').get('name')
-                if name:
-                    d_output +=  name + '\n'
-                o = output.dict()
-                if o.get('text'):
-                    d_output += o.get('text') + '\n'
-    print(d_output)
+        d_output = json.loads(f.read())
+
+    print("\033[1mFAILED OBJECTS \033[0m \n")
+    for o in d_output:
+        if o.get('status') != 1:
+            print(f"\033[1m{o.get('name')} \033[0m")
+            p = yaml.safe_dump(o.get('objects'))
+            print(p)
+            print("\n")
+
 
 def show_audit_trail():
     """show_audit_trail This function reads the failed logs for a given execution ID
