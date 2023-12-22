@@ -141,6 +141,8 @@ class ConfigParser():
         self.config_file = config_file
         # Dictionary of jobs, with job name being the key.
         self.jobs = {}
+        self.tunnel_up_cmd = None
+        self.tunnel_down_cmd = None
 
     def parse_config_yaml(self) -> dict:
         """parse_config_yaml: This function parses the config yaml file and converts the
@@ -309,7 +311,6 @@ class ConfigParser():
 
                 # If there is remote_debugging commands, add them too
                 if self.tunnel_up_cmd:
-                    print()
                     f.write(self.tunnel_up_cmd)
                     f.write("\n")
                 if self.tunnel_down_cmd:
