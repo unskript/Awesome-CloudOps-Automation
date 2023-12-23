@@ -484,7 +484,6 @@ jobs:
           cp awesome/build/templates/Welcome_template.ipynb $HOME/devops/dockers/jupyterlab/oss_docker_lite/runbooks/template.ipynb
           cp awesome/build/templates/Welcome.ipynb $HOME/devops/dockers/jupyterlab/oss_docker_lite/runbooks/Welcome.ipynb
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
-          cp $HOME/devops/dockers/jupyterlab/common/install_utils.sh .
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
 
