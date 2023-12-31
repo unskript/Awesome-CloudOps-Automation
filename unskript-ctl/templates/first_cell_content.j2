@@ -1,0 +1,12 @@
+import json
+from unskript import nbparams
+from unskript.fwk.workflow import Task, Workflow
+from unskript.secrets import ENV_MODE, ENV_MODE_LOCAL
+
+env = {"ENV_MODE": "ENV_MODE_LOCAL"}
+secret_store_cfg = {"SECRET_STORE_TYPE": "SECRET_STORE_TYPE_LOCAL"}
+
+paramDict = {{ runbook_params }}
+paramsJson = json.dumps(paramDict)
+nbParamsObj = nbparams.NBParams(paramsJson)
+{{ runbook_variables }}

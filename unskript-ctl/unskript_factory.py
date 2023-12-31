@@ -25,6 +25,7 @@ class UnskriptFactory(ABC):
                 os.makedirs(os.path.dirname(cls.log_file_name))
             cls._instance.logger = cls._configure_logger()
         return cls._instance 
+    
 
     @staticmethod
     def _configure_logger():
@@ -47,7 +48,11 @@ class UnskriptFactory(ABC):
     def __init__(self):    
         pass
 
-
+    def _banner(self, msg: str):
+        print('\033[4m\x1B[1;20;42m' + msg + '\x1B[0m\033[0m')
+    
+    def _error(self, msg: str):
+        print('\x1B[1;20;41m' + 'ERROR' + msg + '\x1B[0m')
 
 class ChecksFactory(UnskriptFactory):
     def __init__(self):
@@ -56,7 +61,7 @@ class ChecksFactory(UnskriptFactory):
         self._config = ConfigParserFactory()
         pass 
 
-    def run(self, *args, **kwargs):
+    def run(self, **kwargs):
         pass 
 
 

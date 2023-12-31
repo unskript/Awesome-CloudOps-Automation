@@ -90,7 +90,7 @@ class ZoDBInterface(DatabaseFactory):
         data = None
         if not self.db:
             self.logger.error(f"DB {self.db_name} Not initialized or does not exist")
-            return 
+            return False
         if 'collection_name' in kwargs:
             self.collection_name = kwargs['collection_name']
         if 'data' in kwargs:
@@ -104,7 +104,7 @@ class ZoDBInterface(DatabaseFactory):
             del root
             del connection
 
-        pass 
+        return True 
 
 
     def delete(self, **kwargs):
@@ -119,7 +119,8 @@ class ZoDBInterface(DatabaseFactory):
                 self.logger.debug(f'Deleted DB {self.db_name}')
             except Exception as e:
                 self.logger.error(f'Deletion of DB {self.db_name} had error. {e}')
-                pass 
+                return False
+        return True 
 
 class SQLInterface(DatabaseFactory):
     def __init__(self, **kwargs):
@@ -193,7 +194,7 @@ class SQLInterface(DatabaseFactory):
         # Update rows based on optional filters and new data
         if new_data is None or filters is None:
             # If no new_data or filters provided, do not perform update
-            return
+            return False
 
         # Construct SET clause for new data
         set_values = ', '.join(f"{key} = ?" for key in new_data)
@@ -208,12 +209,13 @@ class SQLInterface(DatabaseFactory):
         ''', (*set_params, *filter_values))
 
         self.conn.commit()
+        return True
 
     def delete(self, filters=None):
         # Delete rows based on optional filters
         if filters is None:
             # If no filters provided, do not perform deletion
-            return
+            return False
 
         # Construct the WHERE clause based on the filters
         filter_conditions = ' AND '.join(f"{key} = ?" for key in filters)
@@ -224,6 +226,7 @@ class SQLInterface(DatabaseFactory):
         ''', filter_values)
 
         self.conn.commit()
+        return True 
 
     def close_connection(self):
         # Close the database connection
@@ -273,19 +276,40 @@ class CodeSnippets(ZoDBInterface):
                 if snippet.get('metadata') and
                 snippet.get('metadata').get('action_is_check') and
                 snippet.get('metadata').get('action_entry_function') == check_name]
+    
+    def get_action_name_from_id(self, action_uuid: str):
+        matches = [snippet for snippet in self.snippets if snippet.get('metadata') and snippet.get('metadata').get('uuid') == action_uuid]
+        return matches[0] if matches else None
+
+    def get_connector_name_from_id(self, action_uuid: str):
+        matches = [
+            snippet.get('metadata').get('action_type').replace('LEGO_TYPE_', '').lower()
+            for snippet in self.snippets
+            if snippet.get('metadata') and snippet.get('metadata').get('uuid') == action_uuid
+        ]
+        return matches[0] if matches else None
+
+# PSS Interface
+class PSS(ZoDBInterface):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 
 # DBInterface 
 class DBInterface(UnskriptFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.db_type = 'zodb'
-        self.db = None
-        if "db_type" in kwargs: 
-            self.db_type = kwargs["db_type"]
-        if self.db_type.lower() == 'zodb':
-            self.db = ZoDBInterface()
-        else:
-            self.db = SQLInterface()
-        if not self.db:
-            raise ValueError("Unable to Initialize Database Component")
+        # PSS Interface 
+        self.pss = PSS(db_name='unskript_pss.db',
+                       db_dir = '/unskript/db',
+                       collection_name = 'audit_trail')
+        
+        # CodeSnippet Interface
+        self.cs = CodeSnippets(db_name = 'snippets.db',
+                               db_dir = '/var/unskript',
+                               collection_name = 'unskript_cs')
+        if not self.pss or not self.cs:
+            self.logger.error("Unable to Initialize CS and PSS Database!, Check log file")
+            return 
+        
+        self.logger.info("Initialized DBInterface")

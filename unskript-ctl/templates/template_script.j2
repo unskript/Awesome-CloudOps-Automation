@@ -1,0 +1,35 @@
+def _run_function(fn):
+    import io
+    import os
+    import sys
+    global w
+    l_cell = False
+    if fn == "last_cell":
+        l_cell = True
+    fn = fn + "()"
+    output = None
+    output_buffer = io.StringIO()
+    sys.stdout = output_buffer
+    if l_cell is True:
+        last_cell()
+        output = output_buffer.getvalue()
+    else:
+        eval(fn)
+    sys.stdout = sys.__stdout__
+    return output
+
+def do_run_():
+    import sys
+    from tqdm import tqdm
+    output = None
+    for i in tqdm(range({{ num_checks }}), desc="Running", leave=True, ncols=100):
+        if i == {{ num_checks - 1 }}:
+             fn = "last_cell"
+        else:
+            fn = "check_" + str(i)
+        if hasattr(globals().get(fn), "__call__"):
+            output = _run_function(fn)
+    return output
+
+if __name__ == "__main__":
+    do_run_()

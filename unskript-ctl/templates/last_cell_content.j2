@@ -1,0 +1,15 @@
+from unskript.legos.utils import CheckOutput, CheckOutputStatus
+
+try:
+    if 'w' in globals():
+        if w.check_run:
+            for id,output in w.check_output.items():
+                output = json.loads(output)
+                output['id'] = id
+                print(json.dumps(output))
+        else:
+            print(json.dumps("Not a check run"))
+    else:
+        print(json.dumps("ERROR: Internal Error, Workflow is missing"))
+except Exception as e:
+    print(e)
