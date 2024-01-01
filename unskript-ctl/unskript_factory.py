@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 
 class UnskriptFactory(ABC):
     _instance = None 
-    log_file_name = os.path.join(os.environ.get('HOME'), '.unskript','unskript_ctl.log')
+    log_file_name = os.path.join(os.path.dirname(__file__), 'unskript_ctl.log')
     
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -42,6 +42,7 @@ class UnskriptFactory(ABC):
         
         # Add the file handler to the logger
         logger.addHandler(file_handler)
+        logger.propagate = False
         
         return logger
     

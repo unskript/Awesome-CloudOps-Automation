@@ -263,13 +263,16 @@ class CodeSnippets(ZoDBInterface):
 
     def get_checks_by_connector(self, connector_names: list, full_snippet: bool = False):
         filtered_snippets = []
+        if not isinstance(connector_names, list):
+            connector_names = [connector_names]
+
         for snippet in self.snippets:
             metadata = snippet.get('metadata')
             if metadata and metadata.get('action_is_check'):
                 connector = metadata.get('action_type')
                 connector = connector.split('_')[-1].lower()
                 if any(name.lower() == 'all' or re.match(name.lower(), connector) for name in connector_names):
-                    if not full_snippet:
+                    if full_snippet:
                         filtered_snippets.append(snippet)
                     else:
                         filtered_snippets.append([

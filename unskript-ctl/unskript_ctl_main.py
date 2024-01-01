@@ -108,15 +108,15 @@ class UnskriptCtl(UnskriptFactory):
                 all_connectors = all_connectors[0].split(',')
             for connector in all_connectors:
                 connector = connector.replace(',', '')
-            temp_list = self._db.cs.get_checks_by_connector(connector_names=all_connectors)
+            temp_list = self._db.cs.get_checks_by_connector(all_connectors, True)
             check_list = []
             for t in temp_list:
                 if t not in check_list:
                     check_list.append(t)
-            check_list = self._db.cs.get_checks_by_connector(connector_names=all_connectors)
+            # check_list = self._db.cs.get_checks_by_connector(all_connectors, True)
             status_of_run = self._check.run(checks_list=check_list)
         elif args.all is not False:
-            check_list = self._db.cs.get_checks_by_connector(connector_names="all", full_snippet=True)
+            check_list = self._db.cs.get_checks_by_connector("all", True)
             status_of_run = self._check.run(checks_list=check_list)
         else:
             parser.print_help()
