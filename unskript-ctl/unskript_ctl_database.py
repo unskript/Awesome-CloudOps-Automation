@@ -25,7 +25,6 @@ class ZoDBInterface(DatabaseFactory):
         self.db_name = 'unskript_pss.db'
         self.db_dir = '/unskript/db'
         self.collection_name = 'audit_trail'
-        self.db = None
         for key, value in kwargs.items():
             if key in ('db_name'):
                 self.db_name = value
@@ -33,6 +32,8 @@ class ZoDBInterface(DatabaseFactory):
                 self.db_dir = value
             if key in ('collection_name'):
                 self.collection_name = value 
+        
+        self.db = self.create()
 
     def create(self, **kwargs):
         for key, value in kwargs.items():
@@ -98,7 +99,9 @@ class ZoDBInterface(DatabaseFactory):
         
         with self.db.transaction() as connection:
             root = connection.root()
-            root[self.collection_name].update(data)
+            old_data = root[self.collection_name]
+            old_data.update(data)
+            root[self.collection_name] = old_data
             connection.transaction_manager.commit()
             connection.close()
             del root
@@ -234,13 +237,22 @@ class SQLInterface(DatabaseFactory):
 
 # SnippetsDB Interface
 class CodeSnippets(ZoDBInterface):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.db_dir = '/var/unskript'
         self.db_name = 'snippets.db'
         self.collection_name = 'unskript_cs'
+        
+        if 'db_dir' in kwargs:
+            self.db_dir = kwargs.get('db_dir')
+        if 'db_name' in kwargs:
+            self.db_name = kwargs.get('db_name')
+        if 'collection_name' in kwargs:
+            self.collection_name = kwargs.get('collection_name')
+        
         super().__init__(db_dir=self.db_dir,
                          db_name=self.db_name,
                          collection_name=self.collection_name)
+        
         self.snippets = self.read() or []
     
     def get_checks_by_uuid(self, check_uuid_list: list):

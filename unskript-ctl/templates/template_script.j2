@@ -22,8 +22,8 @@ def do_run_():
     import sys
     from tqdm import tqdm
     output = None
-    for i in tqdm(range({{ num_checks }}), desc="Running", leave=True, ncols=100):
-        if i == {{ num_checks - 1 }}:
+    for i in tqdm(range({{ num_checks + 2}}), desc="Running", leave=True, ncols=100):
+        if i == {{ num_checks + 1}}:
              fn = "last_cell"
         else:
             fn = "check_" + str(i)

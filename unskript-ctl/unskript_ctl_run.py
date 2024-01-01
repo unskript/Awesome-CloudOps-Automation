@@ -42,6 +42,7 @@ class Checks(ChecksFactory):
         self.connector_types = []
         self.status_list_of_dict = []
         self.uglobals = UnskriptGlobals()
+        self.uglobals['global'] = self.checks_globals
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -51,7 +52,7 @@ class Checks(ChecksFactory):
             self.logger.error("ERROR: checks_list is a mandatory parameter to be sent, cannot run without the checks list")
             raise ValueError("Parameter check_list is not present in the argument, please call run with the check_list=[list_of_checks]") 
         checks_list = kwargs.get('checks_list')
-        if len(checks_list) == 0:
+        if not len(checks_list):
             self.logger.error("ERROR: Checks list is empty, Cannot run anything")
             raise ValueError("Checks List is empty!")
         
@@ -60,7 +61,7 @@ class Checks(ChecksFactory):
         if not self._create_jit_script(checks_list=checks_list):
             self.logger.error("ERROR: Cannot create JIT script to run the checks, please look at logs")
             raise ValueError("Unable to create JIT script to run the checks")
-        
+        outputs = None
         try:
             if "/tmp" not in sys.path:
                 sys.path.append("/tmp/")
@@ -78,15 +79,19 @@ class Checks(ChecksFactory):
             outputs = output_list 
         except Exception as e:
             self.logger.error(e)
-            raise e 
+            self._error(str(e))
         finally:
             self.update_exec_id()
             output_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
+            if not outputs:
+                self.logger.error("Output is None from check's output")
+                self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
+                sys.exit(0)
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(json.dumps(outputs))
             if len(outputs) == 0:
                 self.logger.error(f"Output from checks execution is empty, pls check {self.temp_jit_file}")
-                self._error(f"Output from checks execution is empty, pls check {self.temp_jit_file}")
+                self._error(f" Output from checks execution is empty, pls check {self.temp_jit_file}")
                 return
             else:
                 os.remove(self.temp_jit_file)
@@ -96,10 +101,15 @@ class Checks(ChecksFactory):
         return self.status_list_of_dict
 
     def display_check_result(self, checks_output):
+        if not checks_output:
+            self.logger.error("Check's Output is None!")
+            self._error(" Check's Output is None")
+            return 
+        
         result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
         status_dict = {}
         status_dict['runbook'] = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id'), '_output.txt')
-        status_dict['result'] = {}
+        status_dict['result'] = []
         if self.uglobals.get('skipped'):
             for check_name,connector in self.uglobals.get('skipped'):
                 result_table.append([
@@ -255,24 +265,25 @@ class Checks(ChecksFactory):
         return combined_output
 
     def _create_jit_script(self, checks_list: list = None):
-        if not checks_list or len(checks_list) < 2:
+        if not checks_list:
             self.logger.error("Checks List Cannot be empty. Please verify the checks_list is valid")
             return False 
         
         with open(self.temp_jit_file, 'w', encoding='utf-8') as f:
             f.write(self.get_first_cell_content(checks_list))
-            f.write('\n')
-
-            for idx, c in enumerate(checks_list):
+            f.write('\n\n')
+            for idx,c in enumerate(checks_list[:]):
                 idx += 1
                 check_name = f"def check_{idx}():"
                 f.write(check_name + '\n')
                 f.write('    global w' + '\n')
-                for line in c:
+                for line in c.get('code'):
+                    line = line.replace('\n', '')
                     for l in line.split('\n'):
+                        l = l.replace('\n', '')
                         if l.startswith("from __future__"):
                             continue 
-                        f.write('    ' + l + '\n')
+                        f.write('    ' + l.replace('\n', '') + '\n')
             f.write('\n')
             # Lets create the last cell content
             f.write('def last_cell():' + '\n')
@@ -345,7 +356,7 @@ class Checks(ChecksFactory):
                 if not v:
                     for index, value in enumerate(v):
                         first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
-        first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=glotals(), check_uuids={self.check_uuids})'''
+        first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={self.check_uuids})'''
         return first_cell_content
 
     def get_last_cell_content(self):
@@ -389,7 +400,7 @@ class Checks(ChecksFactory):
             s_connector = check.get('metadata').get('action_type')
             s_connector = s_connector.replace('LEGO', 'CONNECTOR')
             cred_name, cred_id = None, None 
-            for k,v in self.uglobals.get('default_credetnails').items():
+            for k,v in self.uglobals.get('default_credentials').items():
                 if k == s_connector:
                     cred_name, cred_id = v.get('name'), v.get('id')
                     break 
@@ -454,7 +465,7 @@ task.configure(inputParamsJson=\'\'\'{
                             input_json_line += f"\"{key}\":  \"{key}\" ,"
             except Exception as e:
                 self.logger.error(e)
-                self._error(e)
+                self._error(str(e))
             # Handle Matrix argument
             matrix_argument_line = check.get('matrixinputline')
             if matrix_argument_line:
@@ -512,7 +523,7 @@ task.configure(inputParamsJson=\'\'\'{
                                         is_first = False
                 except Exception as e:
                     self.logger.error(f"EXCEPTION {e}")
-                    self._error(e)
+                    self._error(str(e))
                     pass
             if add_check_to_list:
                     checks_list.append(check)
@@ -575,5 +586,5 @@ class Script(ScriptsFactory):
             with open(output_file_json, 'w') as f:
                 json.dump(json_output, fp=f)
         except Exception as e:
-            self._error(e)
+            self._error(str(e))
             sys.exit(0)

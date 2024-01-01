@@ -96,12 +96,14 @@ class UnskriptCtl(UnskriptFactory):
             self.logger.error("ARGS and/or Parser sent to run_main is None!")
             self._error("ARGS and/or Parser sent to run_main is None")
             sys.exit(0)
-
-        if args.check is not None:
-            check_list = self._db.cs.get_check_by_name(check_name=[str(args.check)])
-            self._check.run(check_list=check_list)
+        status_of_run = []
+        if args.name is not None:
+            checks_list = self._db.cs.get_check_by_name(check_name=str(args.name))
+            status_of_run = self._check.run(checks_list=checks_list)
         elif args.type is not None:
             all_connectors = args.type 
+            if not isinstance(all_connectors, list):
+                all_connectors = [all_connectors]
             if len(all_connectors) == 1 and ',' in all_connectors[0]:
                 all_connectors = all_connectors[0].split(',')
             for connector in all_connectors:
@@ -111,13 +113,15 @@ class UnskriptCtl(UnskriptFactory):
             for t in temp_list:
                 if t not in check_list:
                     check_list.append(t)
-            check_list = self._db.cs.get_checks_by_connector(connector_names=check_list)
-            self._check.run(check_list=check_list)
+            check_list = self._db.cs.get_checks_by_connector(connector_names=all_connectors)
+            status_of_run = self._check.run(checks_list=check_list)
         elif args.all is not False:
             check_list = self._db.cs.get_checks_by_connector(connector_names="all", full_snippet=True)
+            status_of_run = self._check.run(checks_list=check_list)
         else:
             parser.print_help()
             sys.exit(0) 
+        self._db.pss.update(collection_name='audit_trail', data=status_of_run)
 
     def list_main(self, **kwargs):
         pass 
