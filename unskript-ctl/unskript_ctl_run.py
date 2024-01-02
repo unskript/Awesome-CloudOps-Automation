@@ -109,7 +109,7 @@ class Checks(ChecksFactory):
         
         result_table = [["Checks Name", "Result", "Failed Count", "Error"]]
         status_dict = {}
-        status_dict['runbook'] = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id'), '_output.txt')
+        status_dict['runbook'] = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id') + '_output.txt')
         status_dict['result'] = []
         if self.uglobals.get('skipped'):
             for check_name,connector in self.uglobals.get('skipped'):
