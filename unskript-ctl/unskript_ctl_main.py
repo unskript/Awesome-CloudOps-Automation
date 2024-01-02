@@ -113,7 +113,6 @@ class UnskriptCtl(UnskriptFactory):
             for t in temp_list:
                 if t not in check_list:
                     check_list.append(t)
-            # check_list = self._db.cs.get_checks_by_connector(all_connectors, True)
             status_of_run = self._check.run(checks_list=check_list)
         elif args.all is not False:
             check_list = self._db.cs.get_checks_by_connector("all", True)
@@ -121,10 +120,140 @@ class UnskriptCtl(UnskriptFactory):
         else:
             parser.print_help()
             sys.exit(0) 
-        self._db.pss.update(collection_name='audit_trail', data=status_of_run)
+        self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
+
+    def update_audit_trail(self, collection_name: str, status_dict_list: list):
+        trail_data = {}
+        id = ''
+        k = str(datetime.now())
+        p = f = e = 0
+        id = self.uglobals.get('exec_id')
+        if not id:
+            id = uuid.uuid4() 
+
+        trail_data[id] = {}
+        trail_data[id]['time_stamp'] = k
+        trail_data[id]['runbook'] = id + '_output.txt'
+        trail_data[id]['check_status'] = {} 
+        for sd in status_dict_list:
+            if sd == {}:
+                continue 
+            for s in sd.get('result'):
+                check_name, check_id, connector, status = s 
+                if status == 'PASS':
+                    p += 1
+                elif status == 'FAIL':
+                    f += 1
+                elif status == 'ERROR':
+                    e += 1
+                trail_data[id]['check_status'][check_id] = {}
+                trail_data[id]['check_status'][check_id]['check_name'] = check_name
+                trail_data[id]['check_status'][check_id]['status'] = status
+                trail_data[id]['check_status'][check_id]['connector'] = connector
+                if self.uglobals.get('failed_result'):
+                    c_name = connector + ':' + check_name
+                    for name, obj in self.uglobals.get('failed_result').items():
+                        if name in (c_name, check_name):
+                            trail_data[id]['check_status'][check_id]['failed_objects'] = obj 
+        
+        trail_data[id]['summary'] = f'Summary (total/p/f/e): {p+e+f}/{p}/{f}/{e}'
+        self._db.pss.update(collection_name=collection_name, data=trail_data)
+        return id 
 
     def list_main(self, **kwargs):
-        pass 
+        s = '\x1B[1;20;42m' + "~~~~ CLI Used ~~~~" + '\x1B[0m'
+        print("")
+        print(s)
+        print("")
+        print(f"\033[1m {sys.argv[0:]} \033[0m")
+        print("")
+
+        args = kwargs.get('args')
+        if args.credential:
+            self.list_credentials()
+        elif args.sub_command == 'checks' and args.type:
+            self.list_checks_by_connector(args)
+        elif args.sub_command == 'checks' and args.all:
+            self.list_checks_by_connector(args)
+        elif args.command == 'list' and args.sub_command == 'failed-checks':
+            self.display_failed_checks(args)
+        
+        
+    def list_credentials(self):
+        active_creds = []
+        incomplete_creds = []
+        for cred_file in self.creds_json_files:
+            with open(cred_file, 'r') as f:
+                c_data = json.load(f)
+
+                c_type = c_data.get('metadata').get('type')
+                c_name = c_data.get('metadata').get('name')
+                if c_data.get('metadata').get('connectorData') != "{}":
+                    active_creds.append((c_type, c_name))
+                else:
+                    incomplete_creds.append((c_type, c_name))
+        combined = active_creds + incomplete_creds
+        headers = ["#", "Connector Type", "Connector Name", "Status"]
+        table_data = [headers]
+
+        for index, (ctype, cname) in enumerate(combined, start=1):
+            status = "Active" if index <= len(active_creds) else "Incomplete"
+            table_data.append([index, ctype, cname, status])
+
+        print(tabulate(table_data, headers='firstrow', tablefmt='fancy_grid'))
+
+    def list_checks_by_connector(self, args):
+        all_connectors = args.type 
+        if not all_connectors:
+            all_connectors = 'all'
+            
+        if not isinstance(all_connectors, list):
+            all_connectors = [all_connectors]
+        if len(all_connectors) == 1 and ',' in all_connectors[0]:
+            all_connectors = all_connectors[0].split(',')
+        for connector in all_connectors:
+            connector = connector.replace(',', '')
+        list_connector_table = [
+            [TBL_HDR_LIST_CHKS_CONNECTOR, TBL_HDR_CHKS_NAME, TBL_HDR_CHKS_FN]]
+        checks_list = self._db.cs.get_checks_by_connector(all_connectors, False)
+        for cl in checks_list:
+            list_connector_table.append(cl)
+        print("")
+        print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
+        print("")
+ 
+
+    def display_failed_checks(self, args):
+        if args.all:
+            connector = 'all'
+        elif args.type:
+            connector = args.type 
+        else:
+            connector = 'all'
+        
+        pss_content = self._db.pss.read(collection_name='audit_trail')
+        failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_FAILED_OBJECTS, TBL_HDR_DSPL_EXEC_ID]]
+        for exec_id in pss_content.keys():
+            execution_id = exec_id 
+            for check_id in pss_content.get(exec_id).get('check_status').keys():
+                if pss_content.get(exec_id).get('check_status').get(check_id).get('status').lower() == "fail":
+                    if connector == 'all':
+                        failed_checks_table += [[
+                            pss_content.get(exec_id).get('check_status').get(check_id).get('check_name') + '\n' + f"(Test Failed on: {pss_content.get(exec_id).get('time_stamp')})",
+                            pprint.pformat(pss_content.get(exec_id).get('check_status').get(check_id).get('failed_objects'), width=10),
+                            execution_id
+                        ]]
+                    elif connector.lower() == pss_content.get(exec_id).get('check_status').get(check_id).get('connector').lower():
+                        failed_checks_table += [[
+                            pss_content.get(exec_id).get('check_status').get(check_id).get('check_name') + '\n' + f"(Test Failed on: {pss_content.get(exec_id).get('time_stamp')})",
+                            pprint.pformat(pss_content.get(exec_id).get('check_status').get(check_id).get('failed_objects'), width=10),
+                            execution_id
+                        ]]
+
+        print("")
+        print(tabulate(failed_checks_table, headers='firstrow', tablefmt='fancy_grid'))
+        print("")
+
 
     def show_main(self, **kwargs):
         pass 
@@ -132,7 +261,6 @@ class UnskriptCtl(UnskriptFactory):
     def service_main(self, **kwargs):
         pass
 
-    pass 
 
 def main():
     uc = UnskriptCtl()
@@ -156,15 +284,20 @@ def main():
 
     # List Option
     list_parser = subparsers.add_parser('list', help='List Options')
-    list_parser.add_argument('--failed-checks', type=str, help='List Failed Checks')
-    list_check_subparser = list_parser.add_subparsers()
-    list_check_parser  = list_check_subparser.add_parser('check', help='List Check Options')
+    list_parser.add_argument('--credential', action='store_true', help='List All credentials')
+    list_check_subparser = list_parser.add_subparsers(dest='sub_command')
+    list_check_parser  = list_check_subparser.add_parser('checks', help='List Check Options')
     list_check_parser.add_argument('--all', action='store_true', help='List All Checks')
     list_check_parser.add_argument('--type', 
                                    type=str, 
                                    help='List All Checks of given connector type',
                                    choices=CONNECTOR_LIST)
-
+    list_failed_check_parser = list_check_subparser.add_parser('failed-checks', help='List Failed check options')
+    list_failed_check_parser.add_argument('--all', action='store_true', help='Show All Failed Checks')
+    list_failed_check_parser.add_argument('--type', 
+                                   type=str, 
+                                   help='List All Checks of given connector type',
+                                   choices=CONNECTOR_LIST)
     # Show Option
     show_parser = subparsers.add_parser('show', help='Show Options')
     show_audit_subparser = show_parser.add_subparsers()

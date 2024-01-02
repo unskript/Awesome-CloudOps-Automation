@@ -11,7 +11,11 @@
 import os
 import yaml
 import logging 
+import json
+import glob
+
 from abc import ABC, abstractmethod 
+from unskript_utils import *
 
 
 class UnskriptFactory(ABC):
@@ -46,8 +50,29 @@ class UnskriptFactory(ABC):
         
         return logger
     
-    def __init__(self):    
+    def __init__(self):
+        self.uglobals = UnskriptGlobals()
+        self.update_credentials_to_uglobal()
         pass
+
+    def update_credentials_to_uglobal(self):
+        mapping = {} 
+        home = os.path.expanduser('~')
+        creds_json_files = []
+        for dirpath, dirname, filenames in os.walk(home):
+            if 'credential-save' in dirname:
+                pattern = os.path.join(dirpath, dirname[-1]) + '/*.json'
+                creds_json_files.extend(glob.glob(pattern, recursive=True))
+                break
+        self.creds_json_files = creds_json_files
+        for creds_json_file in creds_json_files:
+            with open(creds_json_file, 'r', encoding='utf-8') as f:
+                c_data = json.load(f)
+                if c_data.get('metadata').get('connectorData') == '{}':
+                    continue 
+                mapping[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
+                                                            "id": c_data.get('id')}
+        self.uglobals['default_credentials'] = mapping
 
     def _banner(self, msg: str):
         print('\033[4m\x1B[1;20;42m' + msg + '\x1B[0m\033[0m')

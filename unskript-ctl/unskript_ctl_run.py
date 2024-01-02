@@ -42,6 +42,7 @@ class Checks(ChecksFactory):
         self.connector_types = []
         self.status_list_of_dict = []
         self.uglobals = UnskriptGlobals()
+        self.update_credentials_to_uglobal()
         self.uglobals['global'] = self.checks_globals
 
         for k,v in self.checks_globals.items():
@@ -206,6 +207,8 @@ class Checks(ChecksFactory):
             print(yaml.safe_dump(v))
             print('\x1B[1;4m', '\x1B[0m')
         return
+
+
 
     def output_after_merging_checks(self, outputs: list, ids: list) -> list:
         """output_after_merging_checks: this function combines the output from duplicated
@@ -376,25 +379,10 @@ class Checks(ChecksFactory):
     
     def update_exec_id(self):
         self.uglobals['exec_id'] = str(uuid.uuid4())
+
     
     def insert_task_lines(self, checks_list: list):
-        if self.uglobals.get('default_credentials') is None:
-            mapping = {} 
-            home = os.path.expanduser('~')
-            creds_json_files = []
-            for dirpath, dirname, filenames in os.walk(home):
-                if 'credential-save' in dirname:
-                    pattern = os.path.join(dirpath, dirname[-1]) + '/*.json'
-                    creds_json_files.extend(glob.glob(pattern, recursive=True))
-                    break
-            for creds_json_file in creds_json_files:
-                with open(creds_json_file, 'r', encoding='utf-8') as f:
-                    c_data = json.load(f)
-                    if c_data.get('metadata').get('connectorData') == '{}':
-                        continue 
-                    mapping[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
-                                                                "id": c_data.get('id')}
-            self.uglobals['default_credentials'] = mapping
+        self.update_credentials_to_uglobal()
 
         for check in checks_list:
             s_connector = check.get('metadata').get('action_type')

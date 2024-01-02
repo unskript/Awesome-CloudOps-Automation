@@ -96,7 +96,6 @@ class ZoDBInterface(DatabaseFactory):
             self.collection_name = kwargs['collection_name']
         if 'data' in kwargs:
             data = kwargs['data']
-        
         with self.db.transaction() as connection:
             root = connection.root()
             old_data = root[self.collection_name]
