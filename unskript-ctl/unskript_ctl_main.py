@@ -362,7 +362,110 @@ class UnskriptCtl(UnskriptFactory):
                 headers='firstrow', tablefmt='fancy_grid'))
 
     def service_main(self, **kwargs):
-        pass
+        raise NotImplementedError("NOT IMPLEMENTED")
+    
+    def debug_main(self, **kwargs):
+        args = kwargs.get('args', None)
+        parser = kwargs.get('parser', None)
+
+        if args and args.command == 'debug':
+            if args.start:
+                self.start_debug(args.start)
+                pass 
+            elif args.stop:
+                pass
+            else: 
+                self.logger.error("WRONG OPTION: Only start and stop are supported for debug")
+                self._error("Wrong Option, only start and stop are supported")
+        pass 
+
+    def start_debug(self, args):
+        """start_debug Starts Debug session. This function takes
+        the remote configuration as input and if valid, starts
+        the debug session.
+        """
+        if not args:
+            print("ERROR: Insufficient information provided")
+            return
+
+        remote_config = args[0]
+        remote_config = remote_config.replace('-','')
+
+        if remote_config != "config":
+            print(f"ERROR:The Allowed Parameter is --config, Given Flag is not recognized, --{remote_config}")
+            return
+        try:
+            remote_config_file = args[1]
+        except:
+            print(f"ERROR: Not able to find the configuration to start debug session")
+            return
+
+        if os.path.exists(remote_config_file) is False:
+            print(f"ERROR: Required Remote Configuration not present. Ensure {remote_config_file} file is present.")
+            return
+
+        openvpn_log_file = "/tmp/openvpn_client.log"
+        command = [f"openvpn --config {remote_config_file} > {openvpn_log_file}"]
+        try:
+            process = subprocess.Popen(command,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE,
+                                    shell=True)
+        except Exception as e:
+            print(f"ERROR: Unable to run the command {command}, error {e}")
+            return
+
+        # Lets give few seconds for the subprocess to spawn
+        try:
+            outs, errs = process.communicate(timeout=10)
+        except subprocess.TimeoutExpired:
+            # This is expected as the ovpn command needs to run indefinitely.
+            pass
+        except Exception as e:
+            print(f'ERROR: Unable to communicate to child process, {e}')
+            return
+
+        # Lets verify if the openvpn process is really running
+        running = False
+        for proc in psutil.process_iter(['pid', 'name']):
+            # Search for openvpn process.
+            if proc.info['name'] == "openvpn":
+                # Lets make sure we ensure Tunnel Interface is Created and Up!
+                try:
+                    intf_up_result = subprocess.run(["ip", "link", "show", "tun0"],
+                                                    stdout=subprocess.PIPE,
+                                                    stderr=subprocess.PIPE)
+                    if intf_up_result.returncode == 0:
+                        running = True
+                    break
+                except Exception as e:
+                    print(f'ERROR: ip link show tun0 command failed, {e}')
+
+        if running is True:
+            print ("Successfully Started the Debug Session")
+        else:
+            self.logger.debug(f"Error Occured while starting the Debug Session. Here are the logs from openvpn")
+            print(f"{bcolors.FAIL}Error Occured while starting the Debug Session. Here are the logs from openvpn{bcolors.ENDC}")
+            print("===============================================================================================")
+            with open(openvpn_log_file, "r") as fp:
+                print(fp.read())
+            # Bring down the ovpn process
+            print("===============================================================================================")
+            stop_debug()
+
+    def stop_debug(self):
+        """stop_debug Stops the Active Debug session.
+        """
+        for proc in psutil.process_iter(['pid', 'name']):
+            # Search for openvpn process. On Docker, we dont expect
+            # Multiple process of openvpn to run.
+            if proc.info['name'] == "openvpn":
+                process = psutil.Process(proc.info['pid'])
+                process.terminate()
+                process.wait()
+
+        self.logger.debug("Stopped Active Debug session successfully")
+        print("Stopped Active Debug session successfully")
 
 
 def main():
@@ -423,13 +526,11 @@ def main():
     
     # Debug / Service Option
     debug_parser = subparsers.add_parser('debug', help='Debug Option')
-    debug_subparser = debug_parser.add_subparsers()
-    debug_service_parser = debug_subparser.add_parser('debug-session', help='Show Debug Session Option')
-    debug_service_parser.add_argument('--start',
+    debug_parser.add_argument('--start',
                                       help='Start debug session. Example [--start --config /tmp/config.ovpn]',
                                       type=str,
                                       nargs=REMAINDER)
-    debug_service_parser.add_argument('--stop',
+    debug_parser.add_argument('--stop',
                                       help='Stop debug session',
                                       action='store_true') 
 
