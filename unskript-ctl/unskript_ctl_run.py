@@ -53,7 +53,7 @@ class Checks(ChecksFactory):
             self.logger.error("ERROR: checks_list is a mandatory parameter to be sent, cannot run without the checks list")
             raise ValueError("Parameter check_list is not present in the argument, please call run with the check_list=[list_of_checks]") 
         checks_list = kwargs.get('checks_list')
-        if not len(checks_list):
+        if len(checks_list) == 0:
             self.logger.error("ERROR: Checks list is empty, Cannot run anything")
             raise ValueError("Checks List is empty!")
         

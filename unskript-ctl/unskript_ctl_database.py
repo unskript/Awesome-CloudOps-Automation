@@ -25,24 +25,24 @@ class ZoDBInterface(DatabaseFactory):
         self.db_name = 'unskript_pss.db'
         self.db_dir = '/unskript/db'
         self.collection_name = 'audit_trail'
-        for key, value in kwargs.items():
-            if key in ('db_name'):
-                self.db_name = value
-            if key in ('db_dir'):
-                self.db_dir = value
-            if key in ('collection_name'):
-                self.collection_name = value 
+        if 'db_name' in kwargs:
+            self.db_name = kwargs.get('db_name')
+        if 'db_dir' in kwargs:
+            self.db_dir = kwargs.get('db_dir')
+        if 'collection_name' in kwargs:
+            self.collection_name = kwargs['collection_name']
+
         
         self.db = self.create()
 
     def create(self, **kwargs):
-        for key, value in kwargs.items():
-            if key in ('db_name'):
-                self.db_name = value
-            if key in ('db_dir'):
-                self.db_dir = value
-            if key in ('collection_name'):
-                self.collection_name = value 
+        if 'db_name' in kwargs:
+            self.db_name = kwargs.get('db_name')
+        if 'db_dir' in kwargs:
+            self.db_dir = kwargs.get('db_dir')
+        if 'collection_name' in kwargs:
+            self.collection_name = kwargs['collection_name']
+
         self.logger.debug(f'Checking if DB {self.db_name} exists')
         if not os.path.exists(self.db_dir):
             os.makedirs(self.db_dir, exist_ok=True)
@@ -70,9 +70,8 @@ class ZoDBInterface(DatabaseFactory):
         if not self.db:
             self.logger.error(f"DB {self.db_name} Not initialized or does not exist")
             return  
-        for key,value in kwargs.items():
-            if key in ('collection_name'):
-                self.collection_name = value 
+        if 'collection_name' in kwargs:
+            self.collection_name = kwargs['collection_name']
 
         with self.db.transaction() as connection:
             root = connection.root()
@@ -93,9 +92,9 @@ class ZoDBInterface(DatabaseFactory):
             self.logger.error(f"DB {self.db_name} Not initialized or does not exist")
             return False
         if 'collection_name' in kwargs:
-            self.collection_name = kwargs['collection_name']
+            self.collection_name = kwargs.get('collection_name')
         if 'data' in kwargs:
-            data = kwargs['data']
+            data = kwargs.get('data')
         with self.db.transaction() as connection:
             root = connection.root()
             old_data = root[self.collection_name]
@@ -110,11 +109,11 @@ class ZoDBInterface(DatabaseFactory):
 
 
     def delete(self, **kwargs):
-        for key, value in kwargs.items():
-            if key in ('db_name'):
-                self.db_name = value
-            if key in ('db_dir'):
-                self.db_dir = value
+        if 'db_name' in kwargs:
+            self.db_name = kwargs.get('db_name')
+        if 'db_dir' in kwargs:
+            self.db_dir = kwargs.get('db_dir')
+
         if os.path.exists(os.path.join(self.db_dir, self.db_name)) is True:
             try:
                 os.remove(os.path.join(self.db_dir, self.db_name))
@@ -130,13 +129,13 @@ class SQLInterface(DatabaseFactory):
         self.db_dir = '/unskript/db'
         self.table_name = 'AUDIT_TRAIL'
         self.db = None
-        for key, value in kwargs.items():
-            if key in ('db_name'):
-                self.db_name = value
-            if key in ('db_dir'):
-                self.db_dir = value
-            if key in ('table_name'):
-                self.table_name = value 
+        if 'db_name' in kwargs:
+            self.db_name = kwargs.get('db_name')
+        if 'db_dir' in kwargs:
+            self.db_dir = kwargs.get('db_dir')
+        if 'table_name' in kwargs:
+            self.table_name = kwargs.get('table_name')
+
 
         if not os.path.exists(self.db_dir):
             os.makedirs(self.db_dir, exist_ok=True)

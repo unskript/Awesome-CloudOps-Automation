@@ -36,17 +36,18 @@ class UnskriptCtl(UnskriptFactory):
         self._script = Script()
         self._db = DBInterface() 
     
-    def create_creds(self, **kwargs):
-        if 'connector_type' not in kwargs:
-            self.logger.error(f"connector_type is a mandatory argument to be pased for create_creds")
-            self._error("Please pass connector_type is a mandatory argument")
-            sys.exit(0)
-        if 'connector_data_file' not in kwargs:
-            self.logger.error(f"connector_data_file is a mandatory argument to be pased for create_creds")
-            self._error("Please pass connector_data_file is a mandatory argument")
-            sys.exit(0)
-        connector_type = kwargs.get('connector_type')
-        connector_data_file = kwargs.get('connector_data_file')
+    def create_creds(self, args):
+        try:
+            connector_type, connector_data_file = args.create_credential
+        except:
+            self.logger.error("InSufficient Argument given to create credential.")
+            self.logger.error("Use: --create-credential --type /path/to/file")
+            self.logger.error("Example:  --create-credential --k8s /tmp/kubeconfig.yaml")
+            self._error("Usage: --create-credential --type /path/to/file")
+            self.display_creds_ui()
+
+        connector_type = connector_type.replace('-', '')
+
         if connector_type in ("k8s", "kubernetes"):
             with open(connector_data_file, 'r', encoding='utf-8') as f:
                 creds_data = f.read()
@@ -74,9 +75,9 @@ class UnskriptCtl(UnskriptFactory):
             self.logger.error("Required python library creds_ui is not packaged")
             self._error("Required python library creds_ui is not packaged")
     
-    def save_check_names(self, **kwargs):
-        if 'filename' in kwargs:
-            filename = kwargs.get('filename')
+    def save_check_names(self, args):
+        if args.save_check_names:
+            filename = args.save_check_names
         else:
             filename = '/tmp/checknames.txt'
         list_of_names = self._db.cs.get_all_check_names()
@@ -303,7 +304,6 @@ class UnskriptCtl(UnskriptFactory):
                 self._error(f"Execution ID {args.execution_id} Logs cannot be found!")
         else:
             parser.print_help()
-        return 
 
     def print_all_result_table(self, pss_content: dict):
         if not pss_content:
@@ -617,9 +617,10 @@ def main():
         if len(args.create_credential) == 0:
             uc.display_creds_ui()
         else:
-            uc.create_creds(args.create_credential)
+            #uc.create_creds(args.create_credential)
+            uc.create_creds(args)
     elif args.save_check_names not in ('', None):
-        uc.save_check_names(args.save_check_names)
+        uc.save_check_names(args)
     else:
         parser.print_help()
 
