@@ -21,7 +21,7 @@ from jinja2 import Template
 from tabulate import tabulate 
 
 from unskript_utils import *
-from unskript_ctl_factory import ChecksFactory, ScriptsFactory, UnskriptFactory
+from unskript_ctl_factory import ChecksFactory, ScriptsFactory
 from unskript.legos.utils import CheckOutputStatus
 
 

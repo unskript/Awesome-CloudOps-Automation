@@ -1,8 +1,19 @@
+<br />
+<div align="center">
+    <a href="https://unskript.com/">
+        <img src="https://storage.googleapis.com/unskript-website/assets/favicon.png" alt="Logo" width="80" height="80">
+    </a>
+    <p align="center">
+</p>
+</div>
+
 # unSkript CLI
+---
 
 
-unskript-ctl is a command line tool which allows you to run checks against your
-resources, be it infrastructure or your own services.
+
+## Introduction
+unskript-ctl is a command line tool which allows you to run checks against your resources, be it infrastructure or your own services. 
 
 Here are the options that are supported by the uskript-ctl command
 ```
@@ -25,7 +36,10 @@ options:
                         Create Credential [-creds-type creds_file_path]
 ```
 
-## Run options
+## 
+
+## Command Line Options
+### Run options
 Using the **run** option, you can run check(s), scripts and runbooks.
 Also, if you want to get the report of the run in an email or slack, you can
 use the **--report** option.
@@ -53,7 +67,7 @@ options:
   --all        Run all checks
 ```
 
-## List options
+### List options
 ```
 usage: unskript-ctl list [-h] [--credential] {checks,failed-checks} ...
 
@@ -91,7 +105,7 @@ options:
 
 
 
-## Show options
+### Show options
 ```
 usage: unskript-ctl show [-h] {audit-trail,failed-logs} ...
 
@@ -125,7 +139,7 @@ options:
                         Execution ID for which the logs should be fetched
 ```
 
-## Debug options
+### Debug options
 
 Using the **debug** option, you can connect this pod to the upstream VPN
 server, so that you can access this pod from the control unSkript portal.
