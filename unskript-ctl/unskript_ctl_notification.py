@@ -40,12 +40,12 @@ class SlackNotification(NotificationFactory):
             self.logger.error(f"Unable to find Notification Schema file {self.schema_file}!")
             return False  
         try:
-            with open(self.checks_schema_file, 'r') as f:
+            with open(self.schema_file, 'r') as f:
                 schema = json.load(f)
                 validate(instance=data, schema=schema)
                 return True 
         except ValidationError as e:
-            self.logger.error(e)
+            self.logger.error(str(e))
             return False 
 
     def notify(self, **kwargs):
@@ -61,7 +61,6 @@ class SlackNotification(NotificationFactory):
 
         if not self.validate_data(summary_results):
             self.logger.error("Given Summary Result does not validate against Slack Schema")
-            return False 
         
         message = self._generate_notification_message(summary_results)
         if not message:
@@ -88,14 +87,16 @@ class SlackNotification(NotificationFactory):
         summary_message = ':wave: *unSkript Ctl Check Results* \n'
         status_count = {'PASS': 0, 'FAIL': 0, 'ERROR': 0}
 
-        for result_set in summary_results:
-            if not result_set:
-                continue
 
-            for check_name, status in result_set.get('result', []):
+        for result_set in summary_results:
+            if not result_set or not result_set.get('result'):
+                continue
+            c_result = result_set.get('result')
+            for r in c_result:
+                check_name = r[0]
+                status = r[-1]
                 if status in status_count:
                     status_count[status] += 1
-
                 if status == 'PASS':
                     summary_message += f':hash: *{check_name}*  :white_check_mark: ' + '\n'
                 elif status in ('FAIL', 'ERROR'):
@@ -158,7 +159,6 @@ class EmailNotification(NotificationFactory):
             return list_of_failed_files
         if not self.validate_data(failed_result, self.checks_schema_file):
             self.logger.error("Validation of Given Result failed against Notification Schema")
-            return list_of_failed_files
 
         if failed_result and len(failed_result.get('result', [])):
             for result_item in failed_result['result']:
@@ -319,7 +319,6 @@ class EmailNotification(NotificationFactory):
                                **kwargs):
         message = self.create_email_header(title=title)
         temp_attachment = msg = None
-        print(f"SUMMARY RESULT LENGTH IS {len(summary_results)}")
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
@@ -593,7 +592,7 @@ class SmtpNotification(EmailNotification):
         self.smtp_config = self.email_config.get('SMTP')
 
     def notify(self, **kwargs):
-        summary_results = kwargs.get('summary_results', [])
+        summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
         smtp_host = kwargs.get('smtp-host', self.smtp_config.get('smtp-host'))

@@ -577,40 +577,29 @@ def main():
 
     # Lets re-arrange arguments such that parse_args is efficient with
     # the rules defined above
-    # def rearrange_argv(argv):
-    #     print("IN REARRANGE: ", argv, type(argv))
-    #     script_idx = argv.index('--script') if '--script' in argv else -1
-    #     check_idx = argv.index('check') if 'check' in argv else -1
-    #     report_idx = argv.index('--report') if '--report' in argv else -1
-    #     run_idx = argv.index('run') if 'run' in argv else -1
+    def rearrange_argv(argv):
+        script_idx = argv.index('--script') if '--script' in argv else -1
+        check_idx = argv.index('check') if 'check' in argv else -1
+        report_idx = argv.index('--report') if '--report' in argv else -1
+        run_idx = argv.index('run') if 'run' in argv else -1
         
-    #     print("INDICIES: ", script_idx, check_idx, report_idx, run_idx)
-
-    #     # Rearrange '--script SCRIPT_NAME' before 'check --name NAME.py'
-    #     if script_idx != -1 and check_idx != -1:
-    #         if script_idx > check_idx:
-    #             argv.remove('--script')
-    #             script_name = argv.pop(script_idx)
-    #             argv.insert(run_idx + 1, '--script')
-    #             argv.insert(run_idx + 2, script_name)
-    #             print("INSERTED SCRIPT BEFORE CHECK")
+        if script_idx != -1 and check_idx != -1:
+            if script_idx > check_idx:
+                argv.remove('--script')
+                script_name = argv.pop(script_idx)
+                argv.insert(run_idx + 1, '--script')
+                argv.insert(run_idx + 2, script_name)
         
-    #     # Rearrange '--report' before 'check --name NAME.py'
-    #     if report_idx != -1 and check_idx != -1:
-    #         if report_idx > check_idx:
-    #             argv.remove('--report')
-    #             argv.insert(run_idx, '--report')
-    #             print(f"INSERTED REPORT AT IDX {run_idx}")
+        if report_idx != -1 and check_idx != -1:
+            if report_idx > check_idx:
+                argv.remove('--report')
+                argv.insert(run_idx, '--report')
 
-    #     return argv
+        return argv
     
-    # argv = sys.argv[:].copy()
-    # print("BEFORE ARRANGING: ", argv)
-    # argv = rearrange_argv(argv)
-    # print("AFTER ARRANGING: ", argv)
-    # args = parser.parse_args(argv)
-    args = parser.parse_args()
-    print(args)
+    argv = sys.argv[1:].copy()
+    argv = rearrange_argv(argv)
+    args = parser.parse_args(argv)
 
     if len(sys.argv) <= 2:
         parser.print_help()

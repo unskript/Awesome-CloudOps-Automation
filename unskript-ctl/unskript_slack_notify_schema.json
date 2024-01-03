@@ -1,36 +1,26 @@
 {
-    "$defs": {
-        "CheckStatus": {
-            "properties": {
-                "check_name": {
-                    "title": "Check Name",
-                    "type": "string"
-                },
-                "status": {
-                    "title": "Status",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "check_name",
-                "status"
-            ],
-            "title": "CheckStatus",
-            "type": "object"
-        }
-    },
-    "properties": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
         "result": {
-            "items": {
-                "$ref": "#/$defs/CheckStatus"
-            },
-            "title": "Result",
-            "type": "array"
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              { "type": "string" },
+              { "type": "string" }
+            ]
+          }
+        },
+        "runbook": {
+          "type": "string",
+          "format": "uri"
         }
-    },
-    "required": [
-        "result"
-    ],
-    "title": "SlackSchema",
-    "type": "object"
-}
+      },
+      "required": ["result"],
+      "additionalProperties": false
+    }
+  }
+  

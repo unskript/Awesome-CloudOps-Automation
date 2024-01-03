@@ -174,6 +174,8 @@ class Checks(ChecksFactory):
                     elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                         if payload.get('error') is not None:
                             failed_objects = payload.get('error')
+                            if isinstance(failed_objects, str) is True:
+                                failed_objects = [failed_objects]
                             c_name = self.connector_types[idx] + ':' + self.check_names[idx]
                             failed_result[c_name] = failed_objects
                         result_table.append([
@@ -200,6 +202,8 @@ class Checks(ChecksFactory):
             self.uglobals['failed_result'] = {'result': []}
             for k,v in failed_result.items():
                 d = {}
+                if not v:
+                    continue
                 d[k] = {'failed_object': v}
                 self.uglobals['failed_result']['result'].append(d)
 
