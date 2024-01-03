@@ -5,7 +5,7 @@ import unittest
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 try:
-    from unskript_factory import ChecksFactory, ScriptsFactory, ReportsFactory, ConfigParserFactory
+    from unskript_factory import ChecksFactory, ScriptsFactory, NotificationFactory, ConfigParserFactory
 except Exception as e: 
     print(f"ERROR: {e}")
 
@@ -29,12 +29,12 @@ class TestScriptsFactory(unittest.TestCase):
 
 class TestReportsFactory(unittest.TestCase):
     def test_reports_factory_run(self):
-        factory1 = ReportsFactory()
-        factory2 = ReportsFactory()
+        factory1 = NotificationFactory()
+        factory2 = NotificationFactory()
         # Test Singleton behavior
         self.assertIs(factory1, factory2)
 
-        factory1.run()
+        factory1.notify()
 
 class TestConfigParserFactory(unittest.TestCase):
     def test_reports_factory_run(self):
