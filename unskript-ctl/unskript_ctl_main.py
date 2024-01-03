@@ -11,6 +11,7 @@
 import os
 import sys 
 import json
+import psutil 
 
 from datetime import datetime 
 from argparse import ArgumentParser, REMAINDER, SUPPRESS
@@ -379,6 +380,7 @@ class UnskriptCtl(UnskriptFactory):
                 self.start_debug(args.start)
                 pass 
             elif args.stop:
+                self.stop_debug()
                 pass
             else: 
                 self.logger.error("WRONG OPTION: Only start and stop are supported for debug")
@@ -457,7 +459,7 @@ class UnskriptCtl(UnskriptFactory):
                 print(fp.read())
             # Bring down the ovpn process
             print("===============================================================================================")
-            stop_debug()
+            self.stop_debug()
 
     def stop_debug(self):
         """stop_debug Stops the Active Debug session.

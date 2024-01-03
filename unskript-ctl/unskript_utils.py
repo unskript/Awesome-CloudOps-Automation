@@ -22,6 +22,13 @@ UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
 UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 JIT_PYTHON_SCRIPT = "/tmp/jit_script.py"
 
+TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
+TBL_HDR_DSPL_CHKS_NAME="\033[35m Check Name \n (Last Failed) \033[0m"
+TBL_HDR_DSPL_EXEC_ID="\033[1m Failed Execution ID \033[0m"
+TBL_HDR_FAILED_OBJECTS="\033[1m Failed Objects \033[0m"
+TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
+TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
+
 
 CONNECTOR_LIST = [
     'aws', 
