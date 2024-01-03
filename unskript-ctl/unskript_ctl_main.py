@@ -269,6 +269,8 @@ class UnskriptCtl(UnskriptFactory):
         print("")
         print(f"\033[1m {sys.argv[0:]} \033[0m")
         print("")
+        args = None 
+        parser = None 
         if "args" in kwargs:
             args = kwargs.get('args')
         if "parser" in kwargs:

@@ -2,7 +2,12 @@ import sys
 import os 
 import unittest
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
+try:
+    from unskript_factory import ChecksFactory, ScriptsFactory, ReportsFactory, ConfigParserFactory
+except Exception as e: 
+    print(f"ERROR: {e}")
 
 class TestChecksFactory(unittest.TestCase):
     def test_checks_factory_run(self):
@@ -11,7 +16,7 @@ class TestChecksFactory(unittest.TestCase):
         # Test Singleton behavior 
         self.assertIs(factory1, factory2)
         
-        result = factory1.run()
+        factory1.run()
 
 class TestScriptsFactory(unittest.TestCase):
     def test_scripts_factory_run(self):
@@ -20,7 +25,7 @@ class TestScriptsFactory(unittest.TestCase):
         # Test Singleton behavior 
         self.assertIs(factory1, factory2)
 
-        result = factory1.run()
+        factory1.run()
 
 class TestReportsFactory(unittest.TestCase):
     def test_reports_factory_run(self):
@@ -29,7 +34,7 @@ class TestReportsFactory(unittest.TestCase):
         # Test Singleton behavior
         self.assertIs(factory1, factory2)
 
-        result = factory1.run()
+        factory1.run()
 
 class TestConfigParserFactory(unittest.TestCase):
     def test_reports_factory_run(self):
@@ -51,12 +56,5 @@ class TestConfigParserFactory(unittest.TestCase):
         s = factory1.get_schedule()
         assert isinstance(s, dict) is True
 
-if __name__ == '__main__':
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
-    
-    try:
-        from unskript_factory import ChecksFactory, ScriptsFactory, ReportsFactory, ConfigParserFactory
-    except Exception as e: 
-        print(f"ERROR: {e}")
-    
+if __name__ == '__main__':    
     unittest.main()
