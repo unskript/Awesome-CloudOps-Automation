@@ -5,7 +5,7 @@ import unittest
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 try:
-    from unskript_factory import ChecksFactory, ScriptsFactory, NotificationFactory, ConfigParserFactory
+    from unskript_ctl_factory import ChecksFactory, ScriptsFactory, NotificationFactory, ConfigParserFactory
 except Exception as e: 
     print(f"ERROR: {e}")
 

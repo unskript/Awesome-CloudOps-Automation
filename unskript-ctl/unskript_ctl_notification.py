@@ -26,7 +26,7 @@ from jsonschema import validate, ValidationError
 
 
 from unskript_utils import *
-from unskript_factory import NotificationFactory
+from unskript_ctl_factory import NotificationFactory
 
 class SlackNotification(NotificationFactory):
     def __init__(self, **kwargs):

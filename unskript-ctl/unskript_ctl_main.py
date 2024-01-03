@@ -20,7 +20,7 @@ from unskript_ctl_run import *
 from unskript_ctl_list import * 
 from unskript_ctl_notification import * 
 from unskript_utils import * 
-from unskript_factory import *
+from unskript_ctl_factory import *
 from unskript_ctl_version import * 
 
 class UnskriptCtl(UnskriptFactory):
@@ -509,6 +509,9 @@ def main():
     # Run Option
     run_parser = subparsers.add_parser('run', help='Run Options')
     run_parser.add_argument('--script', type=str, help='Script name to run', required=False)
+    run_parser.add_argument('--report',
+                        action='store_true',
+                        help='Report Results')
     check_subparser = run_parser.add_subparsers(dest='check_command')
     check_parser = check_subparser.add_parser('check', help='Run Check Option')
     check_parser.add_argument('--name', type=str, help='Check name to run')
@@ -571,10 +574,6 @@ def main():
                         type=str,
                         help=SUPPRESS)
     
-    # Report Option
-    parser.add_argument('--report',
-                        action='store_true',
-                        help='Report Results')
     
 
     # Lets re-arrange arguments such that parse_args is efficient with
@@ -595,7 +594,7 @@ def main():
         if report_idx != -1 and check_idx != -1:
             if report_idx > check_idx:
                 argv.remove('--report')
-                argv.insert(run_idx, '--report')
+                argv.insert(run_idx + 1, '--report')
 
         return argv
     
