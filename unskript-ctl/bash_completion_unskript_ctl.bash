@@ -10,8 +10,7 @@ _unskript-client-completion() {
 
     # Find the absolute path of unskript-client.py
     local unskript_client_script
-    # unskript_client_script="$(which unskript_ctl_main.py)"
-    unskript_client_script="/unskript/data/actions/STORE/re-org/unskript_ctl_main.py"
+    unskript_client_script="$(which unskript_ctl_main.py)"
 
     if [ -n "$unskript_client_script" ]; then
         # Check if the script exists and save check names
