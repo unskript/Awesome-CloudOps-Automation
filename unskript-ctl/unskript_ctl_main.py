@@ -97,31 +97,37 @@ class UnskriptCtl(UnskriptFactory):
             self._error("ARGS and/or Parser sent to run_main is None")
             sys.exit(0)
         status_of_run = []
-        if args.name is not None:
-            checks_list = self._db.cs.get_check_by_name(check_name=str(args.name))
-            status_of_run = self._check.run(checks_list=checks_list)
-        elif args.type is not None:
-            all_connectors = args.type 
-            if not isinstance(all_connectors, list):
-                all_connectors = [all_connectors]
-            if len(all_connectors) == 1 and ',' in all_connectors[0]:
-                all_connectors = all_connectors[0].split(',')
-            for connector in all_connectors:
-                connector = connector.replace(',', '')
-            temp_list = self._db.cs.get_checks_by_connector(all_connectors, True)
-            check_list = []
-            for t in temp_list:
-                if t not in check_list:
-                    check_list.append(t)
-            status_of_run = self._check.run(checks_list=check_list)
-        elif args.all is not False:
-            check_list = self._db.cs.get_checks_by_connector("all", True)
-            status_of_run = self._check.run(checks_list=check_list)
-        else:
-            parser.print_help()
-            sys.exit(0) 
-        self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
+        if args.check_command == 'check':
+            if args.name is not None:
+                checks_list = self._db.cs.get_check_by_name(check_name=str(args.name))
+                status_of_run = self._check.run(checks_list=checks_list)
+            elif args.type is not None:
+                all_connectors = args.type 
+                if not isinstance(all_connectors, list):
+                    all_connectors = [all_connectors]
+                if len(all_connectors) == 1 and ',' in all_connectors[0]:
+                    all_connectors = all_connectors[0].split(',')
+                for connector in all_connectors:
+                    connector = connector.replace(',', '')
+                temp_list = self._db.cs.get_checks_by_connector(all_connectors, True)
+                check_list = []
+                for t in temp_list:
+                    if t not in check_list:
+                        check_list.append(t)
+                status_of_run = self._check.run(checks_list=check_list)
+            elif args.all is not False:
+                check_list = self._db.cs.get_checks_by_connector("all", True)
+                status_of_run = self._check.run(checks_list=check_list)
+            else:
+                parser.print_help()
+                sys.exit(0) 
+            self.uglobals['status_of_run'] = status_of_run
+            self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
+        
+        if 'script' in args and args.command == 'run':
+            self._script.run(script=args.script)
 
+        
     def update_audit_trail(self, collection_name: str, status_dict_list: list):
         trail_data = {}
         id = ''
@@ -467,6 +473,25 @@ class UnskriptCtl(UnskriptFactory):
         self.logger.debug("Stopped Active Debug session successfully")
         print("Stopped Active Debug session successfully")
 
+    def notify(self, args):
+        output_dir = create_execution_run_directory()
+        summary_result = None
+        failed_objects = None 
+        output_json_file = None 
+        mode = None
+        if args.command == 'run' and args.check_command == 'check':
+            summary_result = self.uglobals.get('status_of_run')
+            failed_objects = self.uglobals.get('failed_result')
+            mode = 'both'
+        if args.script:
+            output_json_file = os.path.join(output_dir,UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME + '.json')
+            mode = 'both'
+        
+        self._notification.notify(summary_results=summary_result,
+                                  failed_objects=failed_objects,
+                                  output_metadata_file=output_json_file,
+                                  mode=mode)
+        pass 
 
 def main():
     uc = UnskriptCtl()
@@ -481,12 +506,12 @@ def main():
     subparsers = parser.add_subparsers(dest='command', help='Available Commands')
     # Run Option
     run_parser = subparsers.add_parser('run', help='Run Options')
-    check_subparser = run_parser.add_subparsers()
+    run_parser.add_argument('--script', type=str, help='Script name to run', required=False)
+    check_subparser = run_parser.add_subparsers(dest='check_command')
     check_parser = check_subparser.add_parser('check', help='Run Check Option')
     check_parser.add_argument('--name', type=str, help='Check name to run')
     check_parser.add_argument('--type', type=str, help='Type of Check to run')
     check_parser.add_argument('--all', action='store_true', help='Run all checks')
-    run_parser.add_argument('--script', type=str, help='Script name to run', required=False)
 
     # List Option
     list_parser = subparsers.add_parser('list', help='List Options')
@@ -544,14 +569,48 @@ def main():
                         type=str,
                         help=SUPPRESS)
     
-
     # Report Option
     parser.add_argument('--report',
                         action='store_true',
                         help='Report Results')
-
     
+
+    # Lets re-arrange arguments such that parse_args is efficient with
+    # the rules defined above
+    # def rearrange_argv(argv):
+    #     print("IN REARRANGE: ", argv, type(argv))
+    #     script_idx = argv.index('--script') if '--script' in argv else -1
+    #     check_idx = argv.index('check') if 'check' in argv else -1
+    #     report_idx = argv.index('--report') if '--report' in argv else -1
+    #     run_idx = argv.index('run') if 'run' in argv else -1
+        
+    #     print("INDICIES: ", script_idx, check_idx, report_idx, run_idx)
+
+    #     # Rearrange '--script SCRIPT_NAME' before 'check --name NAME.py'
+    #     if script_idx != -1 and check_idx != -1:
+    #         if script_idx > check_idx:
+    #             argv.remove('--script')
+    #             script_name = argv.pop(script_idx)
+    #             argv.insert(run_idx + 1, '--script')
+    #             argv.insert(run_idx + 2, script_name)
+    #             print("INSERTED SCRIPT BEFORE CHECK")
+        
+    #     # Rearrange '--report' before 'check --name NAME.py'
+    #     if report_idx != -1 and check_idx != -1:
+    #         if report_idx > check_idx:
+    #             argv.remove('--report')
+    #             argv.insert(run_idx, '--report')
+    #             print(f"INSERTED REPORT AT IDX {run_idx}")
+
+    #     return argv
+    
+    # argv = sys.argv[:].copy()
+    # print("BEFORE ARRANGING: ", argv)
+    # argv = rearrange_argv(argv)
+    # print("AFTER ARRANGING: ", argv)
+    # args = parser.parse_args(argv)
     args = parser.parse_args()
+    print(args)
 
     if len(sys.argv) <= 2:
         parser.print_help()
@@ -575,6 +634,8 @@ def main():
     else:
         parser.print_help()
 
+    if args.command == 'run' and  args.report:
+        uc.notify(args)
 
 if __name__ == '__main__':
     main()

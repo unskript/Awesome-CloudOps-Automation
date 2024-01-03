@@ -98,6 +98,7 @@ class Checks(ChecksFactory):
                 os.remove(self.temp_jit_file)
 
         self.display_check_result(checks_output=outputs)
+        self.uglobals['status_of_run'] = self.status_list_of_dict
         
         return self.status_list_of_dict
 
@@ -196,7 +197,11 @@ class Checks(ChecksFactory):
         print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
 
         if failed_result_available is True:
-            self.uglobals['failed_result'] = failed_result
+            self.uglobals['failed_result'] = {'result': []}
+            for k,v in failed_result.items():
+                d = {}
+                d[k] = {'failed_object': v}
+                self.uglobals['failed_result']['result'].append(d)
 
         print("")
         self.status_list_of_dict.append(status_dict)
@@ -526,7 +531,7 @@ class Script(ScriptsFactory):
         self.uglobals = UnskriptGlobals()
     
     def run(self, **kwargs):
-        if 'script' in kwargs:
+        if 'script' not in kwargs:
             self.logger.error("ERROR: script is a mandatory parameter to be sent, cannot run without the scripts list")
             raise ValueError("Parameter script is not present in the argument, please call run with the scripts_list=[scripts]") 
         script = kwargs.get('script')

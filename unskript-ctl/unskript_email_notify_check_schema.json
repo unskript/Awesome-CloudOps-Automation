@@ -4,7 +4,10 @@
             "properties": {
                 "failed_object": {
                     "items": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "title": "Failed Object",
                     "type": "array"
@@ -15,27 +18,17 @@
             ],
             "title": "FailedResult",
             "type": "object"
-        },
-        "NotifySchema": {
-            "properties": {
-                "check_name": {
-                    "$ref": "#/$defs/FailedResult"
-                }
-            },
-            "required": [
-                "check_name"
-            ],
-            "title": "NotifySchema",
-            "type": "object"
         }
     },
     "properties": {
         "result": {
+            "type": "array",
             "items": {
-                "$ref": "#/$defs/NotifySchema"
-            },
-            "title": "Result",
-            "type": "array"
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/$defs/FailedResult"
+                }
+            }
         }
     },
     "required": [

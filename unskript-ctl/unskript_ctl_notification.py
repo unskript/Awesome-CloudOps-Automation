@@ -109,7 +109,7 @@ class EmailNotification(NotificationFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         config = self._config.get_notification()
-        self.execution_dir = kwargs.get('execution_dir', './temp_folder')
+        self.execution_dir = kwargs.get('execution_dir', create_execution_run_directory())
         self.email_config = config.get('Email')
         self.provider = self.email_config.get('provider', '').lower()
         self.checks_schema_file = os.path.join(os.path.dirname(__file__), "unskript_email_notify_check_schema.json")
@@ -123,7 +123,7 @@ class EmailNotification(NotificationFactory):
             self.logger.error(f"Data Differs From  Schema file {schema_file}!")
             return False  
         try:
-            with open(self.schema_file, 'r') as f:
+            with open(schema_file, 'r') as f:
                 schema = json.load(f)
                 validate(instance=data, schema=schema)
                 return True 
@@ -152,24 +152,24 @@ class EmailNotification(NotificationFactory):
     def create_temp_files_of_failed_check_results(self, 
                                             failed_result: dict):
         list_of_failed_files = []
+        self.logger.info(f"Creating {len(failed_result)} Temp Files for failed check results ")
         if not failed_result:
             self.logger.error("Failed Result is Empty")
             return list_of_failed_files
-        if not self.validate(failed_result, self.checks_schema_file):
+        if not self.validate_data(failed_result, self.checks_schema_file):
             self.logger.error("Validation of Given Result failed against Notification Schema")
             return list_of_failed_files
-        
-        if failed_result and len(failed_result):
-            connectors_list = [x.split(':')[0] for res in failed_result.get('result') for x in res.keys()]
-            for connector in connectors_list:
-                connector_file = self.execution_dir + f'/{connector}_failed_objects.txt'
-                with open(connector_file, 'w', encoding='utf-8') as f:
-                    for c_name, f_obj in failed_result.items():
-                        if c_name.startswith(connector):
-                            f.write('\n' + c_name + '\n')
-                            f.write(yaml.dump(f_obj, default_flow_style=False))
-                if connector_file not in list_of_failed_files:
-                    list_of_failed_files.append(connector_file)
+
+        if failed_result and len(failed_result.get('result', [])):
+            for result_item in failed_result['result']:
+                for check_name, failed_obj in result_item.items():
+                    connector = check_name.split(':')[0]
+                    connector_file = f"{self.execution_dir}/{connector}_failed_objects.txt"
+                    with open(connector_file, 'a', encoding='utf-8') as f:
+                        f.write('\n' + check_name + '\n')
+                        yaml.dump(failed_obj, f, default_flow_style=False)
+                    if connector_file not in list_of_failed_files:
+                        list_of_failed_files.append(connector_file)
 
         return list_of_failed_files
 
@@ -315,13 +315,15 @@ class EmailNotification(NotificationFactory):
                                failed_result: dict,
                                output_metadata_file: str,
                                title: str,
-                               attachment: MIMEMultipart):
+                               attachment: MIMEMultipart,
+                               **kwargs):
         message = self.create_email_header(title=title)
         temp_attachment = msg = None
+        print(f"SUMMARY RESULT LENGTH IS {len(summary_results)}")
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
-            self.create_temp_files_of_failed_results(failed_result=failed_result)
+            self.create_temp_files_of_failed_check_results(failed_result=failed_result)
             parent_folder = self.execution_dir
             target_name = os.path.basename(parent_folder)
             tar_file_name = f"{target_name}" + '.tar.bz2'
@@ -360,7 +362,7 @@ class SendgridNotification(EmailNotification):
         self.sendgrid_config = self.email_config.get('Sendgrid')
     
     def notify(self, **kwargs):
-        summary_results = kwargs.get('summary_results', [])
+        summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
         from_email = kwargs.get('from_email', self.sendgrid_config.get('from-email'))
@@ -406,7 +408,7 @@ class SendgridNotification(EmailNotification):
             if summary_results and len(summary_results):
                 html_message += self.create_checks_summary_message(summary_results=summary_results,
                                                             failed_result=failed_result)
-                self.create_temp_files_of_failed_results(failed_result=failed_result)
+                self.create_temp_files_of_failed_check_results(failed_result=failed_result)
             if output_metadata_file:
                 html_message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
                 with open(output_metadata_file, 'r') as f:
@@ -448,7 +450,7 @@ class SendgridNotification(EmailNotification):
 
             sg = sendgrid.SendGridAPIClient(api_key)
             sg.send(email_message)
-            self.logger.error(f"Notification sent successfully to {to_email}")
+            self.logger.info(f"Notification sent successfully to {to_email}")
         except Exception as e:
             self.logger.error(f"ERROR: Unable to send notification as email. {e}")
             return False
@@ -481,10 +483,10 @@ class SendgridNotification(EmailNotification):
 class AWSEmailNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.aws_config = self.email_config.get('AWS')
+        self.aws_config = self.email_config.get('SES')
 
     def notify(self, **kwargs):
-        summary_results = kwargs.get('summary_results', [])
+        summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
         access_key = kwargs.get('access_key', self.aws_config.get('access_key'))
@@ -494,7 +496,7 @@ class AWSEmailNotification(EmailNotification):
         region = kwargs.get('region', self.aws_config.get('region'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
 
-        return self.prepare_combined_email(summary_results=summary_results,
+        return self.prepare_to_send_awsses_notification(summary_results=summary_results,
                                     failed_result=failed_result,
                                     output_metadata_file=output_metadata_file,
                                     access_key=access_key,
@@ -603,6 +605,7 @@ class SmtpNotification(EmailNotification):
         return self.send_smtp_notification(summary_results=summary_results,
                                            failed_result=failed_result,
                                            smtp_host=smtp_host,
+                                           output_metadata_file=output_metadata_file,
                                            smtp_user=smtp_user,
                                            smtp_password=smtp_password,
                                            to_email=to_email,
@@ -682,24 +685,20 @@ class Notification(NotificationFactory):
     def notify(self, **kwargs):
         retval = False 
         mode = kwargs.get('mode', 'slack')
-        failed_objects = kwargs.get('failed_objects', {})
-        summary_result = kwargs.get('summary_result', [])
 
         if mode.lower() == 'slack':
-            retval = SlackNotification().notify(summary_results=summary_result)
+            retval = SlackNotification().notify(**kwargs)
         elif mode.lower() == 'email':
-            retval = self._send_email(summary_results=summary_result,
-                                        failed_objects=failed_objects,
-                                        **kwargs)
+            retval = self._send_email(**kwargs)
         elif mode.lower() == 'both':
-            retval = SlackNotification().notify(summary_results=summary_result)
-            retval = self._send_email(summary_results=summary_result,
-                                        failed_objects=failed_objects,
-                                        **kwargs)
+            retval = SlackNotification().notify(**kwargs)
+            retval = self._send_email(**kwargs)
         return retval 
 
-    def _send_email(self, summary_results, failed_objects, **kwargs):
+    def _send_email(self, **kwargs):
         retval = False
+        summary_results = kwargs.get('summary_results')
+        failed_objects = kwargs.get('failed_objects')
         if self.email_config.get('provider').lower() == 'smtp':
             smtp = self.email_config.get('SMTP')
             retval = SmtpNotification().notify(

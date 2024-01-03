@@ -34,19 +34,20 @@ class UnskriptFactory(ABC):
     @staticmethod
     def _configure_logger():
         logger = logging.getLogger('UnskriptCtlLogger')
-        logger.setLevel(logging.DEBUG)
-        
-        # Create a formatter for log messages
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        
-        # Create a file handler and set its format
-        file_handler = logging.FileHandler(UnskriptFactory.log_file_name)
-        file_handler.setLevel(logging.DEBUG)  # Set file logging level
-        file_handler.setFormatter(formatter)
-        
-        # Add the file handler to the logger
-        logger.addHandler(file_handler)
-        logger.propagate = False
+        if not logger.handlers:
+            logger.setLevel(logging.DEBUG)
+            
+            # Create a formatter for log messages
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            
+            # Create a file handler and set its format
+            file_handler = logging.FileHandler(UnskriptFactory.log_file_name)
+            file_handler.setLevel(logging.DEBUG)  # Set file logging level
+            file_handler.setFormatter(formatter)
+            
+            # Add the file handler to the logger
+            logger.addHandler(file_handler)
+            logger.propagate = False
         
         return logger
     
