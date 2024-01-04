@@ -22,8 +22,13 @@ from unskript_utils import *
 from unskript_ctl_factory import *
 from unskript_ctl_version import * 
 
+
+# UnskriptCTL class that instantiates class instance of Checks, Script, Notification and DBInterface
+# This implementation is an example how to use the different components of unskript-ctl into a single
+# class. 
 class UnskriptCtl(UnskriptFactory):
     def __init__(self, **kwargs):
+        """Constructor: This class instantiates notification, checks, script and dbinterface class"""
         super().__init__(**kwargs)
         self.logger.info("Initializing UnskriptCtl")
         self.logger.info(f"\tVERSION: {VERSION}")
@@ -36,6 +41,7 @@ class UnskriptCtl(UnskriptFactory):
         self._db = DBInterface() 
     
     def create_creds(self, args):
+        """This method can be used to create credential"""
         try:
             connector_type, connector_data_file = args.create_credential
         except:
@@ -67,6 +73,7 @@ class UnskriptCtl(UnskriptFactory):
             self.display_creds_ui()
     
     def display_creds_ui(self):
+        """Wrapper for creds_ui to display npyscreen dialogs"""
         try:
             from creds_ui import main as ui
             ui()
@@ -75,6 +82,7 @@ class UnskriptCtl(UnskriptFactory):
             self._error("Required python library creds_ui is not packaged")
     
     def save_check_names(self, args):
+        """This method is called by bash completion script to create all available checks as a file"""
         if args.save_check_names:
             filename = args.save_check_names
         else:
@@ -86,6 +94,7 @@ class UnskriptCtl(UnskriptFactory):
         self.logger.info(f"Saved  {len(list_of_names)} Check Names!")
     
     def run_main(self, **kwargs):
+        """Main Function to handle all options under the run command"""
         args = parser = None 
         if 'args' in kwargs:
             args = kwargs.get('args')
@@ -129,6 +138,7 @@ class UnskriptCtl(UnskriptFactory):
 
         
     def update_audit_trail(self, collection_name: str, status_dict_list: list):
+        """This function updates PSS with the collection name audit-trail"""
         trail_data = {}
         id = ''
         k = str(datetime.now())
@@ -167,6 +177,7 @@ class UnskriptCtl(UnskriptFactory):
         return id 
 
     def list_main(self, **kwargs):
+        """This is the Main function to handle all list command"""
         s = '\x1B[1;20;42m' + "~~~~ CLI Used ~~~~" + '\x1B[0m'
         print("")
         print(s)
@@ -186,6 +197,7 @@ class UnskriptCtl(UnskriptFactory):
         
         
     def list_credentials(self):
+        """Function to handle displaying state of credentials"""
         active_creds = []
         incomplete_creds = []
         for cred_file in self.creds_json_files:
@@ -209,6 +221,7 @@ class UnskriptCtl(UnskriptFactory):
         print(tabulate(table_data, headers='firstrow', tablefmt='fancy_grid'))
 
     def list_checks_by_connector(self, args):
+        """List checks by connector"""
         all_connectors = args.type 
         if not all_connectors:
             all_connectors = 'all'
@@ -230,6 +243,7 @@ class UnskriptCtl(UnskriptFactory):
  
 
     def display_failed_checks(self, args):
+        """Display failed checks from the audit_trail"""
         if args.all:
             connector = 'all'
         elif args.type:
@@ -262,6 +276,7 @@ class UnskriptCtl(UnskriptFactory):
 
 
     def show_main(self, **kwargs):
+        """This function is the Main method to handle all show command"""
         s = '\x1B[1;20;42m' + "~~~~ CLI Used ~~~~" + '\x1B[0m'
         print("")
         print(s)
@@ -307,6 +322,7 @@ class UnskriptCtl(UnskriptFactory):
             parser.print_help()
 
     def print_all_result_table(self, pss_content: dict):
+        """Prints result table in a tabular form"""
         if not pss_content:
             return 
         
@@ -328,6 +344,7 @@ class UnskriptCtl(UnskriptFactory):
 
 
     def print_connector_result_table(self, pss_content: dict, connector: str):
+        """Prints result table for given connector test"""
         if not pss_content:
             return 
         
@@ -352,6 +369,7 @@ class UnskriptCtl(UnskriptFactory):
 
 
     def print_execution_result_table(self, pss_content: dict, execution_id: str):
+        """Auxilary function to show execution result for a given execution_id"""
         execution_result_table = [["\033[1m Check Name \033[0m",
                                 "\033[1m Failed Objects \033[0m",
                                 "\033[1m Run Status \033[0m",
@@ -369,9 +387,11 @@ class UnskriptCtl(UnskriptFactory):
                 headers='firstrow', tablefmt='fancy_grid'))
 
     def service_main(self, **kwargs):
+        """This is a placeholder implementation, think of it as wrapper for gotty or any other similar service"""
         raise NotImplementedError("NOT IMPLEMENTED")
     
     def debug_main(self, **kwargs):
+        """Debug Main function"""
         args = kwargs.get('args', None)
         parser = kwargs.get('parser', None)
 
@@ -476,6 +496,7 @@ class UnskriptCtl(UnskriptFactory):
         print("Stopped Active Debug session successfully")
 
     def notify(self, args):
+        """Notification is called when the --report flag is used. This is a wrapper for both email and slack notification."""
         output_dir = create_execution_run_directory()
         summary_result = None
         failed_objects = None 
@@ -495,6 +516,13 @@ class UnskriptCtl(UnskriptFactory):
                                   mode=mode)
         pass 
 
+# This function is the main function. Unlike the previous implementation of
+# argparse, here, this function implements sub-parser to differentiate all the
+# commands that are supported by unskript-ctl. 
+# The fact that sub-parser is used means, the Keyword cannot start with a -, like --run
+# That is the reason why --run is implemented as just run. Similary, list, debug and show
+# options are all implemented the same way.
+#
 def main():
     uc = UnskriptCtl()
     parser = ArgumentParser(prog='unskript-ctl')

@@ -28,6 +28,7 @@ from jsonschema import validate, ValidationError
 from unskript_utils import *
 from unskript_ctl_factory import NotificationFactory
 
+# This class implements Notification function for Slack
 class SlackNotification(NotificationFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -106,6 +107,7 @@ class SlackNotification(NotificationFactory):
         return summary_message
 
 
+# This class implements Notification function for Email category
 class EmailNotification(NotificationFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -355,6 +357,7 @@ class EmailNotification(NotificationFactory):
 
         return attachment
 
+# Sendgrid specific implementation
 class SendgridNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -479,6 +482,7 @@ class SendgridNotification(EmailNotification):
         return email_message
 
 
+# SES specific implementation
 class AWSEmailNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -584,7 +588,8 @@ class AWSEmailNotification(EmailNotification):
         except Exception as e:
             self.logger.error(f"ERROR: {e}")
         return False
-    
+
+# SMTP Implementation, like Gmail, etc..    
 class SmtpNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -674,7 +679,9 @@ class SmtpNotification(EmailNotification):
 #          smtp_password=smtp_password # Only applicable for SMTP email, Optional
 #          )
 #
-
+    
+# This function can be used as a usable component by any other class. As long as
+# the Data that is used for slack or email follow the Schema. 
 class Notification(NotificationFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

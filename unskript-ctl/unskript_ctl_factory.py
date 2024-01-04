@@ -18,9 +18,16 @@ from abc import ABC, abstractmethod
 from unskript_utils import *
 
 
+# This is the Base class, Abstract class that shall be used by all the other
+# classes that are implemented. This class is implemented as a Singleton class
+# which means, the Child that inherits this class, will have a single copy in
+# memory. This saves Memory footprint! This class also implements a Logger
+# that is being used by individual child class. This class generates
+# unskript_ctl.log in the same directory, from where the unskript-ctl.sh is 
+# called. 
 class UnskriptFactory(ABC):
     _instance = None 
-    log_file_name = os.path.join(os.path.dirname(__file__), 'unskript_ctl.log')
+    log_file_name = os.path.join(os.getcwd(), 'unskript_ctl.log')
     
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -81,6 +88,8 @@ class UnskriptFactory(ABC):
     def _error(self, msg: str):
         print('\x1B[1;20;41m' + msg + '\x1B[0m')
 
+
+# This class implements an Abstract class for All Checks
 class ChecksFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
@@ -91,7 +100,7 @@ class ChecksFactory(UnskriptFactory):
     def run(self, **kwargs):
         pass 
 
-
+# This class implements an Abstract class for Executing Script
 class ScriptsFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
@@ -102,6 +111,7 @@ class ScriptsFactory(UnskriptFactory):
     def run(self, *args, **kwargs):
         pass
 
+# This class implements an Abstract class for Notification that is used by Slack and Email
 class NotificationFactory(UnskriptFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -112,6 +122,7 @@ class NotificationFactory(UnskriptFactory):
     def notify(self, **kwargs):
         pass 
 
+# This class implements the Database abstract class that is implemented by ZoDB and SQL
 class DatabaseFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
@@ -135,7 +146,9 @@ class DatabaseFactory(UnskriptFactory):
         pass 
 
 
-
+# This class implements the Config parser that is being used by the UnskriptFactory 
+# This class looks the the unskript_ctl_config.yaml in known directories, parses it
+# and saves it as a local class specific variable. 
 class ConfigParserFactory(UnskriptFactory):
     CONFIG_FILE_NAME = "unskript_ctl_config.yaml"
     DEFAULT_DIRS = ["/etc/unskript", "/opt/unskript", "/tmp", "./config", "./"]

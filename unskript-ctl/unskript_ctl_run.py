@@ -25,6 +25,7 @@ from unskript_ctl_factory import ChecksFactory, ScriptsFactory
 from unskript.legos.utils import CheckOutputStatus
 
 
+# Implements Checks Class that is wrapper for All Checks Function
 class Checks(ChecksFactory):
     TBL_CELL_CONTENT_PASS="\033[1m PASS \033[0m"
     TBL_CELL_CONTENT_SKIPPED="\033[1m SKIPPED \033[0m"
@@ -527,7 +528,8 @@ task.configure(inputParamsJson=\'\'\'{
             
         return checks_list
 
-           
+
+# This class implements Script interface for ScriptsFactory. 
 class Script(ScriptsFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
