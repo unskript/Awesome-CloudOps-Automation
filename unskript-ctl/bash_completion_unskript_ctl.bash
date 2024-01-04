@@ -99,11 +99,13 @@ _unskript-client-completion() {
                 return 0
             fi
             if [[ (" ${COMP_WORDS[*]} " == *"run [^[:space:]]+ check "*) \
-                  || (" ${COMP_WORDS[*]} " == *"run [^[:space:]]+ check "*) ]];
+                  || (" ${COMP_WORDS[*]} " == *"run [^[:space:]]+ check "*) \
+                  || (" ${COMP_WORDS[*]} " == *"check "*) ]];
             then
                 COMPREPLY=( $(compgen -W "--all --type --name" -- "${cur}" -o nospace) ) 
                 return 0
             fi
+            
 
             if [[ (" ${COMP_WORDS[*]} " == *"list failed-checks --all"*) \
                   || (" ${COMP_WORDS[*]} " == *"list checks --all"*) \
@@ -121,7 +123,7 @@ _unskript-client-completion() {
                 return 0
             fi
 
-            if [[ (" ${COMP_WORDS[*]} " == *"-l --checks "*) \
+            if [[ (" ${COMP_WORDS[*]} " == *"list --checks "*) \
                   || (" ${COMP_WORDS[*]} " == *"list checks "*)]];
             then
                 COMPREPLY=( $(compgen -W "--all --type" -- "${cur}" -o nospace) ) 
@@ -154,10 +156,23 @@ _unskript-client-completion() {
 
             if [[ (" ${COMP_WORDS[*]} " == *"run --script "*) \
                   && (" ${COMP_WORDS[*]} " != *"run --script SCRIPT_FILE"*) \
+                  && (" ${COMP_WORDS[*]} " != *"run --script \ [^[:space:]]+"*) \
                   && (" ${COMP_WORDS[*]} " != *"check "*) \
                   ]];
             then
                 COMPREPLY=( $(compgen -W "SCRIPT_FILE" -- "${cur}" -o nospace) ) 
+                return 0
+            fi
+
+
+            IFS=' ' read -r -a words <<<"${COMP_WORDS[*]}"
+            if [[ " ${COMP_WORDS[*]} " == *"run --script "* && " ${COMP_WORDS[*]} " != *"check "* ]]; then
+                last_word="${words[${#words[@]}-1]}"
+                if [[ "${last_word}" != "" && "${last_word}" =~ ^[^[:space:]]+$ ]]; then
+                    COMPREPLY=( $(compgen -W "check" -- "${cur}" -o nospace) )
+                else
+                    COMPREPLY=( $(compgen -W "SCRIPT_FILE" -- "${cur}" -o nospace) )
+                fi
                 return 0
             fi
 
@@ -166,7 +181,14 @@ _unskript-client-completion() {
                   ]];
             then
                 COMPREPLY=( $(compgen -W "check" -- "${cur}" -o nospace) ) 
-                echo "D1"
+                return 0
+            fi
+
+            if [[ (" ${COMP_WORDS[*]} " =~ *"run --script \ [^[:space:]]+"*) \
+                  || (" ${COMP_WORDS[*]} " =~ *"run --script  [^[:space:]]+"*) \
+                  ]];
+            then
+                COMPREPLY=( $(compgen -W "check" -- "${cur}" -o nospace) ) 
                 return 0
             fi
 
@@ -175,7 +197,6 @@ _unskript-client-completion() {
                   ]];
             then
                 COMPREPLY=( $(compgen -W "--type --all --name" -- "${cur}" -o nospace) ) 
-                echo "D2"
                 return 0
             fi
 

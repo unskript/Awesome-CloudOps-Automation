@@ -56,7 +56,8 @@ class UnskriptCtl(UnskriptFactory):
         if connector_type in ("k8s", "kubernetes"):
             with open(connector_data_file, 'r', encoding='utf-8') as f:
                 creds_data = f.read()
-            k8s_creds_file = os.path.join(os.environ.get('HOME'),  CREDENTIAL_DIR + '/k8screds.json')
+            homedir = os.path.expanduser('~')
+            k8s_creds_file = os.path.join(homedir + CREDENTIAL_DIR + '/k8screds.json')
             with open(k8s_creds_file, 'r', encoding='utf-8') as f:
                 k8s_creds_content = json.loads(f.read())
             try:
@@ -133,7 +134,7 @@ class UnskriptCtl(UnskriptFactory):
             self.uglobals['status_of_run'] = status_of_run
             self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
         
-        if 'script' in args and args.command == 'run':
+        if 'script' in args and args.command == 'run' and args.script not in ('', None):
             self._script.run(script=args.script)
 
         
