@@ -29,8 +29,6 @@ from datetime import datetime
 from argparse import ArgumentParser, REMAINDER, SUPPRESS
 from db_utils import *
 from tabulate import tabulate
-from nbclient import NotebookClient
-from nbclient.exceptions import CellExecutionError
 from unskript.legos.utils import CheckOutputStatus
 from unskript_ctl_gen_report import *
 from unskript_ctl_debug import *
@@ -241,7 +239,6 @@ def run_ipynb(filename: str, status_list_of_dict: list = None, filter: str = Non
         print("ERROR: Unable to create JIT python script!")
         return
 
-    # client = NotebookClient(nb=nb, kernel_name="python3")
     ids = get_code_cell_action_uuids(nb.dict())
     outputs = ''
     try:
