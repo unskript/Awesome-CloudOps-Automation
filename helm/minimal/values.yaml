@@ -1,0 +1,112 @@
+# Default values for awesome-runbooks.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: unskript/awesome-runbooks
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# Flag to indicate whether to use stateful-set or not
+useStatefulSet: true
+
+# This section is common variables defined
+# Which is used in the template/*.yaml files
+common:
+  # Default namespace to be used. Change it as you see fit
+  namespace: "awesome-ops"
+  # ContainerPort to listen on
+  port: 8888
+  # Labels that should be attached to the POD
+  labels: "app: awesome-runbooks"
+  # These settings are recommended for optimal operation
+  # of the POD
+  initialDelaySeconds: 5
+  periodSeconds: 30
+  successThreshold: 3
+  timeoutSeconds: 15
+  terminationGracePeriodSeconds: 30
+
+# Persistence
+persistence:
+  # Flag to enable creation of PVC
+  enabled: true
+  # Name of the PVC
+  name: "awesome-runbooks-pvc"
+  # PVC Storage Class, by default not set
+  storageClassName: ""
+  # PV Access Mode.
+  accessModes:
+    - ReadWriteOnce
+  # Size of the PV
+  size: 1Gi
+  # Any Annotations for the PVC
+  annotations: {}
+  # MountPath that will be visible on the POD
+  mountPath: /unskript
+  # Any subdirectory under the mounthPath, default is at the root level
+  subPath: ""
+  # You can finetune volume template fields below
+  volumeClaimTemplate:
+    selector: {}
+    requests: {}
+    dataSource: {}
+
+securityContext:
+  capabilities:
+    add:
+      - NET_ADMIN
+  privileged: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8888
+
+resources:
+  # We recommend using 1vCPU and 2Gb of RAM to get the best performance
+  limits:
+     cpu: "1.0"
+     memory: "2Gi"
+  requests:
+     cpu: "1.0"
+     memory: "2Gi"
+
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
