@@ -1,0 +1,39 @@
+{
+    "$defs": {
+        "FailedResult": {
+            "properties": {
+                "failed_object": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "title": "Failed Object",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "failed_object"
+            ],
+            "title": "FailedResult",
+            "type": "object"
+        }
+    },
+    "properties": {
+        "result": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/$defs/FailedResult"
+                }
+            }
+        }
+    },
+    "required": [
+        "result"
+    ],
+    "title": "Notification",
+    "type": "object"
+}
