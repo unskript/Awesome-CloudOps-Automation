@@ -25,6 +25,11 @@ class InputSchema(BaseModel):
         title="Step",
         description="Query resolution step width in duration format or float number of seconds.",
     )
+    graph_size: list = Field(
+        default=[10, 5],
+        title="Graph Size",
+        description="Size of the graph in inches (width, height), specified as a list.",
+    )
 
 
 def prometheus_get_metric_range_data_printer(output):
@@ -38,7 +43,8 @@ def prometheus_get_metric_range_data(
     handle,
     promql_query: str,
     timeSince: int,
-    step: str
+    step: str,
+    graph_size: list = [10, 5]
 ) -> str:
     """prometheus_get_metric_statistics shows plotted values of Prometheus metric statistics.
 
@@ -56,15 +62,19 @@ def prometheus_get_metric_range_data(
     :type step: string
     :param Step: Query resolution step width in duration format or float number of seconds
 
+    :type graph_size: list
+    :param graph_size: Size of the graph in inches (width, height), specified as a list.
+
     :rtype: Shows plotted statistics.
     """
     result = handle.custom_query_range(
         query=promql_query,
-        start_time=datetime.utcnow() -timedelta(seconds=timeSince),
+        start_time=datetime.utcnow() - timedelta(seconds=timeSince),
         end_time=datetime.utcnow(),
         step=step)
     data = []
     table_data = []
+    plt.figure(figsize=graph_size)
     for each_result in result:
         metric_data = {}
         for each_metric_value in each_result["values"]:
