@@ -211,6 +211,8 @@ class EmailNotification(NotificationFactory):
                     </tr>
                 </table>
         '''
+
+        self.logger.info(message)
         return message
     
     def create_email_attachment(self, output_metadata_file: str = None):
@@ -300,7 +302,7 @@ class EmailNotification(NotificationFactory):
             message += tr_message + '\n'
             message += '</table>' + '\n'
 
-
+        self.logger.info(message)
         return message
     
     def create_email_header(self, title: str = None):
