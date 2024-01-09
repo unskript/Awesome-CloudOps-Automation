@@ -77,10 +77,11 @@ class SlackNotification(NotificationFactory):
 
             if response.status_code == 200:
                 self.logger.info("Slack message sent successfully!")
+                print("Slack message sent successfully!")
                 return True
             else:
-                self.logger.error(f"ERROR: Failed to send message {response.status_code}, {response.text}")
-                self._error(f"ERROR: Failed to send message {response.status_code}, {response.text}")
+                self.logger.error(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
+                self._error(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
                 return False
         except requests.RequestException as e:
             self.logger.error(f"ERROR: Not able to send slack message: {str(e)}")
@@ -378,13 +379,20 @@ class SendgridNotification(EmailNotification):
         api_key = kwargs.get('api_key', self.sendgrid_config.get('api_key'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
 
-        return self.send_sendgrid_notification(summary_results=summary_results,
+        retval = self.send_sendgrid_notification(summary_results=summary_results,
                                                failed_result=failed_result,
                                                output_metadata_file=output_metadata_file,
                                                from_email=from_email,
                                                to_email=to_email,
                                                api_key=api_key,
                                                subject=subject)
+        
+        if retval:
+            print("Successfully sent Email notification via Sendgrid.")
+        else:
+            print("Failed to send email notification via Sendgrid!")
+        
+        return retval 
     def send_sendgrid_notification(self, 
                                 summary_results: list,
                                 failed_result: dict,
@@ -508,7 +516,7 @@ class AWSEmailNotification(EmailNotification):
         region = kwargs.get('region', self.aws_config.get('region'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
 
-        return self.prepare_to_send_awsses_notification(summary_results=summary_results,
+        retval =  self.prepare_to_send_awsses_notification(summary_results=summary_results,
                                     failed_result=failed_result,
                                     output_metadata_file=output_metadata_file,
                                     access_key=access_key,
@@ -517,6 +525,12 @@ class AWSEmailNotification(EmailNotification):
                                     from_email=from_email,
                                     region=region,
                                     subject=subject)
+        if retval:
+            print("Successfully sent Email notification via AWS SES.")
+        else:
+            print("Failed to send email notification via AWS SES!")
+        
+        return retval
 
     def prepare_to_send_awsses_notification(self, summary_results: list,
                                 failed_result: dict,
@@ -615,7 +629,7 @@ class SmtpNotification(EmailNotification):
         to_email = kwargs.get('to_email', self.smtp_config.get('to-email'))
         from_email = kwargs.get('from_email', self.smtp_config.get('from-email'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-        return self.send_smtp_notification(summary_results=summary_results,
+        retval =  self.send_smtp_notification(summary_results=summary_results,
                                            failed_result=failed_result,
                                            smtp_host=smtp_host,
                                            output_metadata_file=output_metadata_file,
@@ -624,6 +638,12 @@ class SmtpNotification(EmailNotification):
                                            to_email=to_email,
                                            from_email=from_email,
                                            subject=subject)
+        if retval:
+            print("Successfully sent Email notification via SMTP.")
+        else:
+            print("Failed to send email notification via SMTP!")
+        
+        return retval 
     
     def send_smtp_notification(self,
                                 summary_results: list,
@@ -755,7 +775,7 @@ class Notification(NotificationFactory):
                         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
                         ) 
         if retval:
-            print("Notification successuflly sent")
+            print("Notification successfully sent!")
         else:
             print("Failed to send notification")
         return retval
