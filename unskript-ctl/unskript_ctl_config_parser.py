@@ -73,7 +73,7 @@ class Job():
         cmds = []
         notify = '--report' if self.notify is True else ''
         # Today, we dont support
-        # --check --name <> --check --type k8s --script
+        # check --name <> check --type k8s --script
         # So, if both check names and types are configured, we will split it
         # into 2 commands.
         # We will combine script with --types and make the --name as separate
@@ -87,25 +87,25 @@ class Job():
             combine_check_names_and_script = False
             combine_check_types_and_script = True
 
-        # full_command will contain the full command if both --check and --script
+        # full_command will contain the full command if both check and --script
         # are specified.
         full_command = None
         if self.checks is not None and len(self.checks) != 0:
             if combine_check_names_and_script:
-                full_command = f'{UNSKRIPT_CTL_BINARY} -r --check --name {self.checks[0]}'
+                full_command = f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]}'
             else:
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --name {self.checks[0]} {notify}')
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {notify}')
             print(f'Job: {self.job_name} contains check: {self.checks[0]}')
 
         if self.connectors is not None and len(self.connectors) != 0:
             # Need to construct the unskript-ctl command like
-            # unskript-ctl.sh -rc --types aws,k8s
+            # unskript-ctl.sh run check --types aws,k8s
             connector_types_string = ','.join(self.connectors)
             print(f'Job: {self.job_name} contains connector types: {connector_types_string}')
             if combine_check_types_and_script:
-                full_command = f'{UNSKRIPT_CTL_BINARY} -r --check --type {connector_types_string}'
+                full_command = f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string}'
             else:
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --check --type {connector_types_string} {notify}')
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {notify}')
 
         accessmode = os.F_OK | os.X_OK
         if self.custom_scripts is not None and len(self.custom_scripts) != 0:
@@ -129,7 +129,7 @@ class Job():
                 if combine_check_types_and_script or combine_check_names_and_script:
                     full_command += f' --script "{combined_script}" {notify}'
                 else:
-                    cmds.append(f'{UNSKRIPT_CTL_BINARY} -r --script "{combined_script}" {notify}')
+                    cmds.append(f'{UNSKRIPT_CTL_BINARY} run --script "{combined_script}" {notify}')
 
         if full_command is not None:
             cmds.append(full_command)
@@ -391,8 +391,8 @@ class ConfigParser():
         if (tunnel_up_cadence is None and tunnel_down_cadence is not None) or (tunnel_up_cadence is not None and tunnel_down_cadence is None):
             print(f'{bcolors.FAIL} Please ensure both tunnel_up_cadence and tunnel_down_cadence is configured{bcolors.ENDC}')
             return
-        self.tunnel_up_cmd = f'{tunnel_up_cadence} /usr/local/bin/unskript-ctl.sh --debug --start --config {ovpn_file}'
-        self.tunnel_down_cmd = f'{tunnel_down_cadence} /usr/local/bin/unskript-ctl.sh --debug --stop'
+        self.tunnel_up_cmd = f'{tunnel_up_cadence} /usr/local/bin/unskript-ctl.sh debug --start  {ovpn_file}'
+        self.tunnel_down_cmd = f'{tunnel_down_cadence} /usr/local/bin/unskript-ctl.sh debug --stop'
 
 def main():
     """main: This is the main function that gets called by the start.sh function
