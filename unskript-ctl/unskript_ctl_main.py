@@ -397,8 +397,8 @@ class UnskriptCtl(UnskriptFactory):
         parser = kwargs.get('parser', None)
 
         if args and args.command == 'debug':
-            if args.start:
-                self.start_debug(args.start)
+            if args.debug_command == 'start':
+                self.start_debug(args.config)
                 pass 
             elif args.stop:
                 self.stop_debug()
@@ -417,14 +417,8 @@ class UnskriptCtl(UnskriptFactory):
             print("ERROR: Insufficient information provided")
             return
 
-        remote_config = args[0]
-        remote_config = remote_config.replace('-','')
-
-        if remote_config != "config":
-            print(f"ERROR:The Allowed Parameter is --config, Given Flag is not recognized, --{remote_config}")
-            return
         try:
-            remote_config_file = args[1]
+            remote_config_file = args.config
         except:
             print(f"ERROR: Not able to find the configuration to start debug session")
             return
@@ -585,13 +579,16 @@ def main():
     
     # Debug / Service Option
     debug_parser = subparsers.add_parser('debug', help='Debug Option')
-    debug_parser.add_argument('--start',
-                                      help='Start debug session. Example [--start --config /tmp/config.ovpn]',
-                                      type=str,
-                                      nargs=REMAINDER)
+    debug_subparser = debug_parser.add_subparsers(dest='debug_command')
+    
+    debug_start_parser = debug_subparser.add_parser('start', help='Start Debug Option')
+
+    debug_start_parser.add_argument('--config',
+                                help='Config File, OVPN File, eg: /tmp/test.ovpn',
+                                type=str)
     debug_parser.add_argument('--stop',
-                                      help='Stop debug session',
-                                      action='store_true') 
+                                help='Stop debug session',
+                                action='store_true') 
 
     # Create Credential
     parser.add_argument('--create-credential',
@@ -642,7 +639,7 @@ def main():
     elif args.command == 'show':
         uc.show_main(args=args, parser=parser)
     elif args.command == 'debug':
-        uc.service_main(args=args, parser=parser)
+        uc.debug_main(args=args, parser=parser)
     elif args.create_credential not in ('', None):
         if len(args.create_credential) == 0:
             uc.display_creds_ui()
