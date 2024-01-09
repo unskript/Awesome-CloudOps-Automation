@@ -502,6 +502,9 @@ task.configure(inputParamsJson=\'\'\'{
                                     # Also, for each check, you need to use a different
                                     # argument, so store that in a field named
                                     # matrixinputline
+                                    # UUID Mapping need to initialized before assinging it a value!
+                                    if not isinstance(self.uglobals.get('uuid_mapping'), dict):
+                                        self.uglobals['uuid_mapping'] = {}
                                     is_first = True
                                     for dup in range(duplicate_count-1):
                                         add_check_to_list = False
