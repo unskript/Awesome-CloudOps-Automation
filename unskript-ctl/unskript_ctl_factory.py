@@ -16,6 +16,11 @@ import glob
 
 from abc import ABC, abstractmethod 
 from unskript_utils import *
+try:
+     from envyaml import EnvYAML
+except Exception as e:
+     print("ERROR: Unable to find required yaml package to parse the config file")
+     raise e
 
 
 # This is the Base class, Abstract class that shall be used by all the other
@@ -27,7 +32,7 @@ from unskript_utils import *
 # called. 
 class UnskriptFactory(ABC):
     _instance = None 
-    log_file_name = os.path.join(os.getcwd(), 'unskript_ctl.log')
+    log_file_name = os.path.join(os.path.expanduser('~'), 'unskript_ctl.log')
     
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -164,10 +169,8 @@ class ConfigParserFactory(UnskriptFactory):
         for directory in self.DEFAULT_DIRS:
             conf_file = os.path.join(directory, self.CONFIG_FILE_NAME)
             if os.path.exists(conf_file):
-                with open(conf_file, 'r') as f:
-                    yaml_content = yaml.safe_load(f)
-                    if yaml_content:  # Check if content exists and isn't empty
-                        return yaml_content
+                yaml_content = EnvYAML(conf_file, strict=False)
+                return yaml_content
         return {}  # Return an empty dictionary if file not found or empty
 
     def _get(self, key, sub_key=None):
