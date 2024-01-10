@@ -59,8 +59,7 @@ class UnskriptFactory(ABC):
             
             # Add the file handler to the logger
             logger.addHandler(file_handler)
-            # This ensures all logs are dumped to console. 
-            #logger.propagate = False
+            logger.propagate = False
         
         return logger
     
