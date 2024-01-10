@@ -772,8 +772,5 @@ class Notification(NotificationFactory):
                         region = kwargs.get('region', aws.get('region')),
                         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
                         ) 
-        if retval:
-            self.logger.info("Notification successfully sent!")
-        else:
-            self.logger.error("Failed to send notification")
+
         return retval
