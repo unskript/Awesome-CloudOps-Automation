@@ -7,10 +7,10 @@
 cd /usr/local/bin
 if [ -f "/opt/conda/bin/python" ];
 then
-    /opt/conda/bin/python ./unskript_ctl.py "$@"
+    /opt/conda/bin/python ./unskript_ctl_main.py "$@"
 elif [ -f "/opt/unskript/bin/python" ];
 then
-    /opt/unskript/bin/python ./unskript_ctl.py "$@"
+    /opt/unskript/bin/python ./unskript_ctl_main.py "$@"
 else
-    /usr/bin/env python ./unskript_ctl.py "$@"
+    /usr/bin/env python ./unskript_ctl_main.py "$@"
 fi
