@@ -77,15 +77,12 @@ class SlackNotification(NotificationFactory):
 
             if response.status_code == 200:
                 self.logger.info("Slack message sent successfully!")
-                print("Slack message sent successfully!")
                 return True
             else:
                 self.logger.error(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
-                self._error(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
                 return False
         except requests.RequestException as e:
             self.logger.error(f"ERROR: Not able to send slack message: {str(e)}")
-            self._error(f"ERROR: Not able to send slack message: {str(e)}")
             return False
     
     def _generate_notification_message(self, summary_results):
@@ -153,7 +150,7 @@ class EmailNotification(NotificationFactory):
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
         except Exception as e:
-            print(f"ERROR: {e}")
+            self.logger.error(f"ERROR: {e}")
             return False
 
         return True
@@ -390,9 +387,9 @@ class SendgridNotification(EmailNotification):
                                                subject=subject)
         
         if retval:
-            print("Successfully sent Email notification via Sendgrid.")
+            self.logger.info("Successfully sent Email notification via Sendgrid.")
         else:
-            print("Failed to send email notification via Sendgrid!")
+            self.logger.error("Failed to send email notification via Sendgrid!")
         
         return retval 
     def send_sendgrid_notification(self, 
@@ -409,7 +406,7 @@ class SendgridNotification(EmailNotification):
         from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType
 
         if not from_email or not to_email or not api_key:
-            print("ERROR: From Email, To Email and API Key are mandatory parameters to send email notification")
+            self.logger.error("ERROR: From Email, To Email and API Key are mandatory parameters to send email notification")
             return False
 
         html_message = ''
@@ -470,10 +467,9 @@ class SendgridNotification(EmailNotification):
             sg = sendgrid.SendGridAPIClient(api_key)
             sg.send(email_message)
             self.logger.info(f"Notification sent successfully to {to_email}")
-            print(f"Notification sent successfully to {to_email}")
+            self(f"Notification sent successfully to {to_email}")
         except Exception as e:
             self.logger.error(f"ERROR: Unable to send notification as email. {e}")
-            self._error(f"ERROR: Unable to send notification as email. {e}")
             return False
 
         return True
@@ -528,9 +524,9 @@ class AWSEmailNotification(EmailNotification):
                                     region=region,
                                     subject=subject)
         if retval:
-            print("Successfully sent Email notification via AWS SES.")
+            self.logger.info("Successfully sent Email notification via AWS SES.")
         else:
-            print("Failed to send email notification via AWS SES!")
+            self.logger.error("Failed to send email notification via AWS SES!")
         
         return retval
 
@@ -641,9 +637,9 @@ class SmtpNotification(EmailNotification):
                                            from_email=from_email,
                                            subject=subject)
         if retval:
-            print("Successfully sent Email notification via SMTP.")
+            self.logger.info("Successfully sent Email notification via SMTP.")
         else:
-            print("Failed to send email notification via SMTP!")
+            self.logger.error("Failed to send email notification via SMTP!")
         
         return retval 
     
@@ -777,7 +773,7 @@ class Notification(NotificationFactory):
                         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
                         ) 
         if retval:
-            print("Notification successfully sent!")
+            self.logger.info("Notification successfully sent!")
         else:
-            print("Failed to send notification")
+            self.logger.error("Failed to send notification")
         return retval
