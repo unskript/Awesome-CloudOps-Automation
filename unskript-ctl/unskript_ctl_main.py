@@ -418,7 +418,7 @@ class UnskriptCtl(UnskriptFactory):
             return
 
         try:
-            remote_config_file = args.config
+            remote_config_file = args
         except:
             print(f"ERROR: Not able to find the configuration to start debug session")
             return
