@@ -50,13 +50,14 @@ class SlackNotification(NotificationFactory):
             return False 
 
     def notify(self, **kwargs):
+        webhook = self.slack_config.get('web-hook-url')
         summary_results = kwargs.get('summary_results', None)
 
         if self.slack_config.get('enable') is False:
             self.logger.error("Slack Notification disabled")
             return False
 
-        if len(summary_results) == 0:
+        if summary_results and len(summary_results) == 0:
             self.logger.error("Result Empty: No results to notify")
             return False 
 
@@ -70,25 +71,30 @@ class SlackNotification(NotificationFactory):
 
         try:
             to_send = {"text": message, "mrkdwn": True, "type": "mrkdwn"}
-            response = requests.post(self.slack_config.get('web-hook-url'),
+            response = requests.post(webhook,
                                      data=json.dumps(to_send, indent=4),
                                      headers={"Content-Type": "application/json"})
 
             if response.status_code == 200:
                 self.logger.info("Slack message sent successfully!")
+                print("Slack Message was sent successfully!")
                 return True
             else:
-                self.logger.error(f"ERROR: Failed to send message {response.status_code}, {response.text}")
+                self.logger.error(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
+                print(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
                 return False
         except requests.RequestException as e:
             self.logger.error(f"ERROR: Not able to send slack message: {str(e)}")
+            print(f"ERROR: Not able to send slack message: {str(e)}")
             return False
     
     def _generate_notification_message(self, summary_results):
         summary_message = ':wave: *unSkript Ctl Check Results* \n'
         status_count = {'PASS': 0, 'FAIL': 0, 'ERROR': 0}
 
-
+        if not summary_results:
+            return 
+        
         for result_set in summary_results:
             if not result_set or not result_set.get('result'):
                 continue
@@ -131,7 +137,7 @@ class EmailNotification(NotificationFactory):
                 validate(instance=data, schema=schema)
                 return True 
         except ValidationError as e:
-            self.logger.error(e)
+            self.logger.error(str(e))
             return False 
 
     def create_tarball_archive(self, 
@@ -147,7 +153,7 @@ class EmailNotification(NotificationFactory):
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
         except Exception as e:
-            print(f"ERROR: {e}")
+            self.logger.error(f"ERROR: {e}")
             return False
 
         return True
@@ -205,6 +211,8 @@ class EmailNotification(NotificationFactory):
                     </tr>
                 </table>
         '''
+
+        self.logger.info(message)
         return message
     
     def create_email_attachment(self, output_metadata_file: str = None):
@@ -257,7 +265,7 @@ class EmailNotification(NotificationFactory):
                                       summary_results: list,
                                       failed_result: dict):
         message = ''
-        if not summary_results or not failed_result:
+        if not summary_results:
             return message
 
         if len(summary_results):
@@ -294,7 +302,7 @@ class EmailNotification(NotificationFactory):
             message += tr_message + '\n'
             message += '</table>' + '\n'
 
-
+        self.logger.info(message)
         return message
     
     def create_email_header(self, title: str = None):
@@ -324,21 +332,22 @@ class EmailNotification(NotificationFactory):
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
-            self.create_temp_files_of_failed_check_results(failed_result=failed_result)
-            parent_folder = self.execution_dir
-            target_name = os.path.basename(parent_folder)
-            tar_file_name = f"{target_name}" + '.tar.bz2'
-            if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                    output_metadata_file=None,
-                                    parent_folder=parent_folder) is False:
-                self.logger.error("ERROR Archiving attachments")
-                raise ValueError("ERROR: Archiving attachments failed!")
-            target_file_name = tar_file_name
-            msg = MIMEMultipart('mixed')
-            with open(target_file_name, 'rb') as f:
-                part = MIMEApplication(f.read())
-                part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
-                msg.attach(part)
+            if len(failed_result):
+                self.create_temp_files_of_failed_check_results(failed_result=failed_result)
+                parent_folder = self.execution_dir
+                target_name = os.path.basename(parent_folder)
+                tar_file_name = f"{target_name}" + '.tar.bz2'
+                if self.create_tarball_archive(tar_file_name=tar_file_name,
+                                        output_metadata_file=None,
+                                        parent_folder=parent_folder) is False:
+                    self.logger.error("ERROR Archiving attachments")
+                    raise ValueError("ERROR: Archiving attachments failed!")
+                target_file_name = tar_file_name
+                msg = MIMEMultipart('mixed')
+                with open(target_file_name, 'rb') as f:
+                    part = MIMEApplication(f.read())
+                    part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
+                    msg.attach(part)
 
         if output_metadata_file:
             message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
@@ -372,14 +381,21 @@ class SendgridNotification(EmailNotification):
         api_key = kwargs.get('api_key', self.sendgrid_config.get('api_key'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
 
-        
-        return self.send_sendgrid_notification(summary_results=summary_results,
+        retval = self.send_sendgrid_notification(summary_results=summary_results,
                                                failed_result=failed_result,
                                                output_metadata_file=output_metadata_file,
                                                from_email=from_email,
                                                to_email=to_email,
                                                api_key=api_key,
                                                subject=subject)
+        
+        if retval:
+            self.logger.info("Successfully sent Email notification via Sendgrid.")
+            print("Successfully sent Email notification via Sendgrid.")
+        else:
+            print("Failed to send email notification via Sendgrid!")
+        
+        return retval 
     def send_sendgrid_notification(self, 
                                 summary_results: list,
                                 failed_result: dict,
@@ -394,7 +410,7 @@ class SendgridNotification(EmailNotification):
         from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType
 
         if not from_email or not to_email or not api_key:
-            print("ERROR: From Email, To Email and API Key are mandatory parameters to send email notification")
+            self.logger.error("ERROR: From Email, To Email and API Key are mandatory parameters to send email notification")
             return False
 
         html_message = ''
@@ -410,7 +426,8 @@ class SendgridNotification(EmailNotification):
             if summary_results and len(summary_results):
                 html_message += self.create_checks_summary_message(summary_results=summary_results,
                                                             failed_result=failed_result)
-                self.create_temp_files_of_failed_check_results(failed_result=failed_result)
+                if failed_result and len(failed_result):
+                    self.create_temp_files_of_failed_check_results(failed_result=failed_result)
             if output_metadata_file:
                 html_message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
                 with open(output_metadata_file, 'r') as f:
@@ -428,11 +445,12 @@ class SendgridNotification(EmailNotification):
                     raise ValueError("ERROR: Archiving attachments failed!")
                 target_file_name = tar_file_name
             else:
-                if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                            output_metadata_file=None,
-                                            parent_folder=parent_folder) is False:
-                    raise ValueError("ERROR: Archiving attachments failed!")
-                target_file_name = tar_file_name
+                if len(failed_result):
+                    if self.create_tarball_archive(tar_file_name=tar_file_name,
+                                                output_metadata_file=None,
+                                                parent_folder=parent_folder) is False:
+                        raise ValueError("ERROR: Archiving attachments failed!")
+                    target_file_name = tar_file_name
 
             email_message = Mail(
                 from_email=from_email,
@@ -445,7 +463,7 @@ class SendgridNotification(EmailNotification):
                                                             file_to_attach=target_file_name,
                                                             compress=True)
             try:
-                if tar_file_name:
+                if target_file_name:
                     os.remove(target_file_name)
             except Exception as e:
                 self.logger.error(f"ERROR: {e}")
@@ -453,8 +471,10 @@ class SendgridNotification(EmailNotification):
             sg = sendgrid.SendGridAPIClient(api_key)
             sg.send(email_message)
             self.logger.info(f"Notification sent successfully to {to_email}")
+            print(f"Notification sent successfully to {to_email}")
         except Exception as e:
             self.logger.error(f"ERROR: Unable to send notification as email. {e}")
+            print(f"ERROR: Unable to send notification as email. {e}")
             return False
 
         return True
@@ -499,7 +519,7 @@ class AWSEmailNotification(EmailNotification):
         region = kwargs.get('region', self.aws_config.get('region'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
 
-        return self.prepare_to_send_awsses_notification(summary_results=summary_results,
+        retval =  self.prepare_to_send_awsses_notification(summary_results=summary_results,
                                     failed_result=failed_result,
                                     output_metadata_file=output_metadata_file,
                                     access_key=access_key,
@@ -508,6 +528,14 @@ class AWSEmailNotification(EmailNotification):
                                     from_email=from_email,
                                     region=region,
                                     subject=subject)
+        if retval:
+            self.logger.info("Successfully sent Email notification via AWS SES.")
+            print("Successfully sent Email notification via AWS SES.")
+        else:
+            self.logger.error("Failed to send email notification via AWS SES!")
+            print("Failed to send email notification via AWS SES!")
+        
+        return retval
 
     def prepare_to_send_awsses_notification(self, summary_results: list,
                                 failed_result: dict,
@@ -587,7 +615,7 @@ class AWSEmailNotification(EmailNotification):
             return False
         except Exception as e:
             self.logger.error(f"ERROR: {e}")
-        return False
+            return False
 
 # SMTP Implementation, like Gmail, etc..    
 class SmtpNotification(EmailNotification):
@@ -606,7 +634,7 @@ class SmtpNotification(EmailNotification):
         to_email = kwargs.get('to_email', self.smtp_config.get('to-email'))
         from_email = kwargs.get('from_email', self.smtp_config.get('from-email'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-        return self.send_smtp_notification(summary_results=summary_results,
+        retval =  self.send_smtp_notification(summary_results=summary_results,
                                            failed_result=failed_result,
                                            smtp_host=smtp_host,
                                            output_metadata_file=output_metadata_file,
@@ -615,6 +643,12 @@ class SmtpNotification(EmailNotification):
                                            to_email=to_email,
                                            from_email=from_email,
                                            subject=subject)
+        if retval:
+            self.logger.info("Successfully sent Email notification via SMTP.")
+        else:
+            self.logger.error("Failed to send email notification via SMTP!")
+        
+        return retval 
     
     def send_smtp_notification(self,
                                 summary_results: list,
@@ -705,6 +739,9 @@ class Notification(NotificationFactory):
         retval = False
         summary_results = kwargs.get('summary_results')
         failed_objects = kwargs.get('failed_objects')
+        if not failed_objects:
+            failed_objects = {}
+
         if self.email_config.get('provider').lower() == 'smtp':
             smtp = self.email_config.get('SMTP')
             retval = SmtpNotification().notify(
@@ -742,4 +779,5 @@ class Notification(NotificationFactory):
                         region = kwargs.get('region', aws.get('region')),
                         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
                         ) 
+
         return retval
