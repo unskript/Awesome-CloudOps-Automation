@@ -49,19 +49,26 @@ def k8s_execute_helm_command(handle, helm_command: str) -> str:
         if not '--kubeconfig' in helm_command:
             helm_command = helm_command.replace('helm',
                                                 f'helm --kubeconfig {config_file}')
-        try:
-            result = subprocess.run(helm_command,
-                                    check=True,
-                                    shell=True,
-                                    capture_output=True,
-                                    text=True)
-            retval = result.stdout 
-        except subprocess.CalledProcessError as e:
-            error_message = f"Error running command: {e}\n{e.stderr.decode('utf-8')}" \
-                        if e.stderr else f"Error running command: {e}"
-            print(error_message)
     else:
-        print("ERROR: Kubernetes Configuration file is corrupt, cannot execute helm command")
-    
+        # Incluster configuration, so need not have any kubeconfig 
+        pass 
+
+    try:
+        result = subprocess.run(helm_command,
+                                check=True,
+                                shell=True,
+                                capture_output=True,
+                                text=True)
+        retval = result.stdout 
+        
+        # If error is set, then lets dump the error code
+        if result.stderr and result.returncode != 0:
+            print(result.stderr)
+
+    except subprocess.CalledProcessError as e:
+        error_message = f"Error running command: {e}\n{e.stderr.decode('utf-8')}" \
+                    if e.stderr else f"Error running command: {e}"
+        print(error_message)
+
     return retval
              
