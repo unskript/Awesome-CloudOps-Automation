@@ -23,6 +23,61 @@ except Exception as e:
      raise e
 
 
+# This is a custom logger class to implement the following logic
+# Any logger.info(...) message should be shown on the console
+# Any logger.debug(...), logger.error(...), logger.warning(...)
+# Message should be dumped to a log file that can be used to debug
+# any issue.
+class UctlLogger(logging.Logger):
+    def __init__(self, name, level=logging.NOTSET):
+        super().__init__(name, level)
+
+        if not self.handlers:
+            # Create a custom formatter
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+            # Create a console handler for INFO level
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.INFO)
+            console_handler.setFormatter(formatter)
+            self.addHandler(console_handler)
+
+            # Create File handler to dump all other level
+            self.log_file_name = os.path.join(os.path.expanduser('~'), 'unskript_ctl.log')
+            file_handler = logging.FileHandler(self.log_file_name)
+            file_handler.setLevel(logging.DEBUG)
+            file_handler.setFormatter(formatter)
+            self.addHandler(file_handler)
+
+            # Set Default logger level
+            self.setLevel(logging.DEBUG)
+            self.propagate = False 
+
+    def info(self, msg, *args, **kwargs):
+        # Pass up the Info message to show the log to console
+        super().info(msg, *args, **kwargs)
+
+    def debug(self, msg, *args, **kwargs):
+        # Dump to logfile
+        self.dump_to_file(msg)
+    
+    def warning(self, msg, *args, **kwargs):
+        # Warning to logfile
+        self.dump_to_file(msg)
+
+    def error(self, msg, *args, **kwargs):
+        # Error to logfile
+        self.dump_to_file(msg)
+    
+    def critical(self, msg, *args, **kwargs):
+        # Critical msg to logfile and to console
+        self.dump_to_file(msg)
+        super().info(msg, *args, **kwargs)
+
+    def dump_to_file(self, msg):
+        with open(self.log_file_name, 'a') as f:
+            f.write(msg + '\n')
+
 # This is the Base class, Abstract class that shall be used by all the other
 # classes that are implemented. This class is implemented as a Singleton class
 # which means, the Child that inherits this class, will have a single copy in
@@ -45,21 +100,21 @@ class UnskriptFactory(ABC):
 
     @staticmethod
     def _configure_logger():
-        logger = logging.getLogger('UnskriptCtlLogger')
-        if not logger.handlers:
-            logger.setLevel(logging.DEBUG)
+        logger = UctlLogger('UnskriptCtlLogger')
+        # if not logger.handlers:
+        #     logger.setLevel(logging.DEBUG)
             
-            # Create a formatter for log messages
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        #     # Create a formatter for log messages
+        #     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             
-            # Create a file handler and set its format
-            file_handler = logging.FileHandler(UnskriptFactory.log_file_name)
-            file_handler.setLevel(logging.DEBUG)  # Set file logging level
-            file_handler.setFormatter(formatter)
+        #     # Create a file handler and set its format
+        #     file_handler = logging.FileHandler(UnskriptFactory.log_file_name)
+        #     file_handler.setLevel(logging.DEBUG)  # Set file logging level
+        #     file_handler.setFormatter(formatter)
             
-            # Add the file handler to the logger
-            logger.addHandler(file_handler)
-            logger.propagate = False
+        #     # Add the file handler to the logger
+        #     logger.addHandler(file_handler)
+        #     logger.propagate = False
         
         return logger
     
@@ -98,7 +153,7 @@ class UnskriptFactory(ABC):
 class ChecksFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
-        self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self.logger.debug(f'{self.__class__.__name__} instance initialized')
         self._config = ConfigParserFactory()
         pass 
 
@@ -109,7 +164,7 @@ class ChecksFactory(UnskriptFactory):
 class ScriptsFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
-        self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self.logger.debug(f'{self.__class__.__name__} instance initialized')
         self._config = ConfigParserFactory()
         pass
 
@@ -120,7 +175,7 @@ class ScriptsFactory(UnskriptFactory):
 class NotificationFactory(UnskriptFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self.logger.debug(f'{self.__class__.__name__} instance initialized')
         self._config = ConfigParserFactory()
         pass
 
@@ -131,7 +186,7 @@ class NotificationFactory(UnskriptFactory):
 class DatabaseFactory(UnskriptFactory):
     def __init__(self):
         super().__init__()
-        self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self.logger.debug(f'{self.__class__.__name__} instance initialized')
         pass
 
     @abstractmethod
@@ -160,7 +215,7 @@ class ConfigParserFactory(UnskriptFactory):
     
     def __init__(self):
         super().__init__()
-        self.logger.info(f'{self.__class__.__name__} instance initialized')
+        self.logger.debug(f'{self.__class__.__name__} instance initialized')
         self.yaml_content = self.load_config_file()
         if not self.yaml_content:
             raise FileNotFoundError(f"{self.CONFIG_FILE_NAME} not found or empty!")
