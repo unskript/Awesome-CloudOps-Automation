@@ -30,10 +30,10 @@ class UnskriptCtl(UnskriptFactory):
     def __init__(self, **kwargs):
         """Constructor: This class instantiates notification, checks, script and dbinterface class"""
         super().__init__(**kwargs)
-        self.logger.info("Initializing UnskriptCtl")
-        self.logger.info(f"\tVERSION: {VERSION}")
-        self.logger.info(f"\tAUTHORS: {AUTHOR}")
-        self.logger.info(f"\tBUILD_NUMBER: {BUILD_NUMBER}")
+        self.logger.debug("Initializing UnskriptCtl")
+        self.logger.debug(f"\tVERSION: {VERSION} \n")
+        self.logger.debug(f"\tAUTHORS: {AUTHOR} \n")
+        self.logger.debug(f"\tBUILD_NUMBER: {BUILD_NUMBER} \n")
         self._config = ConfigParserFactory()
         self._notification = Notification()
         self._check = Checks()
@@ -418,7 +418,7 @@ class UnskriptCtl(UnskriptFactory):
             return
 
         try:
-            remote_config_file = args.config
+            remote_config_file = args
         except:
             print(f"ERROR: Not able to find the configuration to start debug session")
             return
