@@ -24,8 +24,8 @@ except Exception as e:
 
 
 # This is a custom logger class to implement the following logic
-# Any logger.info(...) message should be shown on the console
-# Any logger.debug(...), logger.error(...), logger.warning(...)
+# Any logger.info(...) & logger.error(...) message should be shown on the console
+# Any logger.debug(...),  logger.warning(...)
 # Message should be dumped to a log file that can be used to debug
 # any issue.
 class UctlLogger(logging.Logger):
@@ -68,6 +68,7 @@ class UctlLogger(logging.Logger):
     def error(self, msg, *args, **kwargs):
         # Error to logfile
         self.dump_to_file(msg)
+        super().info(msg, *args, **kwargs)
     
     def critical(self, msg, *args, **kwargs):
         # Critical msg to logfile and to console
