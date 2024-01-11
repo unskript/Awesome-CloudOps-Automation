@@ -68,7 +68,7 @@ class UctlLogger(logging.Logger):
     def error(self, msg, *args, **kwargs):
         # Error to logfile
         self.dump_to_file(msg)
-        super().info(msg, *args, **kwargs)
+        super().error(msg, *args, **kwargs)
     
     def critical(self, msg, *args, **kwargs):
         # Critical msg to logfile and to console
