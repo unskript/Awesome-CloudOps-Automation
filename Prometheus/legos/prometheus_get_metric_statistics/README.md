@@ -7,7 +7,7 @@ This Lego Gets Prometheus Metric Statistics.
 
 ## Lego Details
 
-    prometheus_get_metric_range_data( handle, promql_query: str, timeSince: int, step: str) 
+    prometheus_get_metric_range_data( handle, promql_query: str, timeSince: int, step: str, graph_size:list) 
 
         handle: Object of type unSkript PROMETHEUS Connector
         promql_query: This is a PromQL query, a few examples can be found at https://prometheus.io/docs/prometheus/latest/querying/examples/.
@@ -15,7 +15,7 @@ This Lego Gets Prometheus Metric Statistics.
         promql_query: Query resolution step width in duration format or float number of seconds.
 
 ## Lego Input
-This Lego takes four inputs handle, promql_query, timeSince and step. 
+This Lego takes five inputs handle, promql_query, timeSince, step, and graph_size. 
 
 ## Lego Output
 Here is a sample output.
