@@ -360,4 +360,4 @@ class DBInterface(UnskriptFactory):
             self.logger.error("Unable to Initialize CS and PSS Database!, Check log file")
             return 
         
-        self.logger.info("Initialized DBInterface")
+        self.logger.debug("Initialized DBInterface")

@@ -46,7 +46,7 @@ class SlackNotification(NotificationFactory):
                 validate(instance=data, schema=schema)
                 return True 
         except ValidationError as e:
-            self.logger.error(str(e))
+            self.logger.debug(str(e))
             return False 
 
     def notify(self, **kwargs):
@@ -62,7 +62,7 @@ class SlackNotification(NotificationFactory):
             return False 
 
         if not self.validate_data(summary_results):
-            self.logger.error("Given Summary Result does not validate against Slack Schema")
+            self.logger.debug("Given Summary Result does not validate against Slack Schema")
         
         message = self._generate_notification_message(summary_results)
         if not message:
@@ -76,16 +76,13 @@ class SlackNotification(NotificationFactory):
                                      headers={"Content-Type": "application/json"})
 
             if response.status_code == 200:
-                self.logger.info("Slack message sent successfully!")
-                print("Slack Message was sent successfully!")
+                self.logger.info("Slack Message was sent successfully!")
                 return True
             else:
-                self.logger.error(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
-                print(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
+                self.logger.info(f"ERROR: Failed to send slack message {response.status_code}, {response.text}")
                 return False
         except requests.RequestException as e:
             self.logger.error(f"ERROR: Not able to send slack message: {str(e)}")
-            print(f"ERROR: Not able to send slack message: {str(e)}")
             return False
     
     def _generate_notification_message(self, summary_results):
@@ -137,7 +134,7 @@ class EmailNotification(NotificationFactory):
                 validate(instance=data, schema=schema)
                 return True 
         except ValidationError as e:
-            self.logger.error(str(e))
+            self.logger.debug(str(e))
             return False 
 
     def create_tarball_archive(self, 
@@ -161,12 +158,12 @@ class EmailNotification(NotificationFactory):
     def create_temp_files_of_failed_check_results(self, 
                                             failed_result: dict):
         list_of_failed_files = []
-        self.logger.info(f"Creating {len(failed_result)} Temp Files for failed check results ")
+        self.logger.debug(f"Creating {len(failed_result)} Temp Files for failed check results ")
         if not failed_result:
             self.logger.error("Failed Result is Empty")
             return list_of_failed_files
         if not self.validate_data(failed_result, self.checks_schema_file):
-            self.logger.error("Validation of Given Result failed against Notification Schema")
+            self.logger.debug("Validation of Given Result failed against Notification Schema")
 
         if failed_result and len(failed_result.get('result', [])):
             for result_item in failed_result['result']:
@@ -212,7 +209,6 @@ class EmailNotification(NotificationFactory):
                 </table>
         '''
 
-        self.logger.info(message)
         return message
     
     def create_email_attachment(self, output_metadata_file: str = None):
@@ -302,7 +298,6 @@ class EmailNotification(NotificationFactory):
             message += tr_message + '\n'
             message += '</table>' + '\n'
 
-        self.logger.info(message)
         return message
     
     def create_email_header(self, title: str = None):
@@ -391,9 +386,8 @@ class SendgridNotification(EmailNotification):
         
         if retval:
             self.logger.info("Successfully sent Email notification via Sendgrid.")
-            print("Successfully sent Email notification via Sendgrid.")
         else:
-            print("Failed to send email notification via Sendgrid!")
+            self.logger.error("Failed to send email notification via Sendgrid!")
         
         return retval 
     def send_sendgrid_notification(self, 
@@ -471,10 +465,8 @@ class SendgridNotification(EmailNotification):
             sg = sendgrid.SendGridAPIClient(api_key)
             sg.send(email_message)
             self.logger.info(f"Notification sent successfully to {to_email}")
-            print(f"Notification sent successfully to {to_email}")
         except Exception as e:
             self.logger.error(f"ERROR: Unable to send notification as email. {e}")
-            print(f"ERROR: Unable to send notification as email. {e}")
             return False
 
         return True
@@ -530,10 +522,8 @@ class AWSEmailNotification(EmailNotification):
                                     subject=subject)
         if retval:
             self.logger.info("Successfully sent Email notification via AWS SES.")
-            print("Successfully sent Email notification via AWS SES.")
         else:
             self.logger.error("Failed to send email notification via AWS SES!")
-            print("Failed to send email notification via AWS SES!")
         
         return retval
 
@@ -691,7 +681,6 @@ class SmtpNotification(EmailNotification):
             self.logger.error(f"ERROR: {e}")
         finally:
             self.logger.info(f"Notification sent successfully to {to_email}")
-
         return True
     
 # Usage:

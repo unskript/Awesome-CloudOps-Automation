@@ -34,7 +34,7 @@ class Checks(ChecksFactory):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.logger.info("Inititlized Checks Class")
+        self.logger.debug("Initialized Checks Class")
         self.checks_globals = self._config.get_checks_params().get('global')
         self.matrix = self.checks_globals.get('matrix') 
         self.temp_jit_file = "/tmp/jit_script.py"
@@ -333,7 +333,7 @@ class Checks(ChecksFactory):
                 if connector_type:
                     connector_types.append(connector_type)
 
-        self.logger.info(f"Returning {len(action_uuids)} UUIDs and {len(action_names)} names")
+        self.logger.debug(f"Returning {len(action_uuids)} UUIDs and {len(action_names)} names")
         return action_uuids, action_names, connector_types
 
 
@@ -536,7 +536,7 @@ task.configure(inputParamsJson=\'\'\'{
 class Script(ScriptsFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.logger.info("Inititlized Script Class")
+        self.logger.debug("Initialized Script Class")
         self.uglobals = UnskriptGlobals()
     
     def run(self, **kwargs):
