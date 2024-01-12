@@ -50,26 +50,33 @@ def get_logs_timestamps():
     return file_timestamp_dict
 
 def upload_session_logs():
-    # Capture start time
-    start_time = datetime.now()
-    logger.info(f'Start Time: {start_time}')
     if not os.path.exists(DESTINATION_DIRECTORY):
         os.makedirs(DESTINATION_DIRECTORY)
     # Move files from logs to uploads
     for filename in os.listdir(SOURCE_DIRECTORY):
         source_path = os.path.join(SOURCE_DIRECTORY, filename)
+        # if file is empty, don't upload it
+        if os.path.getsize(source_path) == 0:
+                continue
         destination_path = os.path.join(DESTINATION_DIRECTORY, filename)
         try:
             shutil.move(source_path, destination_path)
         except Exception as e:
             logger.error("File move error: %s", str(e))
             return
+    # If there are no files to upload, cancel operation
+    num_files = [f for f in os.listdir(DESTINATION_DIRECTORY) if os.path.isfile(os.path.join(DESTINATION_DIRECTORY, f))]
+    if len(num_files) == 0:
+        return
+    # Capture start time
+    start_time = datetime.now()
+    logger.info(f'Start Time: {start_time}')
     # Create a tar.gz archive
     with tarfile.open(TAR_FILE_PATH, 'w:gz') as tar:
         tar.add(DESTINATION_DIRECTORY, arcname='uploads')
     # Upload to rts
     try:
-        upload_logs_files()
+        upload_logs_files(num_files)
     except Exception as e:
         logger.error(str(e))
     
@@ -77,7 +84,7 @@ def upload_session_logs():
     end_time = datetime.now()
     logger.info(f'End Time: {end_time}')
 
-def upload_logs_files():
+def upload_logs_files(num_files):
     # Open the file in binary mode
     try:
         with open(TAR_FILE_PATH, 'rb') as file:
@@ -94,7 +101,6 @@ def upload_logs_files():
         return
     # Check the response
     if response.status_code == 204:
-        num_files = [f for f in os.listdir(DESTINATION_DIRECTORY) if os.path.isfile(os.path.join(DESTINATION_DIRECTORY, f))]
         logger.info("%d file(s) uploaded successfully", len(num_files))
         # Remove the files from the uploads folder
         shutil.rmtree(DESTINATION_DIRECTORY)

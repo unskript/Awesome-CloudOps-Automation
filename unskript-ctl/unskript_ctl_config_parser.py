@@ -143,6 +143,7 @@ class ConfigParser():
         self.jobs = {}
         self.tunnel_up_cmd = None
         self.tunnel_down_cmd = None
+        self.upload_logs_files_cmd = None
 
     def parse_config_yaml(self) -> dict:
         """parse_config_yaml: This function parses the config yaml file and converts the
@@ -316,6 +317,9 @@ class ConfigParser():
                 if self.tunnel_down_cmd:
                     f.write(self.tunnel_down_cmd)
                     f.write("\n")
+                if self.upload_logs_files_cmd:
+                    f.write(self.upload_logs_files_cmd)
+                    f.write("\n")
 
             cmds = ['crontab', unskript_crontab_file]
             self.run_command(cmds)
@@ -387,12 +391,14 @@ class ConfigParser():
             return
         tunnel_up_cadence = config.get('tunnel_up_cadence', None)
         tunnel_down_cadence = config.get('tunnel_down_cadence', None)
+        upload_log_files_cadence = config.get('upload_log_files_cadence', None)
         # Check both of them are present.
         if (tunnel_up_cadence is None and tunnel_down_cadence is not None) or (tunnel_up_cadence is not None and tunnel_down_cadence is None):
             print(f'{bcolors.FAIL} Please ensure both tunnel_up_cadence and tunnel_down_cadence is configured{bcolors.ENDC}')
             return
         self.tunnel_up_cmd = f'{tunnel_up_cadence} /usr/local/bin/unskript-ctl.sh debug --start  {ovpn_file}'
         self.tunnel_down_cmd = f'{tunnel_down_cadence} /usr/local/bin/unskript-ctl.sh debug --stop'
+        self.upload_logs_files_cmd = f'{upload_log_files_cadence} /opt/unskript/bin/python /usr/local/bin/unskript_ctl_upload_session_logs.py'
 
 def main():
     """main: This is the main function that gets called by the start.sh function
