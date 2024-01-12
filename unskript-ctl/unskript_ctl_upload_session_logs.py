@@ -49,12 +49,14 @@ def get_logs_timestamps():
 
     return file_timestamp_dict
 
-def upload_session_logs():
-    # Check if the SOURCE_DIRECTORY is empty or not. 
-    if not any(os.scandir(SOURCE_DIRECTORY)):
-        return
+def upload_session_logs():    
     if not os.path.exists(DESTINATION_DIRECTORY):
         os.makedirs(DESTINATION_DIRECTORY)
+
+    # Check if the SOURCE_DIRECTORY & DESTINATION_DIRECTORY is empty or not. 
+    if not any(os.scandir(SOURCE_DIRECTORY)) and not any(os.scandir(DESTINATION_DIRECTORY)):
+        return
+    
     # Move files from logs to uploads
     for filename in os.listdir(SOURCE_DIRECTORY):
         source_path = os.path.join(SOURCE_DIRECTORY, filename)
@@ -89,7 +91,6 @@ def upload_session_logs():
 
 def upload_logs_files(num_files):
     # Open the file in binary mode
-    response = None
     try:
         with open(TAR_FILE_PATH, 'rb') as file:
             # Set up the files parameter with a tuple containing the filename and file object
@@ -98,16 +99,19 @@ def upload_logs_files(num_files):
             # Make the POST request with the files parameter
             try:
                 response = requests.post(url, files=files)
-            except Exception:
-                logger.error("Status Code: %s. Response: %s", response.status_code, response.text)
+                # Check the response
+                if response.status_code == 204:
+                    logger.info("%d file(s) uploaded successfully", len(num_files))
+                    # Remove the files from the uploads folder
+                    shutil.rmtree(DESTINATION_DIRECTORY)
+                else:
+                    logger.error("Status Code: %s. Response: %s", response.status_code, response.text)
+            except Exception as err:
+                logger.error("Error Occured while uploading: %s", str(err))
     except FileNotFoundError:
         logger.error("File not found. Tar file path: %s",TAR_FILE_PATH)
         return
-    # Check the response
-    if response.status_code == 204:
-        logger.info("%d file(s) uploaded successfully", len(num_files))
-        # Remove the files from the uploads folder
-        shutil.rmtree(DESTINATION_DIRECTORY)
+    
     # Remove Tar file
     os.remove(TAR_FILE_PATH)
     

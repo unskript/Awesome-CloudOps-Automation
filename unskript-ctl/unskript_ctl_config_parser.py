@@ -398,7 +398,8 @@ class ConfigParser():
             return
         self.tunnel_up_cmd = f'{tunnel_up_cadence} /usr/local/bin/unskript-ctl.sh debug --start  {ovpn_file}'
         self.tunnel_down_cmd = f'{tunnel_down_cadence} /usr/local/bin/unskript-ctl.sh debug --stop'
-        self.upload_logs_files_cmd = f'{upload_log_files_cadence} /opt/unskript/bin/python /usr/local/bin/unskript_ctl_upload_session_logs.py'
+        if upload_log_files_cadence is not None:
+            self.upload_logs_files_cmd = f'{upload_log_files_cadence} /opt/unskript/bin/python /usr/local/bin/unskript_ctl_upload_session_logs.py'
 
 def main():
     """main: This is the main function that gets called by the start.sh function
