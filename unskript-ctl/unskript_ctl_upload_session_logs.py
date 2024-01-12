@@ -89,6 +89,7 @@ def upload_session_logs():
 
 def upload_logs_files(num_files):
     # Open the file in binary mode
+    response = None
     try:
         with open(TAR_FILE_PATH, 'rb') as file:
             # Set up the files parameter with a tuple containing the filename and file object
