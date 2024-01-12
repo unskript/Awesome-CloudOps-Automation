@@ -21,6 +21,7 @@ from unskript_ctl_notification import *
 from unskript_utils import * 
 from unskript_ctl_factory import *
 from unskript_ctl_version import * 
+from unskript_ctl_upload_session_logs import upload_session_logs
 
 
 # UnskriptCTL class that instantiates class instance of Checks, Script, Notification and DBInterface
@@ -466,6 +467,8 @@ class UnskriptCtl(UnskriptFactory):
 
         if running is True:
             print ("Successfully Started the Debug Session")
+            # Upload proxy session logs to storage bucket
+            upload_session_logs()
         else:
             self.logger.debug(f"Error Occured while starting the Debug Session. Here are the logs from openvpn")
             print(f"{bcolors.FAIL}Error Occured while starting the Debug Session. Here are the logs from openvpn{bcolors.ENDC}")

@@ -262,3 +262,11 @@ remote_debugging:
   # Example: "*/30 * * * *"   <= This will run every 30 Minutes
   #
   tunnel_down_cadence: ""
+  # Cadence at which proxy session logs needs to be uploaded to storage bucket.
+  # Cadence is specified in cron syntax. More information about the syntax can
+  # be found in https://crontab.guru
+  # minute  hour  day (of month)  month  day (of week)
+  #   *      *          *           *        *
+  # Example: "*/30 * * * *"   <= This will run every 30 Minutes
+  #
+  upload_log_files_cadence: ""
