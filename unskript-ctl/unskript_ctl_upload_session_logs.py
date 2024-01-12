@@ -50,6 +50,9 @@ def get_logs_timestamps():
     return file_timestamp_dict
 
 def upload_session_logs():
+    # Check if the SOURCE_DIRECTORY is empty or not. 
+    if not any(os.scandir(SOURCE_DIRECTORY)):
+        return
     if not os.path.exists(DESTINATION_DIRECTORY):
         os.makedirs(DESTINATION_DIRECTORY)
     # Move files from logs to uploads
