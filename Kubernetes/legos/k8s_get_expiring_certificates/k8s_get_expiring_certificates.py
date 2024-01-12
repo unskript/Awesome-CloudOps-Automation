@@ -11,7 +11,6 @@ from cryptography.hazmat.backends import default_backend
 from kubernetes import client, watch
 from kubernetes.client.rest import ApiException
 from tabulate import tabulate
-from unskript.legos.kubernetes.k8s_kubectl_command.k8s_kubectl_command import k8s_kubectl_command
 
 
 class InputSchema(BaseModel):
@@ -54,27 +53,23 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
         tuple: Status, a list of expiring certificate names.
     """
     result = []
-    all_namespaces = [namespace]
-
-    cmd = "kubectl get ns  --no-headers -o custom-columns=':metadata.name'"
-
-    if namespace is None or len(namespace) == 0:
-        response = handle.run_native_cmd(cmd)
-        if response is None:
-            print(
-                f"Error while executing command ({cmd}) (empty response)")
-
-        if response.stderr:
-            raise ApiException(
-                f"Error occurred while executing command {cmd} {response.stderr}")
-        kubernetes_namespaces = response.stdout
-        replaced_str = kubernetes_namespaces.replace("\n", " ")
-        stripped_str = replaced_str.strip()
-        all_namespaces = stripped_str.split(" ")
-
     coreApiClient = client.CoreV1Api(api_client=handle)
+
+    try:
+        if namespace:
+            # Check if namespace exists and has secrets
+            secrets = coreApiClient.list_namespaced_secret(namespace, watch=False, limit=1).items
+            if not secrets:
+                return (True, None)  # No secrets in the namespace
+            all_namespaces = [namespace]
+        else:
+            all_namespaces = [ns.metadata.name for ns in coreApiClient.list_namespace().items]
+
+    except ApiException as e:
+        print(f"Error occurred while accessing Kubernetes API: {e}")
+        return False, None
+
     for n in all_namespaces:
-        coreApiClient.read_namespace_status(n, pretty=True)
         secrets = coreApiClient.list_namespaced_secret(n, watch=False, limit=200).items
 
         for secret in secrets:
