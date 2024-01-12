@@ -13,7 +13,7 @@ from kafka.admin import KafkaAdminClient
 class InputSchema(BaseModel):
     group_id: Optional[str] = Field(..., description='Consumer group ID', title='Consumer group ID')
     threshold: Optional[int] = Field(
-        2, description='Lag threshold for alerting.', title='Threshold (no. of messages)'
+        10, description='Lag threshold for alerting.', title='Threshold (no. of messages)'
     )
 
 
