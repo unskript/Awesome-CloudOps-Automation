@@ -60,7 +60,7 @@ def upload_session_logs():
         source_path = os.path.join(SOURCE_DIRECTORY, filename)
         # if file is empty, don't upload it
         if os.path.getsize(source_path) == 0:
-                continue
+            continue
         destination_path = os.path.join(DESTINATION_DIRECTORY, filename)
         try:
             shutil.move(source_path, destination_path)

@@ -243,7 +243,7 @@ scheduler:
     job_name: ""
 
 remote_debugging:
-  enable: true
+  enable: false
   # ovpn file location
   ovpn_file: ""
   # Cadence at which tunnel needs to be brought up.
@@ -253,7 +253,7 @@ remote_debugging:
   #   *      *          *           *        *
   # Example: "*/30 * * * *"   <= This will run every 30 Minutes
   #
-  tunnel_up_cadence: "0 0 */2 * *"
+  tunnel_up_cadence: ""
   # Cadence at which tunnel needs to be brought down.
   # Cadence is specified in cron syntax. More information about the syntax can
   # be found in https://crontab.guru
@@ -261,7 +261,7 @@ remote_debugging:
   #   *      *          *           *        *
   # Example: "*/30 * * * *"   <= This will run every 30 Minutes
   #
-  tunnel_down_cadence: "0 0 */2 * *"
+  tunnel_down_cadence: ""
   # Cadence at which proxy session logs needs to be uploaded to storage bucket.
   # Cadence is specified in cron syntax. More information about the syntax can
   # be found in https://crontab.guru
@@ -269,4 +269,4 @@ remote_debugging:
   #   *      *          *           *        *
   # Example: "*/30 * * * *"   <= This will run every 30 Minutes
   #
-  upload_log_files_cadence: "* * * * *"
+  upload_log_files_cadence: ""
