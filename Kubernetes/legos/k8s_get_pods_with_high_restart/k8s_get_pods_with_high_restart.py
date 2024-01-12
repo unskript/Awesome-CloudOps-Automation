@@ -4,6 +4,8 @@
 #
 from typing import Tuple
 from pydantic import BaseModel, Field
+from kubernetes import client
+from kubernetes.client.rest import ApiException
 
 
 class InputSchema(BaseModel):
@@ -42,28 +44,20 @@ def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int =
     if handle.client_side_validation is not True:
         raise Exception(f"K8S Connector is invalid {handle}")
 
-    if not namespace :
-        kubectl_command = "kubectl get pods --all-namespaces --no-headers  | " + \
-            f"awk '$5 > {threshold} " + " {print $0}' | awk '{print $1,$2}'"
-    else:
-        kubectl_command = f"kubectl get pods -n {namespace}" + " --no-headers  | " + \
-            f"awk '$4 > {threshold} " + " {print $0}' | awk '{print $1,$2}'"
-
-    result = handle.run_native_cmd(kubectl_command)
-    if result.stderr:
-        raise Exception(f"Error occurred while executing command {result.stderr}")
+    v1 = client.CoreV1Api(api_client=handle)
+    
+    try:
+        pods = v1.list_namespaced_pod(namespace).items if namespace else v1.list_pod_for_all_namespaces().items
+        if not pods:
+            return (True, None)  # No pods in the namespace
+    except ApiException as e:
+        raise Exception(f"Error occurred while accessing Kubernetes API: {e}")
 
     retval = []
-    if result.stdout:
-        for line in result.stdout.split('\n'):
-            if not line:
-                continue
-            n,p = line.split(' ')
-            if not namespace:
-                retval.append({'name': p, 'namespace': n})
-            else:
-                retval.append({'name': n, 'namespace': namespace})
-    if retval:
-        return (False, retval)
+    for pod in pods:
+        for container_status in pod.status.container_statuses or []:
+            restart_count = container_status.restart_count
+            if restart_count > threshold:
+                retval.append({'name': pod.metadata.name, 'namespace': pod.metadata.namespace})
 
-    return (True, [])
+    return (False, retval) if retval else (True, None)
