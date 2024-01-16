@@ -17,7 +17,7 @@ import requests
 import subprocess
 
 
-SOURCE_DIRECTORY = '/var/unskript/sessions/logs'
+SOURCE_DIRECTORY = '/var/unskript/sessions/completed-logs'
 DESTINATION_DIRECTORY = '/var/unskript/sessions/uploads'
 TAR_FILE_PATH = '/var/unskript/sessions/session_logs.tgz'
 RTS_HOST = 'http://10.8.0.1:6443'
@@ -57,12 +57,9 @@ def upload_session_logs():
     if not any(os.scandir(SOURCE_DIRECTORY)) and not any(os.scandir(DESTINATION_DIRECTORY)):
         return
     
-    # Move files from logs to uploads
+    # Move files from completed-logs to uploads
     for filename in os.listdir(SOURCE_DIRECTORY):
         source_path = os.path.join(SOURCE_DIRECTORY, filename)
-        # if file is empty, don't upload it
-        if os.path.getsize(source_path) == 0:
-            continue
         destination_path = os.path.join(DESTINATION_DIRECTORY, filename)
         try:
             shutil.move(source_path, destination_path)
