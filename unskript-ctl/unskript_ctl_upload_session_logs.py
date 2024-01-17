@@ -15,14 +15,16 @@ import logging
 from datetime import datetime
 import requests
 import subprocess
+import psutil
 
-
+LOGS_FOLDER = '/var/unskript/sessions/logs'
 SOURCE_DIRECTORY = '/var/unskript/sessions/completed-logs'
 DESTINATION_DIRECTORY = '/var/unskript/sessions/uploads'
 TAR_FILE_PATH = '/var/unskript/sessions/session_logs.tgz'
 RTS_HOST = 'http://10.8.0.1:6443'
 URL_PATH = '/v1alpha1/sessions/logs'
 LOG_FILE_PATH = '/var/log/unskript/upload_script.log'
+LINUX_PROCESS_COMMAND = "/bin/bash /usr/local/bin/gotty_script.sh"
 command = f'find {DESTINATION_DIRECTORY} -type f -exec stat -c "%W %n" {{}} \\;'
 
 # Set logging config
@@ -52,6 +54,11 @@ def get_logs_timestamps():
 def upload_session_logs():    
     if not os.path.exists(DESTINATION_DIRECTORY):
         os.makedirs(DESTINATION_DIRECTORY)
+    
+    # Check for unclean exits in the logs folder (if logs folder is not empty)
+    # unclean exit occurs when user closes terminal instead of exiting it by typing "exit"
+    if  any(os.scandir(LOGS_FOLDER)):
+        check_unclean_exits()
 
     # Check if the SOURCE_DIRECTORY & DESTINATION_DIRECTORY is empty or not. 
     if not any(os.scandir(SOURCE_DIRECTORY)) and not any(os.scandir(DESTINATION_DIRECTORY)):
@@ -85,6 +92,35 @@ def upload_session_logs():
     # Capture end time
     end_time = datetime.now()
     logger.info(f'End Time: {end_time}')
+
+# Get all files in logs folder and check which ones do not have active running process and move those to the completed-logs folder. 
+def check_unclean_exits():
+    # Get list of running processes
+    running_processes = get_all_running_processes()
+    for filename in os.listdir(LOGS_FOLDER):
+        # file name is of the format a9a62af7-32f7-4f74-9389-2a29620d388d.log
+        # If file does not have an active process, then move it from logs folder to completed-logs folder
+        if filename.split(".")[0] not in running_processes:
+            source_path = os.path.join(LOGS_FOLDER, filename)
+            destination_path = os.path.join(SOURCE_DIRECTORY, filename)
+            try:
+                shutil.move(source_path, destination_path)
+            except Exception as e:
+                logger.error("File move error: %s", str(e))
+                return
+
+def get_all_running_processes():
+    running_processes = []
+    try:
+        for process in psutil.process_iter(['pid', 'cmdline']):
+            # Get all processes that have the expected LINUX_PROCESS_COMMAND
+            if process.info['cmdline'] and LINUX_PROCESS_COMMAND in ' '.join(process.info['cmdline']):
+                # process.info['cmdline'] looks like this
+                # ['/bin/bash','/usr/local/bin/gotty_script.sh','a9a62af7-32f7-4f74-9389-2a29620d388d']
+                running_processes.append(process.info['cmdline'][-1])
+    except Exception as e:
+        logger.error("get running processes: %s", str(e))
+    return running_processes
 
 def upload_logs_files(num_files):
     # Open the file in binary mode
