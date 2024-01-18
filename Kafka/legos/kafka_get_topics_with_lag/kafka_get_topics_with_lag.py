@@ -59,7 +59,7 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
     # sample_data captures the snapshots for lag data. It stores for each iteration.
     # The value stored is group,topic,partition as the key and lag as the value
     sample_data = []
-    for i in range(0,2):
+    for i in range(2):
         sample_data_dict = {}
         for group in consumer_groups:
             consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
@@ -79,9 +79,11 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
             finally:
                 consumer.close()
         sample_data.append(sample_data_dict)
-        time.sleep(sliding_window_interval)
+        # Dont sleep for the last iteration
+        if i != 1:
+            time.sleep(sliding_window_interval)
 
-    for key, value in sample_data[0]:
+    for key, value in sample_data[0].items():
         # Get the value from the second sample, if present
         new_value = sample_data[1].get(key)
         if new_value is None:
