@@ -16,6 +16,7 @@ from datetime import datetime
 import requests
 import subprocess
 import psutil
+import json
 
 LOGS_FOLDER = '/var/unskript/sessions/logs'
 SOURCE_DIRECTORY = '/var/unskript/sessions/completed-logs'
@@ -25,7 +26,7 @@ RTS_HOST = 'http://10.8.0.1:6443'
 URL_PATH = '/v1alpha1/sessions/logs'
 LOG_FILE_PATH = '/var/log/unskript/upload_script.log'
 LINUX_PROCESS_COMMAND = "/bin/bash /usr/local/bin/gotty_script.sh"
-command = f'find {DESTINATION_DIRECTORY} -type f -exec stat -c "%W %n" {{}} \\;'
+COMMAND_TIMSTAMP = f'find {SOURCE_DIRECTORY} -type f -exec stat -c "%W %n" {{}} \\;'
 
 # Set logging config
 logger = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ logger.addHandler(file_handler)
 
 def get_logs_timestamps():
     # Run the command and capture the output
-    output = subprocess.check_output(command, shell=True, text=True)
+    output = subprocess.check_output(COMMAND_TIMSTAMP, shell=True, text=True)
 
     # Parse the output and create a dictionary
     file_timestamp_dict = {}
@@ -47,7 +48,7 @@ def get_logs_timestamps():
         if line:
             timestamp, full_path = line.split(' ', 1)
             filename = full_path.split('/')[-1]  # Extracting the filename from the full path
-            file_timestamp_dict[filename.split('.log')[0]] = int(timestamp)
+            file_timestamp_dict[filename.split('.log')[0]] = str(timestamp)
 
     return file_timestamp_dict
 
@@ -131,7 +132,10 @@ def upload_logs_files(num_files):
             url = f'{RTS_HOST}{URL_PATH}'
             # Make the POST request with the files parameter
             try:
-                response = requests.post(url, files=files)
+                timestamps = get_logs_timestamps()
+                payload = {'logs_timestamps': json.dumps(timestamps)}
+                logger.info(f'Timstamps {payload}')
+                response = requests.post(url, files=files, data=payload)
                 # Check the response
                 if response.status_code == 204:
                     logger.info("%d file(s) uploaded successfully", len(num_files))
