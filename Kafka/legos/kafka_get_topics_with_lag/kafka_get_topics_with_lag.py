@@ -6,7 +6,7 @@ from kafka import KafkaConsumer, TopicPartition
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from kafka.admin import KafkaAdminClient
-
+import time
 
 
 
@@ -31,7 +31,7 @@ def kafka_get_topics_with_lag_printer(output):
             print(f"Group '{item['group']}' | Topic '{item['topic']}' | Partition {item['partition']}: {item['lag']} lag (no. of messages)")
 
 
-def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 2) -> Tuple:
+def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, sliding_window_interval = 30) -> Tuple:
     """
     kafka_get_topics_with_lag fetches the topics with lag in the Kafka cluster.
 
@@ -79,6 +79,7 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 2) ->
             finally:
                 consumer.close()
         sample_data.append(sample_data_dict)
+        time.sleep(sliding_window_interval)
 
     for key, value in sample_data[0]:
         # Get the value from the second sample, if present
