@@ -14,16 +14,16 @@ import tarfile
 import logging
 from datetime import datetime
 import requests
-import subprocess
+import json
 
-
-SOURCE_DIRECTORY = '/var/unskript/sessions/logs'
-DESTINATION_DIRECTORY = '/var/unskript/sessions/uploads'
+TEMP_FOLDER = '/var/unskript/sessions/temp'
+COMPLETED_LOGS_FOLDER = '/var/unskript/sessions/completed-logs'
 TAR_FILE_PATH = '/var/unskript/sessions/session_logs.tgz'
 RTS_HOST = 'http://10.8.0.1:6443'
 URL_PATH = '/v1alpha1/sessions/logs'
 LOG_FILE_PATH = '/var/log/unskript/upload_script.log'
-command = f'find {DESTINATION_DIRECTORY} -type f -exec stat -c "%W %n" {{}} \\;'
+
+session_end_times = {}
 
 # Set logging config
 logger = logging.getLogger(__name__)
@@ -35,53 +35,53 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-def get_logs_timestamps():
-    # Run the command and capture the output
-    output = subprocess.check_output(command, shell=True, text=True)
-
-    # Parse the output and create a dictionary
-    file_timestamp_dict = {}
-    for line in output.split('\n'):
-        if line:
-            timestamp, full_path = line.split(' ', 1)
-            filename = full_path.split('/')[-1]  # Extracting the filename from the full path
-            file_timestamp_dict[filename.split('.log')[0]] = int(timestamp)
-
-    return file_timestamp_dict
 
 def upload_session_logs():    
-    if not os.path.exists(DESTINATION_DIRECTORY):
-        os.makedirs(DESTINATION_DIRECTORY)
+    if not os.path.exists(COMPLETED_LOGS_FOLDER):
+        os.makedirs(COMPLETED_LOGS_FOLDER)
 
-    # Check if the SOURCE_DIRECTORY & DESTINATION_DIRECTORY is empty or not. 
-    if not any(os.scandir(SOURCE_DIRECTORY)) and not any(os.scandir(DESTINATION_DIRECTORY)):
+    # If completed-logs folder is not empty, the get timestamps from the files in it
+    # (To handle case where uploads may fail, hence logs files will be retained in the completed-logs folder)
+    if any(os.scandir(COMPLETED_LOGS_FOLDER)):
+        for filename in os.listdir(COMPLETED_LOGS_FOLDER):
+            # Get the end time from the file
+            try:
+                get_session_timestamp(filename)
+            except Exception as e:
+                logger.error("get session timestamp: %s", str(e))
+                return
+            
+    # If temp folder is not empty, then move the files from temp to completed-logs
+    if any(os.scandir(TEMP_FOLDER)):
+        for filename in os.listdir(TEMP_FOLDER):
+            if not filename.endswith(".log"):
+                continue
+            # Get the end time from the file
+            try:
+                get_session_timestamp(filename)
+            except Exception as e:
+                logger.error("get session timestamp: %s", str(e))
+                return
+            source_path = os.path.join(TEMP_FOLDER, filename)
+            destination_path = os.path.join(COMPLETED_LOGS_FOLDER, filename)
+            try:
+                shutil.move(source_path, destination_path)
+            except Exception as e:
+                logger.error("File move error: %s", str(e))
+                return
+    # Cancel upload if there are no files to upload
+    if len(session_end_times) == 0:
         return
-    
-    # Move files from logs to uploads
-    for filename in os.listdir(SOURCE_DIRECTORY):
-        source_path = os.path.join(SOURCE_DIRECTORY, filename)
-        # if file is empty, don't upload it
-        if os.path.getsize(source_path) == 0:
-            continue
-        destination_path = os.path.join(DESTINATION_DIRECTORY, filename)
-        try:
-            shutil.move(source_path, destination_path)
-        except Exception as e:
-            logger.error("File move error: %s", str(e))
-            return
-    # If there are no files to upload, cancel operation
-    num_files = [f for f in os.listdir(DESTINATION_DIRECTORY) if os.path.isfile(os.path.join(DESTINATION_DIRECTORY, f))]
-    if len(num_files) == 0:
-        return
+    # Create a tar.gz archive
+    with tarfile.open(TAR_FILE_PATH, 'w:gz') as tar:
+        tar.add(COMPLETED_LOGS_FOLDER, arcname='completed-logs')
+
     # Capture start time
     start_time = datetime.now()
     logger.info(f'Start Time: {start_time}')
-    # Create a tar.gz archive
-    with tarfile.open(TAR_FILE_PATH, 'w:gz') as tar:
-        tar.add(DESTINATION_DIRECTORY, arcname='uploads')
     # Upload to rts
     try:
-        upload_logs_files(num_files)
+        upload_logs_files(session_end_times)
     except Exception as e:
         logger.error(str(e))
     
@@ -89,7 +89,7 @@ def upload_session_logs():
     end_time = datetime.now()
     logger.info(f'End Time: {end_time}')
 
-def upload_logs_files(num_files):
+def upload_logs_files(session_end_times):
     # Open the file in binary mode
     try:
         with open(TAR_FILE_PATH, 'rb') as file:
@@ -98,12 +98,14 @@ def upload_logs_files(num_files):
             url = f'{RTS_HOST}{URL_PATH}'
             # Make the POST request with the files parameter
             try:
-                response = requests.post(url, files=files)
+                # payload contains session_ids and their corresponding session end times
+                payload = {'session_end_times': json.dumps(session_end_times)}
+                response = requests.post(url, files=files, data=payload)
                 # Check the response
                 if response.status_code == 204:
-                    logger.info("%d file(s) uploaded successfully", len(num_files))
-                    # Remove the files from the uploads folder
-                    shutil.rmtree(DESTINATION_DIRECTORY)
+                    logger.info("%d file(s) uploaded successfully", len(session_end_times))
+                    # Remove the files from the completed-logs folder
+                    shutil.rmtree(COMPLETED_LOGS_FOLDER)
                 else:
                     logger.error("Status Code: %s. Response: %s", response.status_code, response.text)
             except Exception as err:
@@ -114,6 +116,13 @@ def upload_logs_files(num_files):
     
     # Remove Tar file
     os.remove(TAR_FILE_PATH)
+
+def get_session_timestamp(filename):
+    split_file = filename.split('.')[0].split('-time-')
+    if len(split_file) != 2:
+        logger.error("timestamp or session id missing from file name: %s",filename)
+        return
+    session_end_times[split_file[0]] = split_file[1]
     
 if __name__ == "__main__":
     upload_session_logs()
