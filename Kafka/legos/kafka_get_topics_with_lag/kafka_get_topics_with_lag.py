@@ -59,6 +59,7 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
     # sample_data captures the snapshots for lag data. It stores for each iteration.
     # The value stored is group,topic,partition as the key and lag as the value
     sample_data = []
+    # Since we need to collect 2 sample sets for now, we do it in a loop
     for i in range(2):
         sample_data_dict = {}
         for group in consumer_groups:
