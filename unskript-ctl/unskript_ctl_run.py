@@ -105,6 +105,18 @@ class Checks(ChecksFactory):
         self.uglobals['status_of_run'] = self.status_list_of_dict
         
         return self.status_list_of_dict
+    
+    def parse_failed_objects(self, failed_object):
+        retVal = "N/A"
+        for line in failed_object:
+            if "forbidden" in line:
+                retVal = "Forbidden"
+            if "permission" in line:
+                retVal = "Permission"
+            if "not reachable" in line:
+                retVal = "Network error"
+        return retVal
+
 
     def display_check_result(self, checks_output):
         if not checks_output:
@@ -166,7 +178,7 @@ class Checks(ChecksFactory):
                             self.check_names[idx],
                             self.TBL_CELL_CONTENT_FAIL,
                             len(failed_objects),
-                            'N/A'
+                            self.parse_failed_objects(failed_object=failed_objects)
                             ])
                         failed_result_available = True
                         status_dict['result'].append([
@@ -182,11 +194,12 @@ class Checks(ChecksFactory):
                                 failed_objects = [failed_objects]
                             c_name = self.connector_types[idx] + ':' + self.check_names[idx]
                             failed_result[c_name] = failed_objects
+                        error_msg = payload.get('error') if payload.get('error') else self.parse_failed_objects(failed_object=failed_objects)
                         result_table.append([
                             self.check_names[idx],
                             self.TBL_CELL_CONTENT_ERROR,
                             0,
-                            pprint.pformat(payload.get('error'), width=30)
+                            pprint.pformat(error_msg, width=30)
                             ])
                         status_dict['result'].append([
                             self.check_names[idx],

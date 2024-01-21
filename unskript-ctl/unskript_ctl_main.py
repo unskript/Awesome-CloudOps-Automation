@@ -644,7 +644,7 @@ def main():
                 argv.insert(run_idx + 1, '--script')
                 argv.insert(run_idx + 2, script_name)
         
-        if info_idx:
+        if info_idx != -1: 
             argv.remove('--info')
             argv.insert(check_idx, '--info')
         
