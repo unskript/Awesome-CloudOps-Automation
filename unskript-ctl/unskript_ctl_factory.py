@@ -134,6 +134,7 @@ class UnskriptFactory(ABC):
                 creds_json_files.extend(glob.glob(pattern, recursive=True))
                 break
         self.creds_json_files = creds_json_files
+        c_data = {}
         for creds_json_file in creds_json_files:
             with open(creds_json_file, 'r', encoding='utf-8') as f:
                 try:
