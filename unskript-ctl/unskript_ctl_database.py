@@ -317,6 +317,24 @@ class CodeSnippets(ZoDBInterface):
                 snippet.get('metadata').get('action_is_check') and
                 snippet.get('metadata').get('action_entry_function') == check_name]
     
+    def get_info_actions(self):
+        """This routine returns the actions that has CATEGORY_TYPE_INFORMATION in action_category"""
+        return [snippet for snippet in self.snippets
+                if snippet.get('metadata') and
+                snippet.get('metadata').get('action_categories') and
+                'CATEGORY_TYPE_INFORMATION' in snippet.get('metadata').get('action_categories')]
+    
+    def get_info_action_by_name(self, action_name: str):
+        """Given the action name, this routine returns the information action that matches the name"""
+        if not action_name:
+            return []
+        
+        return [snippet for snippet in self.snippets
+                if snippet.get('metadata') and
+                snippet.get('metadata').get('action_categories') and
+                'CATEGORY_TYPE_INFORMATION' in snippet.get('metadata').get('action_categories') and 
+                snippet.get('metadata').get('action_entry_function') == action_name]
+    
     def get_action_name_from_id(self, action_uuid: str):
         """Given a uuid, this method returns the Name of the action"""
         matches = [snippet for snippet in self.snippets if snippet.get('metadata') and snippet.get('metadata').get('uuid') == action_uuid]

@@ -11,14 +11,16 @@
 import json
 import yaml
 import os
-import glob
+import shutil
 import uuid 
 import pprint
 import time 
 import subprocess
+import concurrent.futures
 
 from jinja2 import Template 
 from tabulate import tabulate 
+from tqdm import tqdm 
 
 from unskript_utils import *
 from unskript_ctl_factory import ChecksFactory, ScriptsFactory
@@ -43,6 +45,7 @@ class Checks(ChecksFactory):
         self.connector_types = []
         self.status_list_of_dict = []
         self.uglobals = UnskriptGlobals()
+        self._common = CommonAction()
         self.update_credentials_to_uglobal()
         self.uglobals['global'] = self.checks_globals
 
@@ -83,7 +86,7 @@ class Checks(ChecksFactory):
             self.logger.error(e)
             self._error(str(e))
         finally:
-            self.update_exec_id()
+            self._common.update_exec_id()
             output_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
             if not outputs:
                 self.logger.error("Output is None from check's output")
@@ -313,49 +316,13 @@ class Checks(ChecksFactory):
         
         return False
         
-    def get_code_cell_name_and_uuid(self, list_of_checks: list):
-        action_uuids, action_names, connector_types = [], [], []
-        if len(list_of_checks) == 0:
-            self.logger.error("List of checks is empty!")
-            return action_uuids, action_names
-
-        for check in list_of_checks:
-            metadata = check.get('metadata')
-            if metadata:
-                action_uuid = metadata.get('action_uuid')
-                action_name = metadata.get('name')
-                connector_type = metadata.get('action_type').replace('LEGO_TYPE_', '').lower()
-
-                if action_uuid:
-                    action_uuids.append(action_uuid)
-                if action_name:
-                    action_names.append(action_name)
-                if connector_type:
-                    connector_types.append(connector_type)
-
-        self.logger.debug(f"Returning {len(action_uuids)} UUIDs and {len(action_names)} names")
-        return action_uuids, action_names, connector_types
-
 
     def get_first_cell_content(self, list_of_checks: list):
         if len(list_of_checks) == 0:
             return None 
-        self.check_uuids, self.check_names, self.connector_types = self.get_code_cell_name_and_uuid(list_of_checks=list_of_checks)
-        runbook_params = {}
-        if os.environ.get('ACA_RUNBOOK_PARAMS') is not None:
-            runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
-        runbook_variables = ''
-        if runbook_params:
-            for k, v in runbook_params.items():
-                runbook_variables = runbook_variables + \
-                    f"{k} = nbParamsObj.get('{k}')" + '\n'
-        
-        with open(os.path.join(os.path.dirname(__file__), 'templates/first_cell_content.j2'), 'r') as f:
-            first_cell_content_template = f.read() 
-            
-        template = Template(first_cell_content_template)
-        first_cell_content = template.render(runbook_params=runbook_params, 
-                                             runbook_variables=runbook_variables)
+        self.check_uuids, self.check_names, self.connector_types = self._common.get_code_cell_name_and_uuid(list_of_actions=list_of_checks)
+        first_cell_content = self._common.get_first_cell_content()
+
         if self.checks_globals and len(self.checks_globals):
             for k,v in self.checks_globals.items():
                 if k == 'matrix':
@@ -366,10 +333,11 @@ class Checks(ChecksFactory):
                     first_cell_content += f'{k} = {v}' + '\n'
         if self.matrix:
             for k,v in self.matrix.items():
-                if not v:
+                if v:
                     for index, value in enumerate(v):
                         first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
         first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={self.check_uuids})'''
+        
         return first_cell_content
 
     def get_last_cell_content(self):
@@ -387,147 +355,14 @@ class Checks(ChecksFactory):
         template = Template(content_template)
         return  template.render(num_checks=len_of_checks)
     
-    def update_exec_id(self):
-        self.uglobals['exec_id'] = str(uuid.uuid4())
-
-    
     def insert_task_lines(self, checks_list: list):
-        self.update_credentials_to_uglobal()
-
-        for check in checks_list:
-            s_connector = check.get('metadata').get('action_type')
-            s_connector = s_connector.replace('LEGO', 'CONNECTOR')
-            cred_name, cred_id = None, None 
-            for k,v in self.uglobals.get('default_credentials').items():
-                if k == s_connector:
-                    cred_name, cred_id = v.get('name'), v.get('id')
-                    break 
-            if cred_name is None or cred_id is None:
-                if self.uglobals.get('skipped') is None:
-                    self.uglobals['skipped'] = []
-                _t = [check.get('name'), s_connector]
-                if _t not in self.uglobals.get('skipped'):
-                    self.uglobals['skipped'].append(_t)
-                    continue  
-            task_lines = '''
-task.configure(printOutput=True)
-task.configure(credentialsJson=\'\'\'{
-        \"credential_name\":''' + f" \"{cred_name}\"" + ''',
-        \"credential_type\":''' + f" \"{s_connector}\"" + '''}\'\'\')
-'''       
-            input_json = self.replace_input_with_globals(check)
-            if input_json:
-                task_lines += input_json
-            
-            try:
-                c = check.get('code')
-                idx = c.index("task = Task(Workflow())")
-                if c[idx+1].startswith("task.configure(credentialsJson"):
-                    # With credential caching now packged in, we need to
-                    # Skip the credential line and let the normal credential
-                    # logic work.
-                    c = c[:idx+1] + task_lines.split('\n') + c[idx+2:]
-                else:
-                    c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
-                check['code'] = []
-                for line in c[:]:
-                    check['code'].append(str(line + "\n"))
-
-                check['metadata']['action_uuid'] = check['uuid']
-                check['metadata']['name'] = check['name']
-                
-            except Exception as e:
-                self.logger.error(f"Unable to insert Task lines {e}")
-                self._error(e)
-                sys.exit(0)
-
-        return checks_list  
-
-    def replace_input_with_globals(self, check: dict):
-        inputSchema = check.get('inputschema') 
-        retval = None
-        if not inputSchema:
-            return retval 
-        if self.checks_globals and len(self.checks_globals):
-            input_json_start_line = '''
-task.configure(inputParamsJson=\'\'\'{
-            '''
-            input_json_end_line = '''}\'\'\')
-            '''
-            input_json_line = ''
-            try:
-                schema = inputSchema[0]
-                if schema.get('properties'):
-                    for key in schema.get('properties').keys():
-                        if key in self.uglobals.get('global').keys():
-                            input_json_line += f"\"{key}\":  \"{key}\" ,"
-            except Exception as e:
-                self.logger.error(e)
-                self._error(str(e))
-            # Handle Matrix argument
-            matrix_argument_line = check.get('matrixinputline')
-            if matrix_argument_line:
-                input_json_line += matrix_argument_line
-            retval = input_json_start_line + input_json_line.rstrip(',') + '\n' + input_json_end_line
-
-        return retval 
+        if checks_list and len(checks_list):
+            return self._common.insert_task_lines(list_of_actions=checks_list)
     
     def create_checks_for_matrix_argument(self, checks: list):
-        """create_checks_for_matrix_argument: This function generates the inputJson line of
-        code for a check. It handles the matrix case wherein you need to use the
-        appropriate variable name for argument assignment.
-        """
         checks_list = []
-        for check in checks:
-            input_schema = check.get('inputschema')
-            if input_schema is None:
-                checks_list.append(check)
-                continue
-            add_check_to_list = True
-            if self.checks_globals and len(self.checks_globals):
-                input_json_line = ''
-                try:
-                    schema = input_schema[0]
-                    if schema.get('properties'):
-                        for key in schema.get('properties').keys():
-                            # Check if the property is a matrix argument.
-                            # If thats the case, replicate the check the number
-                            # of entries in  that argument.
-                            duplicate_count = 1
-                            if self.matrix:
-                                matrix_value = self.matrix.get(key)
-                                if matrix_value is not None:
-                                    duplicate_count += len(matrix_value)
-                                    # Duplicate this check len(matrix_argument) times.
-                                    # Also, for each check, you need to use a different
-                                    # argument, so store that in a field named
-                                    # matrixinputline
-                                    # UUID Mapping need to initialized before assinging it a value!
-                                    if not isinstance(self.uglobals.get('uuid_mapping'), dict):
-                                        self.uglobals['uuid_mapping'] = {}
-                                    is_first = True
-                                    for dup in range(duplicate_count-1):
-                                        add_check_to_list = False
-                                        input_json_line = ''
-                                        input_json_line += f"\"{key}\":  \"{key}{dup}\" ,"
-                                        newcheck = check.copy()
-                                        if is_first is False:
-                                            # Maintain the uuid mapping that this uuid is the same as
-                                            # as the one its copied from.
-                                            new_uuid = str(uuid.uuid4())
-                                            self.uglobals["uuid_mapping"][new_uuid] = check["uuid"]
-                                            newcheck['uuid'] = new_uuid
-                                            newcheck['id'] = str(uuid.uuid4())[:8]
-                                            #print(f'Adding duplicate check {new_uuid}, parent_uuid {check.get("uuid")}')
-                                        newcheck['matrixinputline'] = input_json_line.rstrip(',')
-                                        checks_list.append(newcheck)
-                                        is_first = False
-                except Exception as e:
-                    self.logger.error(f"EXCEPTION {e}")
-                    self._error(str(e))
-                    pass
-            if add_check_to_list:
-                    checks_list.append(check)
+        if self.checks_globals and len(self.checks_globals):
+            checks_list = self._common.create_checks_for_matrix_argument(actions=checks, matrix=self.matrix)      
             
         return checks_list
 
@@ -590,3 +425,359 @@ class Script(ScriptsFactory):
         except Exception as e:
             self._error(str(e))
             sys.exit(0)
+
+
+class CommonAction(ChecksFactory):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def get_code_cell_name_and_uuid(self, list_of_actions: list):
+        action_uuids, action_names, connector_types = [], [], []
+        if len(list_of_actions) == 0:
+            self.logger.error("List of actions is empty!")
+            return action_uuids, action_names
+
+        for action in list_of_actions:
+            metadata = action.get('metadata')
+            if metadata:
+                action_uuid = metadata.get('action_uuid')
+                action_name = metadata.get('name') if metadata.get('name') else metadata.get('action_entry_function')
+                connector_type = metadata.get('action_type').replace('LEGO_TYPE_', '').lower()
+
+                if action_uuid:
+                    action_uuids.append(action_uuid)
+                if action_name:
+                    action_names.append(action_name)
+                if connector_type:
+                    connector_types.append(connector_type)
+
+        self.logger.debug(f"Returning {len(action_uuids)} UUIDs and {len(action_names)} names")
+        return action_uuids, action_names, connector_types
+    
+    def update_exec_id(self):
+        self.uglobals = UnskriptGlobals()
+        if not self.uglobals.get('exec_id'):
+            self.uglobals['exec_id'] = str(uuid.uuid4())
+    
+    
+    def get_first_cell_content(self):
+        runbook_params = {}
+        if os.environ.get('ACA_RUNBOOK_PARAMS') is not None:
+            runbook_params = json.loads(os.environ.get('ACA_RUNBOOK_PARAMS'))
+        runbook_variables = ''
+        if runbook_params:
+            for k, v in runbook_params.items():
+                runbook_variables = runbook_variables + \
+                    f"{k} = nbParamsObj.get('{k}')" + '\n'
+        
+        with open(os.path.join(os.path.dirname(__file__), 'templates/first_cell_content.j2'), 'r') as f:
+            first_cell_content_template = f.read() 
+            
+        template = Template(first_cell_content_template)
+        first_cell_content = template.render(runbook_params=runbook_params, 
+                                             runbook_variables=runbook_variables)
+        return first_cell_content
+    
+    def create_checks_for_matrix_argument(self, actions: list, matrix: dict):
+        """create_checks_for_matrix_argument: This function generates the inputJson line of
+        code for a check. It handles the matrix case wherein you need to use the
+        appropriate variable name for argument assignment.
+        """
+        self.matrix = matrix
+        action_list = []
+        for action in actions:
+            input_schema = action.get('inputschema')
+            if input_schema is None:
+                action_list.append(action)
+                continue
+            add_check_to_list = True
+           
+            input_json_line = ''
+            try:
+                schema = input_schema[0]
+                if schema.get('properties'):
+                    for key in schema.get('properties').keys():
+                        # Check if the property is a matrix argument.
+                        # If thats the case, replicate the check the number
+                        # of entries in  that argument.
+                        duplicate_count = 1
+                        if self.matrix:
+                            matrix_value = self.matrix.get(key)
+                            if matrix_value is not None:
+                                duplicate_count += len(matrix_value)
+                                # Duplicate this check len(matrix_argument) times.
+                                # Also, for each check, you need to use a different
+                                # argument, so store that in a field named
+                                # matrixinputline
+                                # UUID Mapping need to initialized before assinging it a value!
+                                if not isinstance(self.uglobals.get('uuid_mapping'), dict):
+                                    self.uglobals['uuid_mapping'] = {}
+                                is_first = True
+                                for dup in range(duplicate_count-1):
+                                    add_check_to_list = False
+                                    input_json_line = ''
+                                    input_json_line += f"\"{key}\":  \"'{key}{dup}'\" ,"
+                                    newcheck = action.copy()
+                                    if is_first is False:
+                                        # Maintain the uuid mapping that this uuid is the same as
+                                        # as the one its copied from.
+                                        new_uuid = str(uuid.uuid4())
+                                        self.uglobals["uuid_mapping"][new_uuid] = action["uuid"]
+                                        newcheck['uuid'] = new_uuid
+                                        newcheck['id'] = str(uuid.uuid4())[:8]
+                                        #print(f'Adding duplicate check {new_uuid}, parent_uuid {check.get("uuid")}')
+                                    newcheck['matrixinputline'] = input_json_line.rstrip(',')
+                                    action_list.append(newcheck)
+                                    is_first = False
+            except Exception as e:
+                self.logger.error(f"EXCEPTION {e}")
+                self._error(str(e))
+                pass
+            if add_check_to_list:
+                    action_list.append(action)
+            
+        return action_list
+
+    def insert_task_lines(self, list_of_actions: list):
+        self.update_credentials_to_uglobal()
+
+        for action in list_of_actions:
+            s_connector = action.get('metadata').get('action_type')
+            s_connector = s_connector.replace('LEGO', 'CONNECTOR')
+            cred_name, cred_id = None, None 
+            for k,v in self.uglobals.get('default_credentials').items():
+                if k == s_connector:
+                    cred_name, cred_id = v.get('name'), v.get('id')
+                    break 
+            if cred_name is None or cred_id is None:
+                if self.uglobals.get('skipped') is None:
+                    self.uglobals['skipped'] = []
+                _t = [action.get('name'), s_connector]
+                if _t not in self.uglobals.get('skipped'):
+                    self.uglobals['skipped'].append(_t)
+                    continue  
+            task_lines = '''
+task.configure(printOutput=True)
+task.configure(credentialsJson=\'\'\'{
+        \"credential_name\":''' + f" \"{cred_name}\"" + ''',
+        \"credential_type\":''' + f" \"{s_connector}\"" + '''}\'\'\')
+'''       
+            input_json = self.replace_input_with_globals(action)
+            if input_json:
+                task_lines += input_json
+            
+            try:
+                c = action.get('code')
+                idx = c.index("task = Task(Workflow())")
+                if c[idx+1].startswith("task.configure(credentialsJson"):
+                    # With credential caching now packged in, we need to
+                    # Skip the credential line and let the normal credential
+                    # logic work.
+                    c = c[:idx+1] + task_lines.split('\n') + c[idx+2:]
+                else:
+                    c = c[:idx+1] + task_lines.split('\n') + c[idx+1:]
+                action['code'] = []
+                for line in c[:]:
+                    action['code'].append(str(line + "\n"))
+
+                action['metadata']['action_uuid'] = action['uuid']
+                action['metadata']['name'] = action['name']
+                
+            except Exception as e:
+                self.logger.error(f"Unable to insert Task lines {e}")
+                self._error(e)
+                sys.exit(0)
+
+        return list_of_actions     
+    
+
+    def replace_input_with_globals(self, action: dict):
+        inputSchema = action.get('inputschema') 
+        retval = None
+        if not inputSchema:
+            return retval 
+        input_json_start_line = '''
+task.configure(inputParamsJson=\'\'\'{
+        '''
+        input_json_end_line = '''}\'\'\')
+        '''
+        input_json_line = ''
+        try:
+            schema = inputSchema[0]
+            if schema.get('properties'):
+                for key in schema.get('properties').keys():
+                    if key in self.uglobals.get('global').keys():
+                        value = self.uglobals.get('global').get(key)
+                        if value:
+                            input_json_line += f"\"{key}\":  \"{value}\" ,"
+                        else:
+                            input_json_line += f"\"{key}\":  \"{key}\" ,"
+        except Exception as e:
+            self.logger.error(e)
+            self._error(str(e))
+        # Handle Matrix argument
+        matrix_argument_line = action.get('matrixinputline')
+        if matrix_argument_line:
+            input_json_line += matrix_argument_line
+        retval = input_json_start_line + input_json_line.rstrip(',') + '\n' + input_json_end_line
+
+        return retval
+
+
+
+# Implements Info class that is a wrapper to run all info gathering function
+class InfoAction(ChecksFactory):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.logger.debug("Initialized InfoAction class")
+        self.info_globals = self._config.get_info_action_params().get('global')
+        self.matrix = self.info_globals.get('matrix')
+        self.temp_jit_dir = '/tmp/jit'
+        self.temp_jit_base_name = 'jit_info_script'
+        self._common = CommonAction() 
+        self.uglobals = UnskriptGlobals()
+        if self.uglobals.get('global'):
+            self.uglobals['global'].update(self.info_globals)
+        else:
+            self.uglobals['global'] = self.info_globals
+
+        for k,v in self.info_globals.items():
+            os.environ[k] =  json.dumps(v)
+
+    def run(self, **kwargs):
+        if "action_list" not in kwargs:
+            self.logger.error("ERROR: action_list is a mandatory parameter to be sent, cannot run without the action_list")
+            raise ValueError("Parameter action_list is not present in the argument, please call run with the action_list=[list_of_action]") 
+        action_list = kwargs.get('action_list')
+        if len(action_list) == 0:
+            self.logger.error("ERROR: Action list is empty, Cannot run anything")
+            raise ValueError("Action List is empty!")
+        
+        self.action_uuid, self.check_names, self.connector_types = \
+                self._common.get_code_cell_name_and_uuid(list_of_actions=action_list)
+        
+        action_list = self.create_checks_for_matrix_argument(action_list)
+        action_list = self.insert_task_lines(list_of_actions=action_list)
+
+        self.uglobals['info_action_results'] = {}
+        if not self._create_jit_script(action_list=action_list):
+            self.logger.error("Cannot create JIT scripts to run the checks, please look at logs")
+            raise ValueError("Unable to create JIT script to run the checks")
+        
+        # Internal routine to run through all python JIT script and return the output
+        def _execute_script(script, idx):
+            check_name = self.check_names[idx]
+            connector_name = self.connector_types[idx]
+            result_key = f"{connector_name}/{check_name}"
+            if not self.uglobals['info_action_results'].get(result_key):
+                self.uglobals['info_action_results'][result_key] = []
+            try:
+                result = subprocess.run(['python', script], capture_output=True, check=True, text=True)
+                self.logger.debug(result.stdout)
+                if len(self.uglobals["info_action_results"].get(result_key)) != 0:
+                    self.uglobals['info_action_results'][result_key].append(result.stdout)
+                else:
+                    self.uglobals['info_action_results'][result_key] = result.stdout
+            except subprocess.CalledProcessError as e:
+                sys.logger.error(f"Error executing {script}: {str(e)}")
+                raise ValueError(e)
+            finally:
+                return result.stdout
+        
+        script_files = [f for f in os.listdir(self.temp_jit_dir) if f.endswith('.py')]
+        with concurrent.futures.ThreadPoolExecutor() as executor, tqdm(total=len(script_files), desc="Running") as pbar:
+            futures = {executor.submit(_execute_script, os.path.join(self.temp_jit_dir, script), idx): idx for idx, script in enumerate(script_files)}
+            # Wait for all scripts to complete
+            for _ in concurrent.futures.as_completed(futures):
+                pbar.update(1)
+        
+        # Lets remove the directory if it exists
+        try:
+            shutil.rmtree(self.temp_jit_dir)
+        except OSError as e:
+            self.logging.error(str(e))
+        
+        self.display_action_result()
+            
+
+    def _create_jit_script(self, action_list: list = None):
+        if not action_list:
+            self.logger.error("Action cannot be Empty. Nothing to create!")
+            return False
+        
+        try:
+            shutil.rmtree(self.temp_jit_dir)
+        except:
+            pass 
+        os.makedirs(self.temp_jit_dir, exist_ok=True)
+        first_cell_content = self.get_first_cell_content()
+        for index, action in enumerate(action_list):
+            jit_file = os.path.join(self.temp_jit_dir, self.temp_jit_base_name + str(index) + '.py')
+            with open(jit_file, 'w') as f:
+                f.write(first_cell_content)
+                f.write('\n\n')
+                f.write('def action():' + '\n')
+                f.write('    global w' + '\n')
+                for lines in action.get('code'):
+                    lines = lines.rstrip().split('\n')
+                    for line in lines:
+                        line = line.replace('\n', '')
+                        if line.startswith("from __future__"):
+                            continue
+                        f.write('    ' + line.rstrip() + '\n')
+                f.write('\n')
+                # Now the Main section
+                f.write('if __name__ == "__main__":' + '\n')
+                f.write('    action()')
+        
+        if os.path.exists(self.temp_jit_dir) is True:
+            return True 
+        
+        return False 
+
+    def display_action_result(self):
+        if self.uglobals.get('info_action_results'):
+            for k,v in self.uglobals.get('info_action_results').items():
+                self._banner('')
+                self._highlight(k)
+                print('\n')
+                print(v)
+                print('###')
+        else:
+            self.logger.info("Information gathering actions: No Results to display")
+        
+
+    def get_first_cell_content(self):
+        first_cell_content = self._common.get_first_cell_content()
+
+        if self.info_globals and len(self.info_globals):
+            for k,v in self.info_globals.items():
+                if k == 'matrix':
+                    continue 
+                if isinstance(v, str) is True:
+                    first_cell_content += f'{k} = \"{v}\"' + '\n'
+                else:
+                    first_cell_content += f'{k} = {v}' + '\n'
+        
+        if self.matrix:
+            for k,v in self.matrix.items():
+                if v:
+                    for index, value in enumerate(v):
+                        first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
+        
+        first_cell_content += '''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids=None)'''
+        return first_cell_content
+
+    def insert_task_lines(self, list_of_actions: list):
+        if list_of_actions and len(list_of_actions):
+            return self._common.insert_task_lines(list_of_actions=list_of_actions) 
+
+    def create_checks_for_matrix_argument(self, list_of_actions: list):
+        action_list = []
+        if self.info_globals and len(self.info_globals):
+            action_list = self._common.create_checks_for_matrix_argument(actions=list_of_actions,
+                                                                         matrix=self.matrix)
+        return action_list
+
+
+        

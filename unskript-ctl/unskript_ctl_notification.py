@@ -120,7 +120,6 @@ class EmailNotification(NotificationFactory):
         self.provider = self.email_config.get('provider', '').lower()
         self.checks_schema_file = os.path.join(os.path.dirname(__file__), "unskript_email_notify_check_schema.json")
 
-
     def notify(self, **kwargs):
         pass 
 
@@ -210,7 +209,31 @@ class EmailNotification(NotificationFactory):
         '''
 
         return message
-    
+
+    def create_info_gathering_action_result(self):
+        """create_info_gathering_action_result: This function creates an inline 
+           results of all the output from info gathering action
+        """ 
+        message = ''
+        if self.uglobals.get('info_action_results'):
+            message = f''' 
+                    <br>
+                    <h3> Information Gathering Action Result </h3>
+                    <br>
+            '''
+            for k,v in self.uglobals.get('info_action_results').items():
+                message += '<h4>' + k + '</h4> <br> <pre>'
+                if v:
+                    for line in v:
+                        message += line 
+                else:
+                    message += '\n NO OUTPUT \n'
+                message += '</pre>'
+            message += '<br>'
+        
+        return message 
+
+
     def create_email_attachment(self, output_metadata_file: str = None):
         """create_email_attachment: This function reads the output_metadata_file
         to find out the name of the attachment, the output that should be included as the attachment
@@ -352,6 +375,11 @@ class EmailNotification(NotificationFactory):
             message += '<br> <ul>' + '\n'
             message += '<h3> DETAILS ABOUT THE FAILED OBJECTS CAN BE FOUND IN THE ATTACHMENTS </h3>' + '\n'
             message += '</ul> <br>' + '\n'
+
+        info_result = self.create_info_gathering_action_result()
+        if info_result:
+            message += info_result
+     
         message += "</body> </html>"
         attachment.attach(MIMEText(message, 'html'))
         if temp_attachment:
@@ -445,7 +473,10 @@ class SendgridNotification(EmailNotification):
                                                 parent_folder=parent_folder) is False:
                         raise ValueError("ERROR: Archiving attachments failed!")
                     target_file_name = tar_file_name
-
+            info_result = self.create_info_gathering_action_result()
+            if info_result:
+                html_message += info_result
+        
             email_message = Mail(
                 from_email=from_email,
                 to_emails=to_email,
