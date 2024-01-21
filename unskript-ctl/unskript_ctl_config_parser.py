@@ -385,21 +385,26 @@ class ConfigParser():
         if config.get('enable') is False:
             print(f'{bcolors.WARNING} Skipping remote_debugging section{bcolors.ENDC}')
             return
+        upload_log_files_cadence = config.get('upload_log_files_cadence', None)
+        if upload_log_files_cadence is not None:
+            print(f'{bcolors.HEADER} Programming upload_log_files_cadence {upload_log_files_cadence}')
+            self.upload_logs_files_cmd = f'{upload_log_files_cadence} /opt/unskript/bin/python /usr/local/bin/unskript_ctl_upload_session_logs.py'
         ovpn_file = config.get('ovpn_file', None)
         if ovpn_file is None:
             print(f'{bcolors.FAIL}Please mention the ovpn file location{bcolors.ENDC}')
             return
         tunnel_up_cadence = config.get('tunnel_up_cadence', None)
         tunnel_down_cadence = config.get('tunnel_down_cadence', None)
-        upload_log_files_cadence = config.get('upload_log_files_cadence', None)
         # Check both of them are present.
         if (tunnel_up_cadence is None and tunnel_down_cadence is not None) or (tunnel_up_cadence is not None and tunnel_down_cadence is None):
             print(f'{bcolors.FAIL} Please ensure both tunnel_up_cadence and tunnel_down_cadence is configured{bcolors.ENDC}')
             return
-        self.tunnel_up_cmd = f'{tunnel_up_cadence} /usr/local/bin/unskript-ctl.sh debug --start  {ovpn_file}'
-        self.tunnel_down_cmd = f'{tunnel_down_cadence} /usr/local/bin/unskript-ctl.sh debug --stop'
-        if upload_log_files_cadence is not None:
-            self.upload_logs_files_cmd = f'{upload_log_files_cadence} /opt/unskript/bin/python /usr/local/bin/unskript_ctl_upload_session_logs.py'
+        if tunnel_up_cadence is not None:
+            print(f'{bcolors.HEADER} Programming tunnel_up_cadence {tunnel_up_cadence}')
+            self.tunnel_up_cmd = f'{tunnel_up_cadence} /usr/local/bin/unskript-ctl.sh debug --start  {ovpn_file}'
+        if tunnel_down_cadence is not None:
+            print(f'{bcolors.HEADER} Programming tunnel_down_cadence {tunnel_down_cadence}')
+            self.tunnel_down_cmd = f'{tunnel_down_cadence} /usr/local/bin/unskript-ctl.sh debug --stop'
 
 def main():
     """main: This is the main function that gets called by the start.sh function
