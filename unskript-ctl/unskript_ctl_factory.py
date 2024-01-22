@@ -15,6 +15,7 @@ import json
 import glob
 
 from abc import ABC, abstractmethod 
+from jsonschema import validate
 from unskript_utils import *
 try:
      from envyaml import EnvYAML
@@ -272,40 +273,17 @@ class ConfigParserFactory(UnskriptFactory):
 class SchemaValidator(UnskriptFactory):
     def __init__(self, **kwargs):
         self.logger.debug("Initializing SchemaValidator class")
-
-        # Defined as an ordered list with type information
-        self.expected_structure = [
-            ('version', str),
-            ('global', dict),
-            ('checks', dict),
-            ('info', dict),
-            ('credential', dict),
-            ('notification', dict),
-            ('jobs', list),
-            ('scheduler', list),
-            ('remote_debugging', dict),
-        ]
-
+        with open(os.path.join(os.path.dirname(__file__), 'config', 'unskript_ctl_schema.json'), 'r') as f:
+            self.schema_content = json.load(f)
+        
     def validate(self, yaml_content):
         if not yaml_content:
             return False
-
+        
         try:
             loaded_data = yaml.safe_load(yaml_content)
-
-            # Check if the loaded_data has the expected keys in the correct order and with the correct types
-            for key, expected_type in self.expected_structure:
-                if key not in loaded_data:
-                    self.logger.error(f"Missing mandatory field '{key}'")
-                    return False
-                if not loaded_data[key]:
-                    self.logger.error(f"Value for mandatory field '{key}' is empty")
-                    return False
-                if not isinstance(loaded_data[key], expected_type):
-                    self.logger.error(f"Invalid type for field '{key}'. Expected type: {expected_type.__name__}")
-                    return False
-
-        except yaml.YAMLError as e:
+            validate(loaded_data, self.schema_content)
+        except Exception as e:
             self.logger.error(str(e))
             return False
 

@@ -1,0 +1,505 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "version": {
+        "type": "string"
+      },
+      "global": {
+        "type": "object",
+        "properties": {
+          "enable_runbooks": {
+            "type": "boolean"
+          },
+          "audit_period": {
+            "type": "integer"
+          }
+        }
+      },
+      "checks": {
+        "type": "object",
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "properties": {
+              "global": {
+                "type": "object",
+                "properties": {
+                  "region": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "info": {
+        "type": "object",
+        "properties": {
+          "arguments": {
+            "type": "object",
+            "properties": {
+              "global": {
+                "type": "object",
+                "properties": {
+                  "region": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "credential": {
+        "type": "object",
+        "properties": {
+          "aws": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "access-key": {
+                  "type": "string"
+                },
+                "secret-access-key": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "k8s": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "kubeconfig": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "gcp": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "credential-json": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "elasticsearch": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "host": {
+                  "type": "string"
+                },
+                "api-key": {
+                  "type": "string"
+                },
+                "no-verify-ssl": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "redis": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "host": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "database": {
+                  "type": "string"
+                },
+                "use-ssl": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "postgres": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "host": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "database": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "mongodb": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "host": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "kafka": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "broker": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "zookeeper": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "rest": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "base-url": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "headers": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "vault": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "keycloak": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "enable": {
+                  "type": "boolean"
+                },
+                "server-url": {
+                  "type": "string"
+                },
+                "realm": {
+                  "type": "string"
+                },
+                "client-id": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "client-secret": {
+                  "type": "string"
+                },
+                "no-verify-certs": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "notification": {
+        "type": "object",
+        "properties": {
+          "Slack": {
+            "type": "object",
+            "properties": {
+              "enable": {
+                "type": "boolean"
+              },
+              "web-hook-url": {
+                "type": "string"
+              },
+              "channel-name": {
+                "type": "string"
+              },
+              "verbose": {
+                "type": "boolean"
+              }
+            }
+          },
+          "Email": {
+            "type": "object",
+            "properties": {
+              "enable": {
+                "type": "boolean"
+              },
+              "verbose": {
+                "type": "boolean"
+              },
+              "email_subject_line": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "SMTP": {
+                "type": "object",
+                "properties": {
+                  "smtp-host": {
+                    "type": "string"
+                  },
+                  "smtp-user": {
+                    "type": "string"
+                  },
+                  "smtp-password": {
+                    "type": "string"
+                  },
+                  "to-email": {
+                    "type": "string"
+                  },
+                  "from-email": {
+                    "type": "string"
+                  }
+                }
+              },
+              "SES": {
+                "type": "object",
+                "properties": {
+                  "access_key": {
+                    "type": "string"
+                  },
+                  "secret_access": {
+                    "type": "string"
+                  },
+                  "region": {
+                    "type": "string"
+                  },
+                  "to-email": {
+                    "type": "string"
+                  },
+                  "from-email": {
+                    "type": "string"
+                  }
+                }
+              },
+              "Sendgrid": {
+                "type": "object",
+                "properties": {
+                  "api_key": {
+                    "type": "string"
+                  },
+                  "to-email": {
+                    "type": "string"
+                  },
+                  "from-email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "jobs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "notify": {
+              "type": "boolean"
+            },
+            "enable": {
+              "type": "boolean"
+            },
+            "checks": {
+              "type": "array"
+            },
+            "info": {
+              "type": "array"
+            },
+            "suites": {
+              "type": "array"
+            },
+            "connector_types": {
+              "type": "array"
+            },
+            "custom_scripts": {
+              "type": "array"
+            }
+          }
+        }
+      },
+      "scheduler": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "enable": {
+              "type": "boolean"
+            },
+            "cadence": {
+              "type": "string"
+            },
+            "job_name": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "remote_debugging": {
+        "type": "object",
+        "properties": {
+          "enable": {
+            "type": "boolean"
+          },
+          "ovpn_file": {
+            "type": "string"
+          },
+          "tunnel_up_cadence": {
+            "type": "string"
+          },
+          "tunnel_down_cadence": {
+            "type": "string"
+          },
+          "upload_log_files_cadence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "required": [
+      "version",
+      "global",
+      "checks",
+      "info",
+      "credential",
+      "notification",
+      "jobs",
+      "scheduler",
+      "remote_debugging"
+    ]
+  }
