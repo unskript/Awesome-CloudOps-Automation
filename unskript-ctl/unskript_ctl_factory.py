@@ -220,6 +220,9 @@ class ConfigParserFactory(UnskriptFactory):
         self.yaml_content = self.load_config_file()
         if not self.yaml_content:
             raise FileNotFoundError(f"{self.CONFIG_FILE_NAME} not found or empty!")
+        self.validator = SchemaValidator()
+        if not self.validator.validate(self.yaml_content):
+            raise ValueError("Content of Configuration file unskript_ctl_config.yaml is corrupt! Cannot proceed") 
 
     def load_config_file(self):
         for directory in self.DEFAULT_DIRS:
@@ -259,3 +262,56 @@ class ConfigParserFactory(UnskriptFactory):
     
     def get_checks_params(self):
         return self._get('checks', 'arguments')
+    
+
+
+# This class is a simple schema validation. we define a mandatory fields
+# that need to be present in the Yaml file. If there is a new field that needs
+# to be added, ensure, it is added to the mandatory_fields and expected_order
+# too. 
+class SchemaValidator(UnskriptFactory):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.logger.debug("Initializing SchemaValidator class")
+        # Defined as a set
+        self.mandatory_fields = {'version', 
+                                 'global', 
+                                 'checks', 
+                                 'info', 
+                                 'credential', 
+                                 'notification', 
+                                 'jobs', 
+                                 'scheduler', 
+                                 'remote_debugging'}
+        # Defined as a list
+        self.expected_order = ['version', 
+                               'global', 
+                               'checks', 
+                               'info', 
+                               'credential', 
+                               'notification', 
+                               'jobs', 
+                               'scheduler', 
+                               'remote_debugging']
+    
+    def validate(self, yaml_content):
+        if not yaml_content:
+            return False 
+        
+        try:
+            loaded_data = yaml.safe_load(yaml_content)
+            # Check if the loaded_data has the expected keys
+            result = set(loaded_data.keys()) - self.mandatory_fields
+            if result:
+                self.logger.error(f"Extra Keywords found in the yaml file {result}")
+                return False 
+            if self.expected_order != list(loaded_data.keys()):
+                self.logger.error(f"Invalid order of the keyword. Expected: {self.expected_order}")
+                return False 
+            
+        except yaml.YAMLError as e:
+            self.logger.error(str(e))
+            return False 
+        
+        # If we have reached till here, just return True back
+        return True
