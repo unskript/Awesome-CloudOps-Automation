@@ -27,6 +27,7 @@ UNSKRIPT_CTL_BINARY="/usr/local/bin/unskript-ctl.sh"
 
 # Job config related
 JOB_CONFIG_CHECKS_KEY_NAME = "checks"
+JOB_CONFIG_INFO_KEY_NAME = "info"
 JOB_CONFIG_SUITES_KEY_NAME = "suites"
 JOB_CONFIG_CONNECTORS_KEY_NAME = "connector_types"
 JOB_CONFIG_CUSTOM_SCRIPTS_KEY_NAME = "custom_scripts"
@@ -58,16 +59,19 @@ class Job():
             self,
             job_name: str,
             checks: list[str],
+            info: list[str],
             suites: list[str]=None,
             connectors: list[str] = None,
             custom_scripts: list[str] = None,
             notify: bool = False):
         self.job_name = job_name
         self.checks = checks
+        self.info = info
         self.suites = suites
         self.connectors = connectors
         self.custom_scripts = custom_scripts
         self.notify = notify
+    
 
     def parse(self):
         cmds = []
@@ -97,6 +101,7 @@ class Job():
                 cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {notify}')
             print(f'Job: {self.job_name} contains check: {self.checks[0]}')
 
+
         if self.connectors is not None and len(self.connectors) != 0:
             # Need to construct the unskript-ctl command like
             # unskript-ctl.sh run check --types aws,k8s
@@ -106,6 +111,7 @@ class Job():
                 full_command = f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string}'
             else:
                 cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {notify}')
+        
 
         accessmode = os.F_OK | os.X_OK
         if self.custom_scripts is not None and len(self.custom_scripts) != 0:
@@ -133,6 +139,10 @@ class Job():
 
         if full_command is not None:
             cmds.append(full_command)
+        
+        # For info gathering
+        if self.info:
+            cmds.append('--info')
 
         self.cmds = cmds
 
@@ -349,6 +359,7 @@ class ConfigParser():
                 print(f'{bcolors.WARNING}Jobs: Skipping job name {job_name}, duplicate entry{bcolors.ENDC}')
                 continue
             checks = job.get(JOB_CONFIG_CHECKS_KEY_NAME)
+            info = job.get(JOB_CONFIG_INFO_KEY_NAME)
             suites = job.get(JOB_CONFIG_SUITES_KEY_NAME)
             connectors = job.get(JOB_CONFIG_CONNECTORS_KEY_NAME)
             custom_scripts = job.get(JOB_CONFIG_CUSTOM_SCRIPTS_KEY_NAME)
@@ -356,7 +367,7 @@ class ConfigParser():
             if checks is not None and len(checks) > 1:
                 print(f'{job_name}: NOT SUPPORTED: more than 1 check')
                 continue
-            new_job = Job(job_name, checks, suites, connectors, custom_scripts, notify)
+            new_job = Job(job_name, checks, info, suites, connectors, custom_scripts, notify)
             new_job.parse()
             self.jobs[job_name] = new_job
 
