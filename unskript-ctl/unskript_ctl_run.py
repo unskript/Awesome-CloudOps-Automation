@@ -110,9 +110,9 @@ class Checks(ChecksFactory):
         retVal = "N/A"
         for line in failed_object:
             if "forbidden" in line:
-                retVal = "Forbidden"
+                retVal = "Forbidden "
             if "permission" in line:
-                retVal = "Permission"
+                retVal = "Access Denied"
             if "not reachable" in line:
                 retVal = "Network error"
         return retVal
