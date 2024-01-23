@@ -29,7 +29,7 @@ _unskript-client-completion() {
     case "${prev}" in
         run)
             # Provide completion suggestions for runbook filenames
-            COMPREPLY=( $(compgen -W "--script  check" -- "${cur}" -o nospace) )
+            COMPREPLY=( $(compgen -W "--info --script  check" -- "${cur}" -o nospace) )
             return 0
             ;;
 

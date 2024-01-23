@@ -23,11 +23,14 @@ UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 JIT_PYTHON_SCRIPT = "/tmp/jit_script.py"
 
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
+TBL_HDR_INFO_NAME="\033[36m Action Name \033[0m"
 TBL_HDR_DSPL_CHKS_NAME="\033[35m Check Name \n (Last Failed) \033[0m"
 TBL_HDR_DSPL_EXEC_ID="\033[1m Failed Execution ID \033[0m"
 TBL_HDR_FAILED_OBJECTS="\033[1m Failed Objects \033[0m"
 TBL_HDR_CHKS_FN="\033[1m Function Name \033[0m"
+TBL_HDR_INFO_FN="\033[1m Function Name \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
+TBL_HDR_LIST_INFO_CONNECTOR="\033[36m Connector Name \033[0m"
 
 
 CONNECTOR_LIST = [
@@ -122,6 +125,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
     ARG_START = '\x1B[1;20;42m'
     ARG_END = '\x1B[0m'
+    HIGHLIGHT = '\x1B[1;20;40m'
 
 # Utility Functions
 def create_execution_run_directory(file_prefix: str = None):
@@ -143,3 +147,14 @@ def create_execution_run_directory(file_prefix: str = None):
     else:
         output_dir = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')    
     return output_dir
+
+# Utility Function
+def is_creds_json_file_valid(creds_file: str = None):
+    if not creds_file:
+        return False 
+    
+    if os.path.getsize(creds_file) == 0:
+        return False 
+    
+    # If reached to this point, return true
+    return True 

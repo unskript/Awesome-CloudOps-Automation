@@ -134,17 +134,29 @@ class UnskriptFactory(ABC):
                 creds_json_files.extend(glob.glob(pattern, recursive=True))
                 break
         self.creds_json_files = creds_json_files
+        c_data = {}
         for creds_json_file in creds_json_files:
+            
+            if is_creds_json_file_valid(creds_file=creds_json_file) is False:
+                raise ValueError(f"Given Credential file {creds_json_file} is corrupt!")
+            
             with open(creds_json_file, 'r', encoding='utf-8') as f:
-                c_data = json.load(f)
-                if c_data.get('metadata').get('connectorData') == '{}':
-                    continue 
-                mapping[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
+                try:
+                    c_data = json.load(f)
+                except Exception as e:
+                    # If creds file is corrupt, raise exception and bail out
+                    self.logger.error(f"Exception Occurred while parsing credential file {creds_json_file}: {str(e)}")
+                    raise ValueError(e)
+                finally:
+                    if c_data.get('metadata').get('connectorData') == '{}':
+                        continue 
+                    mapping[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
                                                             "id": c_data.get('id')}
         self.uglobals['default_credentials'] = mapping
 
     def _banner(self, msg: str):
         print('\033[4m\x1B[1;20;42m' + msg + '\x1B[0m\033[0m')
+
     
     def _error(self, msg: str):
         print('\x1B[1;20;41m' + msg + '\x1B[0m')
@@ -259,3 +271,9 @@ class ConfigParserFactory(UnskriptFactory):
     
     def get_checks_params(self):
         return self._get('checks', 'arguments')
+    
+    def get_info_action_params(self):
+        return self._get('info', 'arguments')
+    
+    def get_info(self):
+        return self.get_jobs().get('info')

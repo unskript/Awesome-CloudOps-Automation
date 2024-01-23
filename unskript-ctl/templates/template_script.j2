@@ -14,7 +14,11 @@ def _run_function(fn):
         last_cell()
         output = output_buffer.getvalue()
     else:
-        eval(fn)
+        try:
+            eval(fn)
+        except Exception as e:
+            # If one of the action fails dump the exception on console and proceed further
+            print(str(e))
     sys.stdout = sys.__stdout__
     return output
 

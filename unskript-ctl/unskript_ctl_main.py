@@ -39,6 +39,7 @@ class UnskriptCtl(UnskriptFactory):
         self._notification = Notification()
         self._check = Checks()
         self._script = Script()
+        self._info = InfoAction()
         self._db = DBInterface() 
     
     def create_creds(self, args):
@@ -138,7 +139,31 @@ class UnskriptCtl(UnskriptFactory):
         if 'script' in args and args.command == 'run' and args.script not in ('', None):
             self._script.run(script=args.script)
 
+        if args.command == 'run' and args.info:
+            self.run_info()
+
+    def run_info(self):
+        """This function runs the info gathering actions"""
+        # Lets find out if any specific info action mentioned, if mentioned
+        # get the list and run them
+        snippet_names = self._config.get_info()
+        list_of_snippets = []
+        if not snippet_names:
+            self.logger.error("No Information gathering action mentioned in the config file!")
+            sys.exit(0)
+        else:
+            for snippet_name in snippet_names:
+                list_of_snippets.extend(self._db.cs.get_info_action_by_name(snippet_name))  
         
+        if not list_of_snippets:
+            self.logger.error(f"No Actions found for these names: {snippet_names}")
+            sys.exit(0)
+        
+        print("\n")
+        self._banner("Information Gathering Action Results")
+        self._info.run(action_list=list_of_snippets)
+ 
+
     def update_audit_trail(self, collection_name: str, status_dict_list: list):
         """This function updates PSS with the collection name audit-trail"""
         trail_data = {}
@@ -196,6 +221,8 @@ class UnskriptCtl(UnskriptFactory):
             self.list_checks_by_connector(args)
         elif args.command == 'list' and args.sub_command == 'failed-checks':
             self.display_failed_checks(args)
+        elif args.command == 'list' and args.sub_command == 'info':
+            self.list_info_action_by_connector(args)
         
         
     def list_credentials(self):
@@ -203,6 +230,9 @@ class UnskriptCtl(UnskriptFactory):
         active_creds = []
         incomplete_creds = []
         for cred_file in self.creds_json_files:
+            if is_creds_json_file_valid(creds_file=cred_file) is False:
+                raise ValueError(f"Given Credential file {cred_file} is corrupt!")
+            
             with open(cred_file, 'r') as f:
                 c_data = json.load(f)
 
@@ -242,7 +272,28 @@ class UnskriptCtl(UnskriptFactory):
         print("")
         print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
         print("")
- 
+
+    def list_info_action_by_connector(self, args):
+        """List checks by connector"""
+        all_connectors = args.type 
+        if not all_connectors:
+            all_connectors = 'all'
+
+        if not isinstance(all_connectors, list):
+            all_connectors = [all_connectors]
+        if len(all_connectors) == 1 and ',' in all_connectors[0]:
+            all_connectors = all_connectors[0].split(',')
+        for connector in all_connectors:
+            connector = connector.replace(',', '')
+        list_connector_table = [
+            [TBL_HDR_LIST_INFO_CONNECTOR, TBL_HDR_INFO_NAME, TBL_HDR_INFO_FN]]
+        action_list = self._db.cs.get_info_action_by_connector(all_connectors)
+        for cl in action_list:
+            list_connector_table.append(cl)
+        print("")
+        print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
+        print("")
+     
 
     def display_failed_checks(self, args):
         """Display failed checks from the audit_trail"""
@@ -507,7 +558,9 @@ class UnskriptCtl(UnskriptFactory):
         if args.script:
             output_json_file = os.path.join(output_dir,UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME + '.json')
             mode = 'both'
-        
+        if args.command == 'run' and args.info: 
+            mode = "both"
+
         self._notification.notify(summary_results=summary_result,
                                   failed_objects=failed_objects,
                                   output_metadata_file=output_json_file,
@@ -518,7 +571,7 @@ class UnskriptCtl(UnskriptFactory):
 # argparse, here, this function implements sub-parser to differentiate all the
 # commands that are supported by unskript-ctl. 
 # The fact that sub-parser is used means, the Keyword cannot start with a -, like --run
-# That is the reason why --run is implemented as just run. Similary, list, debug and show
+# That is the reason why --run is implemented as just run. Similarly, list, debug and show
 # options are all implemented the same way.
 #
 def main():
@@ -538,6 +591,9 @@ def main():
     run_parser.add_argument('--report',
                         action='store_true',
                         help='Report Results')
+    run_parser.add_argument('--info',
+                        action='store_true',
+                        help='Run information gathering actions')
     check_subparser = run_parser.add_subparsers(dest='check_command')
     check_parser = check_subparser.add_parser('check', help='Run Check Option')
     check_parser.add_argument('--name', type=str, help='Check name to run')
@@ -560,6 +616,12 @@ def main():
                                    type=str, 
                                    help='List All Checks of given connector type',
                                    choices=CONNECTOR_LIST)
+    list_info_parser = list_check_subparser.add_parser('info', help='List information gathering actions')
+    list_info_parser.add_argument('--all', action='store_true', help='List all info gathering actions')
+    list_info_parser.add_argument('--type',
+                                  type=str,
+                                  help='List info gathering actions for given connector type',
+                                  choices=CONNECTOR_LIST)
     # Show Option
     show_parser = subparsers.add_parser('show', help='Show Options')
     show_audit_subparser = show_parser.add_subparsers(dest='show_command')
@@ -611,6 +673,7 @@ def main():
         script_idx = argv.index('--script') if '--script' in argv else -1
         check_idx = argv.index('check') if 'check' in argv else -1
         report_idx = argv.index('--report') if '--report' in argv else -1
+        info_idx = argv.index('--info') if '--info' in argv else -1
         run_idx = argv.index('run') if 'run' in argv else -1
         
         if script_idx != -1 and check_idx != -1:
@@ -619,6 +682,13 @@ def main():
                 script_name = argv.pop(script_idx)
                 argv.insert(run_idx + 1, '--script')
                 argv.insert(run_idx + 2, script_name)
+        
+        if run_idx != -1 and info_idx != -1: 
+            argv.remove('--info')
+            if check_idx != -1:
+                argv.insert(check_idx, '--info')
+            elif run_idx != -1:
+                argv.insert(run_idx + 1, '--info')
         
         if report_idx != -1 and check_idx != -1:
             if report_idx > check_idx:
@@ -647,7 +717,6 @@ def main():
         if len(args.create_credential) == 0:
             uc.display_creds_ui()
         else:
-            #uc.create_creds(args.create_credential)
             uc.create_creds(args)
     elif args.save_check_names not in ('', None):
         uc.save_check_names(args)
