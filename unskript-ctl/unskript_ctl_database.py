@@ -335,6 +335,27 @@ class CodeSnippets(ZoDBInterface):
                 'CATEGORY_TYPE_INFORMATION' in snippet.get('metadata').get('action_categories') and 
                 snippet.get('metadata').get('action_entry_function') == action_name]
     
+    def get_info_action_by_connector(self, connector_list: list):
+        """Given the connectors, this routine returns the information actions that matches the connectors"""
+        if not connector_list:
+            return []
+        retVal = []
+        c_snippets = self.get_info_actions()
+        for connector in connector_list:
+            for c_snippet in c_snippets:
+                if connector.lower() == 'all':
+                    connector = c_snippet.get('metadata').get('action_type').split('_')[-1]
+                else: 
+                    if connector.upper() != c_snippet.get('metadata').get('action_type').split('_')[-1]:
+                        continue 
+                retVal.append([
+                            connector.capitalize(),
+                            c_snippet.get('name'),
+                            c_snippet.get('metadata').get('action_entry_function')
+                        ])
+        
+        return retVal 
+        
     def get_action_name_from_id(self, action_uuid: str):
         """Given a uuid, this method returns the Name of the action"""
         matches = [snippet for snippet in self.snippets if snippet.get('metadata') and snippet.get('metadata').get('uuid') == action_uuid]

@@ -136,12 +136,16 @@ class UnskriptFactory(ABC):
         self.creds_json_files = creds_json_files
         c_data = {}
         for creds_json_file in creds_json_files:
+            if os.path.getsize(creds_json_file) == 0:
+                self.logger.error("Credential file for {creds_json_file} is empty!")
+                continue 
             with open(creds_json_file, 'r', encoding='utf-8') as f:
                 try:
                     c_data = json.load(f)
-                except:
-                    # If creds file is empty, continue to the next creds file
-                    pass 
+                except Exception as e:
+                    # If creds file is corrupt, raise exception and bail out
+                    self.logger.error(f"Exception Occurred while parsing credential file {creds_json_file}: {str(e)}")
+                    raise ValueError(e)
                 finally:
                     if c_data.get('metadata').get('connectorData') == '{}':
                         continue 
@@ -152,8 +156,6 @@ class UnskriptFactory(ABC):
     def _banner(self, msg: str):
         print('\033[4m\x1B[1;20;42m' + msg + '\x1B[0m\033[0m')
 
-    def _highlight(self, msg: str):
-        print('\033[4m\x1B[1;20;40m' + msg + '\x1B[0m\033[0m')
     
     def _error(self, msg: str):
         print('\x1B[1;20;41m' + msg + '\x1B[0m')

@@ -16,9 +16,9 @@ def _run_function(fn):
     else:
         try:
             eval(fn)
-        except:
-            # If one of the action fails, proceed further
-            pass 
+        except Exception as e:
+            # If one of the action fails dump the exception on console and proceed further
+            print(str(e))
     sys.stdout = sys.__stdout__
     return output
 

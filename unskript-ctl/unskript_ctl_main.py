@@ -216,6 +216,8 @@ class UnskriptCtl(UnskriptFactory):
             self.list_checks_by_connector(args)
         elif args.command == 'list' and args.sub_command == 'failed-checks':
             self.display_failed_checks(args)
+        elif args.command == 'list' and args.sub_command == 'info':
+            self.list_info_action_by_connector(args)
         
         
     def list_credentials(self):
@@ -262,7 +264,28 @@ class UnskriptCtl(UnskriptFactory):
         print("")
         print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
         print("")
- 
+
+    def list_info_action_by_connector(self, args):
+        """List checks by connector"""
+        all_connectors = args.type 
+        if not all_connectors:
+            all_connectors = 'all'
+
+        if not isinstance(all_connectors, list):
+            all_connectors = [all_connectors]
+        if len(all_connectors) == 1 and ',' in all_connectors[0]:
+            all_connectors = all_connectors[0].split(',')
+        for connector in all_connectors:
+            connector = connector.replace(',', '')
+        list_connector_table = [
+            [TBL_HDR_LIST_INFO_CONNECTOR, TBL_HDR_INFO_NAME, TBL_HDR_INFO_FN]]
+        action_list = self._db.cs.get_info_action_by_connector(all_connectors)
+        for cl in action_list:
+            list_connector_table.append(cl)
+        print("")
+        print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
+        print("")
+     
 
     def display_failed_checks(self, args):
         """Display failed checks from the audit_trail"""
@@ -583,6 +606,12 @@ def main():
                                    type=str, 
                                    help='List All Checks of given connector type',
                                    choices=CONNECTOR_LIST)
+    list_info_parser = list_check_subparser.add_parser('info', help='List information gathering actions')
+    list_info_parser.add_argument('--all', action='store_true', help='List all info gathering actions')
+    list_info_parser.add_argument('--type',
+                                  type=str,
+                                  help='List info gathering actions for given connector type',
+                                  choices=CONNECTOR_LIST)
     # Show Option
     show_parser = subparsers.add_parser('show', help='Show Options')
     show_audit_subparser = show_parser.add_subparsers(dest='show_command')
