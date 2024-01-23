@@ -16,6 +16,8 @@ import json
 import ZODB.FileStorage
 
 from unskript_ctl_factory import DatabaseFactory, UnskriptFactory
+from unskript_ctl_version import *
+
 from ZODB import DB
 
 # Class ZoDBInterface is a child class of DatabaseFactory
@@ -59,6 +61,7 @@ class ZoDBInterface(DatabaseFactory):
             with db.transaction() as connection:
                 root = connection.root()
                 root[self.collection_name] = {} 
+                root['schema_version'] = SCHEMA_VERSION
                 connection.transaction_manager.commit()
                 connection.close() 
                 del root 
