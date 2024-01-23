@@ -45,7 +45,7 @@ Also, if you want to get the report of the run in an email or slack, you can
 use the **--report** option.
 
 ```
-usage: unskript-ctl run [-h] [--script SCRIPT] [--report] {check} ...
+usage: unskript-ctl run [-h] [--script SCRIPT] [--report] [--info] {check} ...
 
 positional arguments:
   {check}
@@ -55,6 +55,7 @@ options:
   -h, --help       show this help message and exit
   --script SCRIPT  Script name to run
   --report         Report Results
+  --info           Run information gathering actions
 ```
 
 ```
@@ -69,12 +70,13 @@ options:
 
 ### List options
 ```
-usage: unskript-ctl list [-h] [--credential] {checks,failed-checks} ...
+usage: unskript-ctl list [-h] [--credential] {checks,failed-checks,info} ...
 
 positional arguments:
-  {checks,failed-checks}
+  {checks,failed-checks,info}
     checks              List Check Options
     failed-checks       List Failed check options
+    info                List information gathering actions
 
 options:
   -h, --help            show this help message and exit
@@ -103,6 +105,16 @@ options:
                         List All Checks of given connector type
 ```
 
+```
+usage: unskript-ctl list info [-h] [--all]
+                              [--type {aws,gcp,k8s,elasticsearch,grafana,redis,jenkins,github,netbox,nomad,jira,kafka,mongodb,mysql,postgresql,rest,slack,ssh,vault,salesforce}]
+
+options:
+  -h, --help            show this help message and exit
+  --all                 List all info gathering actions
+  --type {aws,gcp,k8s,elasticsearch,grafana,redis,jenkins,github,netbox,nomad,jira,kafka,mongodb,mysql,postgresql,rest,slack,ssh,vault,salesforce}
+                        List info gathering actions for given connector type
+```
 
 
 ### Show options

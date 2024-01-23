@@ -222,12 +222,13 @@ class EmailNotification(NotificationFactory):
                     <br>
             '''
             for k,v in self.uglobals.get('info_action_results').items():
-                message += '<h4>' + k + '</h4> <br> <pre>'
+                message += '<h4>' + k + '</h4> <pre>'
                 if v:
                     for line in v:
                         message += line 
                 else:
-                    message += '\n NO OUTPUT \n'
+                    message += 'NO OUTPUT \n'
+                message += '###'
                 message += '</pre>'
             message += '<br>'
         

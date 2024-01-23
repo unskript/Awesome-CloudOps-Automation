@@ -136,9 +136,10 @@ class UnskriptFactory(ABC):
         self.creds_json_files = creds_json_files
         c_data = {}
         for creds_json_file in creds_json_files:
-            if os.path.getsize(creds_json_file) == 0:
-                self.logger.error("Credential file for {creds_json_file} is empty!")
-                continue 
+            
+            if is_creds_json_file_valid(creds_file=creds_json_file) is False:
+                raise ValueError(f"Given Credential file {creds_json_file} is corrupt!")
+            
             with open(creds_json_file, 'r', encoding='utf-8') as f:
                 try:
                     c_data = json.load(f)

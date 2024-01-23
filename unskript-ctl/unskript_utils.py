@@ -146,3 +146,14 @@ def create_execution_run_directory(file_prefix: str = None):
     else:
         output_dir = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')    
     return output_dir
+
+# Utility Function
+def is_creds_json_file_valid(creds_file: str = None):
+    if not creds_file:
+        return False 
+    
+    if os.path.getsize(creds_file) == 0:
+        return False 
+    
+    # If reached to this point, return true
+    return True 

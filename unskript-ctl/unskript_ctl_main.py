@@ -149,14 +149,17 @@ class UnskriptCtl(UnskriptFactory):
         snippet_names = self._config.get_info()
         list_of_snippets = []
         if not snippet_names:
-            # list_of_snippets = self._db.cs.get_info_actions()
             self.logger.error("No Information gathering action mentioned in the config file!")
             sys.exit(0)
         else:
             for snippet_name in snippet_names:
-                list_of_snippets.append(self._db.cs.get_info_action_by_name(snippet_name))  
+                list_of_snippets.extend(self._db.cs.get_info_action_by_name(snippet_name))  
         
-        print("\n\n")
+        if not list_of_snippets:
+            self.logger.error(f"No Actions found for these names: {snippet_names}")
+            sys.exit(0)
+        
+        print("\n")
         self._banner("Information Gathering Action Results")
         self._info.run(action_list=list_of_snippets)
  
@@ -227,6 +230,9 @@ class UnskriptCtl(UnskriptFactory):
         active_creds = []
         incomplete_creds = []
         for cred_file in self.creds_json_files:
+            if is_creds_json_file_valid(creds_file=cred_file) is False:
+                raise ValueError(f"Given Credential file {cred_file} is corrupt!")
+            
             with open(cred_file, 'r') as f:
                 c_data = json.load(f)
 
@@ -552,7 +558,9 @@ class UnskriptCtl(UnskriptFactory):
         if args.script:
             output_json_file = os.path.join(output_dir,UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME + '.json')
             mode = 'both'
-        
+        if args.command == 'run' and args.info: 
+            mode = "both"
+
         self._notification.notify(summary_results=summary_result,
                                   failed_objects=failed_objects,
                                   output_metadata_file=output_json_file,
@@ -675,9 +683,12 @@ def main():
                 argv.insert(run_idx + 1, '--script')
                 argv.insert(run_idx + 2, script_name)
         
-        if info_idx != -1: 
+        if run_idx != -1 and info_idx != -1: 
             argv.remove('--info')
-            argv.insert(check_idx, '--info')
+            if check_idx != -1:
+                argv.insert(check_idx, '--info')
+            elif run_idx != -1:
+                argv.insert(run_idx + 1, '--info')
         
         if report_idx != -1 and check_idx != -1:
             if report_idx > check_idx:

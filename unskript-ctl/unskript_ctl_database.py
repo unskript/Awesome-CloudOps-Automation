@@ -328,12 +328,15 @@ class CodeSnippets(ZoDBInterface):
         """Given the action name, this routine returns the information action that matches the name"""
         if not action_name:
             return []
-        
-        return [snippet for snippet in self.snippets
-                if snippet.get('metadata') and
-                snippet.get('metadata').get('action_categories') and
-                'CATEGORY_TYPE_INFORMATION' in snippet.get('metadata').get('action_categories') and 
-                snippet.get('metadata').get('action_entry_function') == action_name]
+
+        snippets = self.get_info_actions()
+        retVal = []
+        for snippet in snippets:
+            if snippet.get('metadata').get('action_entry_function').strip().lower() == action_name.strip().lower():
+                retVal = [snippet]
+                break
+    
+        return retVal 
     
     def get_info_action_by_connector(self, connector_list: list):
         """Given the connectors, this routine returns the information actions that matches the connectors"""
