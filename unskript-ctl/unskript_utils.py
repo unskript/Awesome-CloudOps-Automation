@@ -125,6 +125,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
     ARG_START = '\x1B[1;20;42m'
     ARG_END = '\x1B[0m'
+    HIGHLIGHT = '\x1B[1;20;40m'
 
 # Utility Functions
 def create_execution_run_directory(file_prefix: str = None):

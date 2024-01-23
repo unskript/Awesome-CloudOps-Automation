@@ -752,7 +752,7 @@ class InfoAction(ChecksFactory):
         if self.uglobals.get('info_action_results'):
             for k,v in self.uglobals.get('info_action_results').items():
                 self._banner('')
-                print('\033[4m\x1B[1;20;40m' + k + '\x1B[0m\033[0m')
+                print(bcolors.UNDERLINE + bcolors.HIGHLIGHT + k + bcolors.ARG_END + bcolors.ENDC)
                 print('\n')
                 print(v)
                 print('###')
