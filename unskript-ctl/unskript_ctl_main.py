@@ -149,7 +149,9 @@ class UnskriptCtl(UnskriptFactory):
         snippet_names = self._config.get_info()
         list_of_snippets = []
         if not snippet_names:
-            list_of_snippets = self._db.cs.get_info_actions()
+            # list_of_snippets = self._db.cs.get_info_actions()
+            self.logger.error("No Information gathering action mentioned in the config file!")
+            sys.exit(0)
         else:
             for snippet_name in snippet_names:
                 list_of_snippets.append(self._db.cs.get_info_action_by_name(snippet_name))  
