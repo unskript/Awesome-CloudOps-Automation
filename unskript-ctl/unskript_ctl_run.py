@@ -652,8 +652,9 @@ class InfoAction(ChecksFactory):
         self.uglobals = UnskriptGlobals()
         self.uglobals['global'] = self.info_globals
 
-        for k,v in self.info_globals.items():
-            os.environ[k] =  json.dumps(v)
+        if self.info_globals:
+            for k,v in self.info_globals.items():
+                os.environ[k] =  json.dumps(v)
 
     def run(self, **kwargs):
         if "action_list" not in kwargs:
