@@ -9,24 +9,24 @@
 #
 #
 import os
-import sys 
+import sys
 import json
-import psutil 
+import psutil
 
-from datetime import datetime 
+from datetime import datetime
 from argparse import ArgumentParser, REMAINDER, SUPPRESS
 from unskript_ctl_database import *
 from unskript_ctl_run import *
-from unskript_ctl_notification import * 
-from unskript_utils import * 
+from unskript_ctl_notification import *
+from unskript_utils import *
 from unskript_ctl_factory import *
-from unskript_ctl_version import * 
+from unskript_ctl_version import *
 from unskript_ctl_upload_session_logs import upload_session_logs
 
 
 # UnskriptCTL class that instantiates class instance of Checks, Script, Notification and DBInterface
 # This implementation is an example how to use the different components of unskript-ctl into a single
-# class. 
+# class.
 class UnskriptCtl(UnskriptFactory):
     def __init__(self, **kwargs):
         """Constructor: This class instantiates notification, checks, script and dbinterface class"""
@@ -40,8 +40,8 @@ class UnskriptCtl(UnskriptFactory):
         self._check = Checks()
         self._script = Script()
 
-        self._db = DBInterface() 
-    
+        self._db = DBInterface()
+
     def create_creds(self, args):
         """This method can be used to create credential"""
         try:
@@ -74,7 +74,7 @@ class UnskriptCtl(UnskriptFactory):
                 print("Successfully Created K8S Credential")
         else:
             self.display_creds_ui()
-    
+
     def display_creds_ui(self):
         """Wrapper for creds_ui to display npyscreen dialogs"""
         try:
@@ -83,7 +83,7 @@ class UnskriptCtl(UnskriptFactory):
         except:
             self.logger.error("Required python library creds_ui is not packaged")
             self._error("Required python library creds_ui is not packaged")
-    
+
     def save_check_names(self, args):
         """This method is called by bash completion script to create all available checks as a file"""
         if args.save_check_names:
@@ -95,15 +95,15 @@ class UnskriptCtl(UnskriptFactory):
             for name in list_of_names:
                 f.write(name + '\n')
         self.logger.info(f"Saved  {len(list_of_names)} Check Names!")
-    
+
     def run_main(self, **kwargs):
         """Main Function to handle all options under the run command"""
-        args = parser = None 
+        args = parser = None
         if 'args' in kwargs:
             args = kwargs.get('args')
         if 'parser' in kwargs:
             parser = kwargs.get('parser')
-        
+
         if not args or not parser:
             self.logger.error("ARGS and/or Parser sent to run_main is None!")
             self._error("ARGS and/or Parser sent to run_main is None")
@@ -114,7 +114,7 @@ class UnskriptCtl(UnskriptFactory):
                 checks_list = self._db.cs.get_check_by_name(check_name=str(args.name))
                 status_of_run = self._check.run(checks_list=checks_list)
             elif args.type is not None:
-                all_connectors = args.type 
+                all_connectors = args.type
                 if not isinstance(all_connectors, list):
                     all_connectors = [all_connectors]
                 if len(all_connectors) == 1 and ',' in all_connectors[0]:
@@ -132,10 +132,10 @@ class UnskriptCtl(UnskriptFactory):
                 status_of_run = self._check.run(checks_list=check_list)
             else:
                 parser.print_help()
-                sys.exit(0) 
+                sys.exit(0)
             self.uglobals['status_of_run'] = status_of_run
             self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
-        
+
         if 'script' in args and args.command == 'run' and args.script not in ('', None):
             self._script.run(script=args.script)
 
@@ -154,16 +154,16 @@ class UnskriptCtl(UnskriptFactory):
             sys.exit(0)
         else:
             for snippet_name in snippet_names:
-                list_of_snippets.extend(self._db.cs.get_info_action_by_name(snippet_name))  
-        
+                list_of_snippets.extend(self._db.cs.get_info_action_by_name(snippet_name))
+
         if not list_of_snippets:
             self.logger.error(f"No Actions found for these names: {snippet_names}")
             sys.exit(0)
-        
+
         print("\n")
         self._banner("Information Gathering Action Results")
         self._info.run(action_list=list_of_snippets)
- 
+
 
     def update_audit_trail(self, collection_name: str, status_dict_list: list):
         """This function updates PSS with the collection name audit-trail"""
@@ -173,17 +173,17 @@ class UnskriptCtl(UnskriptFactory):
         p = f = e = 0
         id = self.uglobals.get('exec_id')
         if not id:
-            id = uuid.uuid4() 
+            id = uuid.uuid4()
 
         trail_data[id] = {}
         trail_data[id]['time_stamp'] = k
         trail_data[id]['runbook'] = id + '_output.txt'
-        trail_data[id]['check_status'] = {} 
+        trail_data[id]['check_status'] = {}
         for sd in status_dict_list:
             if sd == {}:
-                continue 
+                continue
             for s in sd.get('result'):
-                check_name, check_id, connector, status = s 
+                check_name, check_id, connector, status = s
                 if status == 'PASS':
                     p += 1
                 elif status == 'FAIL':
@@ -198,11 +198,11 @@ class UnskriptCtl(UnskriptFactory):
                     c_name = connector + ':' + check_name
                     for name, obj in self.uglobals.get('failed_result').items():
                         if name in (c_name, check_name):
-                            trail_data[id]['check_status'][check_id]['failed_objects'] = obj 
-        
+                            trail_data[id]['check_status'][check_id]['failed_objects'] = obj
+
         trail_data[id]['summary'] = f'Summary (total/p/f/e): {p+e+f}/{p}/{f}/{e}'
         self._db.pss.update(collection_name=collection_name, data=trail_data)
-        return id 
+        return id
 
     def list_main(self, **kwargs):
         """This is the Main function to handle all list command"""
@@ -224,8 +224,8 @@ class UnskriptCtl(UnskriptFactory):
             self.display_failed_checks(args)
         elif args.command == 'list' and args.sub_command == 'info':
             self.list_info_action_by_connector(args)
-        
-        
+
+
     def list_credentials(self):
         """Function to handle displaying state of credentials"""
         active_creds = []
@@ -233,7 +233,7 @@ class UnskriptCtl(UnskriptFactory):
         for cred_file in self.creds_json_files:
             if is_creds_json_file_valid(creds_file=cred_file) is False:
                 raise ValueError(f"Given Credential file {cred_file} is corrupt!")
-            
+
             with open(cred_file, 'r') as f:
                 c_data = json.load(f)
 
@@ -255,7 +255,7 @@ class UnskriptCtl(UnskriptFactory):
 
     def list_checks_by_connector(self, args):
         """List checks by connector"""
-        all_connectors = args.type 
+        all_connectors = args.type
         if not all_connectors:
             all_connectors = 'all'
 
@@ -276,7 +276,7 @@ class UnskriptCtl(UnskriptFactory):
 
     def list_info_action_by_connector(self, args):
         """List checks by connector"""
-        all_connectors = args.type 
+        all_connectors = args.type
         if not all_connectors:
             all_connectors = 'all'
 
@@ -294,21 +294,21 @@ class UnskriptCtl(UnskriptFactory):
         print("")
         print(tabulate(list_connector_table, headers='firstrow', tablefmt='fancy_grid'))
         print("")
-     
+
 
     def display_failed_checks(self, args):
         """Display failed checks from the audit_trail"""
         if args.all:
             connector = 'all'
         elif args.type:
-            connector = args.type 
+            connector = args.type
         else:
             connector = 'all'
-        
+
         pss_content = self._db.pss.read(collection_name='audit_trail')
         failed_checks_table = [[TBL_HDR_DSPL_CHKS_NAME, TBL_HDR_FAILED_OBJECTS, TBL_HDR_DSPL_EXEC_ID]]
         for exec_id in pss_content.keys():
-            execution_id = exec_id 
+            execution_id = exec_id
             for check_id in pss_content.get(exec_id).get('check_status').keys():
                 if pss_content.get(exec_id).get('check_status').get(check_id).get('status').lower() == "fail":
                     if connector == 'all':
@@ -337,13 +337,13 @@ class UnskriptCtl(UnskriptFactory):
         print("")
         print(f"\033[1m {sys.argv[0:]} \033[0m")
         print("")
-        args = None 
-        parser = None 
+        args = None
+        parser = None
         if "args" in kwargs:
             args = kwargs.get('args')
         if "parser" in kwargs:
             parser = kwargs.get('parser')
-        
+
         if args.show_command == 'audit-trail':
             pss_content = self._db.pss.read(collection_name='audit_trail')
             if args.all:
@@ -351,7 +351,7 @@ class UnskriptCtl(UnskriptFactory):
             elif args.type:
                 self.print_connector_result_table(pss_content=pss_content, connector=args.type)
             elif args.execution_id:
-                self.print_execution_result_table(pss_content=pss_content, execution_id=args.execution_id)                
+                self.print_execution_result_table(pss_content=pss_content, execution_id=args.execution_id)
             pass
         elif args.show_command == 'failed-logs':
             if args.execution_id:
@@ -378,8 +378,8 @@ class UnskriptCtl(UnskriptFactory):
     def print_all_result_table(self, pss_content: dict):
         """Prints result table in a tabular form"""
         if not pss_content:
-            return 
-        
+            return
+
         all_result_table = [["\033[1m Execution ID \033[0m",
                             "\033[1m Execution Summary \033[0m",
                             "\033[1m Execution Timestamp \033[0m"]]
@@ -400,13 +400,13 @@ class UnskriptCtl(UnskriptFactory):
     def print_connector_result_table(self, pss_content: dict, connector: str):
         """Prints result table for given connector test"""
         if not pss_content:
-            return 
-        
+            return
+
         connector_result_table = [["\033[1m Check Name \033[0m",
                                 "\033[1m Run Status \033[0m",
                                 "\033[1m Time Stamp \033[0m",
                                 "\033[1m Execution ID \033[0m"]]
-        
+
         for exec_id in pss_content.keys():
             execution_id = exec_id
             if pss_content.get(exec_id).get('check_status'):
@@ -419,7 +419,7 @@ class UnskriptCtl(UnskriptFactory):
 
         print(tabulate(connector_result_table,
                 headers='firstrow', tablefmt='fancy_grid'))
-        return 
+        return
 
 
     def print_execution_result_table(self, pss_content: dict, execution_id: str):
@@ -443,7 +443,7 @@ class UnskriptCtl(UnskriptFactory):
     def service_main(self, **kwargs):
         """This is a placeholder implementation, think of it as wrapper for gotty or any other similar service"""
         raise NotImplementedError("NOT IMPLEMENTED")
-    
+
     def debug_main(self, **kwargs):
         """Debug Main function"""
         args = kwargs.get('args', None)
@@ -452,14 +452,14 @@ class UnskriptCtl(UnskriptFactory):
         if args and args.command == 'debug':
             if args.debug_command == 'start':
                 self.start_debug(args.config)
-                pass 
+                pass
             elif args.stop:
                 self.stop_debug()
                 pass
-            else: 
+            else:
                 self.logger.error("WRONG OPTION: Only start and stop are supported for debug")
                 self._error("Wrong Option, only start and stop are supported")
-        pass 
+        pass
 
     def start_debug(self, args):
         """start_debug Starts Debug session. This function takes
@@ -549,8 +549,8 @@ class UnskriptCtl(UnskriptFactory):
         """Notification is called when the --report flag is used. This is a wrapper for both email and slack notification."""
         output_dir = create_execution_run_directory()
         summary_result = None
-        failed_objects = None 
-        output_json_file = None 
+        failed_objects = None
+        output_json_file = None
         mode = None
         if args.command == 'run' and args.check_command == 'check':
             summary_result = self.uglobals.get('status_of_run')
@@ -559,18 +559,18 @@ class UnskriptCtl(UnskriptFactory):
         if args.script:
             output_json_file = os.path.join(output_dir,UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME + '.json')
             mode = 'both'
-        if args.command == 'run' and args.info: 
+        if args.command == 'run' and args.info:
             mode = "both"
 
         self._notification.notify(summary_results=summary_result,
                                   failed_objects=failed_objects,
                                   output_metadata_file=output_json_file,
                                   mode=mode)
-        pass 
+        pass
 
 # This function is the main function. Unlike the previous implementation of
 # argparse, here, this function implements sub-parser to differentiate all the
-# commands that are supported by unskript-ctl. 
+# commands that are supported by unskript-ctl.
 # The fact that sub-parser is used means, the Keyword cannot start with a -, like --run
 # That is the reason why --run is implemented as just run. Similarly, list, debug and show
 # options are all implemented the same way.
@@ -607,14 +607,14 @@ def main():
     list_check_subparser = list_parser.add_subparsers(dest='sub_command')
     list_check_parser  = list_check_subparser.add_parser('checks', help='List Check Options')
     list_check_parser.add_argument('--all', action='store_true', help='List All Checks')
-    list_check_parser.add_argument('--type', 
-                                   type=str, 
+    list_check_parser.add_argument('--type',
+                                   type=str,
                                    help='List All Checks of given connector type',
                                    choices=CONNECTOR_LIST)
     list_failed_check_parser = list_check_subparser.add_parser('failed-checks', help='List Failed check options')
     list_failed_check_parser.add_argument('--all', action='store_true', help='Show All Failed Checks')
-    list_failed_check_parser.add_argument('--type', 
-                                   type=str, 
+    list_failed_check_parser.add_argument('--type',
+                                   type=str,
                                    help='List All Checks of given connector type',
                                    choices=CONNECTOR_LIST)
     list_info_parser = list_check_subparser.add_parser('info', help='List information gathering actions')
@@ -637,16 +637,16 @@ def main():
     show_audit_parser.add_argument('--execution_id',
                                    type=str,
                                    help='Execution ID for which the audit trail should be shown')
-    
+
     show_flogs_parser = show_audit_subparser.add_parser('failed-logs', help='Show Failed Logs option')
     show_flogs_parser.add_argument('--execution_id',
                                    type=str,
                                    help='Execution ID for which the logs should be fetched')
-    
+
     # Debug / Service Option
     debug_parser = subparsers.add_parser('debug', help='Debug Option')
     debug_subparser = debug_parser.add_subparsers(dest='debug_command')
-    
+
     debug_start_parser = debug_subparser.add_parser('start', help='Start Debug Option')
 
     debug_start_parser.add_argument('--config',
@@ -654,7 +654,7 @@ def main():
                                 type=str)
     debug_parser.add_argument('--stop',
                                 help='Stop debug session',
-                                action='store_true') 
+                                action='store_true')
 
     # Create Credential
     parser.add_argument('--create-credential',
@@ -665,8 +665,8 @@ def main():
     parser.add_argument('--save-check-names',
                         type=str,
                         help=SUPPRESS)
-    
-    
+
+
 
     # Lets re-arrange arguments such that parse_args is efficient with
     # the rules defined above
@@ -676,28 +676,28 @@ def main():
         report_idx = argv.index('--report') if '--report' in argv else -1
         info_idx = argv.index('--info') if '--info' in argv else -1
         run_idx = argv.index('run') if 'run' in argv else -1
-        
+
         if script_idx != -1 and check_idx != -1:
             if script_idx > check_idx:
                 argv.remove('--script')
                 script_name = argv.pop(script_idx)
                 argv.insert(run_idx + 1, '--script')
                 argv.insert(run_idx + 2, script_name)
-        
-        if run_idx != -1 and info_idx != -1: 
+
+        if run_idx != -1 and info_idx != -1:
             argv.remove('--info')
             if check_idx != -1:
                 argv.insert(check_idx, '--info')
             elif run_idx != -1:
                 argv.insert(run_idx + 1, '--info')
-        
+
         if report_idx != -1 and check_idx != -1:
             if report_idx > check_idx:
                 argv.remove('--report')
                 argv.insert(run_idx + 1, '--report')
 
         return argv
-    
+
     argv = sys.argv[1:].copy()
     argv = rearrange_argv(argv)
     args = parser.parse_args(argv)
@@ -705,7 +705,7 @@ def main():
     if len(sys.argv) <= 2:
         parser.print_help()
         sys.exit(0)
-    
+
     if args.command == 'run':
         uc.run_main(args=args, parser=parser)
     elif args.command == 'list':
