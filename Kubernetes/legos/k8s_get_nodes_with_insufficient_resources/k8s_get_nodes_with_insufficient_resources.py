@@ -35,12 +35,12 @@ def k8s_get_nodes_with_insufficient_resources_printer(output):
                 o.get('name'),
                 pprint.pformat(o.get('allocatable')),
                 pprint.pformat(o.get('capacity'))
-                ])        
+                ])
     print(tabulate(data, headers=res_hdr, tablefmt='fancy_grid'))
 
 
 def k8s_get_nodes_with_insufficient_resources(handle, threshold: int = 85) -> Tuple:
-    """k8s_get_failed_deployments Returns the list of all failed deployments across all namespaces
+    """k8s_get_nodes_with_insufficient_resources returns the list of nodes that have insufficient resources
 
     :type handle: Object
     :param handle: Object returned from task.validate(...) function
