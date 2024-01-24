@@ -39,7 +39,7 @@ class UnskriptCtl(UnskriptFactory):
         self._notification = Notification()
         self._check = Checks()
         self._script = Script()
-        self._info = InfoAction()
+
         self._db = DBInterface() 
     
     def create_creds(self, args):
@@ -146,6 +146,7 @@ class UnskriptCtl(UnskriptFactory):
         """This function runs the info gathering actions"""
         # Lets find out if any specific info action mentioned, if mentioned
         # get the list and run them
+        self._info = InfoAction()
         snippet_names = self._config.get_info()
         list_of_snippets = []
         if not snippet_names:

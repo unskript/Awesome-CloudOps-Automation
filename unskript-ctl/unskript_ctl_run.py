@@ -37,8 +37,12 @@ class Checks(ChecksFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.logger.debug("Initialized Checks Class")
-        self.checks_globals = self._config.get_checks_params().get('global')
-        self.matrix = self.checks_globals.get('matrix') 
+        if self._config.get_checks_params():
+            self.checks_globals = self._config.get_checks_params().get('global')
+            self.matrix = self.checks_globals.get('matrix') 
+        else:
+            self.checks_globals = None 
+            self.matrix = None 
         self.temp_jit_file = "/tmp/jit_script.py"
         self.check_names = []
         self.check_uuids = []
@@ -98,8 +102,6 @@ class Checks(ChecksFactory):
                 self.logger.error(f"Output from checks execution is empty, pls check {self.temp_jit_file}")
                 self._error(f" Output from checks execution is empty, pls check {self.temp_jit_file}")
                 return
-            else:
-                os.remove(self.temp_jit_file)
 
         self.display_check_result(checks_output=outputs)
         self.uglobals['status_of_run'] = self.status_list_of_dict
@@ -643,8 +645,12 @@ class InfoAction(ChecksFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.logger.debug("Initialized InfoAction class")
-        self.info_globals = self._config.get_info_action_params().get('global')
-        self.matrix = self.info_globals.get('matrix')
+        if self._config.get_info_action_params():
+            self.info_globals = self._config.get_info_action_params().get('global')
+            self.matrix = self.info_globals.get('matrix')
+        else:
+            self.info_globals = None 
+            self.matrix = None 
         self.temp_jit_dir = '/tmp/jit'
         self.temp_jit_base_name = 'jit_info_script'
         self._common = CommonAction() 
