@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2023 unSkript.com
+# Copyright (c) 2024 unSkript.com
 # All rights reserved.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
@@ -76,6 +76,7 @@ class Job():
     def parse(self):
         cmds = []
         notify = '--report' if self.notify is True else ''
+        info = '--info' if self.info else ''
         # Today, we dont support
         # check --name <> check --type k8s --script
         # So, if both check names and types are configured, we will split it
@@ -96,9 +97,9 @@ class Job():
         full_command = None
         if self.checks is not None and len(self.checks) != 0:
             if combine_check_names_and_script:
-                full_command = f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]}'
+                full_command = f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {info}'
             else:
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {notify}')
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {info} {notify}')
             print(f'Job: {self.job_name} contains check: {self.checks[0]}')
 
 
@@ -108,9 +109,9 @@ class Job():
             connector_types_string = ','.join(self.connectors)
             print(f'Job: {self.job_name} contains connector types: {connector_types_string}')
             if combine_check_types_and_script:
-                full_command = f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string}'
+                full_command = f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {info}'
             else:
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {notify}')
+                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {info} {notify}')
         
 
         accessmode = os.F_OK | os.X_OK
@@ -133,16 +134,13 @@ class Job():
                 combined_script = ';'.join(filtered_scripts)
                 print(f'Job: {self.job_name} contains custom script: {combined_script}')
                 if combine_check_types_and_script or combine_check_names_and_script:
-                    full_command += f' --script "{combined_script}" {notify}'
+                    full_command += f' --script "{combined_script}" {info} {notify}'
                 else:
-                    cmds.append(f'{UNSKRIPT_CTL_BINARY} run --script "{combined_script}" {notify}')
+                    cmds.append(f'{UNSKRIPT_CTL_BINARY} run --script "{combined_script}" {info} {notify}')
 
+        
         if full_command is not None:
             cmds.append(full_command)
-        
-        # For info gathering
-        if self.info:
-            cmds.append('--info')
 
         self.cmds = cmds
 
