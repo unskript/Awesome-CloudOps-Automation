@@ -1,3 +1,5 @@
+## Report Disabled
+
 *  unskript-ctl.sh run --info 
 ```
 Schedule: cadence 0 0 * * *, job name: lightbeam
@@ -113,5 +115,128 @@ Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/l
 ```
 Schedule: cadence 0 0 * * *, job name: lightbeam
 Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes  --info; /usr/local/bin/unskript-ctl.sh run check --type k8s --script "/usr/local/bin/lb_pvc.sh" 
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+
+## Report Enabled
+
+*  unskript-ctl.sh run --info --report
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run --info --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+*  unskript-ctl.sh run check --name <NAME> --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+
+*  unskript-ctl.sh run check --type <TYPE> --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --type k8s --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+*  unskript-ctl.sh run --script <SCRIPT> --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run --script "/usr/local/bin/lb_pvc.sh" --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+*  unksirpt-ctl.sh run --script <SCRIPT> --info --report
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run --script "/usr/local/bin/lb_pvc.sh" --report --info
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+
+*  unskript-ctl.sh run check --name <NAME> --info --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --report --info
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+*  unskript-ctl.sh run check --type <TYPE> --info --report
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --type k8s --report --info
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+
+```
+
+*  unskript-ctl.sh run check --name <NAME> --script <SCRIPT> --report
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --script "/usr/local/bin/lb_pvc.sh" --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+
+```
+
+*  unskript-ctl.sh run check --type <TYPE> --script <SCRIPT> --report
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --type k8s  --script "/usr/local/bin/lb_pvc.sh" --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+*  unskript-ctl.sh run check --name <NAME> check --type <TYPE> --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --report; /usr/local/bin/unskript-ctl.sh run check --type k8s --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+
+```
+
+
+*  unskript-ctl.sh run check --type <TYPE> check --name <NAME> --script <SCRIPT> --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --report; /usr/local/bin/unskript-ctl.sh run check --type k8s  --script "/usr/local/bin/lb_pvc.sh" --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+*  unskript-ctl.sh run check --type <TYPE> --script <SCRIPT> --info  --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --type k8s --info --script "/usr/local/bin/lb_pvc.sh" --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+*  unskript-ctl.sh run check --name <NAME> --script <SCRIPT> --info --report
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --info --script "/usr/local/bin/lb_pvc.sh" --report
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+
+```
+
+*  unskript-ctl.sh run check --name <NAME> check --type <TYPE> --info  --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --report --info; /usr/local/bin/unskript-ctl.sh run check --type k8s --report 
+Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
+```
+
+*  unskript-ctl.sh run check --name <NAME> check --type <TYPE> --script <SCRIPT> --info --report
+
+```
+Schedule: cadence 0 0 * * *, job name: lightbeam
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes --report --info; /usr/local/bin/unskript-ctl.sh run check --type k8s  --script "/usr/local/bin/lb_pvc.sh" --report
 Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
 ```
