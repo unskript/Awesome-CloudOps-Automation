@@ -8,11 +8,11 @@ from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     client_threshold: Optional[int] = Field(
-        '100',
+        10000,
         title='Client threshold',
         description='Threshold for the number of connected clients considered abnormal. Default- 100 clients')
     memory_threshold: Optional[int] = Field(
-        '80',
+        80,
         title='Memory threshold (in %)',
         description='Threshold for the percentage of memory usage considered abnormal. Default- 80%')
 
@@ -41,7 +41,7 @@ def redis_get_cluster_health_printer(output):
             print(f"{metric}: {message}")
 
 
-def redis_get_cluster_health(handle, client_threshold: int = 100, memory_threshold: int = 80) -> Tuple:
+def redis_get_cluster_health(handle, client_threshold: int = 10000, memory_threshold: int = 80) -> Tuple:
     """Returns the health of the Redis instance.
     
     :type handle: object

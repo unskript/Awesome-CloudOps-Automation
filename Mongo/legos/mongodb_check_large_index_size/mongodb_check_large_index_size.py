@@ -8,8 +8,8 @@ from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     index_threshold: Optional[float] = Field(
-        1000,
-        description='The threshold for total index size. Default is 1000KB.',
+        512000,  # 500MB in KB
+        description='The threshold for total index size. Default is 512000KB.',
         title='Index threshold(in KB)',
     )
 
@@ -26,7 +26,7 @@ def mongodb_check_large_index_size_printer(output):
         print(f"Alert! Index size of {alert['indexSizeKB']} KB for database '{alert['db']}' in collection '{alert['collection']}' exceeds threshold !")
 
 
-def mongodb_check_large_index_size(handle, threshold: float = 1000) -> Tuple:
+def mongodb_check_large_index_size(handle, threshold: float = 512000) -> Tuple:
     """
     mongodb_check_large_index_size checks the index sizes for all databases and collections.
     It compares the size of each index with a given threshold and returns any indexes that exceed the threshold.

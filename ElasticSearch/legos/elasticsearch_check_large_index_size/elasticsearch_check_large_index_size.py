@@ -8,7 +8,9 @@ from pydantic import BaseModel,Field
 
 class InputSchema(BaseModel):
     threshold: Optional[float] = Field(
-        1000, description='Threshold for index size in KB.', title='Threshold (in KB)'
+        10485760,  # 10GB in KB
+        description='Threshold for index size in KB.',
+        title='Threshold (in KB)'
     )
 
 
@@ -22,7 +24,7 @@ def elasticsearch_check_large_index_size_printer(result):
         print(f"Alert! Index size of {alert['indexSizeKB']} KB for index {alert['index']} exceeds threshold of {alert['threshold']} KB.")
 
 
-def elasticsearch_check_large_index_size(handle, threshold: float = 1000) -> Tuple:
+def elasticsearch_check_large_index_size(handle, threshold: float = 10485760) -> Tuple:
     """
     elasticsearch_check_large_index_size checks the sizes of all indices in the
     Elasticsearch cluster and compares them to a given threshold.

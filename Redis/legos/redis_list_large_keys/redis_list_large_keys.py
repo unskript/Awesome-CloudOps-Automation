@@ -9,7 +9,7 @@ from tabulate import tabulate
 
 class InputSchema(BaseModel):
     size_in_bytes: Optional[int] = Field(
-        500,
+        5368709120, # 5GB
         title='Size in Bytes',
         description='Threshold Size of Key in Bytes')
 
@@ -33,7 +33,7 @@ def redis_list_large_keys_printer(output):
 
 
 
-def redis_list_large_keys(handle, size_in_bytes: int = 500) -> Tuple :
+def redis_list_large_keys(handle, size_in_bytes: int = 5368709120) -> Tuple :
     """redis_list_large_keys returns deleted stale keys greater than given a threshold time
 
        :type size_in_bytes: int
