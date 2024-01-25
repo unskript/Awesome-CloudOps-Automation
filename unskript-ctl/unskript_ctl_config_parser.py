@@ -77,72 +77,67 @@ class Job():
         cmds = []
         notify = '--report' if self.notify is True else ''
         info = '--info' if self.info else ''
-        # Today, we dont support
-        # check --name <> check --type k8s --script
-        # So, if both check names and types are configured, we will split it
-        # into 2 commands.
-        # We will combine script with --types and make the --name as separate
-        # command.
 
         combine_check_types_and_script = False
         combine_check_names_and_script = False
+
         if self.checks is not None and len(self.checks) != 0 and self.custom_scripts is not None and len(self.custom_scripts) != 0:
             combine_check_names_and_script = True
         if self.connectors is not None and len(self.connectors) != 0 and self.custom_scripts is not None and len(self.custom_scripts) != 0:
             combine_check_names_and_script = False
             combine_check_types_and_script = True
 
-        # full_command will contain the full command if both check and --script
-        # are specified.
         full_command = None
+
         if self.checks is not None and len(self.checks) != 0:
             if combine_check_names_and_script:
                 full_command = f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {info}'
             else:
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {info} {notify}')
-            print(f'Job: {self.job_name} contains check: {self.checks[0]}')
-
+                command = f'{UNSKRIPT_CTL_BINARY} run check --name {self.checks[0]} {notify}'
+                if self.info:
+                    command += ' --info'
+                cmds.append(command)
+                print(f'Job: {self.job_name} contains check: {self.checks[0]}')
 
         if self.connectors is not None and len(self.connectors) != 0:
-            # Need to construct the unskript-ctl command like
-            # unskript-ctl.sh run check --types aws,k8s
             connector_types_string = ','.join(self.connectors)
             print(f'Job: {self.job_name} contains connector types: {connector_types_string}')
             if combine_check_types_and_script:
                 full_command = f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {info}'
             else:
-                cmds.append(f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {info} {notify}')
-        
+                command = f'{UNSKRIPT_CTL_BINARY} run check --type {connector_types_string} {notify}'
+                if self.info:
+                    command += ' --info'
+                cmds.append(command)
 
         accessmode = os.F_OK | os.X_OK
+
         if self.custom_scripts is not None and len(self.custom_scripts) != 0:
-            # Do basic checks, like the binary exists, permission is fine.
-            filtered_scripts = []
             filtered_scripts = self.custom_scripts
-            #for script in self.custom_scripts:
-            #    command = script.split(' ')
-            #    if not os.path.exists(command[0]):
-            #        print(f'''{bcolors.FAIL}{command[0]} does not exist. Please ensure that you
-            #             provide the full path. {bcolors.ENDC}
-            #            ''')
-            #        continue
-            #    if not os.access(command, accessmode):
-            #        print(f'{bcolors.FAIL}{command} is not executable. {bcolors.ENDC}')
-            #        continue
-            #    filtered_scripts.append(script)
             if filtered_scripts:
                 combined_script = ';'.join(filtered_scripts)
                 print(f'Job: {self.job_name} contains custom script: {combined_script}')
                 if combine_check_types_and_script or combine_check_names_and_script:
-                    full_command += f' --script "{combined_script}" {info} {notify}'
+                    if info not in full_command:
+                        full_command += f' --script "{combined_script}" {info} {notify}'
+                    else:
+                        full_command += f' --script "{combined_script}" {notify}'
                 else:
-                    cmds.append(f'{UNSKRIPT_CTL_BINARY} run --script "{combined_script}" {info} {notify}')
+                    command = f'{UNSKRIPT_CTL_BINARY} run --script "{combined_script}" {notify}'
+                    if self.info:
+                        command += ' --info'
+                    cmds.append(command)
 
-        
         if full_command is not None:
             cmds.append(full_command)
+        else:
+            if info:
+                full_command = f'{UNSKRIPT_CTL_BINARY} run {info} {notify}'
+                if len(cmds) == 0:
+                    cmds.append(full_command)
 
         self.cmds = cmds
+
 
 class ConfigParser():
     def __init__(self, config_file: str):
