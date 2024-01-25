@@ -77,7 +77,12 @@ class Job():
         cmds = []
         notify = '--report' if self.notify is True else ''
         info = '--info' if self.info else ''
-
+        # Today, we dont support
+        # check --name <> check --type k8s --script
+        # So, if both check names and types are configured, we will split it
+        # into 2 commands.
+        # We will combine script with --types and make the --name as separate
+        # command.
         combine_check_types_and_script = False
         combine_check_names_and_script = False
 
@@ -87,6 +92,8 @@ class Job():
             combine_check_names_and_script = False
             combine_check_types_and_script = True
 
+        # full_command will contain the full command if both check and --script
+        # are specified.
         full_command = None
 
         if self.checks is not None and len(self.checks) != 0:
@@ -136,6 +143,14 @@ class Job():
                 if len(cmds) == 0:
                     cmds.append(full_command)
 
+        info_exists = False
+        for idx,c in enumerate(cmds):
+            if '--info' in c and not info_exists:
+                info_exists = True
+                continue
+            elif '--info' in c:
+                c = c.replace('--info', '')
+                cmds[idx] = c
         self.cmds = cmds
 
 
