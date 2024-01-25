@@ -9,15 +9,15 @@ from tabulate import tabulate
 
 class InputSchema(BaseModel):
     connection_threshold: Optional[int] = Field(
-        '1000',
+        10000,
         title='Connection threshold',
-        description='Threshold for the number of connections considered abnormal. Default- 100 clients')
+        description='Threshold for the number of connections considered abnormal. Default- 10000 clients')
     memory_threshold: Optional[int] = Field(
-        '2048',
+        15360, # 15GB in MB
         title='Memory threshold (in MB)',
-        description='Threshold for the megabytes of resident memory usage considered abnormal (in megabytes). Default- 80%')
+        description='Threshold for the megabytes of resident memory usage considered abnormal (in megabytes). Default- 15360MB')
     cache_usage_threshold: Optional[int] = Field(
-        '80',
+        80,
         title='Cache usage threshold (in %)',
         description='Threshold for the percentage of WiredTiger cache usage considered abnormal. Default- 80%')
 
@@ -52,7 +52,7 @@ def mongodb_get_server_status_printer(output):
                 print(f"{key}: {value}")
 
 
-def mongodb_get_server_status(handle, connection_threshold: int = 1000, memory_threshold: int = 2048, cache_usage_threshold: int = 80) -> Tuple:
+def mongodb_get_server_status(handle, connection_threshold: int = 10000, memory_threshold: int = 15360, cache_usage_threshold: int = 80) -> Tuple:
     """Returns the status of the MongoDB instance.
 
     :type handle: object
