@@ -112,6 +112,6 @@ Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/l
 
 ```
 Schedule: cadence 0 0 * * *, job name: lightbeam
-Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes  --info; /usr/local/bin/unskript-ctl.sh run check --type k8s --info --script "/usr/local/bin/lb_pvc.sh" 
+Schedule: Programming crontab 0 0 * * * /usr/local/bin/unskript-ctl.sh run check --name k8s_get_offline_nodes  --info; /usr/local/bin/unskript-ctl.sh run check --type k8s --script "/usr/local/bin/lb_pvc.sh" 
 Adding audit log deletion cron job entry, 0 0 * * * /opt/conda/bin/python /usr/local/bin/unskript_audit_cleanup.py
 ```
