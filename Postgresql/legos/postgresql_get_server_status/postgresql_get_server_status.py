@@ -8,17 +8,17 @@ from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     connection_threshold: Optional[int] = Field(
-        '100',
+        10000,
         title='Connection threshold',
-        description='Threshold for the number of connections considered abnormal. Default- 100 clients')
+        description='Threshold for the number of connections considered abnormal. Default- 10000 clients')
     cache_hit_ratio_threshold: Optional[int] = Field(
-        '90',
+        90,
         title='Cache hit ratio threshold (in %)',
         description='Threshold for the cache hit ratio considered abnormal. Default- 90%')
     blocked_query_threshold: Optional[int] = Field(
-        '5',
+        10000,
         title='Blocked query threshold',
-        description='TThreshold for the number of blocked queries considered abnormal. Default- 5')
+        description='TThreshold for the number of blocked queries considered abnormal. Default- 10000')
 
 
 def postgresql_get_server_status_printer(output):
@@ -36,7 +36,7 @@ def postgresql_get_server_status_printer(output):
         for metric in abnormal_metrics:
             print(f"  - {metric}")
 
-def postgresql_get_server_status(handle, connection_threshold: int = 100, cache_hit_ratio_threshold: int = 90, blocked_query_threshold: int = 5) -> Tuple:
+def postgresql_get_server_status(handle, connection_threshold: int = 10000, cache_hit_ratio_threshold: int = 90, blocked_query_threshold: int = 10000) -> Tuple:
     """
     Returns the status of the PostgreSQL instance.
 
