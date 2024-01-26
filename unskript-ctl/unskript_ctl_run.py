@@ -785,7 +785,7 @@ class InfoAction(ChecksFactory):
             return self._common.insert_task_lines(list_of_actions=list_of_actions)
 
     def create_checks_for_matrix_argument(self, list_of_actions: list):
-        action_list = []
+        action_list = list_of_actions
         if self.info_globals and len(self.info_globals):
             action_list = self._common.create_checks_for_matrix_argument(actions=list_of_actions,
                                                                          matrix=self.matrix)
