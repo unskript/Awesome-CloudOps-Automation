@@ -519,8 +519,6 @@ class UnskriptCtl(UnskriptFactory):
 
         if running is True:
             print ("Successfully Started the Debug Session")
-            # Upload proxy session logs to storage bucket
-            upload_session_logs()
         else:
             self.logger.debug(f"Error Occured while starting the Debug Session. Here are the logs from openvpn")
             print(f"{bcolors.FAIL}Error Occured while starting the Debug Session. Here are the logs from openvpn{bcolors.ENDC}")
@@ -534,6 +532,8 @@ class UnskriptCtl(UnskriptFactory):
     def stop_debug(self):
         """stop_debug Stops the Active Debug session.
         """
+        # Upload proxy session logs to storage bucket
+        upload_session_logs()
         for proc in psutil.process_iter(['pid', 'name']):
             # Search for openvpn process. On Docker, we dont expect
             # Multiple process of openvpn to run.
