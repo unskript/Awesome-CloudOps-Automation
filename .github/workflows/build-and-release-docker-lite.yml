@@ -267,6 +267,26 @@ jobs:
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
+      - name: Docker Scout
+        id: docker-scout
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: ${{ env.BUILD_TAGS }}
+          only-severities: critical,high
+          exit-code: true
+        
+      - name: Validate result of Docker Scout
+        if: failure()
+        run: |
+            sudo apt install -y jq curl
+            TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "${{ env.DOCKER_USERNAME }}", "password": "${{ env.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
+            REPO_LIST=$(curl -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/?page_size=200 | jq -r '.results | if . then .[] | .name else empty end')
+            for i in ${REPO_LIST}
+            do
+                curl -X DELETE -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/${i}/tags/${{ inputs.build_number }}/
+                echo "DELETED IMAGE THAT FAILED DOCKER SCOUT TEST"
+            done
 
   cleanup:
     runs-on: ubuntu-latest
