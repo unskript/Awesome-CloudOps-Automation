@@ -479,7 +479,7 @@ jobs:
 
       - name: Docker Scout
         id: docker-scout
-        uses: docker/scout-action
+        uses: docker/scout-action@v1
         with:
           command: cves
           image: ${{ env.BUILD_TAGS }}
