@@ -41,8 +41,6 @@ def k8s_get_cluster_health_printer(output):
             print(f"Message: {message}")
         print("-" * 40)
 
-from kubernetes import client
-
 def check_node_health(node) -> bool:
     for condition in node.status.conditions:
         if condition.type == "Ready" and condition.status == "True":
