@@ -280,8 +280,8 @@ jobs:
         if: failure()
         run: |
             sudo apt install -y jq curl
-            TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "${DOCKER_USERNAME}", "password": "${DOCKER_PASSWORD}"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
-            REPO_LIST=$(curl -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/?page_size=200 | jq -r '.results|.[]|.name')
+            TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "${{ env.DOCKER_USERNAME }}", "password": "${{ env.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
+            REPO_LIST=$(curl -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/?page_size=200 | jq -r '.results | if . then .[] | .name else empty end')
             for i in ${REPO_LIST}
             do
                 curl -X DELETE -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/${i}/tags/${{ inputs.build_number }}/
