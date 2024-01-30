@@ -101,11 +101,17 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
         label_selector = ",".join([f"{k}={v}" for k, v in labels_dict.items()])
 
         # Fetch the pod attached to this service
-        get_pod_command = f"kubectl get pods -n {namespace} -l {label_selector} -o=jsonpath='{{.items[0].metadata.name}}'"
+        get_pod_command = f"kubectl get pods -n {namespace} -l {label_selector} -o json"
         response = handle.run_native_cmd(get_pod_command)
         if not response or response.stderr:
             raise ApiException(f"Error while executing command ({get_pod_command}): {response.stderr if response else 'empty response'}")
-        pod_name = response.stdout.strip()
+
+        pod_data = json.loads(response.stdout)
+        if not pod_data.get("items"):
+            print(f"No pods found for service {svc} in namespace {namespace} with labels {label_selector}")
+            continue
+
+        pod_name = pod_data["items"][0]["metadata"]["name"]
 
         # Fetch PVCs attached to the pod
         get_pvc_names_command = f"kubectl get pod {pod_name} -n {namespace} -o=jsonpath='{{.spec.volumes[*].persistentVolumeClaim.claimName}}'"

@@ -43,26 +43,23 @@ def k8s_get_memory_utilization_of_services_printer(output):
 
 
 
-def convert_memory_to_milli(memory_request: str) -> int:
+def convert_memory_to_bytes(memory_value: str) -> int:
     units = {
-        'K': 1,
-        'M': 1000,
-        'G': 1000 * 1000,
-        'T': 1000 * 1000 * 1000,
+        'K': 1000,
+        'M': 1000 * 1000,
+        'G': 1000 * 1000 * 1000,
+        'T': 1000 * 1000 * 1000 * 1000,
+        'Ki': 1024,
+        'Mi': 1024 * 1024,
+        'Gi': 1024 * 1024 * 1024,
+        'Ti': 1024 * 1024 * 1024 * 1024,
     }
 
-    if memory_request[-1] in units:
-        return int(memory_request[:-1]) * units[memory_request[-1]]
-    elif memory_request[-2:] == 'Ki':
-        return int(memory_request[:-2])
-    elif memory_request[-2:] == 'Mi':
-        return int(memory_request[:-2]) * 1000
-    elif memory_request[-2:] == 'Gi':
-        return int(memory_request[:-2]) * 1000 * 1000
-    elif memory_request[-2:] == 'Ti':
-        return int(memory_request[:-2]) * 1000 * 1000 * 1000
-    else:
-        return int(memory_request)
+    for unit, multiplier in units.items():
+        if memory_value.endswith(unit):
+            return int(memory_value[:-len(unit)]) * multiplier
+
+    return int(memory_value)
 
 
 
@@ -128,20 +125,27 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
             memory_request = response.stdout
 
             memory_request = memory_request.strip() if memory_request else '0'
-            memory_request_milli = convert_memory_to_milli(memory_request)
-            if memory_request_milli == 0:
+            memory_request_bytes = convert_memory_to_bytes(memory_request)
+            if memory_request_bytes == 0:
                 print(f"Warning: Memory request usage not set for '{service}' in '{nmspace}' namespace")
+                continue
             # Get the memory usage for the service
-            kubectl_command = f"kubectl top pod {service} -n {nmspace} --containers | awk '{{print $3}}' | tail -n +2"
+            kubectl_command = f"kubectl top pod {service} -n {nmspace} --containers | awk '{{print $4}}' | tail -n +2"
             response = handle.run_native_cmd(kubectl_command)
             memory_usage_values = response.stdout.strip().split('\n')
-            memory_usage_values = [int(value.replace('m', '')) * 1024 if 'm' in value else int(value) for value in memory_usage_values if value.strip()]
+            memory_usage_bytes = [convert_memory_to_bytes(value) for value in memory_usage_values if value.strip()]
 
-            # Compare each memory usage with the threshold and add to exceeding_services if necessary
-            for memory_usage in memory_usage_values:
-                utilization_percentage = (memory_usage / memory_request_milli) * 100 if memory_request_milli > 0 else 0
+            # Calculate and compare utilization for each container in the pod
+            for memory_usage in memory_usage_bytes:
+                utilization_percentage = (memory_usage / memory_request_bytes) * 100 if memory_request_bytes > 0 else 0
                 if utilization_percentage > threshold:
-                    exceeding_services.append({"service": service, "namespace": nmspace,"message": "Memory request usage not set", "utilization_percentage": utilization_percentage})
+                    exceeding_services.append({
+                        "service": service,
+                        "namespace": nmspace,
+                        "memory_request_Mi": memory_request,
+                        "memory_usage_Bytes": memory_usage,
+                        "utilization_percentage": utilization_percentage
+                    })
 
     if exceeding_services:
         return (False, exceeding_services)

@@ -85,6 +85,21 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
                     if cert_exp and cert_exp < datetime.datetime.now() + datetime.timedelta(days=expiring_threshold):
                         result.append({"secret_name": secret.metadata.name, "namespace": n})
 
+    try:
+        # Fetch cluster CA certificate
+        ca_cert = handle.run_native_cmd("kubectl get secret -o jsonpath=\"{.items[?(@.type=='kubernetes.io/service-account-token')].data['ca\\.crt']}\" --all-namespaces")
+        if ca_cert.stderr:
+            raise Exception(f"Error occurred while fetching cluster CA certificate: {ca_cert.stderr}")
+
+        # Decode and check expiry date of the cluster's CA certificate
+        ca_cert_decoded = base64.b64decode(ca_cert.stdout.strip()).decode("utf-8")
+        ca_cert_exp = get_expiry_date(ca_cert_decoded)
+        if ca_cert_exp and ca_cert_exp < datetime.datetime.now() + datetime.timedelta(days=expiring_threshold):
+            result.append({"secret_name": "Kubeconfig Cluster certificate", "namespace": "N/A"})
+    except Exception as e:
+        print(f"Error occurred while checking cluster CA certificate: {e}")
+        raise e
+
     if len(result) != 0:
         return (False, result)
     return (True, None)
