@@ -56,13 +56,6 @@ def check_pod_health(pod) -> bool:
 def check_deployment_health(deployment) -> bool:
     return deployment.status.replicas == deployment.status.available_replicas
 
-def check_service_health(service, core_v1_api) -> bool:
-    endpoints = core_v1_api.list_namespaced_endpoints(service.metadata.namespace)
-    for endpoint in endpoints.items:
-        if endpoint.metadata.name == service.metadata.name and endpoint.subsets:
-            return True
-    return False
-
 
 def k8s_get_cluster_health(handle, threshold: int = 80) -> Tuple:
     health_issues = []
@@ -87,12 +80,6 @@ def k8s_get_cluster_health(handle, threshold: int = 80) -> Tuple:
     for deployment in deployments.items:
         if not check_deployment_health(deployment):
             health_issues.append({"type": "Deployment", "name": deployment.metadata.name, "namespace": deployment.metadata.namespace, "issue": "Deployment replicas mismatch."})
-
-    # 4. Check Service Health
-    services = node_api.list_service_for_all_namespaces()
-    for service in services.items:
-        if not check_service_health(service, node_api):
-            health_issues.append({"type": "Service", "name": service.metadata.name, "namespace": service.metadata.namespace, "issue": "Service has no endpoints or is misconfigured."})
 
     if health_issues:
         return (False, health_issues)
