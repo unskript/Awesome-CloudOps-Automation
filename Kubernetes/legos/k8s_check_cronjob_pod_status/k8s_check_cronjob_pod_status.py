@@ -81,7 +81,7 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
 
             associated_jobs = [job for job in jobs.items if job.metadata.name.startswith(cronjob['metadata']['name'])]
             if not associated_jobs:
-                issues["NotAssociated"].append({"pod_name": cronjob.metadata.name, "namespace": ns})
+                issues["NotAssociated"].append({"cronjob_name": cronjob['metadata']['name'], "namespace": ns})
                 continue
 
             latest_job = sorted(associated_jobs, key=lambda x: x.status.start_time, reverse=True)[0]

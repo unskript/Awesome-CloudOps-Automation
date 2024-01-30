@@ -85,26 +85,40 @@ def k8s_check_service_status(handle, endpoints:list=[], threshold: int = 30) -> 
     if not endpoints:
         return False, [{"Error": "No endpoints specified."}]
 
-    status_list = []
+    failed_endpoints = []
 
     for endpoint in endpoints:
         status_info = {"endpoint": endpoint}
-        try:
-            response = requests.get(endpoint, verify=True, timeout=5)
-            days_remaining, is_healthy = check_ssl_expiry(endpoint, threshold)
-            if response.status_code == 200:
-                if not is_healthy:
-                    status_info["status"] = f'SSL expiring in {days_remaining} days.'
-                else:
-                    status_info["status"] = 'healthy'
-            else:
-                status_info["status"] = f'unhealthy. Status code: {response.status_code}'
-        except requests.RequestException as e:
-            if 'CERTIFICATE_VERIFY_FAILED' in str(e) or 'SSL: CERTIFICATE_VERIFY_FAILED' in str(e):
-                status_info["status"] = 'SSL error. Certificate is invalid or not trusted.'
-            else:
-                status_info["status"] = f'Error: {str(e)}'
 
-        status_list.append(status_info)
+        # Check if the endpoint is HTTPS or not
+        if endpoint.startswith("https://"):
+            try:
+                response = requests.get(endpoint, verify=True, timeout=5)
+                days_remaining, is_healthy = check_ssl_expiry(endpoint, threshold)
+                if not (response.status_code == 200 and is_healthy):
+                    status_info["status"] = 'unhealthy'
+                    reason = f'SSL expiring in {days_remaining} days.' if not is_healthy else f'Status code: {response.status_code}'
+                    status_info["Reason"] = reason
+                    failed_endpoints.append(status_info)
+            except requests.RequestException as e:
+                status_info["status"] = 'unhealthy'
+                reason = f'SSL error: {str(e)}' if 'CERTIFICATE_VERIFY_FAILED' in str(e) else f'Error: {str(e)}'
+                status_info["Reason"] = reason
+                failed_endpoints.append(status_info)
+        else:
+            # For non-HTTPS endpoints
+            try:
+                response = requests.get(endpoint, timeout=5)
+                if response.status_code != 200:
+                    status_info["status"] = 'unhealthy'
+                    status_info["Reason"] = f'Status code: {response.status_code}'
+                    failed_endpoints.append(status_info)
+            except requests.RequestException as e:
+                status_info["status"] = 'unhealthy'
+                status_info["Reason"] = f'Error: {str(e)}'
+                failed_endpoints.append(status_info)
 
-    return (all(info["status"] == 'healthy' for info in status_list), status_list)
+    if failed_endpoints:
+        return (False, failed_endpoints)
+    else:
+        return (True, None)
