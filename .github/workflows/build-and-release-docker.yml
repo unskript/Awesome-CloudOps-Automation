@@ -477,7 +477,7 @@ jobs:
           cp $HOME/devops/dockers/jupyterlab/common/install_utils.sh .
           # docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
           # Build as a local tarball
-          docker buildx build --platform linux/amd64,linux/arm64 -o - - > image.tar
+          docker buildx build --platform linux/amd64,linux/arm64 --output type=tar  > image.tar
           # Load back the tarball image
           docker load -i image.tar
           # Run the scout 
