@@ -47,9 +47,10 @@ def k8s_get_pods_in_not_running_state(handle, namespace: str = '') -> Tuple:
     failed_pods = []
     if result.stdout:
         pods = json.loads(result.stdout).get("items", [])
-        failed_pods = [{'name': pod['metadata']['name'], 
-                        'namespace': pod['metadata']['namespace'], 
-                        'status': pod['status']['phase']} for pod in pods]
-        return (False, failed_pods)
+        if pods:
+            failed_pods = [{'name': pod['metadata']['name'], 
+                            'namespace': pod['metadata']['namespace'], 
+                            'status': pod['status']['phase']} for pod in pods]
+            return (False, failed_pods)
 
     return (True, None)
