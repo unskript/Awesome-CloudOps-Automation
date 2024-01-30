@@ -9,11 +9,11 @@ from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     index_scans: Optional[int] = Field(
-        default=50,
+        default=10,
         title='Index Scans',
         description='Number of index scans initiated on this index')
     index_size: Optional[int] = Field(
-        default=50000,
+        default=5242880, # 5GB
         title='Index Size',
         description='On-disk size in kB (kilobytes) of the table.')
 
@@ -25,7 +25,7 @@ def postgresql_check_unused_indexes_printer(output):
     pprint.pprint(output)
 
 
-def postgresql_check_unused_indexes(handle, index_scans:int=50,index_size:int=50000) -> Tuple:
+def postgresql_check_unused_indexes(handle, index_scans:int=10,index_size:int=5242880) -> Tuple:
     """postgresql_check_unused_indexes returns unused indexes in a database
 
           :type handle: object
