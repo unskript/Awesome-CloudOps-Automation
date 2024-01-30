@@ -269,7 +269,7 @@ jobs:
           # Build the Image
           #docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
           # Build as a local tarball
-          docker buildx build --platform linux/amd64,linux/arm64 -o type=local,dest=. -t ${{ env.BUILD_TAGS }} 
+          docker buildx build --platform linux/amd64,linux/arm64 -o type=local,dest=. -t ${{ env.BUILD_TAGS }} .
           # Load back the tarball image
           docker load -i image.tar
           # Run the scout 
