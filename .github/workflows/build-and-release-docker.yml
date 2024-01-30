@@ -497,6 +497,7 @@ jobs:
                 curl -X DELETE -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/${i}/tags/${{ inputs.build_number }}/
                 echo "DELETED IMAGE THAT FAILED DOCKER SCOUT TEST"
             done
+            
   cleanup:
     runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}

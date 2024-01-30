@@ -265,19 +265,28 @@ jobs:
           cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
-          #docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
-          # Build the Image
-          #docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
-          # Build as a local tarball
-          docker buildx build --platform linux/amd64,linux/arm64 -o - - > image.tar
-          # Load back the tarball image
-          docker load -i image.tar
-          # Run the scout 
-          docker run --rm -v $PWD:/app -w /app aquasec/trivy:latest --exit-code 1 --no-progress --severity HIGH,CRITICAL ${{ env.BUILD_TAGS }}
-          if [ "$?" = "0" ]; then
-              docker push ${{ env.BUILD_TAGS }}
-          fi
+          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
+      - name: Docker Scout
+        id: docker-scout
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: ${{ env.BUILD_TAGS }}
+          only-severities: critical,high
+          exit-code: true
+        
+      - name: Validate result of Docker Scout
+        if: failure()
+        run: |
+            sudo apt install -y jq curl
+            TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "${DOCKER_USERNAME}", "password": "${DOCKER_PASSWORD}"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
+            REPO_LIST=$(curl -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/?page_size=200 | jq -r '.results|.[]|.name')
+            for i in ${REPO_LIST}
+            do
+                curl -X DELETE -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/unskript/${i}/tags/${{ inputs.build_number }}/
+                echo "DELETED IMAGE THAT FAILED DOCKER SCOUT TEST"
+            done
 
   cleanup:
     runs-on: ubuntu-latest
