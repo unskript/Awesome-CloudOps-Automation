@@ -3,11 +3,15 @@
 # All rights reserved.
 ##
 from pydantic import BaseModel, Field
-from typing import Tuple
+from typing import Tuple, Optional
 
 
 class InputSchema(BaseModel):
-    pass
+    unassigned_shards: Optional[int] = Field(
+        20,
+        description='Threshold number of unassigned shards. Default - 20',
+        title='Number of unassigned shards'
+    )
 
 def elasticsearch_check_health_status_printer(output):
     if output is None:
@@ -15,7 +19,7 @@ def elasticsearch_check_health_status_printer(output):
     print(output)
 
 
-def elasticsearch_check_health_status(handle) -> Tuple:
+def elasticsearch_check_health_status(handle, unassigned_shards:int = 20) -> Tuple:
     """elasticsearch_check_health_status checks the status of an Elasticsearch cluster .
 
             :type handle: object
@@ -34,7 +38,7 @@ def elasticsearch_check_health_status(handle) -> Tuple:
 
     # Additional checks for both red and yellow statuses
     additional_details = False
-    if output['unassigned_shards'] > 20:
+    if output['unassigned_shards'] > unassigned_shards:
         cluster_health['unassigned_shards'] = output['unassigned_shards']
         additional_details = True
 
