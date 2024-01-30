@@ -265,7 +265,18 @@ jobs:
           cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
-          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+          #docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+          # Build the Image
+          #docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+          # Build as a local tarball
+          docker buildx build --platform linux/amd64,linux/arm64 -o type=local,dest=. -t ${{ env.BUILD_TAGS }} 
+          # Load back the tarball image
+          docker load -i image.tar
+          # Run the scout 
+          docker run --rm -v $PWD:/app -w /app aquasec/trivy:latest --exit-code 1 --no-progress --severity HIGH,CRITICAL ${{ env.BUILD_TAGS }}
+          if [ "$?" == "0" ]; then
+              docker push ${{ env.BUILD_TAGS }}
+          fi
 
 
   cleanup:
