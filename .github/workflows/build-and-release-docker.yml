@@ -476,10 +476,8 @@ jobs:
           cd $HOME/devops/dockers/jupyterlab/oss_docker/
           cp $HOME/devops/dockers/jupyterlab/common/install_utils.sh .
           # docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
-          # Build as a local tarball
+          # Build a local image
           docker buildx build --platform linux/amd64,linux/arm64 --output type=local,dest=. -t ${{ env.BUILD_TAGS }} -f Dockerfile .
-          # Load back the tarball image
-          docker load -i image.tar
           # Run the scout 
           docker run --rm -v $PWD:/app -w /app aquasec/trivy:latest --exit-code 1 --no-progress --severity HIGH,CRITICAL ${{ env.BUILD_TAGS }}
           if [ "$?" = "0" ]; then
