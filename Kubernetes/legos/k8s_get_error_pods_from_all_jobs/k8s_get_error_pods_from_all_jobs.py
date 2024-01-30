@@ -50,8 +50,8 @@ def k8s_get_error_pods_from_all_jobs(handle, namespace:str="") -> Tuple:
         # Checking the status of each pod
         for pod in pods:
             # If the pod status is 'Failed', print its namespace and name
-            if pod.status.phase != "Succeeded":
-                result.append({"namespace":pod.metadata.namespace,"pod_name":pod.metadata.name})
+            if pod.status.phase not in  ["Succeeded", "Running"] :
+                result.append({"namespace":pod.metadata.namespace,"pod_name":pod.metadata.name, "job_name": job.metadata.name})
     if len(result) != 0:
         return (False, result)
     else:
