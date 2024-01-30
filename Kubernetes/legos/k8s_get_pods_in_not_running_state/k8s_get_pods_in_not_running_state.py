@@ -4,6 +4,7 @@
 #
 from typing import Tuple
 from pydantic import BaseModel, Field
+import json
 
 
 class InputSchema(BaseModel):
@@ -21,9 +22,8 @@ def k8s_get_pods_in_not_running_state_printer(output):
 
 
 def k8s_get_pods_in_not_running_state(handle, namespace: str = '') -> Tuple:
-    """k8s_get_pods_in_not_running_state This check function uses the handle's native command
-       method to execute a pre-defined kubectl command and returns the output of list of pods
-       not in running state.
+    """k8s_get_pods_in_not_running_state this check function checks for pods not in "Running" state and status.phase is not "Succeeded" 
+       and returns the output of list of pods. It does not consider "Completed" status as an errored state.
 
        :type handle: Object
        :param handle: Object returned from the task.validate(...) function
@@ -33,18 +33,23 @@ def k8s_get_pods_in_not_running_state(handle, namespace: str = '') -> Tuple:
     if handle.client_side_validation is not True:
         raise Exception(f"K8S Connector is invalid {handle}")
 
-    if not namespace:
-        kubectl_command =("kubectl get pods --all-namespaces --field-selector=status.phase!=Running"
-                           " -o jsonpath=\"{.items[*]['metadata.name', 'metadata.namespace']}\"")
-    else:
-        kubectl_command = f"kubectl get pods -n {namespace}" + \
-              " --field-selector=status.phase!=Running -o jsonpath=\"{.items[*]['metadata.name', 'metadata.namespace']}\""
+    cmd_base = "kubectl get pods"
+    ns_arg = f"-n {namespace}" if namespace else "--all-namespaces"
+    field_selector = "--field-selector=status.phase!=Running,status.phase!=Succeeded"
+    output_format = "-o json"
+
+    kubectl_command = f"{cmd_base} {ns_arg} {field_selector} {output_format}"
     result = handle.run_native_cmd(kubectl_command)
 
     if result.stderr:
-        raise Exception(f"Error occurred while executing command {kubectl_command} {result.stderr}")
-
+        raise Exception(f"Error occurred while executing command {kubectl_command}: {result.stderr}")
+    
+    failed_pods = []
     if result.stdout:
-        return (False, [{'name': result.stdout.split()[0], 'namespace': result.stdout.split()[-1]}])
+        pods = json.loads(result.stdout).get("items", [])
+        failed_pods = [{'name': pod['metadata']['name'], 
+                        'namespace': pod['metadata']['namespace'], 
+                        'status': pod['status']['phase']} for pod in pods]
+        return (False, failed_pods)
 
-    return (True, [])
+    return (True, None)
