@@ -111,6 +111,8 @@ class Checks(ChecksFactory):
     def parse_failed_objects(self, failed_object):
         retVal = "N/A"
         for line in failed_object:
+            if not line:
+                continue 
             if "forbidden" in line:
                 retVal = "Forbidden "
             if "permission" in line:
