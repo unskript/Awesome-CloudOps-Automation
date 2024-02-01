@@ -17,7 +17,7 @@ class InputSchema(BaseModel):
         title = "K8S Namespace",
         description = "Kubernetes Namespace Where the Service exists"
     )
-    service_with_no_endpoint_whitelist: Optional[list[str]] = Field(
+    service_with_no_endpoint_whitelist: Optional[list] = Field(
         default = None,
         title = "Names of whitelisted services",
         description = "List of services for which this check should be skipped."
