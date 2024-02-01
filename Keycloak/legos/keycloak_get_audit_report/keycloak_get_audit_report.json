@@ -8,5 +8,5 @@
     "action_is_check": false,
     "action_supports_iteration": true,
     "action_supports_poll": true,
-    "action_categories":["CATEGORY_TYPE_INFORMATION" ,"CATEGORY_TYPE_SRE","CATEGORY_TYPE_KEYCLOAK"]
+    "action_categories":["CATEGORY_TYPE_INFORMATION","CATEGORY_TYPE_SRE","CATEGORY_TYPE_KEYCLOAK"]
   }
