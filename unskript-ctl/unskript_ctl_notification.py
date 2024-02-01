@@ -122,6 +122,13 @@ class EmailNotification(NotificationFactory):
         self.send_failed_objects_as_attachment = True
 
     def notify(self, **kwargs):
+        failed_result = kwargs.get('failed_result', {})
+        failed_object_character_count = sum((len(str(value)) for value in failed_result.values()))
+
+        if failed_object_character_count >= MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS:
+            self.send_failed_objects_as_attachment = True 
+        else:
+            self.send_failed_objects_as_attachment = False 
         pass 
 
     def validate_data(self, data, schema_file):
@@ -360,13 +367,6 @@ class EmailNotification(NotificationFactory):
                                attachment: MIMEMultipart,
                                **kwargs):
         message = self.create_email_header(title=title)
-        failed_object_character_count = sum((len(str(value)) for value in failed_result.values()))
-
-        if failed_object_character_count >= MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS:
-            self.send_failed_objects_as_attachment = True 
-        else:
-            self.send_failed_objects_as_attachment = False 
-
         temp_attachment = msg = None
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
@@ -417,6 +417,7 @@ class SendgridNotification(EmailNotification):
         self.sendgrid_config = self.email_config.get('Sendgrid')
     
     def notify(self, **kwargs):
+        super().notify(**kwargs)
         summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
@@ -463,12 +464,6 @@ class SendgridNotification(EmailNotification):
         tar_file_name = f"{target_name}" + '.tar.bz2'
         target_file_name = None
         metadata = None
-        failed_object_character_count = sum((len(str(value)) for value in failed_result.values()))
-
-        if failed_object_character_count >= MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS:
-            self.send_failed_objects_as_attachment = True 
-        else:
-            self.send_failed_objects_as_attachment = False 
         
         try:
             # We can have custom Title here
@@ -560,6 +555,7 @@ class AWSEmailNotification(EmailNotification):
         self.aws_config = self.email_config.get('SES')
 
     def notify(self, **kwargs):
+        super().notify(**kwargs)
         summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
@@ -674,6 +670,8 @@ class SmtpNotification(EmailNotification):
         self.smtp_config = self.email_config.get('SMTP')
 
     def notify(self, **kwargs):
+        super().notify(**kwargs)
+
         summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
