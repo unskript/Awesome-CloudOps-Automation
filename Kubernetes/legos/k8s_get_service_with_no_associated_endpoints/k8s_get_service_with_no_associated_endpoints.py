@@ -59,7 +59,7 @@ def k8s_get_service_with_no_associated_endpoints(handle, namespace: str = "", se
     retval = []
 
     for service in services:
-        if service_with_no_endpoint_whitelist != None:
+        if service_with_no_endpoint_whitelist is not None:
             if service in service_with_no_endpoint_whitelist:
                 continue
         try:
