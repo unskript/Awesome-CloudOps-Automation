@@ -60,7 +60,7 @@ def k8s_get_service_with_no_associated_endpoints(handle, namespace: str = "", se
 
     for service in services:
         if service_with_no_endpoint_whitelist is not None:
-            if service in service_with_no_endpoint_whitelist:
+            if service.metadata.name in service_with_no_endpoint_whitelist:
                 continue
         try:
             ep = v1.read_namespaced_endpoints(service.metadata.name, service.metadata.namespace)
