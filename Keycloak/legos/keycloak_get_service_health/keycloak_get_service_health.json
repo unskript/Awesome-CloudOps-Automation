@@ -5,7 +5,7 @@
     "action_entry_function": "keycloak_get_service_health",
     "action_needs_credential": true,
     "action_output_type": "ACTION_OUTPUT_TYPE_LIST",
-    "action_is_check": false,
+    "action_is_check": true,
     "action_next_hop": [
       ""
     ],
