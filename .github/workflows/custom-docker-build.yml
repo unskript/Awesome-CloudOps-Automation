@@ -17,6 +17,7 @@ concurrency:
 jobs:
   test-and-build-docker:
     runs-on: ubuntu-latest
+    if: ${{ inputs.enable-cron }} == 'true'
 
     steps:
       - name: Checkout code
@@ -32,7 +33,6 @@ jobs:
           echo "::set-output name=current_tag::$CURRENT_TAG"
 
       - name: Build custom Docker image
-        if: ${{ inputs.enable-cron }} == 'true'
         run: |
           docker build -t my-custom-image:latest --build-arg BASE_IMAGE=unskript/awesome-runbooks:${{ steps.get_tag.outputs.current_tag }} .
 
@@ -59,7 +59,6 @@ jobs:
           echo "::set-output name=grep_result::$GREP_RESULT"
 
       - name: Check for errors
-        if: ${{ inputs.enable-cron }} == 'true'
         run: |
           if [[ "${{ steps.run_commands.outputs.grep_result }}" == *"error"* ]]; then
             echo "Error found in log."
