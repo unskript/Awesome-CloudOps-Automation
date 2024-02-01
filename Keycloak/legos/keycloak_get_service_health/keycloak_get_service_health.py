@@ -22,25 +22,11 @@ def keycloak_get_service_health(handle) -> Tuple:
     :rtype: Tuple indicating if the service is healthy and a list of available realms (or None if healthy).
     """
     try:
-        realms = handle.get_realms()
-        available_realms = [realm["realm"] for realm in realms]
-        
-        if not available_realms:
-            return (False, available_realms)
-        
-        return (True, None)
-
-    except Exception as e:
-        try:
-            # Exception could occur if keycloak package was not found
-            # in such case try if we can import UnskriptKeycloakWrapper
-            from unskript.connectors.keycloak import UnskriptKeycloakWrapper
-            from unskript.legos.utils import get_keycloak_token
-        except:
-            raise e
+        from unskript.connectors.keycloak import UnskriptKeycloakWrapper
+        from unskript.legos.utils import get_keycloak_token
         
         if not isinstance(handle, UnskriptKeycloakWrapper):
-            raise ValueError(f"Unable to Find Keycloak Package! {e}")
+            raise ValueError("Unable to Find Keycloak Package!")
         
         access_token = get_keycloak_token(handle)
         realms_url = f"{handle.server_url}/admin/realms"
@@ -57,6 +43,8 @@ def keycloak_get_service_health(handle) -> Tuple:
             return (False, available_realms)
         
         return (True, None)
+    except Exception as e:
+        print(f"ERROR: Unable to connect to keycloak server {str(e)}")
 
 
 

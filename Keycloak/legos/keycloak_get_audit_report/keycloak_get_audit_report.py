@@ -22,7 +22,7 @@ def keycloak_get_audit_report_printer(output):
     # Extract relevant event data for tabulation
     table_data = [["Time", "Type", "User ID", "Client ID", "IP Address", "Error"]]
     for event in output:
-        time = event.get('time') if event.get('time') else ''
+        time = event.get('time', '') 
         _type = event.get('type') if event.get('type') else \
                event.get('operationType') if event.get('operationType') else ''
         user_id = event.get('userId') if event.get('userId') else \
@@ -53,21 +53,13 @@ def keycloak_get_audit_report(handle) -> List:
     :rtype: List of dictionaries representing the audit events.
     """
     try:
-        # Fetch the events
-        events = handle.get_events()
-        return events if events else []
+        # Exception could occur if keycloak package was not found
+        # in such case try if we can import UnskriptKeycloakWrapper
+        from unskript.connectors.keycloak import UnskriptKeycloakWrapper
+        from unskript.legos.utils import get_keycloak_token
 
-    except Exception as e:
-        try:
-            # Exception could occur if keycloak package was not found
-            # in such case try if we can import UnskriptKeycloakWrapper
-            from unskript.connectors.keycloak import UnskriptKeycloakWrapper
-            from unskript.legos.utils import get_keycloak_token
-        except:
-            raise e
-        
         if not isinstance(handle, UnskriptKeycloakWrapper):
-            raise ValueError(f"Unable to Find Keycloak Package! {e}")
+            raise ValueError("Unable to Find Keycloak Package!")
         access_token = get_keycloak_token(handle)
         events_url = f"{handle.server_url}/admin/realms/{handle.realm_name}/events"
         headers = {"Authorization": f"Bearer {access_token}"}
@@ -78,5 +70,5 @@ def keycloak_get_audit_report(handle) -> List:
         events = response.json()
 
         return events if events else []
-        
-
+    except Exception as e:
+        print(f"ERROR: Unable to connect to keycloak server {str(e)}")
