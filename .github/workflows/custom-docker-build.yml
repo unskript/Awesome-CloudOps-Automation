@@ -97,3 +97,11 @@ jobs:
           fi
       
           echo "GoTTY started successfully."
+
+          directory="/unskript/data/actions"
+          if [ -z "$(ls -A $directory)" ]; then
+            echo "$directory is empty as expected."
+          else
+            echo "$directory is not empty, custom legos are detected!"
+            exit 1
+          fi
