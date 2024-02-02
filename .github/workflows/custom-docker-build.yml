@@ -50,6 +50,7 @@ jobs:
         id: get_tag
         run: |
           CURRENT_TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/unskript/awesome-runbooks/tags/" | jq -r '.results[].name' | grep '^minimal-1\.[0-9]*$' | sort -rV | head -n 1)
+          echo "CURRENT TAG IS $CURRENT_TAG"
           echo "::set-output name=current_tag::$CURRENT_TAG"
 
 
