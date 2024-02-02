@@ -52,9 +52,15 @@ jobs:
           CURRENT_TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/unskript/awesome-runbooks/tags/" | jq -r '.results[].name' | grep '^minimal-1\.[0-9]*$' | sort -rV | head -n 1)
           echo "::set-output name=current_tag::$CURRENT_TAG"
 
+
+      - name: Create temporary Dockerfile
+        run: |
+            echo "FROM unskript/awesome-runbooks:${{ steps.get_tag.outputs.current_tag }}" > Dockerfile.temp
+            echo "RUN apt update && apt install -y vim ack htop" >> Dockerfile.temp
+
       - name: Build custom Docker image
         run: |
-          docker build -t my-custom-image:latest --build-arg BASE_IMAGE=unskript/awesome-runbooks:${{ steps.get_tag.outputs.current_tag }} .
+          docker build -t my-custom-image:latest -f Dockerfile.temp .
 
       - name: Run custom Docker image
         run: |
