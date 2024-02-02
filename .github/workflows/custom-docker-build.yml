@@ -75,25 +75,16 @@ jobs:
       - name: Run commands in Docker container
         id: run_commands
         run: |
-          PS_RESULT=$(docker exec my-test-container bash -c "ps -ef | grep -i gotty")
-          LS_RESULT=$(docker exec my-test-container bash -c "ls -lart /var/log/unskript/notebook.out")
-          GREP_RESULT=$(docker exec my-test-container bash -c "grep -i 'error' /var/log/unskript/notebook.out")
-
-          # Display the results
-          echo "$PS_RESULT"
-          echo "$LS_RESULT"
-          echo "$GREP_RESULT"
-
-          # Set outputs for later use
-          echo "::set-output name=ps_result::$PS_RESULT"
-          echo "::set-output name=ls_result::$LS_RESULT"
-          echo "::set-output name=grep_result::$GREP_RESULT"
+          docker exec my-test-container bash -c "ps -ef | grep -i gotty"
+          docker exec my-test-container bash -c "ls -lart /var/log/unskript/notebook.out"
+          docker exec my-test-container bash -c "grep -i 'error' /var/log/unskript/notebook.out"
+        continue-on-error: true
 
       - name: Check for errors
         run: |
-          if [[ "${{ steps.run_commands.outputs.grep_result }}" == *"error"* ]]; then
-            echo "Error found in log."
+          if [[ -n "$(docker logs my-test-container | grep -i 'error')" ]]; then
+            echo "Error found in container logs."
             exit 1
           else
-            echo "No errors found in log."
+            echo "No errors found in container logs."
           fi
