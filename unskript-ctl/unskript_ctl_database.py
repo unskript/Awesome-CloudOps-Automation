@@ -350,12 +350,13 @@ class CodeSnippets(ZoDBInterface):
         for connector in connector_list:
             for c_snippet in c_snippets:
                 if connector.lower() == 'all':
-                    connector = c_snippet.get('metadata').get('action_type').split('_')[-1]
+                    _connector = c_snippet.get('metadata').get('action_type').split('_')[-1]
                 else: 
+                    _connector = connector
                     if connector.upper() != c_snippet.get('metadata').get('action_type').split('_')[-1]:
                         continue 
                 retVal.append([
-                            connector.capitalize(),
+                            _connector.capitalize(),
                             c_snippet.get('name'),
                             c_snippet.get('metadata').get('action_entry_function')
                         ])

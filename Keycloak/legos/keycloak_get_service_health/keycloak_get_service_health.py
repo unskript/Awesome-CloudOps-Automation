@@ -4,6 +4,7 @@
 #
 
 import requests
+import os 
 
 from typing import Tuple
 from pydantic import BaseModel
@@ -12,7 +13,7 @@ from pydantic import BaseModel
 class InputSchema(BaseModel):
     pass
 
-def keycloak_get_service_health(handle) -> Tuple:
+def keycloak_get_service_health(handle):
     """
     keycloak_get_service_health fetches the health of the Keycloak service by trying to list available realms.
 
@@ -29,7 +30,7 @@ def keycloak_get_service_health(handle) -> Tuple:
             raise ValueError("Unable to Find Keycloak Package!")
         
         access_token = get_keycloak_token(handle)
-        realms_url = f"{handle.server_url}/admin/realms"
+        realms_url = os.path.join(handle.server_url, "admin/realms")
         headers = {"Authorization": f"Bearer {access_token}"}
         response = requests.get(realms_url, headers=headers)
         response.raise_for_status()
