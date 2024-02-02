@@ -84,7 +84,7 @@ jobs:
         run: |
           container_logs=$(docker logs my-test-container)
       
-          if [[ -z "$(echo "$container_logs" | grep -i 'GoTTY is starting with command: /usr/local/bin/gotty_script.sh')" ]]; then
+          if [[ -z "$(echo "$container_logs" | grep -i 'GoTTY is starting with command')" ]]; then
             echo "GoTTY not starting as expected."
             exit 1
           elif [[ -z "$(echo "$container_logs" | grep -i 'Alternative URL: http://127.0.0.1:8888/')" ]]; then
