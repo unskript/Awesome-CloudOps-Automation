@@ -2,7 +2,7 @@ name: Custom Docker Build and Test
 
 on:
   schedule:
-    - cron: '12 17 * * *' 
+    - cron: '10 17 * * *' 
 
 concurrency:
     group: ${{ github.ref }}-2
