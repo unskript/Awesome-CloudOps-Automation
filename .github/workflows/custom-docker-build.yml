@@ -1,14 +1,22 @@
 name: Docker Test and Build
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # Run daily at midnight UTC
+  # schedule:
+  #   - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_call:
+    inputs:
+      enabled:
+        required: true 
+        default: false
+        type: boolean 
+
   workflow_dispatch:
     inputs:
-      enable-cron:
-        description: 'Enable the cron job'
+      enabled:
+        description: 'Enable the workflow'
         required: false
-        default: 'false'
+        default: false
+        type: boolean
 
 concurrency:
     group: ${{ github.ref }}-2
@@ -17,7 +25,7 @@ concurrency:
 jobs:
   test-and-build-docker:
     runs-on: ubuntu-latest
-    if: ${{ inputs.enable-cron }} == 'true'
+    if: ${{ inputs.enabled }} == 'true'
 
     steps:
       - name: Checkout code
