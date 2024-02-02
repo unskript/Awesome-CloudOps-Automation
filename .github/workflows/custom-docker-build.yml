@@ -1,0 +1,82 @@
+name: Custom Docker Build and Test
+
+on:
+  workflow_call:
+    inputs:
+      enabled:
+        required: true 
+        default: false
+        type: boolean 
+
+  workflow_dispatch:
+    inputs:
+      enabled:
+        description: 'Enable the workflow'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+    group: ${{ github.ref }}-2
+    cancel-in-progress: true 
+
+jobs:
+  test-and-build-docker:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.enabled }}
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+     
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
+
+      - name: Get current Docker image tag
+        id: get_tag
+        run: |
+          CURRENT_TAG=$(curl -s "https://registry.hub.docker.com/v2/repositories/unskript/awesome-runbooks/tags/" | jq -r '.results[].name' | grep '^minimal-1\.[0-9]*$' | sort -rV | head -n 1)
+          echo "::set-output name=current_tag::$CURRENT_TAG"
+
+      - name: Build custom Docker image
+        run: |
+          docker build -t my-custom-image:latest --build-arg BASE_IMAGE=unskript/awesome-runbooks:${{ steps.get_tag.outputs.current_tag }} .
+
+      - name: Run custom Docker image
+        run: |
+          docker run -d --name my-test-container my-custom-image:latest
+          sleep 5 # Give some time for the container to start
+
+      - name: Run commands in Docker container
+        id: run_commands
+        run: |
+          PS_RESULT=$(docker exec my-test-container bash -c "ps -ef | grep -i gotty")
+          LS_RESULT=$(docker exec my-test-container bash -c "ls -lart /var/log/unskript/notebook.out")
+          GREP_RESULT=$(docker exec my-test-container bash -c "grep -i 'error' /var/log/unskript/notebook.out")
+
+          # Display the results
+          echo "$PS_RESULT"
+          echo "$LS_RESULT"
+          echo "$GREP_RESULT"
+
+          # Set outputs for later use
+          echo "::set-output name=ps_result::$PS_RESULT"
+          echo "::set-output name=ls_result::$LS_RESULT"
+          echo "::set-output name=grep_result::$GREP_RESULT"
+
+      - name: Check for errors
+        run: |
+          if [[ "${{ steps.run_commands.outputs.grep_result }}" == *"error"* ]]; then
+            echo "Error found in log."
+            exit 1
+          else
+            echo "No errors found in log."
+          fi
