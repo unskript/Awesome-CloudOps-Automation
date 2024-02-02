@@ -1,22 +1,20 @@
 name: Custom Docker Build and Test
 
 on:
-  push:
-    
-  # workflow_call:
-  #   inputs:
-  #     enabled:
-  #       required: true 
-  #       default: false
-  #       type: boolean 
+  workflow_call:
+    inputs:
+      enabled:
+        required: true 
+        default: false
+        type: boolean 
 
-  # workflow_dispatch:
-  #   inputs:
-  #     enabled:
-  #       description: 'Enable the workflow'
-  #       required: false
-  #       default: false
-  #       type: boolean
+  workflow_dispatch:
+    inputs:
+      enabled:
+        description: 'Enable the workflow'
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
     group: ${{ github.ref }}-2
