@@ -1,3 +1,31 @@
+import time
+import os
+from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+
+def rate_limited(num_tokens, interval):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            nonlocal num_tokens
+            current_time = time.time()
+            if num_tokens <= 0:
+                time.sleep(interval - (current_time % interval))
+                num_tokens = 1
+            else:
+                num_tokens -= 1
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@rate_limited(num_tokens=1, interval=60)  # Adjust interval based on your needs
+def execute_check_function(check_function):
+    return _run_function(check_function)
+
+@rate_limited(num_tokens=1, interval=60)  # Adjust interval based on your needs
+def execute_last_cell():
+    return last_cell()
+
 def _run_function(fn):
     import io
     import os
@@ -23,17 +51,25 @@ def _run_function(fn):
     return output
 
 def do_run_():
-    import sys
-    from tqdm import tqdm
-    output = None
-    for i in tqdm(range({{ num_checks + 2}}), desc="Running", leave=True, ncols=100):
-        if i == {{ num_checks + 1}}:
-             fn = "last_cell"
-        else:
-            fn = "check_" + str(i)
-        if hasattr(globals().get(fn), "__call__"):
-            output = _run_function(fn)
-    return output
+    check_functions = [f"check_{i}" for i in range({{ num_checks }})]
+
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        futures = {executor.submit(execute_check_function, check_function): check_function for check_function in check_functions}
+
+        for future in tqdm(as_completed(futures), desc="Running", total=len(futures), leave=True, ncols=100):
+            check_function = futures[future]
+            try:
+                output = future.result()
+                if output:
+                    print(output)
+            except Exception as e:
+                print(f"Error executing {check_function}: {str(e)}")
+
+    # Execute last_cell with rate limiting
+    try:
+        execute_last_cell()
+    except Exception as e:
+        print(f"Error executing last_cell: {str(e)}")
 
 if __name__ == "__main__":
     do_run_()
