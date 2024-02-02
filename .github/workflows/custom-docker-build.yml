@@ -66,8 +66,13 @@ jobs:
       - name: Run custom Docker image
         run: |
           docker run -d --name my-test-container my-custom-image:latest
-          sleep 5 # Give some time for the container to start
+          sleep 30 # Give some time for the container to start
 
+      - name: Some Docker Logs
+        run: |
+          docker logs my-test-container
+          docker ps -a 
+        
       - name: Run commands in Docker container
         id: run_commands
         run: |
