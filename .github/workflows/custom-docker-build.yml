@@ -26,8 +26,15 @@ jobs:
   test-and-build-docker:
     runs-on: ubuntu-latest
     if: ${{ inputs.enabled }}
+    strategy:
+      fail-fast: false
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+     
       - name: Checkout code
         uses: actions/checkout@v2
 
