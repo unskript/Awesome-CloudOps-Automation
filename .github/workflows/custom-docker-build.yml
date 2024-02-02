@@ -1,4 +1,4 @@
-name: Docker Test and Build
+name: Custom Docker Build and Test
 
 on:
   # schedule:
