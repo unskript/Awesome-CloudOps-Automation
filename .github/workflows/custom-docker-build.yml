@@ -77,7 +77,6 @@ jobs:
         run: |
           docker exec my-test-container bash -c "ps -ef | grep -i gotty"
           docker exec my-test-container bash -c "ls -lart /var/log/unskript/notebook.out"
-          docker exec my-test-container bash -c "grep -i 'error' /var/log/unskript/notebook.out"
         continue-on-error: true
 
       - name: Check for errors
