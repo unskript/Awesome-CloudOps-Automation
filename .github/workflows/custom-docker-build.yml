@@ -1,8 +1,22 @@
 name: Custom Docker Build and Test
 
-on:
-  schedule:
-    - cron: '10 17 * * *' 
+on: 
+  workflow_call:
+    inputs:
+      enabled:
+        description: 'Enable Workflow'
+        required: true
+        type: boolean
+        default: false 
+  
+  workflow_dispatch:
+    inputs:
+      enabled:
+        description: 'Enable Workflow'
+        required: true
+        type: boolean 
+        default: false
+
 
 concurrency:
     group: ${{ github.ref }}-2
