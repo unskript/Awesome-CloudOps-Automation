@@ -52,6 +52,7 @@ CONNECTOR_LIST = [
     'nomad', 
     'jira', 
     'kafka', 
+    'keycloak', 
     'mongodb', 
     'mysql', 
     'postgresql', 

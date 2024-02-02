@@ -3,6 +3,7 @@
 # All rights reserved.
 #
 import requests
+import os
 
 from typing import List
 from tabulate import tabulate
@@ -43,7 +44,7 @@ def keycloak_get_audit_report_printer(output):
     print(tabulate(table_data, headers='firstrow', tablefmt="grid"))
 
 
-def keycloak_get_audit_report(handle) -> List:
+def keycloak_get_audit_report(handle):
     """
     keycloak_get_audit_report fetches the audit events from Keycloak.
 
@@ -61,7 +62,7 @@ def keycloak_get_audit_report(handle) -> List:
         if not isinstance(handle, UnskriptKeycloakWrapper):
             raise ValueError("Unable to Find Keycloak Package!")
         access_token = get_keycloak_token(handle)
-        events_url = f"{handle.server_url}/admin/realms/{handle.realm_name}/events"
+        events_url = os.path.join(handle.server_url, f"admin/realms/{handle.realm_name}/events")
         headers = {"Authorization": f"Bearer {access_token}"}
 
         response = requests.get(events_url, headers=headers)
