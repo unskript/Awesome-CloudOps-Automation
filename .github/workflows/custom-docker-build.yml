@@ -1,8 +1,6 @@
 name: Custom Docker Build and Test
 
 on:
-  # schedule:
-  #   - cron: '0 0 * * *' # Run daily at midnight UTC
   workflow_call:
     inputs:
       enabled:
@@ -39,7 +37,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Docker
-        uses: docker/setup-docker@v1
+        uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
 
       - name: Get current Docker image tag
         id: get_tag
