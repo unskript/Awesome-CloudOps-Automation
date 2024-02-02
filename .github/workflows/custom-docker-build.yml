@@ -82,9 +82,17 @@ jobs:
 
       - name: Check for errors
         run: |
-          if [[ -n "$(docker logs my-test-container | grep -i 'error')" ]]; then
+          container_logs=$(docker logs my-test-container)
+      
+          if [[ -z "$(echo "$container_logs" | grep -i 'GoTTY is starting with command: /usr/local/bin/gotty_script.sh')" ]]; then
+            echo "GoTTY not starting as expected."
+            exit 1
+          elif [[ -z "$(echo "$container_logs" | grep -i 'Alternative URL: http://127.0.0.1:8888/')" ]]; then
+            echo "Alternative URL not found in container logs."
+            exit 1
+          elif [[ -n "$(echo "$container_logs" | grep -i 'error')" ]]; then
             echo "Error found in container logs."
             exit 1
           else
-            echo "No errors found in container logs."
+            echo "GoTTY started successfully, and no errors found in container logs."
           fi
