@@ -120,7 +120,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":tada: Custom Docker Build Verification for ${{ steps.get_tag.outputs.current_tag }} successful "
+                    "text": ":tada: Custom Docker Build Verification for `${{ steps.get_tag.outputs.current_tag }}` *Successful*"
                   }
                 }
               ]
@@ -142,7 +142,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":no-entry: Attention! Custom Docker Build Verification for ${{ steps.get_tag.outputs.current_tag }} Failed! "
+                    "text": ":no-entry: Attention! Custom Docker Build Verification for `${{ steps.get_tag.outputs.current_tag }}` *Failed!* "
                   }
                 }
               ]
