@@ -1,41 +1,24 @@
-import time
+import signal 
+import sys
 import os
-from tqdm import tqdm
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import io
+from polling2 import poll
 
+class TimeoutException(Exception):
+    pass
 
-def rate_limited(num_tokens, interval):
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            nonlocal num_tokens
-            current_time = time.time()
-            if num_tokens <= 0:
-                time.sleep(interval - (current_time % interval))
-                num_tokens = 1
-            else:
-                num_tokens -= 1
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
-
-@rate_limited(num_tokens=1, interval=60)  # Adjust interval based on your needs
-def execute_check_function(check_function):
-    return _run_function(check_function)
-
-@rate_limited(num_tokens=1, interval=60)  # Adjust interval based on your needs
-def execute_last_cell():
-    return last_cell()
+def timeout_handler(signum, frame):
+    raise TimeoutException("Checks timed out")
 
 def _run_function(fn):
-    import io
-    import os
-    import sys
     global w
     l_cell = False
     if fn == "last_cell":
         l_cell = True
-    fn = fn + "()"
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm({{ execution_timeout }})
     output = None
+    success = False 
     output_buffer = io.StringIO()
     sys.stdout = output_buffer
     if l_cell is True:
@@ -43,33 +26,39 @@ def _run_function(fn):
         output = output_buffer.getvalue()
     else:
         try:
-            eval(fn)
+            fn = globals().get(fn)
+            fn() 
+            success = True
         except Exception as e:
             # If one of the action fails dump the exception on console and proceed further
             print(str(e))
+        finally:
+            signal.alarm(0) # Rest alarm
     sys.stdout = sys.__stdout__
-    return output
+    return output, success
 
 def do_run_():
-    check_functions = [f"check_{i}" for i in range({{ num_checks }})]
-
-    with ThreadPoolExecutor(max_workers=3) as executor:
-        futures = {executor.submit(execute_check_function, check_function): check_function for check_function in check_functions}
-
-        for future in tqdm(as_completed(futures), desc="Running", total=len(futures), leave=True, ncols=100):
-            check_function = futures[future]
+    import sys
+    from tqdm import tqdm
+    output = None
+    for i in tqdm(range({{ num_checks + 1 }}), desc="Running", leave=True, ncols=100):
+        fn = "check_" + str(i)
+        if hasattr(globals().get(fn), "__call__"):
             try:
-                output = future.result()
-                if output:
-                    print(output)
+                result = poll(lambda: _run_function(fn), 
+                                step=1, 
+                                timeout={{ execution_timeout }},
+                                poll_forever=False)
+                if result and not result[1]:
+                    print('\n. Check Did not complete')
+            except polling2.TimeoutException:
+                print("Timeout Reached")
+                continue
             except Exception as e:
-                print(f"Error executing {check_function}: {str(e)}")
-
-    # Execute last_cell with rate limiting
-    try:
-        execute_last_cell()
-    except Exception as e:
-        print(f"Error executing last_cell: {str(e)}")
+                print(f" Exception Reached {str(e)}")
+                return 
+    output, _ = _run_function('last_cell')
+    return output
 
 if __name__ == "__main__":
     do_run_()
