@@ -70,7 +70,7 @@ env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   USERNAME: ${{ secrets.BUILD_USER }}
-  DOCKER_TARGET: linux/amd64, linux/arm64
+  DOCKER_TARGET: linux/amd64, linux/arm64 
 
 permissions:
   contents: read
@@ -154,6 +154,28 @@ jobs:
         with:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
+  build-gotty:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: "Build & test"
+      run: "make tools test release-artifacts"
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: binaries
+        path: builds/pkg/*/gotty
 
   build-docker:
     runs-on: ubuntu-latest
@@ -265,7 +287,7 @@ jobs:
           cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
-          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+          docker buildx build --platform linux/amd64,linux/arm64 --build-arg="GITHUB_ACCESS_TOKEN=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"  --push -t ${{ env.BUILD_TAGS }} .
 
       - name: Docker Scout
         id: docker-scout
