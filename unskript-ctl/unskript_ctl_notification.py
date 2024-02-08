@@ -119,8 +119,16 @@ class EmailNotification(NotificationFactory):
         self.email_config = config.get('Email')
         self.provider = self.email_config.get('provider', '').lower()
         self.checks_schema_file = os.path.join(os.path.dirname(__file__), "unskript_email_notify_check_schema.json")
+        self.send_failed_objects_as_attachment = True
 
     def notify(self, **kwargs):
+        failed_result = kwargs.get('failed_result', {})
+        failed_object_character_count = sum((len(str(value)) for value in failed_result.values()))
+
+        if failed_object_character_count >= MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS:
+            self.send_failed_objects_as_attachment = True 
+        else:
+            self.send_failed_objects_as_attachment = False 
         pass 
 
     def validate_data(self, data, schema_file):
@@ -322,6 +330,18 @@ class EmailNotification(NotificationFactory):
             message += tr_message + '\n'
             message += '</table>' + '\n'
 
+
+            if failed_result and len(failed_result) and not self.send_failed_objects_as_attachment:
+                message += '<br> <ul>' + '\n'
+                message += '<h2> FAILED OBJECTS </h2>' + '\n'
+                if failed_result.get('result'):
+                    for r in failed_result.get('result'):
+                        for k,v in r.items():
+                            check_link = f"{k}".split(':')[-1].lower().replace(' ', '_')
+                            message += f'<li> <strong id="{check_link}">{k}</strong> </li>' + '\n'
+                            message += f'<pre>{yaml.dump(v,default_flow_style=False)}</pre>' + '\n'
+                message += '</ul> <br>' + '\n'
+
         return message
     
     def create_email_header(self, title: str = None):
@@ -351,7 +371,7 @@ class EmailNotification(NotificationFactory):
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
-            if len(failed_result):
+            if len(failed_result) and self.send_failed_objects_as_attachment:
                 self.create_temp_files_of_failed_check_results(failed_result=failed_result)
                 parent_folder = self.execution_dir
                 target_name = os.path.basename(parent_folder)
@@ -372,7 +392,7 @@ class EmailNotification(NotificationFactory):
             message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
             temp_attachment = self.create_email_attachment(output_metadata_file=output_metadata_file)
 
-        if failed_result and len(failed_result):
+        if failed_result and len(failed_result) and self.send_failed_objects_as_attachment:
             message += '<br> <ul>' + '\n'
             message += '<h3> DETAILS ABOUT THE FAILED OBJECTS CAN BE FOUND IN THE ATTACHMENTS </h3>' + '\n'
             message += '</ul> <br>' + '\n'
@@ -397,6 +417,7 @@ class SendgridNotification(EmailNotification):
         self.sendgrid_config = self.email_config.get('Sendgrid')
     
     def notify(self, **kwargs):
+        super().notify(**kwargs)
         summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
@@ -443,13 +464,14 @@ class SendgridNotification(EmailNotification):
         tar_file_name = f"{target_name}" + '.tar.bz2'
         target_file_name = None
         metadata = None
+        
         try:
             # We can have custom Title here
             html_message += self.create_email_header(title=None)
             if summary_results and len(summary_results):
                 html_message += self.create_checks_summary_message(summary_results=summary_results,
                                                             failed_result=failed_result)
-                if failed_result and len(failed_result):
+                if failed_result and len(failed_result) and self.send_failed_objects_as_attachment:
                     self.create_temp_files_of_failed_check_results(failed_result=failed_result)
             if output_metadata_file:
                 html_message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
@@ -468,7 +490,7 @@ class SendgridNotification(EmailNotification):
                     raise ValueError("ERROR: Archiving attachments failed!")
                 target_file_name = tar_file_name
             else:
-                if len(failed_result):
+                if len(failed_result) and self.send_failed_objects_as_attachment:
                     if self.create_tarball_archive(tar_file_name=tar_file_name,
                                                 output_metadata_file=None,
                                                 parent_folder=parent_folder) is False:
@@ -533,6 +555,7 @@ class AWSEmailNotification(EmailNotification):
         self.aws_config = self.email_config.get('SES')
 
     def notify(self, **kwargs):
+        super().notify(**kwargs)
         summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
@@ -647,6 +670,8 @@ class SmtpNotification(EmailNotification):
         self.smtp_config = self.email_config.get('SMTP')
 
     def notify(self, **kwargs):
+        super().notify(**kwargs)
+
         summary_results = kwargs.get('summary_result', [])
         failed_result = kwargs.get('failed_result', {})
         output_metadata_file = kwargs.get('output_metadata_file')
