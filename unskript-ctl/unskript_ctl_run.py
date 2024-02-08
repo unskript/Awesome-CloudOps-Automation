@@ -364,8 +364,14 @@ class Checks(ChecksFactory):
         with open(os.path.join(os.path.dirname(__file__), 'templates/template_script.j2'), 'r') as f:
             content_template = f.read()
 
+        execution_timeout = 60
+        g = self._config.get_global()
+        if g and g.get('execution_timeout'):
+            execution_timeout = g.get('execution_timeout')
+
         template = Template(content_template)
-        return  template.render(num_checks=len_of_checks)
+        return  template.render(num_checks=len_of_checks, execution_timeout=execution_timeout)
+
 
     def insert_task_lines(self, checks_list: list):
         if checks_list and len(checks_list):
