@@ -1,13 +1,24 @@
+import signal 
+import sys
+import os
+import io
+from polling2 import poll
+
+class TimeoutException(Exception):
+    pass
+
+def timeout_handler(signum, frame):
+    raise TimeoutException("Checks timed out")
+
 def _run_function(fn):
-    import io
-    import os
-    import sys
     global w
     l_cell = False
     if fn == "last_cell":
         l_cell = True
-    fn = fn + "()"
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm({{ execution_timeout }})
     output = None
+    success = False 
     output_buffer = io.StringIO()
     sys.stdout = output_buffer
     if l_cell is True:
@@ -15,24 +26,38 @@ def _run_function(fn):
         output = output_buffer.getvalue()
     else:
         try:
-            eval(fn)
+            fn = globals().get(fn)
+            fn() 
+            success = True
         except Exception as e:
             # If one of the action fails dump the exception on console and proceed further
             print(str(e))
+        finally:
+            signal.alarm(0) # Rest alarm
     sys.stdout = sys.__stdout__
-    return output
+    return output, success
 
 def do_run_():
     import sys
     from tqdm import tqdm
     output = None
-    for i in tqdm(range({{ num_checks + 2}}), desc="Running", leave=True, ncols=100):
-        if i == {{ num_checks + 1}}:
-             fn = "last_cell"
-        else:
-            fn = "check_" + str(i)
+    for i in tqdm(range({{ num_checks + 1 }}), desc="Running", leave=True, ncols=100):
+        fn = "check_" + str(i)
         if hasattr(globals().get(fn), "__call__"):
-            output = _run_function(fn)
+            try:
+                result = poll(lambda: _run_function(fn), 
+                                step=1, 
+                                timeout={{ execution_timeout }},
+                                poll_forever=False)
+                if result and not result[1]:
+                    print('\n. Check Did not complete')
+            except polling2.TimeoutException:
+                print("Timeout Reached")
+                continue
+            except Exception as e:
+                print(f" Exception Reached {str(e)}")
+                return 
+    output, _ = _run_function('last_cell')
     return output
 
 if __name__ == "__main__":

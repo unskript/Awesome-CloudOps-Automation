@@ -22,6 +22,9 @@ global:
    # audit_period in days. Number of days worth of audit data to be kept.
    # Any date older than this number of days, will be deleted.
    audit_period: 90
+   # per check timeout, this timeout decides how much time should be given
+   # per check for it to complete
+   execution_timeout: 60
 
 #
 # Checks section
