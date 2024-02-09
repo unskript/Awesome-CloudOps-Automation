@@ -195,7 +195,6 @@ jobs:
         mv $HOME/gotty/builds/pkg/linux_amd64/gotty /tmp/linux_amd64
         mv $HOME/gotty/builds/pkg/linux_arm64/gotty /tmp/linux_arm64
         ls -l /tmp
-        ls -l /tmp/linux_amd64
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
