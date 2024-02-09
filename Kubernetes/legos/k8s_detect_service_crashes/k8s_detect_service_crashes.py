@@ -2,11 +2,13 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
+import json
+import re
+
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from tabulate import tabulate 
-import json
-import re
+from beartype import beartype
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(
@@ -20,7 +22,6 @@ class InputSchema(BaseModel):
         title='No. of lines (Default: 100)'
     )
 
-from beartype import beartype
 def k8s_detect_service_crashes_printer(output):
     status, data = output
 
