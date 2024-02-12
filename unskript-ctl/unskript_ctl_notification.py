@@ -319,7 +319,7 @@ class EmailNotification(NotificationFactory):
                 else:
                     check_link = f"{check_name}".lower().replace(' ','_')
                     tr_message += f'<tr><td> <a href="#{check_link}">{check_name}</a></td><td>  <strong>FAIL</strong> </td></tr>' + '\n'
-        tr_message += '</table>' + '\n'
+        tr_message += '</table><br>' + '\n'
         return tr_message, pass_count, fail_count, error_count
 
 
