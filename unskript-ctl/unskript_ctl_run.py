@@ -45,6 +45,7 @@ class Checks(ChecksFactory):
             self.matrix = None
         self.temp_jit_file = "/tmp/jit_script.py"
         self.check_names = []
+        self.check_entry_functions = []
         self.check_uuids = []
         self.connector_types = []
         self.status_list_of_dict = []
@@ -52,6 +53,7 @@ class Checks(ChecksFactory):
         self._common = CommonAction()
         self.update_credentials_to_uglobal()
         self.uglobals['global'] = self.checks_globals
+        self.checks_priority = self._config.get_checks_priority()
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -112,7 +114,7 @@ class Checks(ChecksFactory):
         retVal = "N/A"
         for line in failed_object:
             if not line:
-                continue 
+                continue
             if "forbidden" in line:
                 retVal = "Forbidden "
             if "permission" in line:
@@ -132,6 +134,9 @@ class Checks(ChecksFactory):
         status_dict = {}
         status_dict['runbook'] = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id') + '_output.txt')
         status_dict['result'] = []
+        checks_per_priority_per_result_list = {CHECK_PRIORITY_P0: {'PASS':[], 'FAIL':[], 'ERROR': []},
+                                               CHECK_PRIORITY_P1: {'PASS':[], 'FAIL':[], 'ERROR': []},
+                                               CHECK_PRIORITY_P2: {'PASS':[], 'FAIL':[], 'ERROR': []}}
         if self.uglobals.get('skipped'):
             for check_name,connector in self.uglobals.get('skipped'):
                 result_table.append([
@@ -140,11 +145,14 @@ class Checks(ChecksFactory):
                     "N/A",
                     "Credential Incomplete"
                 ])
-                status_dict['result'].append([
+                if self.checks_priority is None:
+                    priority = CHECK_PRIORITY_P2
+                else:
+                    priority = self.checks_priority.get(check_name, CHECK_PRIORITY_P2)
+                checks_per_priority_per_result_list[priority]['ERROR'].append([
                     check_name,
                     "",
-                    connector,
-                    'ERROR'
+                    connector
                     ])
         idx = 0
         ids = self.check_uuids
@@ -157,6 +165,11 @@ class Checks(ChecksFactory):
                 continue
             payload = result
             try:
+                if self.checks_priority is None:
+                    priority = CHECK_PRIORITY_P2
+                else:
+                    priority = self.checks_priority.get(self.check_entry_functions[idx], CHECK_PRIORITY_P2)
+
                 if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
                     result_table.append([
                         self.check_names[idx],
@@ -164,11 +177,10 @@ class Checks(ChecksFactory):
                         0,
                         'N/A'
                         ])
-                    status_dict['result'].append([
+                    checks_per_priority_per_result_list[priority]['PASS'].append([
                         self.check_names[idx],
                         ids[idx],
-                        self.connector_types[idx],
-                        'PASS']
+                        self.connector_types[idx]]
                         )
                 elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
                     failed_objects = payload.get('objects')
@@ -181,11 +193,10 @@ class Checks(ChecksFactory):
                         self.parse_failed_objects(failed_object=failed_objects)
                         ])
                     failed_result_available = True
-                    status_dict['result'].append([
+                    checks_per_priority_per_result_list[priority]['FAIL'].append([
                         self.check_names[idx],
                         ids[idx],
-                        self.connector_types[idx],
-                        'FAIL'
+                        self.connector_types[idx]
                         ])
                 elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                     if payload.get('error') is not None:
@@ -201,17 +212,17 @@ class Checks(ChecksFactory):
                         0,
                         pprint.pformat(error_msg, width=30)
                         ])
-                    status_dict['result'].append([
+                    checks_per_priority_per_result_list[priority]['ERROR'].append([
                         self.check_names[idx],
                         ids[idx],
-                        self.connector_types[idx],
-                        'ERROR'
+                        self.connector_types[idx]
                         ])
             except Exception as e:
                 self.logger.error(e)
                 pass
             idx += 1
 
+        status_dict['result'] = checks_per_priority_per_result_list
         print("")
         print(tabulate(result_table, headers='firstrow', tablefmt='fancy_grid'))
 
@@ -332,7 +343,7 @@ class Checks(ChecksFactory):
     def get_first_cell_content(self, list_of_checks: list):
         if len(list_of_checks) == 0:
             return None
-        self.check_uuids, self.check_names, self.connector_types = self._common.get_code_cell_name_and_uuid(list_of_actions=list_of_checks)
+        self.check_uuids, self.check_names, self.connector_types, self.check_entry_functions = self._common.get_code_cell_name_and_uuid(list_of_actions=list_of_checks)
         first_cell_content = self._common.get_first_cell_content()
 
         if self.checks_globals and len(self.checks_globals):
@@ -450,27 +461,30 @@ class CommonAction(ChecksFactory):
         super().__init__(**kwargs)
 
     def get_code_cell_name_and_uuid(self, list_of_actions: list):
-        action_uuids, action_names, connector_types = [], [], []
+        action_uuids, action_names, connector_types, action_entry_functions = [], [], [], []
         if len(list_of_actions) == 0:
             self.logger.error("List of actions is empty!")
-            return action_uuids, action_names
+            return action_uuids, action_names, connector_types, action_entry_functions
 
         for action in list_of_actions:
             metadata = action.get('metadata')
             action_uuid = action.get('uuid')
             if metadata:
-                action_name = metadata.get('name') if metadata.get('name') else metadata.get('action_entry_function')
+                action_name = metadata.get('name')
+                action_entry_function = metadata.get('action_entry_function')
                 connector_type = metadata.get('action_type').replace('LEGO_TYPE_', '').lower()
 
                 if action_uuid:
                     action_uuids.append(action_uuid)
                 if action_name:
                     action_names.append(action_name)
+                if action_entry_function:
+                    action_entry_functions.append(action_entry_function)
                 if connector_type:
                     connector_types.append(connector_type)
 
         self.logger.debug(f"Returning {len(action_uuids)} UUIDs and {len(action_names)} names")
-        return action_uuids, action_names, connector_types
+        return action_uuids, action_names, connector_types, action_entry_functions
 
     def update_exec_id(self):
         self.uglobals = UnskriptGlobals()
@@ -673,7 +687,7 @@ class InfoAction(ChecksFactory):
             self.logger.error("ERROR: Action list is empty, Cannot run anything")
             raise ValueError("Action List is empty!")
 
-        self.action_uuid, self.check_names, self.connector_types = \
+        self.action_uuid, self.check_names, self.connector_types, _= \
                 self._common.get_code_cell_name_and_uuid(list_of_actions=action_list)
 
         action_list = self.create_checks_for_matrix_argument(action_list)
