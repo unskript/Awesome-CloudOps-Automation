@@ -96,15 +96,22 @@ class SlackNotification(NotificationFactory):
             if not result_set or not result_set.get('result'):
                 continue
             c_result = result_set.get('result')
-            for r in c_result:
-                check_name = r[0]
-                status = r[-1]
-                if status in status_count:
-                    status_count[status] += 1
-                if status == 'PASS':
-                    summary_message += f':hash: *{check_name}*  :white_check_mark: ' + '\n'
-                elif status in ('FAIL', 'ERROR'):
-                    summary_message += f':hash: *{check_name}*  :x: ' + '\n'
+            for priority in [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]:
+                checks_per_priority = c_result.get(priority)
+                if checks_per_priority is None:
+                    continue
+                for status in ['FAIL', 'ERROR', 'PASS']:
+                    checks = checks_per_priority.get(status)
+                    if checks is None or len(checks) == 0:
+                        continue
+                    for check in checks:
+                        check_name = check[0]
+                        if status in status_count:
+                            status_count[status] += 1
+                        if status == 'PASS':
+                            summary_message += f':hash: *{check_name}*  :white_check_mark: ' + '\n'
+                        elif status in ('FAIL', 'ERROR'):
+                            summary_message += f':hash: *{check_name}*  :x: ' + '\n'
 
         summary_message += f':trophy: *(Pass/Fail/Error)* <-> *({status_count["PASS"]}/{status_count["FAIL"]}/{status_count["ERROR"]})*' + '\n\n'
         return summary_message
