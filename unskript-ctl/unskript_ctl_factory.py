@@ -10,11 +10,11 @@
 #
 import os
 import yaml
-import logging 
+import logging
 import json
 import glob
 
-from abc import ABC, abstractmethod 
+from abc import ABC, abstractmethod
 from unskript_utils import *
 try:
      from envyaml import EnvYAML
@@ -51,7 +51,7 @@ class UctlLogger(logging.Logger):
 
             # Set Default logger level
             self.setLevel(logging.DEBUG)
-            self.propagate = False 
+            self.propagate = False
 
     def info(self, msg, *args, **kwargs):
         # Pass up the Info message to show the log to console
@@ -60,7 +60,7 @@ class UctlLogger(logging.Logger):
     def debug(self, msg, *args, **kwargs):
         # Dump to logfile
         self.dump_to_file(msg)
-    
+
     def warning(self, msg, *args, **kwargs):
         # Warning to logfile
         self.dump_to_file(msg)
@@ -69,7 +69,7 @@ class UctlLogger(logging.Logger):
         # Error to logfile
         self.dump_to_file(msg)
         super().info(msg, *args, **kwargs)
-    
+
     def critical(self, msg, *args, **kwargs):
         # Critical msg to logfile and to console
         self.dump_to_file(msg)
@@ -84,48 +84,48 @@ class UctlLogger(logging.Logger):
 # which means, the Child that inherits this class, will have a single copy in
 # memory. This saves Memory footprint! This class also implements a Logger
 # that is being used by individual child class. This class generates
-# unskript_ctl.log in the same directory, from where the unskript-ctl.sh is 
-# called. 
+# unskript_ctl.log in the same directory, from where the unskript-ctl.sh is
+# called.
 class UnskriptFactory(ABC):
-    _instance = None 
+    _instance = None
     log_file_name = os.path.join(os.path.expanduser('~'), 'unskript_ctl.log')
-    
+
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super().__new__(cls)
             if os.path.exists(os.path.dirname(cls.log_file_name)) is False:
                 os.makedirs(os.path.dirname(cls.log_file_name))
             cls._instance.logger = cls._configure_logger()
-        return cls._instance 
-    
+        return cls._instance
+
 
     @staticmethod
     def _configure_logger():
         logger = UctlLogger('UnskriptCtlLogger')
         # if not logger.handlers:
         #     logger.setLevel(logging.DEBUG)
-            
+
         #     # Create a formatter for log messages
         #     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            
+
         #     # Create a file handler and set its format
         #     file_handler = logging.FileHandler(UnskriptFactory.log_file_name)
         #     file_handler.setLevel(logging.DEBUG)  # Set file logging level
         #     file_handler.setFormatter(formatter)
-            
+
         #     # Add the file handler to the logger
         #     logger.addHandler(file_handler)
         #     logger.propagate = False
-        
+
         return logger
-    
+
     def __init__(self):
         self.uglobals = UnskriptGlobals()
         self.update_credentials_to_uglobal()
         pass
 
     def update_credentials_to_uglobal(self):
-        mapping = {} 
+        mapping = {}
         home = os.path.expanduser('~')
         creds_json_files = []
         for dirpath, dirname, filenames in os.walk(home):
@@ -136,10 +136,10 @@ class UnskriptFactory(ABC):
         self.creds_json_files = creds_json_files
         c_data = {}
         for creds_json_file in creds_json_files:
-            
+
             if is_creds_json_file_valid(creds_file=creds_json_file) is False:
                 raise ValueError(f"Given Credential file {creds_json_file} is corrupt!")
-            
+
             with open(creds_json_file, 'r', encoding='utf-8') as f:
                 try:
                     c_data = json.load(f)
@@ -149,15 +149,15 @@ class UnskriptFactory(ABC):
                     raise ValueError(e)
                 finally:
                     if c_data.get('metadata').get('connectorData') == '{}':
-                        continue 
-                    mapping[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'), 
+                        continue
+                    mapping[c_data.get('metadata').get('type')] = {"name": c_data.get('metadata').get('name'),
                                                             "id": c_data.get('id')}
         self.uglobals['default_credentials'] = mapping
 
     def _banner(self, msg: str):
         print('\033[4m\x1B[1;20;42m' + msg + '\x1B[0m\033[0m')
 
-    
+
     def _error(self, msg: str):
         print('\x1B[1;20;41m' + msg + '\x1B[0m')
 
@@ -168,10 +168,10 @@ class ChecksFactory(UnskriptFactory):
         super().__init__()
         self.logger.debug(f'{self.__class__.__name__} instance initialized')
         self._config = ConfigParserFactory()
-        pass 
+        pass
 
     def run(self, **kwargs):
-        pass 
+        pass
 
 # This class implements an Abstract class for Executing Script
 class ScriptsFactory(UnskriptFactory):
@@ -193,7 +193,7 @@ class NotificationFactory(UnskriptFactory):
         pass
 
     def notify(self, **kwargs):
-        pass 
+        pass
 
 # This class implements the Database abstract class that is implemented by ZoDB and SQL
 class DatabaseFactory(UnskriptFactory):
@@ -208,7 +208,7 @@ class DatabaseFactory(UnskriptFactory):
 
     @abstractmethod
     def read(self, **kwargs):
-        pass 
+        pass
 
     @abstractmethod
     def update(self, **kwargs):
@@ -216,16 +216,16 @@ class DatabaseFactory(UnskriptFactory):
 
     @abstractmethod
     def delete(self, **kwargs):
-        pass 
+        pass
 
 
-# This class implements the Config parser that is being used by the UnskriptFactory 
+# This class implements the Config parser that is being used by the UnskriptFactory
 # This class looks the the unskript_ctl_config.yaml in known directories, parses it
-# and saves it as a local class specific variable. 
+# and saves it as a local class specific variable.
 class ConfigParserFactory(UnskriptFactory):
     CONFIG_FILE_NAME = "unskript_ctl_config.yaml"
     DEFAULT_DIRS = ["/etc/unskript", "/opt/unskript", "/tmp", "./config", "./"]
-    
+
     def __init__(self):
         super().__init__()
         self.logger.debug(f'{self.__class__.__name__} instance initialized')
@@ -248,7 +248,7 @@ class ConfigParserFactory(UnskriptFactory):
                 value = value.get(sub_key) if value else None
             return value if value is not None else {}
         return {}
-    
+
     def get_schedule(self):
         return self._get('scheduler')[0]
 
@@ -257,23 +257,44 @@ class ConfigParserFactory(UnskriptFactory):
 
     def get_checks(self):
         return self.get_jobs().get('checks')
-    
+
 
     def get_notification(self):
         return self._get('notification')
 
     def get_credentials(self):
-        # FIXME: Not implemented 
-        pass 
+        # FIXME: Not implemented
+        pass
 
     def get_global(self):
         return self._get('global')
-    
+
     def get_checks_params(self):
         return self._get('checks', 'arguments')
-    
+
     def get_info_action_params(self):
         return self._get('info', 'arguments')
-    
+
     def get_info(self):
         return self.get_jobs().get('info')
+
+    def get_checks_priority(self)->dict:
+        # This function reads the priority part of the config and converts it
+        # into a dict with check_name as the key and priority as the value.
+        # If the check is not found in the dict, its assigned priority P2.
+
+        # Read P0 priority if configured
+        checks_priority = {}
+        priority_config = self._get('checks').get('priority')
+        if priority_config is None:
+            return None
+        p0_priority = priority_config.get(CHECK_PRIORITY_P0)
+        if p0_priority is not None:
+            for c in p0_priority:
+                checks_priority[c] = CHECK_PRIORITY_P0
+        p1_priority = priority_config.get(CHECK_PRIORITY_P1)
+        if p1_priority is not None:
+            for c in p1_priority:
+                checks_priority[c] = CHECK_PRIORITY_P1
+        return checks_priority
+
