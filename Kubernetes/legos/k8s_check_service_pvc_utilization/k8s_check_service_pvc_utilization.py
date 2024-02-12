@@ -8,6 +8,19 @@ from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from kubernetes.client.rest import ApiException
 
+class InputSchema(BaseModel):
+     namespace: Optional[str] = Field(..., description='The namespace in which the service resides.', title='Namespace')
+     service_name: Optional[str] = Field(
+         ...,
+         description='The name of the service for which the used PVC size needs to be checked.',
+         title='K8s Sservice name',
+     )
+     threshold: Optional[int] = Field(
+         80,
+         description='Percentage threshold for utilized PVC disk size.E.g., a 80% threshold checks if the utilized space exceeds 80% of the total PVC capacity.',
+         title='Threshold (in %)',
+     )
+
 
 from beartype import beartype
 @beartype
