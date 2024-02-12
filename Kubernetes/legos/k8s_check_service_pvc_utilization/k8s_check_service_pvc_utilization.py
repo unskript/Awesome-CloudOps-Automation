@@ -148,7 +148,7 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
                 space = space.split()
                 used_percentage = int(space[-2].replace('%', ''))
                 total_capacity_str = space[1].replace('%', '')
-                all_pvcs[idx]["used"] = used_percentage, 
+                all_pvcs[idx]["used"] = used_percentage
                 all_pvcs[idx]["capacity"] =  total_capacity_str
                 if used_percentage > threshold:
                     alert_pvcs.append(all_pvcs[idx])
