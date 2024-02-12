@@ -7,6 +7,7 @@ import json
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from kubernetes.client.rest import ApiException
+from beartype import beartype
 
 class InputSchema(BaseModel):
      namespace: Optional[str] = Field(..., description='The namespace in which the service resides.', title='Namespace')
@@ -22,7 +23,6 @@ class InputSchema(BaseModel):
      )
 
 
-from beartype import beartype
 @beartype
 def k8s_check_service_pvc_utilization_printer(output):
     status, pvc_info = output
