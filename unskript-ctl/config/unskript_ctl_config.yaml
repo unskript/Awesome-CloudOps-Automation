@@ -40,9 +40,9 @@ checks:
        #  namespace: [n1, n2]
   # Allocate priority for checks.
   priority:
-    # P0 is the top priority, followed by P1, P2.
+    # p0 is the top priority, followed by p1, p2.
     # Each priority will have the list of check names.
-    # Default it will be P2
+    # Default it will be p2
     p0: []
     p1: []
 
