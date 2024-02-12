@@ -39,15 +39,15 @@ class SlackNotification(NotificationFactory):
     def validate_data(self, data):
         if not os.path.exists(self.schema_file):
             self.logger.error(f"Unable to find Notification Schema file {self.schema_file}!")
-            return False  
+            return False
         try:
             with open(self.schema_file, 'r') as f:
                 schema = json.load(f)
                 validate(instance=data, schema=schema)
-                return True 
+                return True
         except ValidationError as e:
             self.logger.debug(str(e))
-            return False 
+            return False
 
     def notify(self, **kwargs):
         webhook = self.slack_config.get('web-hook-url')
@@ -59,11 +59,11 @@ class SlackNotification(NotificationFactory):
 
         if summary_results and len(summary_results) == 0:
             self.logger.error("Result Empty: No results to notify")
-            return False 
+            return False
 
         if not self.validate_data(summary_results):
             self.logger.debug("Given Summary Result does not validate against Slack Schema")
-        
+
         message = self._generate_notification_message(summary_results)
         if not message:
             self.logger.error("ERROR: Nothing to send, Results Empty")
@@ -84,14 +84,14 @@ class SlackNotification(NotificationFactory):
         except requests.RequestException as e:
             self.logger.error(f"ERROR: Not able to send slack message: {str(e)}")
             return False
-    
+
     def _generate_notification_message(self, summary_results):
         summary_message = ':wave: *unSkript Ctl Check Results* \n'
         status_count = {'PASS': 0, 'FAIL': 0, 'ERROR': 0}
 
         if not summary_results:
-            return 
-        
+            return
+
         for result_set in summary_results:
             if not result_set or not result_set.get('result'):
                 continue
@@ -126,25 +126,25 @@ class EmailNotification(NotificationFactory):
         failed_object_character_count = sum((len(str(value)) for value in failed_result.values()))
 
         if failed_object_character_count >= MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS:
-            self.send_failed_objects_as_attachment = True 
+            self.send_failed_objects_as_attachment = True
         else:
-            self.send_failed_objects_as_attachment = False 
-        pass 
+            self.send_failed_objects_as_attachment = False
+        pass
 
     def validate_data(self, data, schema_file):
         if not os.path.exists(schema_file):
             self.logger.error(f"Data Differs From  Schema file {schema_file}!")
-            return False  
+            return False
         try:
             with open(schema_file, 'r') as f:
                 schema = json.load(f)
                 validate(instance=data, schema=schema)
-                return True 
+                return True
         except ValidationError as e:
             self.logger.debug(str(e))
-            return False 
+            return False
 
-    def create_tarball_archive(self, 
+    def create_tarball_archive(self,
                                tar_file_name: str,
                                output_metadata_file: str,
                                parent_folder: str):
@@ -161,8 +161,8 @@ class EmailNotification(NotificationFactory):
             return False
 
         return True
-    
-    def create_temp_files_of_failed_check_results(self, 
+
+    def create_temp_files_of_failed_check_results(self,
                                             failed_result: dict):
         list_of_failed_files = []
         self.logger.debug(f"Creating {len(failed_result)} Temp Files for failed check results ")
@@ -219,12 +219,12 @@ class EmailNotification(NotificationFactory):
         return message
 
     def create_info_gathering_action_result(self):
-        """create_info_gathering_action_result: This function creates an inline 
+        """create_info_gathering_action_result: This function creates an inline
            results of all the output from info gathering action
-        """ 
+        """
         message = ''
         if self.uglobals.get('info_action_results'):
-            message = f''' 
+            message = f'''
                     <br>
                     <h3> Information Gathering Action Result </h3>
                     <br>
@@ -233,14 +233,14 @@ class EmailNotification(NotificationFactory):
                 message += '<h4>' + k + '</h4> <pre>'
                 if v:
                     for line in v:
-                        message += line 
+                        message += line
                 else:
                     message += 'NO OUTPUT \n'
                 message += '###'
                 message += '</pre>'
             message += '<br>'
-        
-        return message 
+
+        return message
 
 
     def create_email_attachment(self, output_metadata_file: str = None):
@@ -289,7 +289,34 @@ class EmailNotification(NotificationFactory):
 
         return attachment_
 
-    def create_checks_summary_message(self, 
+    def create_priority_message_table(self, priority:str, checks_per_status: dict)-> (str, int, int, int):
+        pass_count = len(checks_per_status['PASS'])
+        fail_count = len(checks_per_status['FAIL'])
+        error_count = len(checks_per_status['ERROR'])
+        if pass_count == 0 and fail_count == 0 and error_count == 0:
+            return '', 0, 0, 0
+        print_priority = priority.capitalize()
+        tr_message = f'''
+            <table border="1">
+            <tr>
+            <th> {print_priority} Checks </th>
+            <th> RESULT </th>
+            </tr>
+        '''
+        for status in ['FAIL', 'ERROR', 'PASS']:
+            checks = checks_per_status.get(status)
+            for st in checks:
+                check_name = st[0]
+                if status in ['ERROR', 'PASS']:
+                    tr_message += f'<tr> <td> {check_name}</td> <td> <strong>{status}</strong> </td></tr>' + '\n'
+                else:
+                    check_link = f"{check_name}".lower().replace(' ','_')
+                    tr_message += f'<tr><td> <a href="#{check_link}">{check_name}</a></td><td>  <strong>FAIL</strong> </td></tr>' + '\n'
+        tr_message += '</table>' + '\n'
+        return tr_message, pass_count, fail_count, error_count
+
+
+    def create_checks_summary_message(self,
                                       summary_results: list,
                                       failed_result: dict):
         message = ''
@@ -302,34 +329,23 @@ class EmailNotification(NotificationFactory):
             for sd in summary_results:
                 if sd == {}:
                     continue
-                tr_message += '''
-                    <br>
-                    <h3> Check Summary Result </h3>
-                    <table border="1">
-                    <tr>
-                    <th> CHECK NAME </th>
-                    <th> RESULT </th>
-                    </tr>
-                '''
-                for st in sd.get('result'):
-                    status  = st[-1]
-                    check_name = st[0]
-                    if status == 'PASS':
-                        tr_message += f'<tr> <td> {check_name}</td> <td> <strong>PASS</strong> </td></tr>' + '\n'
-                        p += 1
-                    elif status == 'FAIL':
-                        check_link = f"{check_name}".lower().replace(' ','_')
-                        tr_message += f'<tr><td> <a href="#{check_link}">{check_name}</a></td><td>  <strong>FAIL</strong> </td></tr>' + '\n'
-                        f += 1
-                    elif status == 'ERROR':
-                        tr_message += f'<tr><td> {check_name}</td><td>  <strong>ERROR</strong> </td></tr> ' + '\n'
-                        e += 1
-                    else:
-                        pass
-            message += f'<center><h3>Checks Summary<br>Pass : {p}  Fail: {f}  Error: {e}</h3></center><br>' + '\n'
-            message += tr_message + '\n'
-            message += '</table>' + '\n'
+                # sd.get('result') will return a map [priority][status]{list of checks}
+                # Check if there are any P0 checks
+                table_part_of_the_message = ''
+                for priority in [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]:
+                    if len(sd.get('result').get(priority)) > 0:
+                        tr_message, pass_count, fail_count, error_count = self.create_priority_message_table(priority, sd.get('result').get(priority))
+                        p += pass_count
+                        f += fail_count
+                        e += error_count
+                        table_part_of_the_message += tr_message + '\n'
 
+            message += f'<center><h3>Checks Summary<br>Pass : {p}  Fail: {f}  Error: {e}</h3></center><br>' + '\n'
+            message += '''
+                <br>
+                <h3> Check Summary Result </h3>
+                '''
+            message += table_part_of_the_message + '\n'
 
             if failed_result and len(failed_result) and not self.send_failed_objects_as_attachment:
                 message += '<br> <ul>' + '\n'
@@ -343,7 +359,7 @@ class EmailNotification(NotificationFactory):
                 message += '</ul> <br>' + '\n'
 
         return message
-    
+
     def create_email_header(self, title: str = None):
         email_title = title or "unSkript-ctl run result"
         message = f'''
@@ -359,7 +375,7 @@ class EmailNotification(NotificationFactory):
             '''
         return message
 
-    def prepare_combined_email(self, 
+    def prepare_combined_email(self,
                                summary_results: list,
                                failed_result: dict,
                                output_metadata_file: str,
@@ -400,7 +416,7 @@ class EmailNotification(NotificationFactory):
         info_result = self.create_info_gathering_action_result()
         if info_result:
             message += info_result
-     
+
         message += "</body> </html>"
         attachment.attach(MIMEText(message, 'html'))
         if temp_attachment:
@@ -415,7 +431,7 @@ class SendgridNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.sendgrid_config = self.email_config.get('Sendgrid')
-    
+
     def notify(self, **kwargs):
         super().notify(**kwargs)
         summary_results = kwargs.get('summary_result', [])
@@ -433,14 +449,14 @@ class SendgridNotification(EmailNotification):
                                                to_email=to_email,
                                                api_key=api_key,
                                                subject=subject)
-        
+
         if retval:
             self.logger.info("Successfully sent Email notification via Sendgrid.")
         else:
             self.logger.error("Failed to send email notification via Sendgrid!")
-        
-        return retval 
-    def send_sendgrid_notification(self, 
+
+        return retval
+    def send_sendgrid_notification(self,
                                 summary_results: list,
                                 failed_result: dict,
                                 output_metadata_file: str,
@@ -464,7 +480,7 @@ class SendgridNotification(EmailNotification):
         tar_file_name = f"{target_name}" + '.tar.bz2'
         target_file_name = None
         metadata = None
-        
+
         try:
             # We can have custom Title here
             html_message += self.create_email_header(title=None)
@@ -499,7 +515,7 @@ class SendgridNotification(EmailNotification):
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
-        
+
             email_message = Mail(
                 from_email=from_email,
                 to_emails=to_email,
@@ -525,7 +541,7 @@ class SendgridNotification(EmailNotification):
 
         return True
 
-    def sendgrid_add_email_attachment(self, 
+    def sendgrid_add_email_attachment(self,
                                       email_message,
                                       file_to_attach: str,
                                       compress: bool = True):
@@ -579,7 +595,7 @@ class AWSEmailNotification(EmailNotification):
             self.logger.info("Successfully sent Email notification via AWS SES.")
         else:
             self.logger.error("Failed to send email notification via AWS SES!")
-        
+
         return retval
 
     def prepare_to_send_awsses_notification(self, summary_results: list,
@@ -662,7 +678,7 @@ class AWSEmailNotification(EmailNotification):
             self.logger.error(f"ERROR: {e}")
             return False
 
-# SMTP Implementation, like Gmail, etc..    
+# SMTP Implementation, like Gmail, etc..
 class SmtpNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -694,9 +710,9 @@ class SmtpNotification(EmailNotification):
             self.logger.info("Successfully sent Email notification via SMTP.")
         else:
             self.logger.error("Failed to send email notification via SMTP!")
-        
-        return retval 
-    
+
+        return retval
+
     def send_smtp_notification(self,
                                 summary_results: list,
                                 failed_result: dict,
@@ -739,13 +755,13 @@ class SmtpNotification(EmailNotification):
         finally:
             self.logger.info(f"Notification sent successfully to {to_email}")
         return True
-    
+
 # Usage:
 # n = Notification()
 # n.notify(
 #          mode='slack',   # slack, email or both, Mandatory parameter
 #          failed_objects=failed_objects,  # Failed objects from the checks run, Mandatory parameter
-#          output_metadata_file=None,  # Metadata that is generated after script run, Optional 
+#          output_metadata_file=None,  # Metadata that is generated after script run, Optional
 #          summary_result=summary_result,  # Summary result of the run that includes pass,fail,error, Mandatory parameter
 #          to_email=to_email,   # Only applicable for `email` mode, Optional
 #          from_email=from_email,  # Only applicable for `email` mode, Optional
@@ -759,9 +775,9 @@ class SmtpNotification(EmailNotification):
 #          smtp_password=smtp_password # Only applicable for SMTP email, Optional
 #          )
 #
-    
+
 # This function can be used as a usable component by any other class. As long as
-# the Data that is used for slack or email follow the Schema. 
+# the Data that is used for slack or email follow the Schema.
 class Notification(NotificationFactory):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -769,7 +785,7 @@ class Notification(NotificationFactory):
         self.email_config = self.notify_config.get('Email')
 
     def notify(self, **kwargs):
-        retval = False 
+        retval = False
         mode = kwargs.get('mode', 'slack')
 
         if mode.lower() == 'slack':
@@ -779,7 +795,7 @@ class Notification(NotificationFactory):
         elif mode.lower() == 'both':
             retval = SlackNotification().notify(**kwargs)
             retval = self._send_email(**kwargs)
-        return retval 
+        return retval
 
     def _send_email(self, **kwargs):
         retval = False
@@ -794,13 +810,13 @@ class Notification(NotificationFactory):
                         summary_result = summary_results,
                         failed_result = failed_objects,
                         output_metadata_file = kwargs.get('output_metadata_file'),
-                        smtp_host = kwargs.get('smtp_host', smtp.get('smtp-host')), 
+                        smtp_host = kwargs.get('smtp_host', smtp.get('smtp-host')),
                         smtp_user = kwargs.get('smtp_user', smtp.get('smtp-user')),
                         smtp_password = kwargs.get('smtp_password', smtp.get('smtp-password')),
                         to_email = kwargs.get('to_email', smtp.get('to-email')),
                         from_email = kwargs.get('from_email', smtp.get('from-email')),
                         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        ) 
+                        )
         elif self.email_config.get('provider').lower() == 'sendgrid':
             sendgrid = self.email_config.get('Sendgrid')
             retval = SendgridNotification().notify(
@@ -809,21 +825,21 @@ class Notification(NotificationFactory):
                         output_metadata_file = kwargs.get('output_metadata_file'),
                         from_email = kwargs.get('from_email', sendgrid.get('from-email')),
                         to_email = kwargs.get('to_email', sendgrid.get('to-email')),
-                        api_key = kwargs.get('api_key', sendgrid.get('api_key')), 
+                        api_key = kwargs.get('api_key', sendgrid.get('api_key')),
                         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        ) 
+                        )
         elif self.email_config.get('provider').lower() == 'ses':
             aws = self.email_config.get('SES')
-            retval = AWSEmailNotification().notify(            
+            retval = AWSEmailNotification().notify(
                         summary_result = summary_results,
                         failed_result = failed_objects,
                         output_metadata_file = kwargs.get('output_metadata_file'),
-                        access_key = kwargs.get('access_key', aws.get('access_key')), 
+                        access_key = kwargs.get('access_key', aws.get('access_key')),
                         secret_access = kwargs.get('secret_access', aws.get('secret_access')),
                         to_email = kwargs.get('to_email', aws.get('to-email')),
                         from_email = kwargs.get('from_email', aws.get('from-email')),
                         region = kwargs.get('region', aws.get('region')),
                         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        ) 
+                        )
 
         return retval

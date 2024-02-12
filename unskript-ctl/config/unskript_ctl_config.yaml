@@ -38,17 +38,24 @@ checks:
        region: us-west-2
        #matrix:
        #  namespace: [n1, n2]
+  # Allocate priority for checks.
+  priority:
+    # P0 is the top priority, followed by P1, P2.
+    # Each priority will have the list of check names.
+    # Default it will be P2
+    p0: []
+    p1: []
 
 #
 # Info gathering action section
-# 
+#
 # Info action specific configuration. For eg, arguments.
 #
 info:
   # Arguments common to all info gathering actions like namespace, etc.
   arguments:
     global:
-      region: us-west-2 
+      region: us-west-2
 
 # Credential section
 #
@@ -200,7 +207,7 @@ jobs:
     # Not supported: multiple checks, only single check support for now.
     checks: []
     # Specific info gathering actions to run
-    # can specify individual info gathering actions 
+    # can specify individual info gathering actions
     info: []
     # Specific suites to run
     # Not supported

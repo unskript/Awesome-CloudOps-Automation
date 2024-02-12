@@ -39,6 +39,7 @@ class UnskriptCtl(UnskriptFactory):
         self._notification = Notification()
         self._check = Checks()
         self._script = Script()
+        self._checks_priority = self._config.get_checks_priority()
 
         self._db = DBInterface()
 
@@ -111,8 +112,7 @@ class UnskriptCtl(UnskriptFactory):
         status_of_run = []
         if args.check_command == 'check':
             if args.name is not None:
-                checks_list = self._db.cs.get_check_by_name(check_name=str(args.name))
-                status_of_run = self._check.run(checks_list=checks_list)
+                check_list = self._db.cs.get_check_by_name(check_name=str(args.name))
             elif args.type is not None:
                 all_connectors = args.type
                 if not isinstance(all_connectors, list):
@@ -126,13 +126,13 @@ class UnskriptCtl(UnskriptFactory):
                 for t in temp_list:
                     if t not in check_list:
                         check_list.append(t)
-                status_of_run = self._check.run(checks_list=check_list)
             elif args.all is not False:
                 check_list = self._db.cs.get_checks_by_connector("all", True)
-                status_of_run = self._check.run(checks_list=check_list)
             else:
                 parser.print_help()
                 sys.exit(0)
+
+            status_of_run = self._check.run(checks_list=check_list)
             self.uglobals['status_of_run'] = status_of_run
             self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
 
@@ -183,22 +183,31 @@ class UnskriptCtl(UnskriptFactory):
             if sd == {}:
                 continue
             for s in sd.get('result'):
-                check_name, check_id, connector, status = s
-                if status == 'PASS':
-                    p += 1
-                elif status == 'FAIL':
-                    f += 1
-                elif status == 'ERROR':
-                    e += 1
-                trail_data[id]['check_status'][check_id] = {}
-                trail_data[id]['check_status'][check_id]['check_name'] = check_name
-                trail_data[id]['check_status'][check_id]['status'] = status
-                trail_data[id]['check_status'][check_id]['connector'] = connector
-                if self.uglobals.get('failed_result'):
-                    c_name = connector + ':' + check_name
-                    for name, obj in self.uglobals.get('failed_result').items():
-                        if name in (c_name, check_name):
-                            trail_data[id]['check_status'][check_id]['failed_objects'] = obj
+                for priority in [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]:
+                    checks_per_priority = sd.get('result').get(priority)
+                    if checks_per_priority is None:
+                        continue
+                    for status in ['PASS', 'FAIL', 'ERROR']:
+                        checks = checks_per_priority.get(status)
+                        if checks is None or len(checks) == 0:
+                            continue
+                        for check in checks:
+                            check_name, check_id, connector = check
+                            if status == 'PASS':
+                                p += 1
+                            elif status == 'FAIL':
+                                f += 1
+                            elif status == 'ERROR':
+                                e += 1
+                            trail_data[id]['check_status'][check_id] = {}
+                            trail_data[id]['check_status'][check_id]['check_name'] = check_name
+                            trail_data[id]['check_status'][check_id]['status'] = status
+                            trail_data[id]['check_status'][check_id]['connector'] = connector
+                            if self.uglobals.get('failed_result'):
+                                c_name = connector + ':' + check_name
+                                for name, obj in self.uglobals.get('failed_result').items():
+                                    if name in (c_name, check_name):
+                                        trail_data[id]['check_status'][check_id]['failed_objects'] = obj
 
         trail_data[id]['summary'] = f'Summary (total/p/f/e): {p+e+f}/{p}/{f}/{e}'
         self._db.pss.update(collection_name=collection_name, data=trail_data)

@@ -9,9 +9,9 @@
 #
 #
 import os
-import sys 
+import sys
 
-from datetime import datetime 
+from datetime import datetime
 
 UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
 PSS_DB_PATH="/unskript/db/unskript_pss.db"
@@ -23,9 +23,9 @@ UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 JIT_PYTHON_SCRIPT = "/tmp/jit_script.py"
 
 # Character count for including failed objects as INLINE text in email
-# Each line is an average 80 character approximately 
+# Each line is an average 80 character approximately
 # 20000 / 80 = 250 lines approximately. If Failed object length is
-# more than 20000 characters, we will send as EMAIL attachment.  
+# more than 20000 characters, we will send as EMAIL attachment.
 MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS = 20000
 
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
@@ -38,34 +38,39 @@ TBL_HDR_INFO_FN="\033[1m Function Name \033[0m"
 TBL_HDR_LIST_CHKS_CONNECTOR="\033[36m Connector Name \033[0m"
 TBL_HDR_LIST_INFO_CONNECTOR="\033[36m Connector Name \033[0m"
 
+# Check priority related constants
+CHECKS_PRIORITY_KEY = "priority"
+CHECK_PRIORITY_P0 = "p0"
+CHECK_PRIORITY_P1 = "p1"
+CHECK_PRIORITY_P2 = "p2"
 
 CONNECTOR_LIST = [
-    'aws', 
-    'gcp', 
-    'k8s', 
-    'elasticsearch', 
-    'grafana', 
-    'redis', 
-    'jenkins', 
-    'github', 
-    'netbox', 
-    'nomad', 
-    'jira', 
-    'kafka', 
-    'keycloak', 
-    'mongodb', 
-    'mysql', 
-    'postgresql', 
-    'rest', 
-    'slack', 
-    'ssh', 
+    'aws',
+    'gcp',
+    'k8s',
+    'elasticsearch',
+    'grafana',
+    'redis',
+    'jenkins',
+    'github',
+    'netbox',
+    'nomad',
+    'jira',
+    'kafka',
+    'keycloak',
+    'mongodb',
+    'mysql',
+    'postgresql',
+    'rest',
+    'slack',
+    'ssh',
     'vault',
     'salesforce'
 ]
 
 # Unskript Global is a singleton class that
 # will replace the Global variable UNSKRIPT_GLOBAL
-# It becomes essential to use this class to keep the spread of 
+# It becomes essential to use this class to keep the spread of
 # Variable to a minimum and access it every where within the scope
 # of the program
 
@@ -94,7 +99,7 @@ class UnskriptGlobals(metaclass=GenericSingleton):
 
     def get(self, key):
         return self._data.get(key, None)
-    
+
     def keys(self):
         return self._data.keys()
 
@@ -117,7 +122,7 @@ class UnskriptGlobals(metaclass=GenericSingleton):
 
 # Lets create an Alias so that any reference to UNSKRIPT_GLOBAL
 # refers to the class. In this way no change has to be done
-# when UNSKRIPT_GLOBALS variable is used. 
+# when UNSKRIPT_GLOBALS variable is used.
 UNSKRIPT_GLOBALS = UnskriptGlobals()
 
 class bcolors:
@@ -152,16 +157,16 @@ def create_execution_run_directory(file_prefix: str = None):
             UNSKRIPT_GLOBALS.create_property('CURRENT_EXECUTION_RUN_DIRECTORY')
             UNSKRIPT_GLOBALS['CURRENT_EXECUTION_RUN_DIRECTORY'] = output_dir
     else:
-        output_dir = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')    
+        output_dir = UNSKRIPT_GLOBALS.get('CURRENT_EXECUTION_RUN_DIRECTORY')
     return output_dir
 
 # Utility Function
 def is_creds_json_file_valid(creds_file: str = None):
     if not creds_file:
-        return False 
-    
+        return False
+
     if os.path.getsize(creds_file) == 0:
-        return False 
-    
+        return False
+
     # If reached to this point, return true
-    return True 
+    return True
