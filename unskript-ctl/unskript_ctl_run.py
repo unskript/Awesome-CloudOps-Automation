@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2023 unSkript.com
+# Copyright (c) 2024 unSkript.com
 # All rights reserved.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
@@ -33,6 +33,7 @@ class Checks(ChecksFactory):
     TBL_CELL_CONTENT_SKIPPED="\033[1m SKIPPED \033[0m"
     TBL_CELL_CONTENT_FAIL="\033[1m FAIL \033[0m"
     TBL_CELL_CONTENT_ERROR="\033[1m ERROR \033[0m"
+    TBL_CELL_CONTENT_TIMEOUT="\033[1m TIMEOUT \033[0m"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -134,9 +135,9 @@ class Checks(ChecksFactory):
         status_dict = {}
         status_dict['runbook'] = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id') + '_output.txt')
         status_dict['result'] = []
-        checks_per_priority_per_result_list = {CHECK_PRIORITY_P0: {'PASS':[], 'FAIL':[], 'ERROR': []},
-                                               CHECK_PRIORITY_P1: {'PASS':[], 'FAIL':[], 'ERROR': []},
-                                               CHECK_PRIORITY_P2: {'PASS':[], 'FAIL':[], 'ERROR': []}}
+        checks_per_priority_per_result_list = {CHECK_PRIORITY_P0: {'PASS':[], 'FAIL':[], 'ERROR': [], 'TIMEOUT': []},
+                                               CHECK_PRIORITY_P1: {'PASS':[], 'FAIL':[], 'ERROR': [], 'TIMEOUT': []},
+                                               CHECK_PRIORITY_P2: {'PASS':[], 'FAIL':[], 'ERROR': [], 'TIMEOUT': []}}
         if self.uglobals.get('skipped'):
             for check_name,connector in self.uglobals.get('skipped'):
                 result_table.append([
@@ -199,24 +200,36 @@ class Checks(ChecksFactory):
                         self.connector_types[idx]
                         ])
                 elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
+                    __cell_error = self.TBL_CELL_CONTENT_ERROR
                     if payload.get('error') is not None:
                         failed_objects = payload.get('error')
                         if isinstance(failed_objects, str) is True:
+                            if "Checks timed out" in failed_objects:
+                                __cell_error = self.TBL_CELL_CONTENT_TIMEOUT
                             failed_objects = [failed_objects]
                         c_name = self.connector_types[idx] + ':' + self.check_names[idx]
-                        failed_result[c_name] = failed_objects
+                        if __cell_error != self.TBL_CELL_CONTENT_TIMEOUT:
+                            failed_result[c_name] = failed_objects
                     error_msg = payload.get('error') if payload.get('error') else self.parse_failed_objects(failed_object=failed_objects)
                     result_table.append([
                         self.check_names[idx],
-                        self.TBL_CELL_CONTENT_ERROR,
+                        __cell_error,
                         0,
                         pprint.pformat(error_msg, width=30)
                         ])
-                    checks_per_priority_per_result_list[priority]['ERROR'].append([
-                        self.check_names[idx],
-                        ids[idx],
-                        self.connector_types[idx]
-                        ])
+                    if __cell_error == self.TBL_CELL_CONTENT_TIMEOUT:
+                        if self.check_names[idx] not in checks_per_priority_per_result_list[priority]['TIMEOUT']:
+                            checks_per_priority_per_result_list[priority]['TIMEOUT'].append([
+                                self.check_names[idx],
+                                ids[idx],
+                                self.connector_types[idx]
+                                ])
+                    else:
+                        checks_per_priority_per_result_list[priority]['ERROR'].append([
+                            self.check_names[idx],
+                            ids[idx],
+                            self.connector_types[idx]
+                            ])
             except Exception as e:
                 self.logger.error(e)
                 pass
@@ -237,6 +250,22 @@ class Checks(ChecksFactory):
 
         print("")
         self.status_list_of_dict.append(status_dict)
+        # Lets display Timedout checks
+        timeout_label_printed = False
+        priority_order = [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]
+        for _priority in priority_order:
+            results = checks_per_priority_per_result_list[_priority]
+            for result_key, result_value in results.items():
+                if result_key == 'TIMEOUT' and result_value != []:
+                    if not timeout_label_printed:
+                        print("\x1B[1;4mCHECKS THAT TIMEDOUT\x1B[0m")
+                        timeout_label_printed = True
+                    timeout_check_result = []
+                    for r in result_value:
+                        timeout_check_result.append({'priority': _priority, 'name': r[0], 'connector': r[-1].upper()})
+                    print(yaml.safe_dump(timeout_check_result, default_flow_style=False, sort_keys=False, indent=2))
+
+        # Now lets display failed-objects 
         for k,v in failed_result.items():
             check_name = '\x1B[1;4m' + k + '\x1B[0m'
             print(check_name)
@@ -408,6 +437,7 @@ class Script(ScriptsFactory):
             self.logger.error("ERROR: script is a mandatory parameter to be sent, cannot run without the scripts list")
             raise ValueError("Parameter script is not present in the argument, please call run with the scripts_list=[scripts]")
         script = kwargs.get('script')
+        current_env = kwargs.get('current_env', os.environ.copy())
         if not self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
             output_dir = create_execution_run_directory()
         else:
@@ -415,7 +445,7 @@ class Script(ScriptsFactory):
         output_file = UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME
         output_file_txt = os.path.join(output_dir, output_file + ".txt")
         output_file_json = os.path.join(output_dir, output_file + ".json")
-        current_env = os.environ.copy()
+        #current_env = os.environ.copy()
         current_env[UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV] = output_dir
         if isinstance(script, list) is False:
             script = [script]
@@ -812,5 +842,3 @@ class InfoAction(ChecksFactory):
             action_list = self._common.create_checks_for_matrix_argument(actions=list_of_actions,
                                                                          matrix=self.matrix)
         return action_list
-
-
