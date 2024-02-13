@@ -8,7 +8,6 @@ import re
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from tabulate import tabulate 
-from beartype import beartype
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(

@@ -7,7 +7,6 @@ import json
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from kubernetes.client.rest import ApiException
-from beartype import beartype
 
 class InputSchema(BaseModel):
      namespace: Optional[str] = Field(..., description='The namespace in which the service resides.', title='Namespace')
@@ -23,7 +22,6 @@ class InputSchema(BaseModel):
      )
 
 
-@beartype
 def k8s_check_service_pvc_utilization_printer(output):
     status, pvc_info = output
 
@@ -36,7 +34,6 @@ def k8s_check_service_pvc_utilization_printer(output):
             print(f"PVC: {pvc['pvc_name']} - Utilized: {pvc['used']} of {pvc['capacity']}")
         print("-" * 40)
 
-@beartype
 def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace: str = "", threshold: int = 80) -> Tuple:
     """
     k8s_check_service_pvc_utilization checks the utilized disk size of a service's PVC against a given threshold.
