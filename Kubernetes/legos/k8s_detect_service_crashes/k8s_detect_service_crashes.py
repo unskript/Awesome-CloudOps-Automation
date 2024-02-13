@@ -77,13 +77,14 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
                         if namespace:
                             kubectl_logs_cmd += f"-n  {namespace}"
                         kubectl_logs_cmd += f"logs --selector  {pod_selector} --tail={tail_lines}"
-                        pod_logs = handle.run_native_cmd(kubectl_logs_cmd)
-                        pod_logs = pod_logs.stdout.strip()
+                        response = handle.run_native_cmd(kubectl_logs_cmd)
+                        timestamp = response.splitlines()[-1]
+                        pod_logs = response.stdout.strip()
                         crash_logs = [{
                                 "pod": item.get('metadata', {}).get('name', 'N/A'),
                                 "namespace": item.get('metadata', {}).get('namespace', 'N/A'),
                                 "error": error_pattern,
-                                "timestamp": re.findall(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", pod_logs)[-1] if re.search(error_pattern, pod_logs) else "Unknown Time"
+                                "timestamp": timestamp.split(']')[0].strip('[').split()[0] if ']' in timestamp else "Unknown Time"
                                 } for error_pattern in ERROR_PATTERNS if re.search(error_pattern, pod_logs)]
                     except Exception as e:
                         raise e
