@@ -101,7 +101,7 @@ def kafka_check_lag_change(handle, group_id: str = "", threshold: int = 3) -> Tu
             consumer.close()
 
             if topic_partitions:
-                future = executor.submit(fetch_lag, handle, admin_client, group, topic_partitions, current_time, threshold)
+                future = executor.submit(fetch_lag, handle, group, topic_partitions, current_time, threshold)
                 futures.append(future)
 
         for future in as_completed(futures):
