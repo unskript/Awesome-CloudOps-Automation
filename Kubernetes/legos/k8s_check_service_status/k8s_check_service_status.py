@@ -15,7 +15,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 class InputSchema(BaseModel):
-    endpoints: Optional[list] = Field(
+    endpoints: list = Field(
         ..., description='The URLs of the endpoint whose SSL certificate is to be checked. Eg: ["https://www.google.com", "https://expired.badssl.com/"]', title='List of URLs'
     )
     threshold: Optional[int] = Field(
@@ -71,7 +71,7 @@ def check_ssl_expiry(endpoint, threshold):
         raise e
 
 
-def k8s_check_service_status(handle, endpoints:list=[], threshold: int = 30) -> Tuple:
+def k8s_check_service_status(handle, endpoints:list, threshold: int = 30) -> Tuple:
     """
     k8s_check_service_status Checks the health status of the provided endpoints.
 
@@ -81,10 +81,6 @@ def k8s_check_service_status(handle, endpoints:list=[], threshold: int = 30) -> 
     :return: Tuple with a boolean indicating if all services are healthy, and a list of dictionaries 
              with individual service status.
     """
-    # Check if no endpoints are provided
-    if not endpoints:
-        return False, [{"Error": "No endpoints specified."}]
-
     failed_endpoints = []
 
     for endpoint in endpoints:

@@ -2,6 +2,9 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
+import os 
+import json 
+
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 from tabulate import tabulate
@@ -44,6 +47,8 @@ def k8s_get_memory_utilization_of_services_printer(output):
 
 
 def convert_memory_to_bytes(memory_value: str) -> int:
+    if not memory_value:
+        return 0
     units = {
         'K': 1000,
         'M': 1000 * 1000,
@@ -61,94 +66,91 @@ def convert_memory_to_bytes(memory_value: str) -> int:
 
     return int(memory_value)
 
+def parse_pod_data(data):
+    if not data:
+        return []
+    
+    parsed_data = []
+
+    for item in data.get('items', []):
+        pod_info = {
+            'name': item['metadata']['name'],
+            'namespace': item['metadata']['namespace'],
+            'labels': item['metadata'].get('labels', {}),
+            'annotations': item['metadata'].get('annotations', {}),
+            'status': item['status']['phase'],
+            'containers': [],
+            'spec': item.get('spec', {})
+        }
+
+        for container in pod_info['spec'].get('containers', []):
+            container_info = {
+                'name': container['name'],
+                'namespace': item['metadata']['namespace'],
+                'image': container['image'],
+                'resources': container.get('resources', {})
+            }
+            resources = container_info['resources']
+            container_info['memory_request'] = resources.get('requests', {}).get('memory', None)
+            container_info['memory_limit'] = resources.get('limits', {}).get('memory', None)
+            container_info['cpu_request'] = resources.get('requests', {}).get('cpu', None)
+            container_info['cpu_limit'] = resources.get('limits', {}).get('cpu', None)
+
+            parsed_data.append(container_info)
+
+    return parsed_data
 
 
-def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshold:float=80, services: list="") -> Tuple:
+def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshold:float=80, services: list=[]) -> Tuple:
     """
     k8s_get_memory_utilization_of_services executes the given kubectl commands
     to find the memory utilization of the specified services in a particular namespace
     and compares it with a given threshold.
 
-    Example-
-    Memory Request: The memory request for the service is 256Mi, and the function convert_memory_to_milli converts this value to 256000 milli units.
-    Memory Usage: According to the kubectl top pod command, the memory usage for the container is 4Mi, which equals 4000 milli units (since 1 Mi = 1000 milli units).
-    Utilization Percentage Calculation: The utilization percentage would be calculated as (memory_usage / memory_request_milli) * 100.
-    Substituting the values we have:
-    (4000/256000)∗100=0.0015625∗100=0.15625% (Utilization %)
-
-    :type handle: object
     :param handle: Object returned from the Task validate method, must have client-side validation enabled.
-
-    :type services: list
-    :param services: List of pod names of the services for which memory utilization is to be fetched.
-
-    :type namespace: str
     :param namespace: Namespace in which the services are running.
-
-    :type threshold: float, optional
     :param threshold: Threshold for memory utilization percentage. Default is 80%.
-
-    :rtype: tuple (status, list of exceeding services or None)
-    :return: Status, list of exceeding services if any service has exceeded the threshold,
+    :param services: List of pod names of the services for which memory utilization is to be fetched.
+    :return: Status, list of exceeding services if any service has exceeded the threshold.
     """
     if handle.client_side_validation is False:
         raise Exception(f"K8S Connector is invalid: {handle}")
 
     if services and not namespace:
-        raise Exception("Namespace must be provided if services are specified.")
-
+        raise ValueError("Namespace must be provided if services are specified.")
+    
     if not namespace:
-        kubectl_command = "kubectl get namespace -o=jsonpath='{.items[*].metadata.name}'"
-        response = handle.run_native_cmd(kubectl_command)
-        if response is None or response.stderr:
-            raise Exception(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
-        namespaces = response.stdout.strip().split(' ')
-    else:
-        namespaces = [namespace]
+        namespace = 'default'
 
     exceeding_services = []
-
-    for nmspace in namespaces:
+    try:
+        json_data = {}
         if not services:
-            kubectl_command = f"kubectl get pods -n {nmspace} -o=jsonpath='{{.items[*].metadata.name}}'"
+            kubectl_command = f"kubectl get pods -n {namespace} -o json"
             response = handle.run_native_cmd(kubectl_command)
-            if response is None or response.stderr:
-                raise Exception(f"Error occurred while executing command {kubectl_command} {response.stderr if response else 'empty response'}")
-            services_to_check = response.stdout.strip().split(' ')
+            json_data = json.loads(response.stdout.strip())
         else:
-            services_to_check = services
-
-        for service in services_to_check:
-            # Get the memory request for the service
-            kubectl_command = f"kubectl get pod {service} -n {nmspace} -o=jsonpath='{{.spec.containers[0].resources.requests.memory}}'"
+            service_pods = " ".join(services)
+            kubectl_command = f"kubectl get pods -n {namespace} {service_pods} -o json"
             response = handle.run_native_cmd(kubectl_command)
-            memory_request = response.stdout
-
-            memory_request = memory_request.strip() if memory_request else '0'
-            memory_request_bytes = convert_memory_to_bytes(memory_request)
-            if memory_request_bytes == 0:
-                print(f"Warning: Memory request usage not set for '{service}' in '{nmspace}' namespace")
+            json_data = json.loads(response.stdout.strip())
+        
+        pod_data = parse_pod_data(json_data)
+        for data in pod_data: 
+            mem_usage = convert_memory_to_bytes(data.get('memory_request')) 
+            mem_limit = convert_memory_to_bytes(data.get('memory_limit'))
+            if not mem_limit:
+                # Memory limit is not set, so lets continue with the execution
                 continue
-            # Get the memory usage for the service
-            kubectl_command = f"kubectl top pod {service} -n {nmspace} --containers | awk '{{print $4}}' | tail -n +2"
-            response = handle.run_native_cmd(kubectl_command)
-            memory_usage_values = response.stdout.strip().split('\n')
-            memory_usage_bytes = [convert_memory_to_bytes(value) for value in memory_usage_values if value.strip()]
+            utilization = (mem_usage / mem_limit if mem_limit else 1) * 100
+            utilization = round(utilization, 2)
+            if utilization > threshold:
+                exceeding_services.append({
+                    "service": data.get('name'),
+                    "namespace": data.get('namespace'),
+                    "utilization_percentage": utilization
+                })
+    except Exception as e:
+        raise e
 
-            # Calculate and compare utilization for each container in the pod
-            for memory_usage in memory_usage_bytes:
-                utilization_percentage = (memory_usage / memory_request_bytes) * 100 if memory_request_bytes > 0 else 0
-                if utilization_percentage > threshold:
-                    exceeding_services.append({
-                        "service": service,
-                        "namespace": nmspace,
-                        "memory_request_Mi": memory_request,
-                        "memory_usage_Bytes": memory_usage,
-                        "utilization_percentage": utilization_percentage
-                    })
-
-    if exceeding_services:
-        return (False, exceeding_services)
-    return (True, None)
-
-
+    return (False, exceeding_services) if exceeding_services else (True, [])
