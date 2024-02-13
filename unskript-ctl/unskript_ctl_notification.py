@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2023 unSkript.com
+# Copyright (c) 2024 unSkript.com
 # All rights reserved.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
@@ -87,7 +87,7 @@ class SlackNotification(NotificationFactory):
 
     def _generate_notification_message(self, summary_results):
         summary_message = ':wave: *unSkript Ctl Check Results* \n'
-        status_count = {'PASS': 0, 'FAIL': 0, 'ERROR': 0}
+        status_count = {'PASS': 0, 'FAIL': 0, 'ERROR': 0, 'TIMEOUT': 0}
 
         if not summary_results:
             return
@@ -100,7 +100,7 @@ class SlackNotification(NotificationFactory):
                 checks_per_priority = c_result.get(priority)
                 if checks_per_priority is None:
                     continue
-                for status in ['FAIL', 'ERROR', 'PASS']:
+                for status in ['FAIL', 'ERROR', 'TIMEOUT', 'PASS']:
                     checks = checks_per_priority.get(status)
                     if checks is None or len(checks) == 0:
                         continue
@@ -112,8 +112,10 @@ class SlackNotification(NotificationFactory):
                             summary_message += f':hash: *{check_name}*  :white_check_mark: ' + '\n'
                         elif status in ('FAIL', 'ERROR'):
                             summary_message += f':hash: *{check_name}*  :x: ' + '\n'
+                        elif status in ('TIMEOUT'):
+                            summary_message += f':hash: *{check_name}*  :alarm_clock: :x: ' + '\n'
 
-        summary_message += f':trophy: *(Pass/Fail/Error)* <-> *({status_count["PASS"]}/{status_count["FAIL"]}/{status_count["ERROR"]})*' + '\n\n'
+        summary_message += f':trophy: *(Pass/Fail/Error/Timeout)* <-> *({status_count["PASS"]}/{status_count["FAIL"]}/{status_count["ERROR"]}/{status_count["TIMEOUT"]})*' + '\n\n'
         return summary_message
 
 
@@ -296,12 +298,13 @@ class EmailNotification(NotificationFactory):
 
         return attachment_
 
-    def create_priority_message_table(self, priority:str, checks_per_status: dict)-> (str, int, int, int):
+    def create_priority_message_table(self, priority:str, checks_per_status: dict):
         pass_count = len(checks_per_status['PASS'])
         fail_count = len(checks_per_status['FAIL'])
         error_count = len(checks_per_status['ERROR'])
-        if pass_count == 0 and fail_count == 0 and error_count == 0:
-            return '', 0, 0, 0
+        timeout_count = len(checks_per_status['TIMEOUT'])
+        if pass_count == 0 and fail_count == 0 and error_count == 0 and timeout_count == 0:
+            return '', 0, 0, 0, 0
         print_priority = priority.capitalize()
         tr_message = f'''
             <table border="1">
@@ -310,17 +313,17 @@ class EmailNotification(NotificationFactory):
             <th> RESULT </th>
             </tr>
         '''
-        for status in ['FAIL', 'ERROR', 'PASS']:
+        for status in ['FAIL', 'ERROR', 'TIMEOUT', 'PASS']:
             checks = checks_per_status.get(status)
             for st in checks:
                 check_name = st[0]
-                if status in ['ERROR', 'PASS']:
+                if status in ['ERROR', 'TIMEOUT', 'PASS']:
                     tr_message += f'<tr> <td> {check_name}</td> <td> <strong>{status}</strong> </td></tr>' + '\n'
                 else:
                     check_link = f"{check_name}".lower().replace(' ','_')
                     tr_message += f'<tr><td> <a href="#{check_link}">{check_name}</a></td><td>  <strong>FAIL</strong> </td></tr>' + '\n'
         tr_message += '</table><br>' + '\n'
-        return tr_message, pass_count, fail_count, error_count
+        return tr_message, pass_count, fail_count, error_count, timeout_count
 
 
     def create_checks_summary_message(self,
@@ -331,8 +334,9 @@ class EmailNotification(NotificationFactory):
             return message
 
         if len(summary_results):
-            p = f = e = 0
+            p = f = e = t = 0
             tr_message = ''
+            timedout_check_result = {}
             for sd in summary_results:
                 if sd == {}:
                     continue
@@ -341,19 +345,35 @@ class EmailNotification(NotificationFactory):
                 table_part_of_the_message = ''
                 for priority in [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]:
                     if len(sd.get('result').get(priority)) > 0:
-                        tr_message, pass_count, fail_count, error_count = self.create_priority_message_table(priority, sd.get('result').get(priority))
+                        tr_message, pass_count, fail_count, error_count, timeout_count = self.create_priority_message_table(priority, sd.get('result').get(priority))
                         p += pass_count
                         f += fail_count
                         e += error_count
+                        t += timeout_count
                         table_part_of_the_message += tr_message + '\n'
+                        timedout_check_result[priority] = []
+                        timedout_check_result[priority].extend(sd.get('result').get(priority).get('TIMEOUT', []))
 
-            message += f'<center><h3>Checks Summary<br>Pass : {p}  Fail: {f}  Error: {e}</h3></center><br>' + '\n'
+            message += f'<center><h3>Checks Summary<br>Pass : {p}  Fail: {f}  Error: {e} Timeout: {t}</h3></center><br>' + '\n'
             message += '''
                 <br>
                 <h3> Check Summary Result </h3>
                 '''
             message += table_part_of_the_message + '\n'
 
+            if timedout_check_result and len(timedout_check_result):
+                message += '<br> <ul>' + '\n'
+                message += '<h2>CHECKS THAT TIMEDOUT</h2>' + '\n'
+                _timeout_result = []
+                for key,_result in timedout_check_result.items():
+                    if not _result:
+                        continue
+                    for _r in _result:
+                        _timeout_result.append({"priority": key, "name": _r[0], "connector": _r[-1]})
+                message += f'<pre>{yaml.safe_dump(_timeout_result, default_flow_style=False, sort_keys=False, indent=4)}</pre>'
+                message += '</ul> <br>' + '\n'
+                
+            
             if failed_result and len(failed_result) and not self.send_failed_objects_as_attachment:
                 message += '<br> <ul>' + '\n'
                 message += '<h2> FAILED OBJECTS </h2>' + '\n'
