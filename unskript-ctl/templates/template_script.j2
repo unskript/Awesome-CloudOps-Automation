@@ -5,6 +5,7 @@ import io
 from polling2 import poll
 
 class TimeoutException(Exception):
+    stderr = sys.__stderr__
     pass
 
 def timeout_handler(signum, frame):
