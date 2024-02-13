@@ -256,7 +256,7 @@ class Checks(ChecksFactory):
         for _priority in priority_order:
             results = checks_per_priority_per_result_list[_priority]
             for result_key, result_value in results.items():
-                if result_key == 'TIMEOUT' and result_value != []:
+                if result_key == 'TIMEOUT' and result_value:
                     if not timeout_label_printed:
                         print("\x1B[1;4mCHECKS THAT TIMEDOUT\x1B[0m")
                         timeout_label_printed = True
