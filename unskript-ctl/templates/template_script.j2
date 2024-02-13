@@ -58,6 +58,12 @@ def do_run_():
                 print(f" Exception Reached {str(e)}")
                 return 
     output, _ = _run_function('last_cell')
+
+    # We need to reset alarm because if any SIGALRM was triggred in the _run_function
+    # then any other operation like running info checks, or running script will also
+    # be subject to the same timeout restriction. Need to reset before running them.
+    signal.alarm(0)
+
     return output
 
 if __name__ == "__main__":
