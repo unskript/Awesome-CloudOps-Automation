@@ -50,8 +50,7 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
     """
     ERROR_PATTERNS = [
         "Worker exiting",
-        "Exception",
-        "Exception in worker process"
+        "Exception"
         # Add more error patterns here as necessary
     ]
     crash_logs = []
