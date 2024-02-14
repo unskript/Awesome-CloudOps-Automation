@@ -34,14 +34,14 @@ def k8s_get_memory_utilization_of_services_printer(output):
     if status:
         print("All services are within memory utilization threhsold")
     else:
-        headers = ["Service", "Namespace", "Utilization %"]
+        headers = ["Pod", "Namespace", "Utilization %"]
         table_data = []
 
         for entry in data:
-            service = entry['service']
+            pod = entry['pod']
             namespace = entry['namespace']
             utilization_percentage = entry.get('utilization_percentage', "")
-            table_data.append([service, namespace, utilization_percentage])
+            table_data.append([pod, namespace, utilization_percentage])
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
 
@@ -149,7 +149,7 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
             utilization = round(utilization, 2)
             if utilization > threshold:
                 exceeding_services.append({
-                    "service": pod,
+                    "pod": pod,
                     "namespace": namespace,
                     "utilization_percentage": utilization
                 })
