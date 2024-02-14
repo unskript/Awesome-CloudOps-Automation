@@ -107,29 +107,45 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
 
         pods_to_check = {}
         if services:
-            # If services pod specified, lets iterate over it and check only for them.
-            # If the mentioned pod not found in the top pod list, which means the memory
+            # If services specified, lets iterate over it and get pods corresponding to them.
+            # If service pod not found in the top pod list, which means the memory
             # utilization is not significant, so dont need to check
-            for svc_pod in services:
-                if svc_pod in pod_mem_util_dict.keys():
-                    pods_to_check[svc_pod] = pod_mem_util_dict[svc_pod]
+            for svc in services:
+                kubectl_cmd = f"kubectl get service {svc} -n {namespace} -o=jsonpath={{.spec.selector}}"
+                response = handle.run_native_cmd(kubectl_cmd)
+                svc_labels = json.loads(response.stdout.strip())
+                if not svc_labels:
+                    continue
+                _labels = ", ".join([f"{key}={value}" for key, value in svc_labels.items()])
+                svc_pod_cmd = f"kubectl get pods -n {namespace} -l \"{_labels}\" -o=jsonpath={{.items[*].metadata.name}}"
+                response = handle.run_native_cmd(svc_pod_cmd)
+                svc_pods = response.stdout.strip()
+                if not svc_pods:
+                    # No pods attached to the given service
+                    continue
+                for svc_pod in svc_pods.split():
+                    if svc_pod in pod_mem_util_dict.keys():
+                        pods_to_check[svc_pod] = pod_mem_util_dict[svc_pod]
 
         if not pods_to_check:
             pods_to_check = pod_mem_util_dict
 
         for pod, mem_usage in pods_to_check.items():
-            kubectl_command = f"kubectl get pod {pod} -n {namespace} -o=jsonpath='{{.spec.containers[0].resources.requests.memory}}'"
+            # Lets get memory requests for all containers not just the first container
+            kubectl_command = f"kubectl get pod {pod} -n {namespace} -o=jsonpath='{{.spec.containers[*].resources.requests.memory}}'"
             response = handle.run_native_cmd(kubectl_command)
             mem_request = response.stdout.strip()
-            mem_usage = pod_mem_util_dict.get(pod)
-
+            _mem_request = 0
+            for _mr in mem_request.split():
+                # Lets calculate the total memory request for all containers in the POD
+                _mem_request += convert_memory_to_bytes(_mr)
+            mem_request = _mem_request
             mem_usage = convert_memory_to_bytes(mem_usage)
-            mem_request = convert_memory_to_bytes(mem_request)
 
             if not mem_request:
-                # Memory limit is not set, so lets continue with the execution
+                # Memory limit is not set, dont calculate utilization
                 continue
-            utilization = (mem_usage / mem_request if mem_request else 1) * 100
+            utilization = (mem_usage / mem_request) * 100
             utilization = round(utilization, 2)
             if utilization > threshold:
                 exceeding_services.append({
