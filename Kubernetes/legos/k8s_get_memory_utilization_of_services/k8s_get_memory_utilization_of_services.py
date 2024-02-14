@@ -27,8 +27,8 @@ class InputSchema(BaseModel):
         description='Threshold for memory utilization percentage. Default is 80%.',
         title='Threshold (in %)',
     )
-
-
+        
+    
 def k8s_get_memory_utilization_of_services_printer(output):
     status, data = output
     if status:
@@ -45,8 +45,7 @@ def k8s_get_memory_utilization_of_services_printer(output):
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
 
-
-def convert_memory_to_bytes(memory_value: str) -> int:
+def convert_memory_to_bytes(memory_value) -> int:
     if not memory_value:
         return 0
     units = {
@@ -66,41 +65,6 @@ def convert_memory_to_bytes(memory_value: str) -> int:
 
     return int(memory_value)
 
-def parse_pod_data(data):
-    if not data:
-        return []
-    
-    parsed_data = []
-
-    for item in data.get('items', []):
-        pod_info = {
-            'name': item['metadata']['name'],
-            'namespace': item['metadata']['namespace'],
-            'labels': item['metadata'].get('labels', {}),
-            'annotations': item['metadata'].get('annotations', {}),
-            'status': item['status']['phase'],
-            'containers': [],
-            'spec': item.get('spec', {})
-        }
-
-        for container in pod_info['spec'].get('containers', []):
-            container_info = {
-                'name': container['name'],
-                'namespace': item['metadata']['namespace'],
-                'image': container['image'],
-                'resources': container.get('resources', {})
-            }
-            resources = container_info['resources']
-            container_info['memory_request'] = resources.get('requests', {}).get('memory', None)
-            container_info['memory_limit'] = resources.get('limits', {}).get('memory', None)
-            container_info['cpu_request'] = resources.get('requests', {}).get('cpu', None)
-            container_info['cpu_limit'] = resources.get('limits', {}).get('cpu', None)
-
-            parsed_data.append(container_info)
-
-    return parsed_data
-
-
 def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshold:float=80, services: list=[]) -> Tuple:
     """
     k8s_get_memory_utilization_of_services executes the given kubectl commands
@@ -118,36 +82,59 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
 
     if services and not namespace:
         raise ValueError("Namespace must be provided if services are specified.")
-    
+
     if not namespace:
         namespace = 'default'
 
     exceeding_services = []
+
+    # Main Idea:
+    # 1. Given namespace, lets get current memory utilization for top pods
+    # 2. Filter the list of pods to check from the service list
+    # 3. For the pods get the memory request
+    # 4. Calculate utilization as (mem_usage / mem_request) * 100
+    # 5. Construct list of pods which has  Utilization > threshold  and return the list
+
     try:
-        json_data = {}
-        if not services:
-            kubectl_command = f"kubectl get pods -n {namespace} -o json"
+        # Get memory utilization of all pods using top pods
+        top_pods_command = f"kubectl top pods -n {namespace} --no-headers"
+        response = handle.run_native_cmd(top_pods_command)
+        top_pods_output = response.stdout.strip() 
+        if not top_pods_output:
+            raise ValueError(f"Top PODS data is empty for given namespace {namespace}")
+        top_pods_output = top_pods_output.split('\n')
+        pod_mem_util_dict = {x.split()[0]: x.split()[-1] for x in top_pods_output}
+
+        pods_to_check = {}
+        if services:
+            # If services pod specified, lets iterate over it and check only for them.
+            # If the mentioned pod not found in the top pod list, which means the memory
+            # utilization is not significant, so dont need to check
+            for svc_pod in services:
+                if svc_pod in pod_mem_util_dict.keys():
+                    pods_to_check[svc_pod] = pod_mem_util_dict[svc_pod]
+
+        if not pods_to_check:
+            pods_to_check = pod_mem_util_dict
+
+        for pod, mem_usage in pods_to_check.items():
+            kubectl_command = f"kubectl get pod {pod} -n {namespace} -o=jsonpath='{{.spec.containers[0].resources.requests.memory}}'"
             response = handle.run_native_cmd(kubectl_command)
-            json_data = json.loads(response.stdout.strip())
-        else:
-            service_pods = " ".join(services)
-            kubectl_command = f"kubectl get pods -n {namespace} {service_pods} -o json"
-            response = handle.run_native_cmd(kubectl_command)
-            json_data = json.loads(response.stdout.strip())
-        
-        pod_data = parse_pod_data(json_data)
-        for data in pod_data: 
-            mem_usage = convert_memory_to_bytes(data.get('memory_request')) 
-            mem_limit = convert_memory_to_bytes(data.get('memory_limit'))
-            if not mem_limit:
+            mem_request = response.stdout.strip()
+            mem_usage = pod_mem_util_dict.get(pod)
+
+            mem_usage = convert_memory_to_bytes(mem_usage)
+            mem_request = convert_memory_to_bytes(mem_request)
+
+            if not mem_request:
                 # Memory limit is not set, so lets continue with the execution
                 continue
-            utilization = (mem_usage / mem_limit if mem_limit else 1) * 100
+            utilization = (mem_usage / mem_request if mem_request else 1) * 100
             utilization = round(utilization, 2)
             if utilization > threshold:
                 exceeding_services.append({
-                    "service": data.get('name'),
-                    "namespace": data.get('namespace'),
+                    "service": pod,
+                    "namespace": namespace,
                     "utilization_percentage": utilization
                 })
     except Exception as e:
