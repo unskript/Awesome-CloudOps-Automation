@@ -255,15 +255,20 @@ class Checks(ChecksFactory):
         priority_order = [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]
         for _priority in priority_order:
             results = checks_per_priority_per_result_list[_priority]
+            error_and_timeout_check_result = []
             for result_key, result_value in results.items():
-                if result_key == 'TIMEOUT' and result_value:
+                if result_key in ('TIMEOUT', 'ERROR') and result_value:
                     if not timeout_label_printed:
-                        print("\x1B[1;4mCHECKS THAT TIMEDOUT\x1B[0m")
+                        print("\x1B[1;4mErrored checks\x1B[0m")
                         timeout_label_printed = True
-                    timeout_check_result = []
                     for r in result_value:
-                        timeout_check_result.append({'priority': _priority, 'name': r[0], 'connector': r[-1].upper()})
-                    print(yaml.safe_dump(timeout_check_result, default_flow_style=False, sort_keys=False, indent=2))
+                        _c_name = f'{r[-1]}:{r[0]}'
+                        if failed_result and failed_result.get(_c_name):
+                            error_and_timeout_check_result.append({'priority': _priority, 'name': r[0], 'connector': r[-1].upper(), 'reason': result_key, 'error': failed_result.get(_c_name)})
+                        else:
+                            error_and_timeout_check_result.append({'priority': _priority, 'name': r[0], 'connector': r[-1].upper(), 'reason': result_key})
+            if error_and_timeout_check_result:
+                print(yaml.safe_dump(error_and_timeout_check_result, default_flow_style=False, sort_keys=False, indent=2))
 
         # Now lets display failed-objects 
         for k,v in failed_result.items():

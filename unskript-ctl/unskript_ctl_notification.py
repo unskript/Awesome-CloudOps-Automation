@@ -336,7 +336,7 @@ class EmailNotification(NotificationFactory):
         if len(summary_results):
             p = f = e = t = 0
             tr_message = ''
-            timedout_check_result = {}
+            error_and_timedout_check_result = {}
             for sd in summary_results:
                 if sd == {}:
                     continue
@@ -351,25 +351,45 @@ class EmailNotification(NotificationFactory):
                         e += error_count
                         t += timeout_count
                         table_part_of_the_message += tr_message + '\n'
-                        timedout_check_result[priority] = []
-                        timedout_check_result[priority].extend(sd.get('result').get(priority).get('TIMEOUT', []))
+                        error_and_timedout_check_result[priority] = {}
+                        if sd.get('result', {}).get(priority, {}).get('ERROR'):
+                            error_and_timedout_check_result[priority]['ERROR'] = []
+                            error_and_timedout_check_result[priority]['ERROR'].extend(sd.get('result').get(priority).get('ERROR', []))
+                        if sd.get('result', {}).get(priority, {}).get('TIMEOUT'):
+                            error_and_timedout_check_result[priority]['TIMEOUT'] = []
+                            error_and_timedout_check_result[priority]['TIMEOUT'].extend(sd.get('result').get(priority).get('TIMEOUT', []))
 
             message += f'<center><h3>Checks Summary<br>Pass : {p}  Fail: {f}  Error: {e} Timeout: {t}</h3></center><br>' + '\n'
             message += '''
                 <br>
-                <h3> Check Summary Result </h3>
+                <h2>Check Summary Result</h2>
                 '''
             message += table_part_of_the_message + '\n'
 
-            if timedout_check_result and len(timedout_check_result):
+            if error_and_timedout_check_result and len(error_and_timedout_check_result):
                 message += '<br> <ul>' + '\n'
-                message += '<h2>CHECKS THAT TIMEDOUT</h2>' + '\n'
+                message += '<h2>Errored checks</h2>' + '\n'
                 _timeout_result = []
-                for key,_result in timedout_check_result.items():
+                for _priority, _result in error_and_timedout_check_result.items():
                     if not _result:
-                        continue
-                    for _r in _result:
-                        _timeout_result.append({"priority": key, "name": _r[0], "connector": _r[-1]})
+                        continue 
+                    error_result = _result.get('ERROR', [])
+                    timeout_result = _result.get('TIMEOUT', [])
+                    if error_result:
+                        for _result in error_result:
+                            _c_name = f'{_result[-1]}:{_result[0]}'
+                            if failed_result and failed_result.get('result'):
+                                _error_msg = [d.get(_c_name) for d in failed_result.get('result')]
+                                if _error_msg:
+                                    _timeout_result.append({"priority": _priority, "name": _result[0], "connector": _result[-1], "reason": 'ERROR', 'error': _error_msg})
+                    elif timeout_result:
+                        for _result in timeout_result:
+                            if _result[0] not in [_tr.get('name') for _tr in _timeout_result]:
+                                _timeout_result.append({"priority": _priority, "name": _result[0], "connector": _result[-1], "reason": 'TIMEOUT'})
+                                
+                    
+
+
                 message += f'<pre>{yaml.safe_dump(_timeout_result, default_flow_style=False, sort_keys=False, indent=4)}</pre>'
                 message += '</ul> <br>' + '\n'
                 
