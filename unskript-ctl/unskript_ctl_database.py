@@ -13,6 +13,7 @@ import re
 import ZODB
 import sqlite3
 import json
+import zlib
 import ZODB.FileStorage
 
 from unskript_ctl_factory import DatabaseFactory, UnskriptFactory
@@ -107,7 +108,22 @@ class ZoDBInterface(DatabaseFactory):
             data = kwargs.get('data')
         with self.db.transaction() as connection:
             root = connection.root()
-            old_data = root[self.collection_name]
+            stored_data = root.get(self.collection_name, {})
+            if isinstance(stored_data, bytes):
+                try:
+                    decompressed_data = zlib.decompress(stored_data)
+                    old_data = json.loads(decompressed_data.decode('utf-8'))
+                except zlib.error as e:
+                    self.logger.error(f"Error decompressing data: {e}")
+                    return False
+                except json.JSONDecodeError as e:
+                    self.logger.error(f"Error decoding JSON data: {e}")
+                    return False
+            elif isinstance(stored_data, dict):
+                old_data = stored_data
+            else:
+                self.logger.error("Unsupported data type in database")
+                return False
             old_data.update(data)
             root[self.collection_name] = old_data
             connection.transaction_manager.commit()

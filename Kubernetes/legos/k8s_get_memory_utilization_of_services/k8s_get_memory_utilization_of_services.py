@@ -46,8 +46,8 @@ def k8s_get_memory_utilization_of_services_printer(output):
 
 
 
-def convert_memory_to_bytes(memory_value: str) -> int:
-    if not memory_value:
+def convert_memory_to_bytes(memory_value: Optional[str]) -> int:
+    if memory_value is None:
         return 0
     units = {
         'K': 1000,
