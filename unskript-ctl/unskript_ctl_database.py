@@ -108,29 +108,9 @@ class ZoDBInterface(DatabaseFactory):
             data = kwargs.get('data')
         with self.db.transaction() as connection:
             root = connection.root()
-            try:
-                old_data = root[self.collection_name]
-                if 'schema_version' in root.keys():
-                    # New Format nothing be done
-                    pass 
-                else: 
-                    # Old data that has the older schema
-                    if isinstance(old_data, bytes):
-                        try:
-                            decompressed_data = zlib.decompress(old_data)
-                            old_data = json.loads(decompressed_data.decode('utf-8'))
-                        except zlib.error as e:
-                            self.logger.error(f"Error decompressing data: {e}")
-                            return False
-                        except json.JSONDecodeError as e:
-                            self.logger.error(f"Error decoding JSON data: {e}")
-                            return False
-                old_data.update(data)
-                root[self.collection_name] = old_data
-            except Exception as e: 
-                self.logger.error(f'Alert! Database schema mismatch {e}')
-                return False 
-
+            old_data = root[self.collection_name]
+            old_data.update(data)
+            root[self.collection_name] = old_data
             connection.transaction_manager.commit()
             connection.close()
 
