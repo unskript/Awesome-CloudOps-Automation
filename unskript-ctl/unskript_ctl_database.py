@@ -115,6 +115,8 @@ class ZoDBInterface(DatabaseFactory):
                 try:
                     decompressed_data = zlib.decompress(stored_data)
                     old_data = json.loads(decompressed_data.decode('utf-8'))
+                    # Make sure the DB has the schema version to indicate the migration
+                    root['schema_version'] = SCHEMA_VERSION
                 except zlib.error as e:
                     self.logger.error(f"Error decompressing data: {e}")
                     return False
@@ -124,13 +126,20 @@ class ZoDBInterface(DatabaseFactory):
                 finally:
                     self.logger.info("DB schema migrated successfully")
             elif isinstance(stored_data, dict):
+                if 'schema_version' not in root.keys():
+                    # In case we dont find it, lets add the schema version
+                    root['schema_version'] = SCHEMA_VERSION
                 old_data = stored_data
             else:
                 self.logger.error("Unsupported data type in database")
                 return False
-            old_data.update(data)
-            root[self.collection_name] = old_data
-            connection.transaction_manager.commit()
+            try:
+                old_data.update(data)
+                root[self.collection_name] = old_data
+                connection.transaction_manager.commit()
+            except Exception as e:
+                self.logger.debug("Exception Occurred when updating ")
+            
             connection.close()
 
             del root
