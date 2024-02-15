@@ -569,7 +569,13 @@ class UnskriptCtl(UnskriptFactory):
             output_json_file = os.path.join(output_dir,UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME + '.json')
             mode = 'both'
         if args.command == 'run' and args.info:
-            mode = "both"
+            if args.check_command:
+                # Case when info is called with check
+                mode = "both"
+            else:
+                # Case when run is called with info only or info with script, that case we dont want
+                # to send any slack notification because we dont have any slack notification to send
+                mode = "email"
 
         self._notification.notify(summary_results=summary_result,
                                   failed_objects=failed_objects,

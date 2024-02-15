@@ -11,6 +11,7 @@
 import os 
 import re
 import ZODB
+import zlib
 import sqlite3
 import json
 import ZODB.FileStorage
@@ -112,6 +113,7 @@ class ZoDBInterface(DatabaseFactory):
             root[self.collection_name] = old_data
             connection.transaction_manager.commit()
             connection.close()
+
             del root
             del connection
 
