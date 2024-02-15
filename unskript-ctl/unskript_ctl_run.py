@@ -687,7 +687,7 @@ class InfoAction(ChecksFactory):
             self.logger.error("ERROR: Action list is empty, Cannot run anything")
             raise ValueError("Action List is empty!")
 
-        self.action_uuid, self.check_names, self.connector_types, _= \
+        self.action_uuid, self.check_names, self.connector_types, self.check_entry_functions = \
                 self._common.get_code_cell_name_and_uuid(list_of_actions=action_list)
 
         action_list = self.create_checks_for_matrix_argument(action_list)
@@ -700,7 +700,7 @@ class InfoAction(ChecksFactory):
 
         # Internal routine to run through all python JIT script and return the output
         def _execute_script(script, idx):
-            check_name = self.check_names[idx]
+            check_name = self.check_entry_functions[idx]
             connector_name = self.connector_types[idx]
             result_key = f"{connector_name}/{check_name}"
             if not self.uglobals['info_action_results'].get(result_key):
