@@ -111,6 +111,7 @@ class ZoDBInterface(DatabaseFactory):
             root = connection.root()
             stored_data = root.get(self.collection_name, {})
             if isinstance(stored_data, bytes):
+                self.logger.info("Found database to be using old schema, will migrate to new format")
                 try:
                     decompressed_data = zlib.decompress(stored_data)
                     old_data = json.loads(decompressed_data.decode('utf-8'))
@@ -120,6 +121,8 @@ class ZoDBInterface(DatabaseFactory):
                 except json.JSONDecodeError as e:
                     self.logger.error(f"Error decoding JSON data: {e}")
                     return False
+                finally:
+                    self.logger.info("DB schema migrated successfully")
             elif isinstance(stored_data, dict):
                 old_data = stored_data
             else:
