@@ -332,7 +332,7 @@ jobs:
           cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
-          echo ${{ env.BUILD_TAGS }} > /etc/unskript/version.txt
+          echo ${{ env.BUILD_TAGS }} > ./version.txt
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
 
       - name: Docker Scout
