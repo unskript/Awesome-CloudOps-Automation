@@ -2,84 +2,94 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from typing import Tuple
+from typing import Tuple, List
 from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
-    threshold : int = Field(
-        80,
-        title='Threshold',
-        description='CPU & Memory Threshold %age'
+    core_services: List= Field(
+        default=[],
+        title='Core Services',
+        description='List of core services names to check for health'
     )
 
 def k8s_get_cluster_health_printer(output):
     status, health_issues = output
-
-    # Print the overall health status
     if status:
         print("Cluster Health: OK\n")
-        return
+    else:
+        print("Cluster Health: NOT OK\n")
+        for issue in health_issues:
+            print(f"Type: {issue['type']}")
+            print(f"Name: {issue['name']}")
+            print(f"Namespace: {issue.get('namespace', 'N/A')}")
+            print(f"Issue: {issue['issue']}")
+            print("-" * 40)
 
-    print("Cluster Health: NOT OK\n")
-
-    # Print details of the issues
-    for issue in health_issues:
-        issue_type = issue.get("type", "Unknown Type")
-        name = issue.get("name", "Unknown Name")
-        namespace = issue.get("namespace", "N/A")
-        reason = issue.get("reason", "No specific reason provided")
-        message = issue.get("message", "No detailed message")
-
-        print(f"Type: {issue_type}")
-        print(f"Name: {name}")
-        if namespace != "N/A":
-            print(f"Namespace: {namespace}")
-        print(f"Reason: {reason}")
-        if message != "No detailed message":
-            print(f"Message: {message}")
-        print("-" * 40)
-
-def check_node_health(node) -> bool:
-    for condition in node.status.conditions:
-        if condition.type == "Ready" and condition.status == "True":
-            return True
-    return False
-
-def check_pod_health(pod) -> bool:
-    # Check if the pod is in a Running or Succeeded state
-    if pod.status.phase not in ["Running", "Succeeded"]:
-        return False
+def check_node_health(node_api):
+    nodes = node_api.list_node()
+    for node in nodes.items:
+        for condition in node.status.conditions:
+            if condition.type == "Ready" and condition.status != "True":
+                return False
     return True
 
-def check_deployment_health(deployment) -> bool:
-    return deployment.status.replicas == deployment.status.available_replicas
+def check_pod_health(node_api, core_services: List = None):
+    health_issues = []
+    pods = node_api.list_pod_for_all_namespaces()
+    core_services = core_services or [] 
+    for pod in pods.items:
+        # If core services are specified, check only those. Otherwise, check all pods.
+        if core_services:
+            if not any(core_service.lower() in pod.metadata.name.lower() for core_service in core_services):
+                continue
+        # Check pod health
+        if pod.status.phase not in ["Running", "Succeeded"]:
+            health_issues.append({
+                "type": "Pod",
+                "name": pod.metadata.name,
+                "namespace": pod.metadata.namespace,
+                "issue": "Pod is not running or succeeded."
+            })
+    return health_issues
 
 
-def k8s_get_cluster_health(handle, threshold: int = 80) -> Tuple:
+def check_deployment_health(apps_api, core_services: List = []) -> List[dict]:
+    health_issues = []
+    deployments = apps_api.list_deployment_for_all_namespaces()
+    core_services = core_services or [] 
+    for deployment in deployments.items:
+        # If core services are specified, check only those. Otherwise, check all deployments.
+        if core_services:
+            if not any(core_service.lower() in deployment.metadata.name.lower() for core_service in core_services):
+                continue 
+        # Check deployment health
+        if deployment.status.replicas != deployment.status.available_replicas:
+            health_issues.append({
+                "type": "Deployment",
+                "name": deployment.metadata.name,
+                "namespace": deployment.metadata.namespace,
+                "issue": "Deployment has replicas mismatch or is not available/progressing."
+            })
+    return health_issues
+
+
+def k8s_get_cluster_health(handle, core_services: List = []) -> Tuple:
     health_issues = []
 
     node_api = client.CoreV1Api(api_client=handle)
     apps_api = client.AppsV1Api(api_client=handle)
 
     # 1. Check Node Health
-    nodes = node_api.list_node()
-    for node in nodes.items:
-        if not check_node_health(node):
-            health_issues.append({"type": "Node", "name": node.metadata.name, "issue": "Node not ready or under pressure."})
+    if not check_node_health(node_api):
+        health_issues.append({"type": "Node", "issue": "One or more nodes are not ready."})
 
     # 2. Check Pod Health across all namespaces
-    pods = node_api.list_pod_for_all_namespaces()
-    for pod in pods.items:
-        if not check_pod_health(pod):
-            health_issues.append({"type": "Pod", "name": pod.metadata.name, "namespace": pod.metadata.namespace, "issue": "Pod not ready."})
+    health_issues.extend(check_pod_health(node_api, core_services))
 
     # 3. Check Deployment Health
-    deployments = apps_api.list_deployment_for_all_namespaces()
-    for deployment in deployments.items:
-        if not check_deployment_health(deployment):
-            health_issues.append({"type": "Deployment", "name": deployment.metadata.name, "namespace": deployment.metadata.namespace, "issue": "Deployment replicas mismatch."})
+    health_issues.extend(check_deployment_health(apps_api, core_services))
 
     if health_issues:
         return (False, health_issues)
