@@ -731,8 +731,7 @@ class InfoAction(ChecksFactory):
 
         # Lets remove the directory if it exists
         try:
-            #shutil.rmtree(self.temp_jit_dir)
-            pass
+            shutil.rmtree(self.temp_jit_dir)
         except OSError as e:
             self.logging.error(str(e))
 
