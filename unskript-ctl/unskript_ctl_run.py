@@ -673,6 +673,7 @@ class InfoAction(ChecksFactory):
         self._common = CommonAction()
         self.uglobals = UnskriptGlobals()
         self.uglobals['global'] = self.info_globals
+        self.jit_mapping = {}
 
         if self.info_globals:
             for k,v in self.info_globals.items():
@@ -700,25 +701,28 @@ class InfoAction(ChecksFactory):
 
         # Internal routine to run through all python JIT script and return the output
         def _execute_script(script, idx):
-            check_name = self.check_entry_functions[idx]
-            connector_name = self.connector_types[idx]
-            result_key = f"{connector_name}/{check_name}"
+            script = script.strip()
+            # Lets get the result_key from the jit_mapping. Why? because
+            # action_entry_function list will fail in case of matrix argument
+            result_key = self.jit_mapping.get(script)
+
             if not self.uglobals['info_action_results'].get(result_key):
-                self.uglobals['info_action_results'][result_key] = []
+                self.uglobals['info_action_results'][result_key] = ''
+
             try:
                 result = subprocess.run(['python', script], capture_output=True, check=True, text=True)
                 self.logger.debug(result.stdout)
-                if len(self.uglobals["info_action_results"].get(result_key)) != 0:
-                    self.uglobals['info_action_results'][result_key].append(result.stdout)
-                else:
-                    self.uglobals['info_action_results'][result_key] = result.stdout
+
             except subprocess.CalledProcessError as e:
                 sys.logger.error(f"Error executing {script}: {str(e)}")
                 raise ValueError(e)
-            finally:
-                return result.stdout
+
+            self.uglobals['info_action_results'][result_key] += '\n' + result.stdout
+            return result.stdout
 
         script_files = [f for f in os.listdir(self.temp_jit_dir) if f.endswith('.py')]
+        # Lets sort the script files, because the os.listdir would return in not ascending order!
+        script_files.sort()
         with concurrent.futures.ThreadPoolExecutor() as executor, tqdm(total=len(script_files), desc="Running") as pbar:
             futures = {executor.submit(_execute_script, os.path.join(self.temp_jit_dir, script), idx): idx for idx, script in enumerate(script_files)}
             # Wait for all scripts to complete
@@ -727,7 +731,8 @@ class InfoAction(ChecksFactory):
 
         # Lets remove the directory if it exists
         try:
-            shutil.rmtree(self.temp_jit_dir)
+            #shutil.rmtree(self.temp_jit_dir)
+            pass
         except OSError as e:
             self.logging.error(str(e))
 
@@ -747,6 +752,10 @@ class InfoAction(ChecksFactory):
         first_cell_content = self.get_first_cell_content()
         for index, action in enumerate(action_list):
             jit_file = os.path.join(self.temp_jit_dir, self.temp_jit_base_name + str(index) + '.py')
+            # Lets create a mapping of which action_entry_function maps to which script file
+            _name = action.get('metadata', {}).get('action_entry_function', '')
+            _connector = action.get('metadata', {}).get('action_type', '').replace('LEGO_TYPE_', '').lower()
+            self.jit_mapping[jit_file] = _connector + '/' + _name
             with open(jit_file, 'w') as f:
                 f.write(first_cell_content)
                 f.write('\n\n')
@@ -812,5 +821,3 @@ class InfoAction(ChecksFactory):
             action_list = self._common.create_checks_for_matrix_argument(actions=list_of_actions,
                                                                          matrix=self.matrix)
         return action_list
-
-
