@@ -26,6 +26,7 @@ from jsonschema import validate, ValidationError
 
 
 from unskript_utils import *
+from unskript_ctl_version import *
 from unskript_ctl_factory import NotificationFactory
 
 # This class implements Notification function for Slack
@@ -378,6 +379,7 @@ class EmailNotification(NotificationFactory):
             <center>
             <h1> {email_title} </h1>
             <h3> <strong>Tested On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
+            <h4> <strong>Build #: <br> {BUILD_NUMBER} </strong></h4>
             </center>
             '''
         return message
