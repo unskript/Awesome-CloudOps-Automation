@@ -721,8 +721,6 @@ class InfoAction(ChecksFactory):
             return result.stdout
 
         script_files = [f for f in os.listdir(self.temp_jit_dir) if f.endswith('.py')]
-        # Lets sort the script files, because the os.listdir would return in not ascending order!
-        script_files.sort()
         with concurrent.futures.ThreadPoolExecutor() as executor, tqdm(total=len(script_files), desc="Running") as pbar:
             futures = {executor.submit(_execute_script, os.path.join(self.temp_jit_dir, script), idx): idx for idx, script in enumerate(script_files)}
             # Wait for all scripts to complete
