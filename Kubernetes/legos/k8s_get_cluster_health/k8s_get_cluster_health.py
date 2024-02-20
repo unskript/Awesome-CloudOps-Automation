@@ -6,7 +6,6 @@ import json
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from kubernetes import client
-from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
     core_services: Optional[list] = Field(
@@ -34,12 +33,11 @@ def k8s_get_cluster_health_printer(output):
             print("-" * 40)
 
 def execute_kubectl_command(handle, command: str):
-    print(f"Executing command: {command}")
     response = handle.run_native_cmd(command)
     if response.stderr:
         print(f"Warning: {response.stderr}")
         if "not found" in response.stderr:
-            return None  # Service not found, skip this service
+            return None  # Service not found in the given namespace, skip this service
     if not response or not response.stdout:
         print(f"No output for command: {command}")
         return None
@@ -61,16 +59,19 @@ def get_label_selector_for_service(handle, namespace: str, service_name: str):
     return ''
 
 def check_node_health(node_api):
-    print("Checking node health...")
     health_issues = []
     nodes = node_api.list_node()
     for node in nodes.items:
-        if not all(condition.type == "Ready" and condition.status == "True" for condition in node.status.conditions):
-            health_issues.append({"type": "Node", "name": node.metadata.name, "issue": "Node is not ready."})
+        ready_condition = next((condition for condition in node.status.conditions if condition.type == "Ready"), None)
+        if not ready_condition or ready_condition.status != "True":
+            health_issues.append({
+                "type": "Node",
+                "name": node.metadata.name,
+                "issue": f"Node is not ready. Condition: {ready_condition.type if ready_condition else 'None'}, Status: {ready_condition.status if ready_condition else 'None'}"
+            })
     return health_issues
 
 def check_pod_health(handle, core_services, namespace):
-    print(f"Checking pod health in namespace: {namespace}, for services: {core_services}")
     health_issues = []
     namespaces = [namespace] if namespace else get_namespaces(handle)
 
@@ -97,7 +98,6 @@ def check_pod_health(handle, core_services, namespace):
     return health_issues
 
 def check_deployment_health(handle, core_services, namespace):
-    print(f"Checking deployment health in namespace: {namespace}, for services: {core_services}")
     health_issues = []
     namespaces = [namespace] if namespace else get_namespaces(handle)
 
