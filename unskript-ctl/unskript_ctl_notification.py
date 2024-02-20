@@ -379,7 +379,7 @@ class EmailNotification(NotificationFactory):
             <center>
             <h1> {email_title} </h1>
             <h3> <strong>Tested On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
-            <h4> <strong>Build #: <br> {BUILD_NUMBER} </strong></h4>
+            <h4> <strong>Version : {BUILD_NUMBER} </strong></h4><br>
             </center>
             '''
         return message
