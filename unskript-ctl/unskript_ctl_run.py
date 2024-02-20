@@ -308,14 +308,27 @@ class Checks(ChecksFactory):
             self.logger.error("Checks List Cannot be empty. Please verify the checks_list is valid")
             return False
 
+        execution_timeout = exec_timeout = 60
+        per_check_timeout = {}
+        g = self._config.get_global()
+        if g and g.get('execution_timeout'):
+            if isinstance(g.get('execution_timeout'), int):
+                execution_timeout = g.get('execution_timeout')
+            if isinstance(g.get('execution_timeout'), dict):
+               per_check_timeout = g.get('execution_timeout')
+        
         with open(self.temp_jit_file, 'w', encoding='utf-8') as f:
             f.write(self.get_first_cell_content(checks_list))
             f.write('\n\n')
             for idx,c in enumerate(checks_list[:]):
                 idx += 1
+                _entry_func = c.get('metadata', {}).get('action_entry_function', '')
                 check_name = f"def check_{idx}():"
                 f.write(check_name + '\n')
                 f.write('    global w' + '\n')
+                f.write('    signal.signal(signal.SIGALRM, timeout_handler)' + '\n')
+                exec_timeout = per_check_timeout.get(_entry_func, execution_timeout)
+                f.write(f'    signal.alarm({exec_timeout})' + '\n')
                 for line in c.get('code'):
                     line = line.replace('\n', '')
                     for l in line.split('\n'):
@@ -323,6 +336,7 @@ class Checks(ChecksFactory):
                         if l.startswith("from __future__"):
                             continue
                         f.write('    ' + l.replace('\n', '') + '\n')
+                f.write('    signal.alarm(0)' + '\n')
             f.write('\n')
             # Lets create the last cell content
             f.write('def last_cell():' + '\n')
@@ -331,7 +345,7 @@ class Checks(ChecksFactory):
                 f.write('    ' + line + '\n')
             f.write('\n')
 
-            post_check_content = self.get_after_check_content(len(checks_list))
+            post_check_content = self.get_after_check_content(len(checks_list), exec_timeout=exec_timeout)
             f.write(post_check_content + '\n')
 
         if os.path.exists(self.temp_jit_file) is True:
@@ -371,17 +385,13 @@ class Checks(ChecksFactory):
         return  template.render()
 
 
-    def get_after_check_content(self, len_of_checks):
+    def get_after_check_content(self, len_of_checks, exec_timeout=60):
         with open(os.path.join(os.path.dirname(__file__), 'templates/template_script.j2'), 'r') as f:
             content_template = f.read()
 
-        execution_timeout = 60
-        g = self._config.get_global()
-        if g and g.get('execution_timeout'):
-            execution_timeout = g.get('execution_timeout')
-
         template = Template(content_template)
-        return  template.render(num_checks=len_of_checks, execution_timeout=execution_timeout)
+        return  template.render(num_checks=len_of_checks,
+                                execution_timeout=exec_timeout)
 
 
     def insert_task_lines(self, checks_list: list):
