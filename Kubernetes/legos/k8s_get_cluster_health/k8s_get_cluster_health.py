@@ -2,21 +2,22 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
+import json
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
-    core_services: Optional[list]= Field(
+    core_services: Optional[list] = Field(
         default=[],
-        title='Core Services',
-        description='List of core services names to check for health'
+        title="Core Services",
+        description="List of core services names to check for health. If empty, checks all services."
     )
     namespace: Optional[str] = Field(
-        "",
-        title='Namespace',
-        description='Namespace of the core services'
+        default="",
+        title="Namespace",
+        description="Namespace of the core services. If empty, checks all namespaces."
     )
 
 def k8s_get_cluster_health_printer(output):
@@ -32,94 +33,99 @@ def k8s_get_cluster_health_printer(output):
             print(f"Issue: {issue['issue']}")
             print("-" * 40)
 
+def execute_kubectl_command(handle, command: str):
+    print(f"Executing command: {command}")
+    response = handle.run_native_cmd(command)
+    if response.stderr:
+        print(f"Warning: {response.stderr}")
+        if "not found" in response.stderr:
+            return None  # Service not found, skip this service
+    if not response or not response.stdout:
+        print(f"No output for command: {command}")
+        return None
+    return response.stdout.strip()
+
+def get_namespaces(handle):
+    command = "kubectl get ns -o=jsonpath='{.items[*].metadata.name}'"
+    namespaces_str = execute_kubectl_command(handle, command)
+    if namespaces_str:
+        return namespaces_str.split()
+    return []
+
+def get_label_selector_for_service(handle, namespace: str, service_name: str):
+    command = f"kubectl get svc {service_name} -n {namespace} -o=jsonpath='{{.spec.selector}}'"
+    label_selector_json = execute_kubectl_command(handle, command)
+    if label_selector_json:
+        labels_dict = json.loads(label_selector_json.replace("'", "\""))
+        return ",".join([f"{k}={v}" for k, v in labels_dict.items()])
+    return ''
+
 def check_node_health(node_api):
+    print("Checking node health...")
+    health_issues = []
     nodes = node_api.list_node()
     for node in nodes.items:
-        for condition in node.status.conditions:
-            if condition.type == "Ready" and condition.status != "True":
-                return False
-    return True
+        if not all(condition.type == "Ready" and condition.status == "True" for condition in node.status.conditions):
+            health_issues.append({"type": "Node", "name": node.metadata.name, "issue": "Node is not ready."})
+    return health_issues
 
-def check_pod_health(node_api, core_services, namespace):
-    
+def check_pod_health(handle, core_services, namespace):
+    print(f"Checking pod health in namespace: {namespace}, for services: {core_services}")
     health_issues = []
-    try:
-        if namespace:
-            pods = node_api.list_namespaced_pod(namespace)
-            if not pods:
-                return (True, None)
+    namespaces = [namespace] if namespace else get_namespaces(handle)
+
+    for ns in namespaces:
+        if core_services:
+            for service in core_services:
+                label_selector = get_label_selector_for_service(handle, ns, service)
+                if label_selector:
+                    command = f"kubectl get pods -n {ns} -l {label_selector} -o=jsonpath='{{.items[?(@.status.phase!=\"Running\")].metadata.name}}'"
+                    pods_not_running = execute_kubectl_command(handle, command)
+                    if pods_not_running:
+                        for pod_name in pods_not_running.split():
+                            health_issues.append({"type": "Pod", "name": pod_name, "namespace": ns, "issue": "Pod is not running."})
+                else:
+                    print(f"Service {service} not found or has no selectors in namespace {ns}. Skipping...")
         else:
-            pods = node_api.list_pod_for_all_namespaces()
-            print("COLLECTED PODS:\n", pods)
-        
-        for pod in pods.items:
-            labels = pod.metadata.labels or {}
-            app_label = labels.get('app', '').lower()
-            if core_services and not any(service.lower() in app_label for service in core_services):
-                    continue
-            if pod.status.phase not in ["Running", "Succeeded"]:
-                health_issues.append({
-                    "type": "Pod",
-                    "name": pod.metadata.name,
-                    "namespace": pod.metadata.namespace,
-                    "issue": "Pod is not running or succeeded."
-                })
-        
-        return health_issues
-    except ApiException as e:
-        print(f"API exception when checking pod health: {e}")
-        return []
+            # Check all pods in the namespace if no specific services are given
+            command = f"kubectl get pods -n {ns} -o=jsonpath='{{.items[?(@.status.phase!=\"Running\")].metadata.name}}'"
+            pods_not_running = execute_kubectl_command(handle, command)
+            if pods_not_running:
+                for pod_name in pods_not_running.split():
+                    health_issues.append({"type": "Pod", "name": pod_name, "namespace": ns, "issue": "Pod is not running."})
 
+    return health_issues
 
-def check_deployment_health(apps_api, core_services, namespace):
+def check_deployment_health(handle, core_services, namespace):
+    print(f"Checking deployment health in namespace: {namespace}, for services: {core_services}")
     health_issues = []
-    try:
-        if namespace:
-            deployments = apps_api.list_namespaced_deployment(namespace)
-            if not deployments:
-                    return (True, None)
+    namespaces = [namespace] if namespace else get_namespaces(handle)
+
+    for ns in namespaces:
+        if core_services:
+            for service in core_services:
+                label_selector = get_label_selector_for_service(handle, ns, service)
+                if label_selector:
+                    command = f"kubectl get deployments -n {ns} -l {label_selector} -o=jsonpath='{{.items[?(@.status.readyReplicas!=@.status.replicas)].metadata.name}}'"
+                    deployments_not_ready = execute_kubectl_command(handle, command)
+                    if deployments_not_ready:
+                        for deployment_name in deployments_not_ready.split():
+                            health_issues.append({"type": "Deployment", "name": deployment_name, "namespace": ns, "issue": "Deployment has replicas mismatch or is not available/progressing."})
+                else:
+                    print(f"Service {service} not found or has no selectors in namespace {ns}. Skipping...")
         else:
-            deployments = apps_api.list_deployment_for_all_namespaces()
-            print("COLLECTED DEPS:\n", deployments)
-        
-        for deployment in deployments.items:
-            # Check if labels exist, if not, set app_label to an empty string
-            labels = deployment.metadata.labels or {}
-            app_label = labels.get('app', '').lower()
-            if core_services and not any(service.lower() in app_label for service in core_services):
-                    continue
-            if deployment.status.replicas != deployment.status.available_replicas:
-                health_issues.append({
-                    "type": "Deployment",
-                    "name": deployment.metadata.name,
-                    "namespace": deployment.metadata.namespace,
-                    "issue": "Deployment has replicas mismatch or is not available/progressing."
-                })
-        return health_issues
-    except ApiException as e:
-        print(f"API exception when checking deployment health: {e}")
-        return []
+            # Check all deployments in the namespace if no specific services are given
+            command = f"kubectl get deployments -n {ns} -o=jsonpath='{{.items[?(@.status.readyReplicas!=@.status.replicas)].metadata.name}}'"
+            deployments_not_ready = execute_kubectl_command(handle, command)
+            if deployments_not_ready:
+                for deployment_name in deployments_not_ready.split():
+                    health_issues.append({"type": "Deployment", "name": deployment_name, "namespace": ns, "issue": "Deployment has replicas mismatch or is not available/progressing."})
 
+    return health_issues
 
-def k8s_get_cluster_health(handle, core_services: list = [], namespace="") -> Tuple:
-    health_issues = []
-
+def k8s_get_cluster_health(handle, core_services: list = [], namespace: str = "") -> Tuple:
     node_api = client.CoreV1Api(api_client=handle)
-    apps_api = client.AppsV1Api(api_client=handle)
-
-    if core_services and not namespace:
-        raise ValueError("Namespace must be specified when core services are given.")
-
-    # 1. Check Node Health
-    if not check_node_health(node_api):
-        health_issues.append({"type": "Node", "issue": "One or more nodes are not ready."})
-
-    # 2. Check Pod Health across all namespaces
-    health_issues.extend(check_pod_health(node_api, core_services, namespace))
-
-    # 3. Check Deployment Health
-    health_issues.extend(check_deployment_health(apps_api, core_services, namespace))
-
+    health_issues = check_node_health(node_api) + check_pod_health(handle, core_services, namespace) + check_deployment_health(handle, core_services, namespace)
     if health_issues:
         return (False, health_issues)
     else:
