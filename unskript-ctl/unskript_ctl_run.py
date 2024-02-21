@@ -308,12 +308,11 @@ class Checks(ChecksFactory):
             self.logger.error("Checks List Cannot be empty. Please verify the checks_list is valid")
             return False
 
-        execution_timeout = exec_timeout = 60
+        execution_timeout = self._config._get('global').get('execution_timeout', 60)
+        exec_timeout = execution_timeout
         per_check_timeout = {}
         g = self._config._get('checks')
         if g and g.get('execution_timeout'):
-            if isinstance(g.get('execution_timeout'), int):
-                execution_timeout = g.get('execution_timeout')
             if isinstance(g.get('execution_timeout'), dict):
                per_check_timeout = g.get('execution_timeout')
         
@@ -648,14 +647,14 @@ task.configure(inputParamsJson=\'\'\'{
             schema = inputSchema[0]
             if schema.get('properties'):
                 for key in schema.get('properties').keys():
-                    if key in self.uglobals.get('global').keys():
+                    if self.uglobals.get('global') and key in self.uglobals.get('global').keys():
                         value = self.uglobals.get('global').get(key)
                         if value:
                             input_json_line += f"\"{key}\":  \"{value}\" ,"
                         else:
                             input_json_line += f"\"{key}\":  \"{key}\" ,"
         except Exception as e:
-            self.logger.error(e)
+            self.logger.error(str(e))
             self._error(str(e))
         # Handle Matrix argument
         matrix_argument_line = action.get('matrixinputline')
