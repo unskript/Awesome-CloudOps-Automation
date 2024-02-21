@@ -34,14 +34,16 @@ def k8s_get_cluster_health_printer(output):
 
 def execute_kubectl_command(handle, command: str):
     response = handle.run_native_cmd(command)
-    if response.stderr:
+    if response.stderr.lower():
         print(f"Warning: {response.stderr}")
-        if "not found" in response.stderr:
+        if "not found" in response.stderr.lower():
             return None  # Service not found in the given namespace, skip this service
-    if not response or not response.stdout:
-        print(f"No output for command: {command}")
-        return None
-    return response.stdout.strip()
+    if response:
+        if response.stdout:
+            return response.stdout.strip()
+        else:
+            print(f"No output for command: {command}")
+            return None
 
 def get_namespaces(handle):
     command = "kubectl get ns -o=jsonpath='{.items[*].metadata.name}'"
