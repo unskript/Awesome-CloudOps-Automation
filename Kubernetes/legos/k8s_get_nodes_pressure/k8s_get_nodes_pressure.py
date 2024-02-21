@@ -2,7 +2,7 @@
 # Copyright (c) 2023 unSkript.com
 # All rights reserved.
 #
-from typing import Optional, List
+from typing import Optional, Tuple
 from pydantic import BaseModel
 from tabulate import tabulate
 import json
@@ -30,7 +30,7 @@ def k8s_get_nodes_pressure_printer(output):
 
 
 
-def k8s_get_nodes_pressure(handle) -> List:
+def k8s_get_nodes_pressure(handle) -> Tuple:
     """
     k8s_get_nodes_pressure fetches the memory and disk pressure status of each node in the cluster
     
@@ -68,9 +68,7 @@ def k8s_get_nodes_pressure(handle) -> List:
         if disk_pressure and disk_pressure['status'] != "False":
             pressure_nodes.append({"node": name, "type": "DiskPressure", "status": "False"})
 
-    if len(pressure_nodes) != 0:
-        return (False, pressure_nodes)
-    return (True, None)
+    return pressure_nodes
 
 
 

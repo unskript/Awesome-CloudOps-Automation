@@ -6,9 +6,11 @@
 import pprint
 from beartype import beartype
 from pydantic import BaseModel, Field
+from typing import Optional
 
 class InputSchema(BaseModel):
-    pattern: str = Field(
+    pattern: Optional[str] = Field(
+        default='*',
         title='Pattern',
         description='Pattern for the searched keys')
 
@@ -19,7 +21,7 @@ def redis_get_keys_count_printer(output):
     pprint.pprint({"Matched keys count": output})
 
 @beartype
-def redis_get_keys_count(handle, pattern: str):
+def redis_get_keys_count(handle, pattern: str="*"):
     """redis_get_keys_count returns the matched keys count.
 
        :type pattern: string
