@@ -310,7 +310,7 @@ class Checks(ChecksFactory):
 
         execution_timeout = exec_timeout = 60
         per_check_timeout = {}
-        g = self._config.get_global()
+        g = self._config._get('checks')
         if g and g.get('execution_timeout'):
             if isinstance(g.get('execution_timeout'), int):
                 execution_timeout = g.get('execution_timeout')

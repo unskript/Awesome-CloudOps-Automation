@@ -22,9 +22,6 @@ global:
    # audit_period in days. Number of days worth of audit data to be kept.
    # Any date older than this number of days, will be deleted.
    audit_period: 90
-   # per check timeout, this timeout decides how much time should be given
-   # per check for it to complete
-   execution_timeout: 60
 
 #
 # Checks section
@@ -45,6 +42,21 @@ checks:
     # Default it will be p2
     p0: []
     p1: []
+    
+  # per check timeout, this timeout decides how much time should be given
+  # per check for it to complete.
+  # You can specify execution timeout for all checks like this
+  # 
+  # execution_timeout: 60
+  # 
+  # or
+  #
+  # You can specify execution timeout per check like this
+  # execution_timeout:
+  #   k8s_get_unbound_pvcs: 60
+  #   ...
+  # 
+  execution_timeout: 60
 
 #
 # Info gathering action section
