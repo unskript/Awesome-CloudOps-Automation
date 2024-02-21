@@ -56,33 +56,52 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
     else:
         consumer_groups = [group[0] for group in admin_client.list_consumer_groups()]
 
+    # cached_kafka_info stores the kafka info like groups, topics, partitions.
+    # Only end_offsets and committed needs to be fetched to get the latest value.
+    # Its organized as groups->topics->partitions
+    cached_kafka_info = {}
     # sample_data captures the snapshots for lag data. It stores for each iteration.
     # The value stored is group,topic,partition as the key and lag as the value
     sample_data = []
-    # Since we need to collect 2 sample sets for now, we do it in a loop
-    for i in range(2):
-        sample_data_dict = {}
-        for group in consumer_groups:
-            consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
-            try:
-                for topic in consumer.topics():
-                    partitions = consumer.partitions_for_topic(topic)
-                    for partition in partitions:
-                        tp = TopicPartition(topic, partition)
-                        end_offset = consumer.end_offsets([tp])[tp]
-                        committed = consumer.committed(tp)
-                        # Handle the case where committed is None
-                        lag = end_offset - (committed if committed is not None else 0)
-                        key = f'{group}:{topic}:{partition}'
-                        sample_data_dict[key] = lag
-            except Exception as e:
-                print("An error occurred:", e)
-            finally:
-                consumer.close()
-        sample_data.append(sample_data_dict)
-        # Dont sleep for the last iteration
-        if i != 1:
-            time.sleep(sliding_window_interval)
+    sample_data_dict = {}
+    for group in consumer_groups:
+        consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
+        cached_kafka_info[group] = {'consumer': consumer}
+        try:
+            for topic in consumer.topics():
+                partitions = consumer.partitions_for_topic(topic)
+                cached_kafka_info.update({'topics': {topic:partitions}})
+                for partition in partitions:
+                    tp = TopicPartition(topic, partition)
+                    end_offset = consumer.end_offsets([tp])[tp]
+                    committed = consumer.committed(tp)
+                    # Handle the case where committed is None
+                    lag = end_offset - (committed if committed is not None else 0)
+                    key = f'{group}:{topic}:{partition}'
+                    sample_data_dict[key] = lag
+        except Exception as e:
+            print(f'An error occurred:{e}, group {group}')
+
+    sample_data.append(sample_data_dict)
+    # Second iteration
+    time.sleep(sliding_window_interval)
+
+    for group, value in cached_kafka_info.items():
+        consumer = value.get('consumer')
+        if consumer is None:
+            continue
+        topics = value.get('topics')
+        for topic, partitions in topics.items():
+            for partition in partitions:
+                tp = TopicPartition(topic, partition)
+                end_offset = consumer.end_offsets([tp])[tp]
+                committed = consumer.committed(tp)
+                # Handle the case where committed is None
+                lag = end_offset - (committed if committed is not None else 0)
+                key = f'{group}:{topic}:{partition}'
+                sample_data_dict[key] = lag
+        consumer.close()
+    sample_data.append(sample_data_dict)
 
     for key, value in sample_data[0].items():
         # Get the value from the second sample, if present
