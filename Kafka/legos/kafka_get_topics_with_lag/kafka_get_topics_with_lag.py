@@ -70,7 +70,7 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
         try:
             for topic in consumer.topics():
                 partitions = consumer.partitions_for_topic(topic)
-                cached_kafka_info.update({'topics': {topic:partitions}})
+                cached_kafka_info[group].update({'topics': {topic:partitions}})
                 for partition in partitions:
                     tp = TopicPartition(topic, partition)
                     end_offset = consumer.end_offsets([tp])[tp]
