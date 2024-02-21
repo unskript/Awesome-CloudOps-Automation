@@ -97,4 +97,3 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
         return (False, result)
     return (True, None)
 
-
