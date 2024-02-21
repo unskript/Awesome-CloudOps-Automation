@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
         title='Namespace',
         description='K8s Namespace. Default- all namespaces')
     expiring_threshold: Optional[int] = Field(
-        default=90,
+        default=7,
         title='Expiration Threshold (in days)',
         description='Expiration Threshold of certificates (in days). Default- 90 days')
 
@@ -40,7 +40,7 @@ def get_expiry_date(pem_data: str) -> datetime.datetime:
     return cert.not_valid_after
 
 
-def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:int=90) -> Tuple:
+def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:int=7) -> Tuple:
     """
     Get the expiring certificates for a K8s cluster.
 

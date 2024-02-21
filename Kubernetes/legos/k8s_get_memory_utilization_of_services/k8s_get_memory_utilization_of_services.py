@@ -101,7 +101,7 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
         response = handle.run_native_cmd(top_pods_command)
         top_pods_output = response.stdout.strip() 
         if not top_pods_output:
-            raise ValueError(f"Top PODS data is empty for given namespace {namespace}")
+            return (True, None)
         top_pods_output = top_pods_output.split('\n')
         pod_mem_util_dict = {x.split()[0]: x.split()[-1] for x in top_pods_output}
 
@@ -151,9 +151,11 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
                 exceeding_services.append({
                     "pod": pod,
                     "namespace": namespace,
-                    "utilization_percentage": utilization
+                    "utilization_percentage": utilization,
+                    "memory_request_bytes": mem_request,
+                    "memory_usage_bytes": mem_usage,
                 })
     except Exception as e:
         raise e
 
-    return (False, exceeding_services) if exceeding_services else (True, [])
+    return (False, exceeding_services) if exceeding_services else (True, None)
