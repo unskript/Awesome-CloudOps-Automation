@@ -2,7 +2,7 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List
+from typing import Tuple
 from pydantic import BaseModel
 from tabulate import tabulate
 
@@ -17,12 +17,12 @@ def mongodb_get_metrics_printer(output):
         return
     total_memory, index_outputs = output
     if total_memory:
-        print(f"Total Memory: {total_memory['Memory (MB)']} MB")
+        print(f"Total Memory: {total_memory[0].get('Memory (MB)')} MB")
 
     print(tabulate(index_outputs, headers="keys"))
 
 
-def mongodb_get_metrics(handle) -> List:
+def mongodb_get_metrics(handle) -> Tuple:
     """
     mongodb_get_metrics retrieves various metrics such as index size,
     disk size per collection for all databases and collections.

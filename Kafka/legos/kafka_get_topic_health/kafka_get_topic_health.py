@@ -32,7 +32,7 @@ def kafka_get_topic_health_printer(output):
         print()
 
 
-def kafka_get_topic_health(handle, group_id: str, topics: list) -> Dict:
+def kafka_get_topic_health(handle, group_id: str="", topics: list=[]) -> Dict:
     """
     kafka_get_topic_health fetches the health and total number of messages for the specified topics.
 

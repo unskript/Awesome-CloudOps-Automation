@@ -68,7 +68,9 @@ def k8s_get_nodes_pressure(handle) -> Tuple:
         if disk_pressure and disk_pressure['status'] != "False":
             pressure_nodes.append({"node": name, "type": "DiskPressure", "status": "False"})
 
-    return pressure_nodes
+    if len(pressure_nodes) != 0:
+        return (False, pressure_nodes)
+    return (True, None)
 
 
 
