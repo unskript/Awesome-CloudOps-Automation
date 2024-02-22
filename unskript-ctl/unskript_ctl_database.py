@@ -106,16 +106,19 @@ class ZoDBInterface(DatabaseFactory):
             self.collection_name = kwargs.get('collection_name')
         if 'data' in kwargs:
             data = kwargs.get('data')
-        with self.db.transaction() as connection:
-            root = connection.root()
-            old_data = root[self.collection_name]
-            old_data.update(data)
-            root[self.collection_name] = old_data
-            connection.transaction_manager.commit()
-            connection.close()
-
-            del root
-            del connection
+        try:
+            with self.db.transaction() as connection:
+                root = connection.root()
+                old_data = root[self.collection_name]
+                old_data.update(data)
+                root[self.collection_name] = old_data
+                connection.transaction_manager.commit()
+                connection.close()
+                del root
+                del connection
+        except Exception as e:
+            self.logger.error(f"ERROR: Hit a snag while updating record to DB. {str(e)}")
+            return False 
 
         return True 
 

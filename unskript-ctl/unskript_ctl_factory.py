@@ -276,7 +276,7 @@ class ConfigParserFactory(UnskriptFactory):
         return self._get('info', 'arguments')
 
     def get_info(self):
-        return self.get_jobs().get('info')
+        return self.get_jobs().get('info',{})
 
     def get_checks_priority(self)->dict:
         # This function reads the priority part of the config and converts it
