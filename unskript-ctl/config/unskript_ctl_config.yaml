@@ -26,6 +26,7 @@ global:
    # per check for it to complete
    execution_timeout: 200
 
+
 #
 # Checks section
 #
@@ -45,6 +46,12 @@ checks:
     # Default it will be p2
     p0: []
     p1: []
+    # 
+    # You can specify execution timeout per check like this
+    # execution_timeout:
+    #   k8s_get_unbound_pvcs: 60
+    #   ...
+    # 
 
 #
 # Info gathering action section

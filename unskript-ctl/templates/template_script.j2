@@ -2,6 +2,7 @@ import signal
 import sys
 import os
 import io
+import polling2
 from polling2 import poll
 
 class TimeoutException(Exception):
@@ -15,8 +16,6 @@ def _run_function(fn):
     l_cell = False
     if fn == "last_cell":
         l_cell = True
-    signal.signal(signal.SIGALRM, timeout_handler)
-    signal.alarm({{ execution_timeout }})
     output = None
     success = False 
     output_buffer = io.StringIO()
@@ -32,8 +31,6 @@ def _run_function(fn):
         except Exception as e:
             # If one of the action fails dump the exception on console and proceed further
             print(str(e))
-        finally:
-            signal.alarm(0) # Rest alarm
     sys.stdout = sys.__stdout__
     return output, success
 
