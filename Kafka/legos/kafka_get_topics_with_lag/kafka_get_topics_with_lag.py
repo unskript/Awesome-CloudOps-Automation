@@ -71,6 +71,8 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
         cached_kafka_info[group] = {'consumer': consumer}
         
         try:
+            topic = None 
+            partition = None 
             for topic in consumer.topics():
                 partitions = consumer.partitions_for_topic(topic)
                 cached_kafka_info[group].update({'topics': {topic:partitions}})
@@ -83,7 +85,7 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
                     key = f'{group}:{topic}:{partition}'
                     sample_data_dict[key] = lag
         except Exception as e:
-            print(f'An error occurred:{e}, group {group}')
+            print(f'First Iteration: An error occurred:{e}, group {group}, topic {topic}, partition {partition}') 
 
     sample_data.append(sample_data_dict)
     # Second iteration
@@ -94,16 +96,23 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
         if consumer is None:
             continue
         topics = value.get('topics')
-        for topic, partitions in topics.items():
-            for partition in partitions:
-                tp = TopicPartition(topic, partition)
-                end_offset = consumer.end_offsets([tp])[tp]
-                committed = consumer.committed(tp)
-                # Handle the case where committed is None
-                lag = end_offset - (committed if committed is not None else 0)
-                key = f'{group}:{topic}:{partition}'
-                sample_data_dict[key] = lag
+        try:
+            topic = None 
+            partition = None 
+            for topic, partitions in topics.items():
+                for partition in partitions:
+                    tp = TopicPartition(topic, partition)
+                    end_offset = consumer.end_offsets([tp])[tp]
+                    committed = consumer.committed(tp)
+                    # Handle the case where committed is None
+                    lag = end_offset - (committed if committed is not None else 0)
+                    key = f'{group}:{topic}:{partition}'
+                    sample_data_dict[key] = lag
+        except Exception as e:
+            print(f'Second Iteration: An error occurred:{e}, group {group}, topic {topic}, partition {partition}')        
+
         consumer.close()
+
     sample_data.append(sample_data_dict)
 
     for key, value in sample_data[0].items():
