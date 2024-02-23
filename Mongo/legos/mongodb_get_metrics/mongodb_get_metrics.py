@@ -2,7 +2,7 @@
 ##  Copyright (c) 2023 unSkript, Inc
 ##  All rights reserved.
 ##
-from typing import List
+from typing import Tuple
 from pydantic import BaseModel
 from tabulate import tabulate
 
@@ -15,16 +15,14 @@ class InputSchema(BaseModel):
 def mongodb_get_metrics_printer(output):
     if not output:
         return
+    total_memory, index_outputs = output
+    if total_memory:
+        print(f"Total Memory: {total_memory[0].get('Memory (MB)')} MB")
 
-    total_memory_metric = next((metric for metric in output if metric['Database'] == 'ALL' and metric['Collection'] == 'ALL'), None)
-    if total_memory_metric:
-        print(f"Total Memory: {total_memory_metric['Memory (MB)']} MB")
-
-    table_metrics = [metric for metric in output if 'Index Size (MB)' in metric]
-    print(tabulate(table_metrics, headers="keys"))
+    print(tabulate(index_outputs, headers="keys"))
 
 
-def mongodb_get_metrics(handle) -> List:
+def mongodb_get_metrics(handle) -> Tuple:
     """
     mongodb_get_metrics retrieves various metrics such as index size,
     disk size per collection for all databases and collections.
@@ -35,14 +33,15 @@ def mongodb_get_metrics(handle) -> List:
     :rtype: list of dictionaries with index size, storage size metrics and total memory usage in MB
     
     """
-    all_metrics = []
+    index_metrics = []
+    database_metrics = []
     try:
         database_names = handle.list_database_names()
 
         server_status = handle.admin.command("serverStatus")
         total_memory_MB = server_status['mem']['resident']  # Get the total resident set size in memory
 
-        all_metrics.append({
+        database_metrics.append({
             'Database': 'ALL',
             'Collection': 'ALL',
             'Memory (MB)': total_memory_MB,
@@ -57,7 +56,7 @@ def mongodb_get_metrics(handle) -> List:
                 index_size_KB = sum(stats.get('indexSizes', {}).values())/ 1024 # Convert bytes to KB
                 storage_size_KB = stats.get('storageSize', 0)/ 1024 # Convert bytes to KB
 
-                all_metrics.append({
+                index_metrics.append({
                     'Database': db_name,
                     'Collection': coll_name,
                     'Index Size (KB)': index_size_KB,
@@ -66,6 +65,4 @@ def mongodb_get_metrics(handle) -> List:
 
     except Exception as e:
         raise e
-    return all_metrics
-
-
+    return database_metrics, index_metrics

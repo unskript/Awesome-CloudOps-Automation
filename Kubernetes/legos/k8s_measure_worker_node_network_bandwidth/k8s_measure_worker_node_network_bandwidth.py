@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
-    namespace: str = Field(description='The namespace where the DaemonSet will be deployed.', title='Namespace')
+    namespace_to_check_bandwidth: str = Field(description='The namespace where the DaemonSet will be deployed.', title='Namespace')
 
 
 
@@ -55,7 +55,7 @@ def k8s_measure_worker_node_network_bandwidth_printer(output):
     else:
         print("No data available")
 
-def k8s_measure_worker_node_network_bandwidth(handle, namespace: str) -> List:
+def k8s_measure_worker_node_network_bandwidth(handle, namespace_to_check_bandwidth: str) -> List:
     """
      k8s_measure_worker_node_network_bandwidth measures the network bandwidth for each worker node using a DaemonSet and returns the results.
 
@@ -107,23 +107,23 @@ def k8s_measure_worker_node_network_bandwidth(handle, namespace: str) -> List:
     core_v1 = client.CoreV1Api(api_client=handle)
     try:
         try:
-            v1.delete_namespaced_daemon_set(name="bandwidth-tester", namespace=namespace, 
+            v1.delete_namespaced_daemon_set(name="bandwidth-tester", namespace=namespace_to_check_bandwidth, 
                                             propagation_policy="Foreground", grace_period_seconds=0)
         except ApiException as ae:
             if ae.status == 404:  # Not Found error
-                print(f"Checking for an existing DaemonSet 'bandwidth-tester' in namespace {namespace}...")
+                print(f"Checking for an existing DaemonSet 'bandwidth-tester' in namespace {namespace_to_check_bandwidth}...")
             else:
                 raise
-        print(f"Deploying DaemonSet 'bandwidth-tester' in namespace {namespace}...")
-        v1.create_namespaced_daemon_set(namespace=namespace, body=daemonset)
+        print(f"Deploying DaemonSet 'bandwidth-tester' in namespace {namespace_to_check_bandwidth}...")
+        v1.create_namespaced_daemon_set(namespace=namespace_to_check_bandwidth, body=daemonset)
 
         print("Waiting for DaemonSet to run on all nodes...")
-        if not pods_have_written_results(handle, core_v1, "app=bandwidth-tester", namespace):
+        if not pods_have_written_results(handle, core_v1, "app=bandwidth-tester", namespace_to_check_bandwidth):
             print("Timeout waiting for pods to write results.")
             return []
 
         # Collect results
-        pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector="app=bandwidth-tester").items
+        pods = core_v1.list_namespaced_pod(namespace=namespace_to_check_bandwidth, label_selector="app=bandwidth-tester").items
         results = []
         for pod in pods:
             pod_name = pod.metadata.name
@@ -138,7 +138,7 @@ def k8s_measure_worker_node_network_bandwidth(handle, namespace: str) -> List:
                     retry_count += 1
                     continue
 
-                fetch_results_command = f"kubectl exec -n {namespace} {pod.metadata.name} -- cat /results/time.txt"
+                fetch_results_command = f"kubectl exec -n {namespace_to_check_bandwidth} {pod.metadata.name} -- cat /results/time.txt"
                 fetch_output = handle.run_native_cmd(fetch_results_command)
 
                 if fetch_output and not fetch_output.stderr:
@@ -152,7 +152,7 @@ def k8s_measure_worker_node_network_bandwidth(handle, namespace: str) -> List:
                     time.sleep(delay_between_retries)
 
         print("\nCleaning up: Deleting the DaemonSet after collecting results...\n")
-        v1.delete_namespaced_daemon_set(name="bandwidth-tester", namespace=namespace, 
+        v1.delete_namespaced_daemon_set(name="bandwidth-tester", namespace=namespace_to_check_bandwidth, 
                                         propagation_policy="Foreground", grace_period_seconds=0)
 
         return results
@@ -161,7 +161,7 @@ def k8s_measure_worker_node_network_bandwidth(handle, namespace: str) -> List:
         print("An error occurred. Performing cleanup...")
         # Cleanup in case of exceptions: Ensure that DaemonSet is deleted
         try:
-            v1.delete_namespaced_daemon_set(name="bandwidth-tester", namespace=namespace, 
+            v1.delete_namespaced_daemon_set(name="bandwidth-tester", namespace=namespace_to_check_bandwidth, 
                                             propagation_policy="Foreground", grace_period_seconds=0)
         except Exception as cleanup_err:
             print(f"Error during cleanup: {cleanup_err}")

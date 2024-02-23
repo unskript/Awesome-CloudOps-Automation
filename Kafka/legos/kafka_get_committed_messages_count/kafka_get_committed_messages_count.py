@@ -2,23 +2,19 @@
 # Copyright (c) 2023 unSkript, Inc
 # All rights reserved.
 ##
-from kafka import TopicPartition
-from kafka import KafkaConsumer
-from typing import Dict
-from pydantic import BaseModel, Field
-
-
-
+from kafka import KafkaConsumer, TopicPartition, KafkaAdminClient
+from typing import Dict, Optional
 from pydantic import BaseModel, Field
 
 
 class InputSchema(BaseModel):
-    group_id: str = Field(..., description='Consumer group ID to which this consumer belongs', title='Consumer group ID')
+    group_id: Optional[str] = Field(..., description='Consumer group ID to which this consumer belongs', title='Consumer group ID')
 
 
 
 def kafka_get_committed_messages_count_printer(output):
     if output is None:
+        print("No data found to get kafka committed messages count ! ")
         return
 
     for group_id, topics in output.items():
@@ -29,47 +25,41 @@ def kafka_get_committed_messages_count_printer(output):
                 print(f"    Partition {partition}: {number_of_messages} committed messages")
         print()
 
-def kafka_get_committed_messages_count(handle, group_id: str) -> Dict:
+def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
     """
-    kafka_get_committed_messages_count Fetches committed messages (consumer offsets) for a specific consumer group and topics, or all topics if none are specified.
-
-    :type handle: object
-    :param handle: Handle containing the KafkaConsumer instance.
-
-    :type group_id: str
-    :param group_id: Consumer group ID 
-
-    :rtype: Dictionary of committed messages by consumer group, topic, and partition
+    Fetches committed messages (consumer offsets) for all consumer groups and topics,
+    or for a specific group if provided.
     """
-
-    # Create KafkaConsumer with the configuration
-    consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group_id)
-
+    admin_client = KafkaAdminClient(bootstrap_servers=handle.config['bootstrap_servers'])
     committed_messages_count = {}
 
-    # Get all topic subscriptions for the consumer group
-    topics = list(consumer.topics())
+    if group_id:
+        consumer_groups = [group_id]
+    else:
+        consumer_groups = [group[0] for group in admin_client.list_consumer_groups()]
 
-    for tp in topics:
-        for partition in consumer.partitions_for_topic(tp):
-            tp_obj = TopicPartition(tp, partition)
-            # Fetch the committed offset for the partition
-            committed_offset = consumer.committed(tp_obj)
-            # Fetch the earliest available offset for the partition
-            earliest_offset = consumer.beginning_offsets([tp_obj])[tp_obj]
+    # Prepare a cache for Kafka info to minimize calls
+    cached_kafka_info = {}
 
-            # If committed offset is not None, calculate the number of committed messages
-            if committed_offset is not None:
-                number_of_messages = committed_offset - earliest_offset
-            else:
-                number_of_messages = 0
+    # Iterate once to fetch and cache required info
+    for group in consumer_groups:
+        consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
+        topics = consumer.topics()
+        cached_kafka_info[group] = {'consumer': consumer, 'topics': {}}
 
-            # Store the number of committed messages in the result dictionary
-            committed_messages_count.setdefault(group_id, {}).setdefault(tp, {})[partition] = number_of_messages
+        for topic in topics:
+            partitions = consumer.partitions_for_topic(topic)
+            cached_kafka_info[group]['topics'][topic] = partitions
 
-    # Close the consumer connection
-    consumer.close()
+            for partition in partitions:
+                tp = TopicPartition(topic, partition)
+                committed_offset = consumer.committed(tp)
+                earliest_offset = consumer.beginning_offsets([tp])[tp]
+                number_of_messages = committed_offset - earliest_offset if committed_offset is not None else 0
+                committed_messages_count.setdefault(group, {}).setdefault(topic, {})[partition] = number_of_messages
+
+        # Close the consumer to free up resources
+        consumer.close()
 
     return committed_messages_count
-
 
