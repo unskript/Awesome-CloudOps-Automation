@@ -15,7 +15,7 @@ class InputSchema(BaseModel):
         title='K8S Namespace'
     )
     threshold: int = Field(
-        10,
+        25,
         description='Restart Threshold Value',
         title='Restart Threshold'
     )
@@ -26,7 +26,7 @@ def k8s_get_pods_with_high_restart_printer(output):
 
     print(output)
 
-def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int = 10) -> Tuple:
+def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int = 25) -> Tuple:
     """k8s_get_pods_with_high_restart This function finds out PODS that have
        high restart count and returns them as a list of dictionaries
 
