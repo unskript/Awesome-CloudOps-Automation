@@ -66,7 +66,10 @@ def kafka_get_topics_with_lag(handle, group_id: str = "", threshold: int = 10, s
     sample_data_dict = {}
     for group in consumer_groups:
         consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
+        if consumer is None:
+            continue
         cached_kafka_info[group] = {'consumer': consumer}
+        
         try:
             for topic in consumer.topics():
                 partitions = consumer.partitions_for_topic(topic)
