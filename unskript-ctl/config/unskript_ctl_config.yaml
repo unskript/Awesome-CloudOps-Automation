@@ -24,7 +24,7 @@ global:
    audit_period: 90
    # per check timeout, this timeout decides how much time should be given
    # per check for it to complete
-   execution_timeout: 140
+   execution_timeout: 200
 
 #
 # Checks section
