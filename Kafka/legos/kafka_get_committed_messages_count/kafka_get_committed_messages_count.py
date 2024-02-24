@@ -34,9 +34,12 @@ def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
     committed_messages_count = {}
 
     try:
-        # Fetch all consumer groups
-        consumer_groups_info = admin_client.list_consumer_groups()
-        consumer_groups = [group[0] for group in consumer_groups_info]
+        if group_id:
+            consumer_groups = [group_id]
+        else:
+            # Fetch all consumer groups
+            consumer_groups_info = admin_client.list_consumer_groups()
+            consumer_groups = [group[0] for group in consumer_groups_info]
 
         for group in consumer_groups:
             # Create a consumer for each group to fetch topics
