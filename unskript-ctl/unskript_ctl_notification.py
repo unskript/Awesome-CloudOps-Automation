@@ -297,7 +297,7 @@ class EmailNotification(NotificationFactory):
 
         return attachment_
 
-    def create_priority_message_table(self, priority:str, checks_per_status: dict)-> (str, int, int, int):
+    def create_priority_message_table(self, priority:str, checks_per_status: dict)-> tuple:
         pass_count = len(checks_per_status['PASS'])
         fail_count = len(checks_per_status['FAIL'])
         error_count = len(checks_per_status['ERROR'])
@@ -637,16 +637,6 @@ class AWSEmailNotification(EmailNotification):
                                     secret_key=secret_key,
                                     region=region)
 
-    def has_sts_caller_identity(self):
-        # Check if there is an STS caller identity available
-        try:
-            import boto3
-            sts_client = boto3.client('sts')
-            _ = sts_client.get_caller_identity()
-            return True
-        except Exception as e:
-            return False
-        
     def do_send_awsses_email(self, from_email: str,
                             to_email: str,
                             attachment_,
@@ -660,10 +650,7 @@ class AWSEmailNotification(EmailNotification):
         import boto3
         from botocore.exceptions import NoCredentialsError
 
-        # If we have a role associated to the pod, lets use that first.
-        # Check if we have caller identity, if not then only set
-        # the access and secret key
-        if not self.has_sts_caller_identity():
+        if access_key is not None and secret_key is not None:
             os.environ['AWS_ACCESS_KEY_ID'] = access_key
             os.environ['AWS_SECRET_ACCESS_KEY'] = secret_key
 

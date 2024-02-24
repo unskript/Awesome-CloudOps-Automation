@@ -33,34 +33,53 @@ def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
     admin_client = KafkaAdminClient(bootstrap_servers=handle.config['bootstrap_servers'])
     committed_messages_count = {}
 
-    try:
-        if group_id:
-            consumer_groups = [group_id]
-        else:
+    
+    if group_id:
+        consumer_groups = [group_id]
+    else:
+        # Fetch all consumer groups
+        try:
             consumer_groups_info = admin_client.list_consumer_groups()
-            consumer_groups = [group[0] for group in consumer_groups_info]
-    except Exception as e:
-        print(f"Failed to list consumer groups: {e}")
-        return {}
+        except Exception as e:
+            print(f"An error occured while fetching consumer groups:{e}")
+            return {}
+        consumer_groups = [group[0] for group in consumer_groups_info]
+    
 
-    for group in consumer_groups:
-        with KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group) as consumer:
-            topics = consumer.topics()
-
+        for group in consumer_groups:
+            try:
+                # Create a consumer for each group to fetch topics
+                consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
+                topics = consumer.topics()
+            except Exception as e:
+                print(f"An error occurred while fetching topics in consumer group {group} : {e}")
+                continue
+            
             for topic in topics:
-                partitions = consumer.partitions_for_topic(topic)
-
+                try:
+                    partitions = consumer.partitions_for_topic(topic)
+                except Exception as e:
+                    print(f"An error occurred while fetching partitions for consumer group {group} and topic {topic} : {e}")
+                    continue
                 for partition in partitions:
                     try:
                         tp = TopicPartition(topic, partition)
-                        committed_offset = consumer.committed(tp)
-                        earliest_offset = consumer.beginning_offsets([tp])[tp]
-                        number_of_messages = committed_offset - earliest_offset if committed_offset is not None else 0
-                        committed_messages_count.setdefault(group, {}).setdefault(topic, {})[partition] = number_of_messages
-                    except Exception as e:
-                        print(f"Failed to fetch offsets for partition {partition} of topic {topic} in group {group}: {e}")
+                    except:
+                        print(f"An error occurred while fetching partition info for  consumer group {group} and topic {topic} : {e}")
                         continue
+                    # Fetch committed offset for each partition
+                    committed_offset = consumer.committed(tp)
+                    if committed_offset is not None:
+                        # If there's a committed offset, calculate the number of messages
+                        earliest_offset = consumer.beginning_offsets([tp])[tp]
+                        number_of_messages = committed_offset - earliest_offset
+                        committed_messages_count.setdefault(group, {}).setdefault(topic, {})[partition] = number_of_messages
+                    else:
+                        # If no committed offset, assume 0 messages
+                        committed_messages_count.setdefault(group, {}).setdefault(topic, {})[partition] = 0
 
+            # Close the consumer after processing to free up resources
+            consumer.close()
+    
 
     return committed_messages_count
-
