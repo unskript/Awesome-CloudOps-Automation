@@ -12,7 +12,7 @@ from tabulate import tabulate
 
 
 class InputSchema(BaseModel):
-    core_services: Optional[list] = Field(
+    services: Optional[list] = Field(
         ...,
         description='List of pod names of the services for which memory utilization is to be fetched.',
         title='List of pod names (as services)',
@@ -65,7 +65,7 @@ def convert_memory_to_bytes(memory_value) -> int:
 
     return int(memory_value)
 
-def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshold:float=80, core_services: list=[]) -> Tuple:
+def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshold:float=80, services: list=[]) -> Tuple:
     """
     k8s_get_memory_utilization_of_services executes the given kubectl commands
     to find the memory utilization of the specified services in a particular namespace
@@ -80,7 +80,7 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
     if handle.client_side_validation is False:
         raise Exception(f"K8S Connector is invalid: {handle}")
 
-    if core_services and not namespace:
+    if services and not namespace:
         raise ValueError("Namespace must be provided if services are specified.")
 
     if not namespace:
@@ -106,11 +106,11 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
         pod_mem_util_dict = {x.split()[0]: x.split()[-1] for x in top_pods_output}
 
         pods_to_check = {}
-        if core_services:
+        if services:
             # If services specified, lets iterate over it and get pods corresponding to them.
             # If service pod not found in the top pod list, which means the memory
             # utilization is not significant, so dont need to check
-            for svc in core_services:
+            for svc in services:
                 kubectl_cmd = f"kubectl get service {svc} -n {namespace} -o=jsonpath={{.spec.selector}}"
                 response = handle.run_native_cmd(kubectl_cmd)
                 svc_labels = None 
@@ -121,7 +121,7 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
                     # If json.loads returns error, which means the output of the kubectl command returned invalid output.
                     # since there is invalid output, no service label output. the next if check should return back
                     pass 
-                
+
                 if not svc_labels:
                     continue
                 _labels = ", ".join([f"{key}={value}" for key, value in svc_labels.items()])
