@@ -33,21 +33,34 @@ def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
     admin_client = KafkaAdminClient(bootstrap_servers=handle.config['bootstrap_servers'])
     committed_messages_count = {}
 
-    try:
-        if group_id:
-            consumer_groups = [group_id]
-        else:
-            # Fetch all consumer groups
+    
+    if group_id:
+        consumer_groups = [group_id]
+    else:
+        # Fetch all consumer groups
+        try:
             consumer_groups_info = admin_client.list_consumer_groups()
-            consumer_groups = [group[0] for group in consumer_groups_info]
+        except Exception as e:
+            print(f"An error occured while fetching consumer groups:{e}")
+            return {}
+        consumer_groups = [group[0] for group in consumer_groups_info]
+    
 
         for group in consumer_groups:
             # Create a consumer for each group to fetch topics
             consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
-            topics = consumer.topics()
+            try:
+                topics = consumer.topics()
+            except Exception as e:
+                    print(f"An error occurred while topics : {e}")
+                    return {}
             
             for topic in topics:
-                partitions = consumer.partitions_for_topic(topic)
+                try:
+                    partitions = consumer.partitions_for_topic(topic)
+                except Exception as e:
+                    print(f"An error occurred while partitions for {topic} : {e}")
+                    continue
                 for partition in partitions:
                     tp = TopicPartition(topic, partition)
                     # Fetch committed offset for each partition
@@ -63,8 +76,6 @@ def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
 
             # Close the consumer after processing to free up resources
             consumer.close()
-    except Exception as e:
-        print(f"An error occurred while fetching committed messages: {e}")
-        return {}
+    
 
     return committed_messages_count
