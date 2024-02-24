@@ -34,7 +34,7 @@ class UnskriptCtl(UnskriptFactory):
         self.logger.debug("Initializing UnskriptCtl")
         self.logger.debug(f"\tVERSION: {VERSION} \n")
         self.logger.debug(f"\tAUTHORS: {AUTHOR} \n")
-        self.logger.debug(f"\tBUILD_NUMBER: {BUILD_NUMBER} \n")
+        self.logger.debug(f"\tBUILD_NUMBER: {get_version()} \n")
         self._config = ConfigParserFactory()
         self._notification = Notification()
         self._check = Checks()
@@ -597,7 +597,7 @@ def main():
     description = description + str("\n")
     description = description + str("\t  Welcome to unSkript CLI Interface \n")
     description = description + str(f"\t\t   VERSION: {VERSION} \n")
-    description = description + str(f"\t\t   BUILD_NUMBER: {BUILD_NUMBER} \n")
+    description = description + str(f"\t\t   BUILD_NUMBER: {get_version()} \n")
     parser.description = description
 
     subparsers = parser.add_subparsers(dest='command', help='Available Commands')
