@@ -626,7 +626,7 @@ task.configure(credentialsJson=\'\'\'{
 
             except Exception as e:
                 self.logger.error(f"Unable to insert Task lines {e}")
-                self._error(e)
+                self._error(str(e))
                 sys.exit(0)
 
         return list_of_actions
@@ -650,6 +650,11 @@ task.configure(inputParamsJson=\'\'\'{
                     if self.uglobals.get('global') and key in self.uglobals.get('global').keys():
                         value = self.uglobals.get('global').get(key)
                         if value:
+                            # Value in the YAML file could be a list. Which means we just cannot 
+                            # use the value as is, need to convert it to json decodable/compatible string.
+                            if isinstance(value, list):
+                                value = json.dumps(value)
+                                value = value.replace('"', '\\\\"')
                             input_json_line += f"\"{key}\":  \"{value}\" ,"
                         else:
                             input_json_line += f"\"{key}\":  \"{key}\" ,"

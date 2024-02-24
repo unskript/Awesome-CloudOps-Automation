@@ -113,7 +113,15 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
             for svc in services:
                 kubectl_cmd = f"kubectl get service {svc} -n {namespace} -o=jsonpath={{.spec.selector}}"
                 response = handle.run_native_cmd(kubectl_cmd)
-                svc_labels = json.loads(response.stdout.strip())
+                svc_labels = None 
+                try:
+                    if response.stdout.strip():
+                        svc_labels = json.loads(response.stdout.strip())
+                except:
+                    # If json.loads returns error, which means the output of the kubectl command returned invalid output.
+                    # since there is invalid output, no service label output. the next if check should return back
+                    pass 
+
                 if not svc_labels:
                     continue
                 _labels = ", ".join([f"{key}={value}" for key, value in svc_labels.items()])

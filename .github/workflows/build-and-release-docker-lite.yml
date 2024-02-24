@@ -329,7 +329,9 @@ jobs:
           git checkout ${{ inputs.awesome_branch }}
           cd ..
           make syncrunbooks
-          sed -i "s/BUILD_NUMBER = .*/BUILD_NUMBER = \"${{ inputs.build_number }}\"/g" awesome/unskript-ctl/unskript_ctl_version.py
+          #sed -i "s/BUILD_NUMBER = .*/BUILD_NUMBER = \"${{ inputs.build_number }}\"/g" awesome/unskript-ctl/unskript_ctl_version.py
+          # Lets ADD BUILD_NUMBER TO THE version file
+          echo "BUILD_NUMBER = \"${{ inputs.build_number }}\"" >> awesome/unskript-ctl/unskript_ctl_version.py
           cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
