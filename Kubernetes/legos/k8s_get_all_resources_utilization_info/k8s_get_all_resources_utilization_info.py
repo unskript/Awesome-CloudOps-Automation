@@ -15,9 +15,16 @@ class InputSchema(BaseModel):
 
 
 def k8s_get_all_resources_utilization_info_printer(data):
-    # print the data
+    namespace = data['namespace']
     for resource, rows in data.items():
+        if resource == 'namespace':  # Skip the namespace key-value pair
+            continue
+
         print(f"\n{resource.capitalize()}:")
+        if not rows:  # Check if the resource list is empty
+            print(f"No {resource} found in {namespace} namespace.")
+            continue  # Skip to the next resource
+
         if resource == 'pods':
             headers = ['Namespace', 'Name', 'Status', 'CPU Usage (m)', 'Memory Usage (Mi)']
         else:
@@ -45,6 +52,7 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
 
     resources = ['pods', 'jobs', 'persistentvolumeclaims']
     data = {resource: [] for resource in resources}
+    data['namespace'] = namespace  # Store namespace in data dict
 
     # Fetch current utilization of pods
     pod_utilization_cmd = f"kubectl top pods {namespace_option}"
@@ -63,9 +71,12 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
         result = handle.run_native_cmd(cmd)
 
         if result.stderr:
-            raise ApiException(f"Error occurred while executing command {cmd} {result.stderr}")
+            print(f"Error occurred while executing command {cmd}: {result.stderr}")
+            continue 
 
         items = json.loads(result.stdout)['items']
+        if not items:  # If no items found, continue to ensure message is printed by printer function
+            continue
 
         for item in items:
             name = item['metadata']['name']

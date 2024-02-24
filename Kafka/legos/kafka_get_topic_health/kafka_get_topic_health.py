@@ -48,47 +48,46 @@ def kafka_get_topic_health(handle, group_id: str="", topics: list=[]) -> Dict:
     :rtype: Dictionary containing the health status and number of messages by topic and partition
     """
 
+
     admin_client = KafkaAdminClient(bootstrap_servers=handle.config['bootstrap_servers'])
+
     topic_health_info = {}
 
-    # Determine which consumer groups to process
-    if group_id:
-        consumer_groups = [group_id]
-    else:
-        consumer_groups_info = admin_client.list_consumer_groups()
-        consumer_groups = [group[0] for group in consumer_groups_info]
-
-    # Prepare a cache for Kafka info to minimize calls
-    cached_kafka_info = {}
+    try:
+        if not group_id:
+            consumer_groups_info = admin_client.list_consumer_groups()
+            consumer_groups = [group[0] for group in consumer_groups_info]
+        else:
+            consumer_groups = [group_id]
+    except Exception as e:
+        print(f"Failed to list consumer groups: {e}")
+        return {}
 
     for group in consumer_groups:
         consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
         group_topics = topics if topics else list(consumer.topics())
-        
-        # Cache topics and partitions for this group
+
         for topic in group_topics:
             partitions = consumer.partitions_for_topic(topic)
-            if partitions:
-                cached_kafka_info.setdefault(group, {}).setdefault(topic, partitions)
-                
-                for partition in partitions:
+            if not partitions:
+                topic_health_info.setdefault(group, {})[topic] = {"-1": {"number_of_messages": 0, "topic_exists": False}}
+                continue
+
+            for partition in partitions:
+                try:
                     tp = TopicPartition(topic, partition)
                     earliest_offset = consumer.beginning_offsets([tp])[tp]
                     latest_offset = consumer.end_offsets([tp])[tp]
                     number_of_messages = latest_offset - earliest_offset
-                    
-                    topic_health_info.setdefault(group, {}).setdefault(topic, {})[partition] = {
-                        "number_of_messages": number_of_messages,
-                        "topic_exists": True
-                    }
-            else:
-                # If topic is specified but does not exist in this group
-                if topics and topic not in cached_kafka_info.get(group, {}):
-                    topic_health_info.setdefault(group, {})[topic] = {"-1": {"number_of_messages": 0, "topic_exists": False}}
+                except Exception as e:
+                    print(f"Failed to fetch offsets for partition {partition} of topic {topic} in group {group}: {e}")
+                    continue
+
+                topic_health_info.setdefault(group, {}).setdefault(topic, {})[partition] = {
+                    "number_of_messages": number_of_messages,
+                    "topic_exists": True
+                }
         
-        # Close the consumer after processing this group
         consumer.close()
     
     return topic_health_info
-
-
