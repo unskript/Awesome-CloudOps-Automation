@@ -47,9 +47,9 @@ def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
     
 
         for group in consumer_groups:
-            # Create a consumer for each group to fetch topics
-            consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
             try:
+                # Create a consumer for each group to fetch topics
+                consumer = KafkaConsumer(bootstrap_servers=handle.config['bootstrap_servers'], group_id=group)
                 topics = consumer.topics()
             except Exception as e:
                 print(f"An error occurred while fetching topics in consumer group {group} : {e}")
