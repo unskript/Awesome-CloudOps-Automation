@@ -62,7 +62,11 @@ def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
                     print(f"An error occurred while fetching partitions for consumer group {group} and topic {topic} : {e}")
                     continue
                 for partition in partitions:
-                    tp = TopicPartition(topic, partition)
+                    try:
+                        tp = TopicPartition(topic, partition)
+                    except:
+                        print(f"An error occurred while fetching partition info for  consumer group {group} and topic {topic} : {e}")
+                        continue
                     # Fetch committed offset for each partition
                     committed_offset = consumer.committed(tp)
                     if committed_offset is not None:
