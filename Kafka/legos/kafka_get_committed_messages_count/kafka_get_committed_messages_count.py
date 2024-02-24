@@ -52,14 +52,14 @@ def kafka_get_committed_messages_count(handle, group_id: str = "") -> Dict:
             try:
                 topics = consumer.topics()
             except Exception as e:
-                    print(f"An error occurred while topics : {e}")
-                    return {}
+                print(f"An error occurred while fetching topics in consumer group {group} : {e}")
+                continue
             
             for topic in topics:
                 try:
                     partitions = consumer.partitions_for_topic(topic)
                 except Exception as e:
-                    print(f"An error occurred while partitions for {topic} : {e}")
+                    print(f"An error occurred while fetching partitions for {topic} : {e}")
                     continue
                 for partition in partitions:
                     tp = TopicPartition(topic, partition)
