@@ -47,13 +47,15 @@ def pods_have_written_results(handle, core_v1, label_selector, namespace, timeou
 
 def k8s_measure_worker_node_network_bandwidth_printer(output):
     """Print the network bandwidth results in tabular format."""
-    if output:
+    if isinstance(output, list) and isinstance(output[0], str):
+        print(output[0])
+    elif output:
         headers = ["Node", "Bandwidth"]
         table_data = [[entry['Node'], entry['Bandwidth'].replace('Time taken: ', '')] for entry in output]
         table = tabulate(table_data, headers=headers, tablefmt='grid')
         print(table)
     else:
-        print("No data available")
+        print("No data available or access denied.")
 
 def k8s_measure_worker_node_network_bandwidth(handle, namespace_to_check_bandwidth: str) -> List:
     """
@@ -112,8 +114,10 @@ def k8s_measure_worker_node_network_bandwidth(handle, namespace_to_check_bandwid
         except ApiException as ae:
             if ae.status == 404:  # Not Found error
                 print(f"Checking for an existing DaemonSet 'bandwidth-tester' in namespace {namespace_to_check_bandwidth}...")
+            elif ae.status == 403:
+                return ["Forbidden: The service account does not have permission to create/delete daemonset."]
             else:
-                raise
+                raise ae
         print(f"Deploying DaemonSet 'bandwidth-tester' in namespace {namespace_to_check_bandwidth}...")
         v1.create_namespaced_daemon_set(namespace=namespace_to_check_bandwidth, body=daemonset)
 
