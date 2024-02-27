@@ -97,8 +97,10 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
         labels_dict = json.loads(response.stdout.replace("'", "\""))
         label_selector = ",".join([f"{k}={v}" for k, v in labels_dict.items()])
 
-        # Fetch the pod attached to this service
-        get_pod_command = f"kubectl get pods -n {namespace} -l {label_selector} -o=jsonpath='{{.items[0].metadata.name}}'"
+        # Fetch the pod attached to this service.
+        # The safer option is to try with the * option. Having a specific index like 0 or 1
+        # will lead to ApiException. 
+        get_pod_command = f"kubectl get pods -n {namespace} -l {label_selector} -o=jsonpath='{{.items[*].metadata.name}}'"
         response = handle.run_native_cmd(get_pod_command)
         if not response or response.stderr:
             raise ApiException(f"Error while executing command ({get_pod_command}): {response.stderr if response else 'empty response'}")
