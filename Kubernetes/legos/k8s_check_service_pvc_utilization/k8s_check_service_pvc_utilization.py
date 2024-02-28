@@ -105,10 +105,10 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
         if not response or response.stderr:
             raise ApiException(f"Error while executing command ({get_pod_command}): {response.stderr if response else 'empty response'}")
 
-        # This variable should be named pod_names as we would get more than one pod_name in the space saparated string
+        # pod_names stores the output from the above kubectl command, which is a list of pod_names separated by space
         pod_names = response.stdout.strip()
         if not pod_names:
-            print(f"No pods found for service {svc} in namespace {namespace} with labels {label_selector}")
+            # No pods found for service {svc} in namespace {namespace} with labels {label_selector}
             continue
         
         # Fetch PVCs attached to the pod
@@ -142,6 +142,7 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
         pvc_mounts = []
         alert_pvcs = []
         all_pvcs = []
+        
         for element in pod_and_pvc_names:
             pod_name, claim_name = element.split(':')
 
@@ -160,40 +161,49 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
                 raise ApiException(f"Error fetching pod json for {pod_name}: {pod_json_output.stderr if pod_json_output else 'empty response'}")
             pod_data = json.loads(pod_json_output.stdout)
     
-            pvc_mounts.extend([
-                {"container_name": container['name'],
-                "mount_path": mount['mountPath'],
-                "pvc_name": claim_name if claim_name else volume['persistentVolumeClaim']['claimName']}
-                for container in pod_data['spec']['containers']
-                for mount in container.get('volumeMounts', [])
-                for volume in pod_data['spec']['volumes']
-                if 'persistentVolumeClaim' in volume and volume['name'] == mount['name']
-            ])
+            # Dictionary .get() method with default value is way of error handling
+            for container in pod_data.get('spec', {}).get('containers', {}):
+                for mount in container.get('volumeMounts', {}):
+                    for volume in pod_data.get('spec', {}).get('volumes', {}):
+                        if 'persistentVolumeClaim' in volume and volume.get('name') == mount.get('name'):
+                            try:
+                                claim_name = volume['persistentVolumeClaim']['claimName']
+                                pvc_mounts.append({
+                                    "container_name": container['name'],
+                                    "mount_path": mount['mountPath'],
+                                    "pvc_name": claim_name if claim_name else None
+                                })
+                            except KeyError as e:
+                                # Handle the KeyError (e.g., log the error, skip this iteration, etc.)
+                                print(f"KeyError: {e}. Skipping this entry.")
+                            except IndexError as e:
+                                # Handle the IndexError (e.g., log the error, skip this iteration, etc.)
+                                print(f"IndexError: {e}. Skipping this entry.")
 
 
-            all_mounts = [mount.get('mount_path') for mount in pvc_mounts]
-            all_mounts = " ".join(all_mounts).strip()
-            for mount in pvc_mounts:
-                container_name = mount['container_name']
-                mount_path = mount['mount_path']
-                pvc_name = mount['pvc_name']
-                all_pvcs.append({"pvc_name": pvc_name, "mount_path": mount_path, "used": None, "capacity": None})
-    
-                du_command = f"kubectl exec -n {namespace} {pod_name} -c {container_name} -- df -kh {all_mounts} | grep -v Filesystem"
-                du_output = handle.run_native_cmd(du_command)
-                        
-                if du_output and not du_output.stderr:
-                    used_space = du_output.stdout.strip()
-                    for idx, space in enumerate([used_space]):
-                        space = space.split()
-                        used_percentage = int(space[-2].replace('%', ''))
-                        total_capacity_str = space[1].replace('%', '')
-                        all_pvcs[idx]["used"] = used_percentage
-                        all_pvcs[idx]["capacity"] =  total_capacity_str
-                        if used_percentage > threshold:
-                            alert_pvcs.append(all_pvcs[idx])
+        all_mounts = [mount.get('mount_path') for mount in pvc_mounts]
+        all_mounts = " ".join(all_mounts).strip()
+        for mount in pvc_mounts:
+            container_name = mount['container_name']
+            mount_path = mount['mount_path']
+            pvc_name = mount['pvc_name']
+            all_pvcs.append({"pvc_name": pvc_name, "mount_path": mount_path, "used": None, "capacity": None})
 
-            alert_pvcs_all_services.extend(alert_pvcs)
+            du_command = f"kubectl exec -n {namespace} {pod_name} -c {container_name} -- df -kh {all_mounts} | grep -v Filesystem"
+            du_output = handle.run_native_cmd(du_command)
+                    
+            if du_output and not du_output.stderr:
+                used_space = du_output.stdout.strip()
+                for idx, space in enumerate([used_space]):
+                    space = space.split()
+                    used_percentage = int(space[-2].replace('%', ''))
+                    total_capacity_str = space[1].replace('%', '')
+                    all_pvcs[idx]["used"] = used_percentage
+                    all_pvcs[idx]["capacity"] =  total_capacity_str
+                    if used_percentage > threshold:
+                        alert_pvcs.append(all_pvcs[idx])
+
+        alert_pvcs_all_services.extend(alert_pvcs)
     if services_without_pvcs:
         print("Following services do not have any PVCs attached:")
         for service in services_without_pvcs:
