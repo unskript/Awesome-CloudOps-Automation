@@ -145,6 +145,9 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
         
         for element in pod_and_pvc_names:
             pod_name, claim_name = element.split(':')
+            if not claim_name:
+                # Skip if Volume Claim name is empty.
+                continue 
 
             # Fetch the Pod JSON 
             # We need to get the container name (if any) from the Pod's JSON. This is needed
