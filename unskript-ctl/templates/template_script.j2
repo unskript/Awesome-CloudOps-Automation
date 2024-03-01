@@ -30,7 +30,15 @@ def _run_function(fn):
         try:
             fn = globals().get(fn)
             if _logger:
-                _logger.debug(f"Starting to execute check {fn}")
+                # Since lego and lego_printer are nested within the check function
+                # we can use co_consts to extract the lego_printer and strip off the 
+                # _printer to get the lego function name
+                chk_name = ''
+                for const in fn.__code__.co_consts:
+                    if isinstance(const, type(fn.__code__)):
+                        if const.co_name.endswith('printer'):
+                            chk_name = const.co_name.replace('_printer','')
+                _logger.debug(f"Starting to execute check {fn} {chk_name}")
             fn() 
             success = True
         except Exception as e:
