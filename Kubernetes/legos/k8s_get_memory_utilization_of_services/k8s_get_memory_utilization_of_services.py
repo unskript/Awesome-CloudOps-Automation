@@ -32,18 +32,21 @@ class InputSchema(BaseModel):
 def k8s_get_memory_utilization_of_services_printer(output):
     status, data = output
     if status:
-        print("All services are within memory utilization threhsold")
+        print("All services are within memory utilization threshold")
     else:
-        headers = ["Service", "Pod", "Namespace","Container","Utilization %"]
+        headers = ["Service", "Pod", "Namespace", "Container", "Utilization %"]
         table_data = []
 
         for entry in data:
-            service= entry['service']
-            pod = entry['pod']
-            namespace = entry['namespace']
-            container = entry['container_name']
-            utilization_percentage = entry.get('utilization_percentage', "")
+            service = entry.get('service', "N/A")
+            pod = entry.get('pod', "N/A")
+            namespace = entry.get('namespace', "N/A")
+            container = entry.get('container_name', "N/A")
+            utilization_percentage = entry.get('utilization_percentage', "N/A")
+
             table_data.append([service, pod, namespace, container, utilization_percentage])
+        
+        # Using tabulate to format the output as a grid table
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
 
@@ -138,6 +141,9 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
                         if len(parts) >= 3:  # Ensure line has enough parts to parse
                             container_name = parts[1]
                             mem_usage = parts[-1]
+                        else:
+                            print(f"Incorrect top pods output for pod:{svc_pod} namespace: {namespace}.")
+                            continue
 
                         # Key: Service, Pod, Container; Value: Memory Usage
                         service_pods_containers[(svc, svc_pod, container_name)] = mem_usage
@@ -153,6 +159,9 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
                 parts = line.split()
                 if len(parts) >= 3:
                     pod_name, container_name, mem_usage = parts[0], parts[1], parts[-1]
+                else:
+                    print(f"Incorrect top pods output for namespace: {namespace}.")
+                    continue
 
                 # Key: Service: None, Pod, Container; Value: Memory Usage (when services are not specified)
                 service_pods_containers[(None, pod_name, container_name)] = mem_usage
