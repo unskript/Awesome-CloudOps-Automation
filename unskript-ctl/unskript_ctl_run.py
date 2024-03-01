@@ -747,7 +747,7 @@ class InfoAction(ChecksFactory):
                     # This means the script run was complete
                 except Exception as e:
                     # Error case
-                    self.logger.error(f"ERROR: Exception occurred {str(e)}") 
+                    self.logger.error(f"Exception Caught while executing info legos. Please see the unskript_ctl.log for more details. {str(e)}") 
 
         # Lets remove the directory if it exists
         try:
