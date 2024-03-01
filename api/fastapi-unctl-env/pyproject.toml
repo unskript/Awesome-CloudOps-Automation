@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "fastapi-unctl-env"
+version = "0.1.0"
+description = ""
+authors = ["sagar-salvi-unskript <sagar.salvi@unskript.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.0"
+uvicorn = "^0.27.1"
+python-dotenv = "^1.0.1"
+sqlalchemy = "^2.0.27"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

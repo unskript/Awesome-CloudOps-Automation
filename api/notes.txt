@@ -1,0 +1,7 @@
+use poetry for dependency managemnt
+It is like pipenv
+
+SQLAlchemy --> SQLite
+
+Create Script to add all checks in database
+Create CRUD for Suites [/suites] [create_suite]

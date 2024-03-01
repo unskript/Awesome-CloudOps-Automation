@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  sqlite-container:
+    image: alpine:latest
+    volumes:
+      - ./database:/data
+    command: sh -c "apk --no-cache add sqlite && cp /data/initial-db.sqlite /data/db.sqlite && sqlite3 /data/db.sqlite < /data/init.sql && tail -f /dev/null"
+    container_name: sqlite-container
+
+  sqlitebrowser:
+    image: linuxserver/sqlitebrowser
+    ports:
+      - "3000:3000"
+    depends_on:
+      - sqlite-container
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - ENABLE_UWSGI=true
+    volumes:
+      - sqlite_data:/data/db
+    container_name: sqlitebrowser
+
+volumes:
+  sqlite_data:
+    external: true
