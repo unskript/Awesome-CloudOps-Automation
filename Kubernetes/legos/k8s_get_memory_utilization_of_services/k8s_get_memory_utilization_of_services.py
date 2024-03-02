@@ -101,6 +101,13 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
     # 5. Construct list of pods which has  Utilization > threshold  and return the list
 
     try:
+
+        top_pods_command = f"kubectl top pods -n {namespace} --containers --no-headers"
+        response = handle.run_native_cmd(top_pods_command)
+        top_pods_output = response.stdout.strip()
+        if not top_pods_output:
+            return (True, None)
+        
         service_pods_containers = {}  # Dictionary to hold pod and container names for each service
         if services:
             # If services specified, lets iterate over it and get pods corresponding to them.
@@ -130,31 +137,19 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
 
                 # For each pod, fetch containers and their memory usage
                 for svc_pod in svc_pods.split():
-                    top_pod_containers_cmd = f"kubectl top pod {svc_pod} -n {namespace} --containers --no-headers"
-                    response = handle.run_native_cmd(top_pod_containers_cmd)
-                    top_pod_containers_output = response.stdout.strip()
-                    if not top_pod_containers_output:
-                        continue
+                    for line in top_pods_output.split('\n'):
+                        if svc_pod in line:
+                            parts = line.split()
+                            if len(parts) >= 3:  # Ensure line has enough parts to parse
+                                container_name = parts[1]
+                                mem_usage = parts[-1]
+                            else:
+                                print(f"Incorrect top pods output for pod:{svc_pod} namespace: {namespace}.")
+                                continue
 
-                    for line in top_pod_containers_output.split('\n'):
-                        parts = line.split()
-                        if len(parts) >= 3:  # Ensure line has enough parts to parse
-                            container_name = parts[1]
-                            mem_usage = parts[-1]
-                        else:
-                            print(f"Incorrect top pods output for pod:{svc_pod} namespace: {namespace}.")
-                            continue
-
-                        # Key: Service, Pod, Container; Value: Memory Usage
-                        service_pods_containers[(svc, svc_pod, container_name)] = mem_usage
+                            # Key: Service, Pod, Container; Value: Memory Usage
+                            service_pods_containers[(svc, svc_pod, container_name)] = mem_usage
         else:
-            # Fetch metrics for all pods in the namespace if no specific services are provided
-            top_pods_command = f"kubectl top pods -n {namespace} --containers --no-headers"
-            response = handle.run_native_cmd(top_pods_command)
-            top_pods_output = response.stdout.strip()
-            if not top_pod_containers_output:
-                return (True, None)
-
             for line in top_pods_output.split('\n'):
                 parts = line.split()
                 if len(parts) >= 3:
@@ -170,6 +165,14 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
         for (service_key, pod, container), mem_usage in service_pods_containers.items():
                 # Check if the service name exists or use a placeholder
                 service_name = service_key if service_key else "N/A"
+                # Kubernetes pod must have at least one container. The container is the smallest deployable unit in 
+                # Kubernetes. A pod encapsulates one or more containers, storage resources, a unique network IP, 
+                # and options that govern how the container(s) should run. When you define a pod manifest in Kubernetes, 
+                # you define one or more containers within it. Each container has its own image, environment variables, 
+                # resources, and other configuration settings. It's the containers within the pod that execute the actual application 
+                # code or processes. Without at least one container, there would be no workloads running within the pod, and 
+                # it would essentially be an empty entity without any purpose in the Kubernetes ecosystem.
+                # The below command takes the container name that was obtained earlier and uses it to get the memory request
                 kubectl_command = f"kubectl get pod {pod} -n {namespace} -o=jsonpath='{{.spec.containers[?(@.name==\"{container}\")].resources.requests.memory}}'"
                 response = handle.run_native_cmd(kubectl_command)
                 mem_request = response.stdout.strip()
