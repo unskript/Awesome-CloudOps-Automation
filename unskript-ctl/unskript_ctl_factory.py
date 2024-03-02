@@ -15,6 +15,7 @@ import json
 import glob
 
 from abc import ABC, abstractmethod
+from datetime import datetime
 from unskript_utils import *
 try:
      from envyaml import EnvYAML
@@ -76,8 +77,9 @@ class UctlLogger(logging.Logger):
         super().info(msg, *args, **kwargs)
 
     def dump_to_file(self, msg):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(self.log_file_name, 'a') as f:
-            f.write(msg + '\n')
+            f.write(timestamp + ' : ' + msg + '\n')
 
 # This is the Base class, Abstract class that shall be used by all the other
 # classes that are implemented. This class is implemented as a Singleton class

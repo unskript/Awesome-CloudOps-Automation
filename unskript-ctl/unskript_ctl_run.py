@@ -65,7 +65,8 @@ class Checks(ChecksFactory):
         checks_list = kwargs.get('checks_list')
         if len(checks_list) == 0:
             self.logger.error("ERROR: Checks list is empty, Cannot run anything")
-            raise ValueError("Checks List is empty!")
+            self.logger.info("ERROR: There are no checks found that match! Please check if the connector is active.")
+            sys.exit(0) 
 
         checks_list = self.create_checks_for_matrix_argument(checks_list)
         checks_list = self.insert_task_lines(checks_list=checks_list)
@@ -77,7 +78,7 @@ class Checks(ChecksFactory):
             if "/tmp" not in sys.path:
                 sys.path.append("/tmp/")
             from jit_script import do_run_
-            temp_output = do_run_()
+            temp_output = do_run_(self.logger)
             output_list = []
             for o in temp_output.split('\n'):
                 if not o:
@@ -719,27 +720,34 @@ class InfoAction(ChecksFactory):
             # Lets get the result_key from the jit_mapping. Why? because
             # action_entry_function list will fail in case of matrix argument
             result_key = self.jit_mapping.get(script)
-
+            self.logger.debug(f"Starting to Run {script} for {result_key}")
             if not self.uglobals['info_action_results'].get(result_key):
                 self.uglobals['info_action_results'][result_key] = ''
 
             try:
+                # TODO: We should consider adding Timeout to subprocess.run.
                 result = subprocess.run(['python', script], capture_output=True, check=True, text=True)
                 self.logger.debug(result.stdout)
-
             except subprocess.CalledProcessError as e:
                 sys.logger.error(f"Error executing {script}: {str(e)}")
                 raise ValueError(e)
 
             self.uglobals['info_action_results'][result_key] += '\n' + result.stdout
+            self.logger.debug(f"Completed running {script}")
             return result.stdout
 
         script_files = [f for f in os.listdir(self.temp_jit_dir) if f.endswith('.py')]
-        with concurrent.futures.ThreadPoolExecutor() as executor, tqdm(total=len(script_files), desc="Running") as pbar:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor, tqdm(total=len(script_files), desc="Running") as pbar:
             futures = {executor.submit(_execute_script, os.path.join(self.temp_jit_dir, script), idx): idx for idx, script in enumerate(script_files)}
             # Wait for all scripts to complete
-            for _ in concurrent.futures.as_completed(futures):
+            for future in concurrent.futures.as_completed(futures):
                 pbar.update(1)
+                try:
+                    _ = future.result()
+                    # This means the script run was complete
+                except Exception as e:
+                    # Error case
+                    self.logger.error(f"Exception Caught while executing info legos. Please see the unskript_ctl.log for more details. {str(e)}") 
 
         # Lets remove the directory if it exists
         try:
