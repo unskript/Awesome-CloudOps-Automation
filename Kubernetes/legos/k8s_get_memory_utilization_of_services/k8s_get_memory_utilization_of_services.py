@@ -12,13 +12,11 @@ from tabulate import tabulate
 
 
 class InputSchema(BaseModel):
-    services: Optional[list] = Field(
-        ...,
+    services: list = Field(
         description='List of pod names of the services for which memory utilization is to be fetched.',
         title='List of pod names (as services)',
     )
-    namespace: Optional[str] = Field(
-        ...,
+    namespace: str = Field(
         description='Namespace in which the services are running.',
         title='K8s Namespace',
     )
