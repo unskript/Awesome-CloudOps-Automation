@@ -5,6 +5,9 @@ import io
 import polling2
 from polling2 import poll
 
+# Logger object
+_logger = None
+
 class TimeoutException(Exception):
     pass
 
@@ -26,18 +29,39 @@ def _run_function(fn):
     else:
         try:
             fn = globals().get(fn)
+            if _logger:
+                # Since lego and lego_printer are nested within the check function
+                # we can use co_consts to extract the lego_printer and strip off the 
+                # _printer to get the lego function name
+                chk_name = ''
+                for const in fn.__code__.co_consts:
+                    if isinstance(const, type(fn.__code__)):
+                        if const.co_name.endswith('printer'):
+                            chk_name = const.co_name.replace('_printer','')
+                _logger.debug(f"Starting to execute check {fn} {chk_name}")
             fn() 
             success = True
         except Exception as e:
             # If one of the action fails dump the exception on console and proceed further
             print(str(e))
+            if _logger:
+                _logger.debug(str(e))
     sys.stdout = sys.__stdout__
+    if _logger:
+        _logger.debug(f"Completed execution of check {fn}")
     return output, success
 
-def do_run_():
+def do_run_(logger = None):
     import sys
     from tqdm import tqdm
+    global _logger 
     output = None
+    if logger:
+        _logger = logger
+
+    if _logger:
+        _logger.debug("Starting to execute {{ num_checks }} number of checks")
+
     for i in tqdm(range({{ num_checks + 1 }}), desc="Running", leave=True, ncols=100):
         fn = "check_" + str(i)
         if hasattr(globals().get(fn), "__call__"):
@@ -64,4 +88,9 @@ def do_run_():
     return output
 
 if __name__ == "__main__":
-    do_run_()
+    logger = None
+    try:
+        logger = sys.argv[1]
+    except:
+        pass 
+    do_run_(logger)
