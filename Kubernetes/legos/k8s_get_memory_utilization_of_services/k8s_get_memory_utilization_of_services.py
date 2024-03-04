@@ -115,6 +115,9 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
                 kubectl_cmd = f"kubectl get service {svc} -n {namespace} -o=jsonpath={{.spec.selector}}"
                 response = handle.run_native_cmd(kubectl_cmd)
                 svc_labels = None 
+                if response.stderr:
+                    print(f"Error occurred while executing command {kubectl_cmd}: {response.stderr}")
+                    continue
                 try:
                     if response.stdout.strip():
                         svc_labels = json.loads(response.stdout.strip())
