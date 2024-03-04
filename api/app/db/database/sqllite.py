@@ -1,11 +1,39 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from fastapi import Depends
+from sqlalchemy.orm import sessionmaker
+
+from sqlalchemy import Column, String, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
+from db.database.sqllite import Base
+from sqlalchemy import DateTime
+from sqlalchemy.sql import func
 
 from db.database.database import BaseRepository 
 
 Base = declarative_base()
+
+
+class CheckConfiguration(Base):
+    __tablename__ = "check_configurations"
+
+    id = Column(String, primary_key=True)
+    suite_id = Column(String, ForeignKey('suites.id'))
+    params = Column(String)
+    priority = Column(String)
+    muted = Column(Boolean)
+
+class Suite(Base):
+    __tablename__ = "suites"
+
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+    created_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    config = Column(String)
+    checks = relationship("CheckConfiguration", back_populates="suite")
+
+CheckConfiguration.suite = relationship("Suite", back_populates="checks")
 
 class SQLLiterepository(BaseRepository):
 
@@ -16,6 +44,10 @@ class SQLLiterepository(BaseRepository):
         self.sessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
         self.connection = self.sessionLocal
         self.base = Base
+        self.models = {
+            "checksConfiguration": CheckConfiguration,
+            "suite": Suite
+        }
 
     def connect(self):
         return self.connection() 

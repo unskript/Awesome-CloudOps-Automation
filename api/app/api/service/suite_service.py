@@ -1,28 +1,39 @@
 from api.schemas.suite import CreateSuiteRequest, CreateSuiteResponse, SuiteConfig, CheckConfig
 from db.database import db_repository
 import json
-from db.models.suite import convert_suite_to_db_schema, convert_check_config_to_db_schema, convert_check_config_to_api_object
-
+import uuid
 
 def create_suite(suite: CreateSuiteRequest) -> CreateSuiteResponse:
     # Create Suite
-    db_suite = convert_suite_to_db_schema(suite)
-    db_repository.insert(db_suite)
+    suite_config = suite.config.model_dump_json()
+    suite_model = db_repository.models.get["suite"]
+    suite_model.id = str(uuid.uuid4())
+    suite_model.name = suite.name
+    suite_model.description = suite.description
+    suite_model.config = suite_config
+    db_repository.insert(suite_model)
 
     # Create CheckConfigurations
     check_configs = []
     for check_config in suite.checks:
-        db_check = convert_check_config_to_db_schema(check_config, db_suite.id)
-        check_configs.append(db_check)
+        check_config_params = json.dumps(check_config.params)
+        checks_config_model = db_repository.models.get["checksConfiguration"]
+        checks_config_model.id = str(uuid.uuid4())
+        checks_config_model.params = check_config_params
+        checks_config_model.muted = check_config.muted
+        checks_config_model.suite_id = suite_model.id
+        check_configs.append(checks_config_model)
 
     db_repository.insert_many(check_configs)
+    new_check_configs = []
+    for check_config in check_configs:
+        check_config.params = json.loads(check_config.params)
+        new_check_configs.append(CheckConfig(**check_config.__dict__))
 
-    new_check_configs = [convert_check_config_to_api_object(check_config) for check_config in check_configs]
-
-    new_suite_configs = json.loads(db_suite.config)
-    return CreateSuiteResponse(id=db_suite.id,
-                               name=db_suite.name, 
-                               description=db_suite.description, 
+    new_suite_configs = json.loads(suite_model.config)
+    return CreateSuiteResponse(id=suite_model.id,
+                               name=suite_model.name, 
+                               description=suite_model.description, 
                                config=SuiteConfig(**new_suite_configs),
                                checks=new_check_configs)
 
