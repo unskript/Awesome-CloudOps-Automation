@@ -12,13 +12,11 @@ from tabulate import tabulate
 
 
 class InputSchema(BaseModel):
-    services: Optional[list] = Field(
-        ...,
+    services: list = Field(
         description='List of pod names of the services for which memory utilization is to be fetched.',
         title='List of pod names (as services)',
     )
-    namespace: Optional[str] = Field(
-        ...,
+    namespace: str = Field(
         description='Namespace in which the services are running.',
         title='K8s Namespace',
     )
@@ -32,16 +30,21 @@ class InputSchema(BaseModel):
 def k8s_get_memory_utilization_of_services_printer(output):
     status, data = output
     if status:
-        print("All services are within memory utilization threhsold")
+        print("All services are within memory utilization threshold")
     else:
-        headers = ["Pod", "Namespace", "Utilization %"]
+        headers = ["Service", "Pod", "Namespace", "Container", "Utilization %"]
         table_data = []
 
         for entry in data:
-            pod = entry['pod']
-            namespace = entry['namespace']
-            utilization_percentage = entry.get('utilization_percentage', "")
-            table_data.append([pod, namespace, utilization_percentage])
+            service = entry.get('service', "N/A")
+            pod = entry.get('pod', "N/A")
+            namespace = entry.get('namespace', "N/A")
+            container = entry.get('container_name', "N/A")
+            utilization_percentage = entry.get('utilization_percentage', "N/A")
+
+            table_data.append([service, pod, namespace, container, utilization_percentage])
+        
+        # Using tabulate to format the output as a grid table
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
 
@@ -96,16 +99,14 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
     # 5. Construct list of pods which has  Utilization > threshold  and return the list
 
     try:
-        # Get memory utilization of all pods using top pods
-        top_pods_command = f"kubectl top pods -n {namespace} --no-headers"
+
+        top_pods_command = f"kubectl top pods -n {namespace} --containers --no-headers"
         response = handle.run_native_cmd(top_pods_command)
-        top_pods_output = response.stdout.strip() 
+        top_pods_output = response.stdout.strip()
         if not top_pods_output:
             return (True, None)
-        top_pods_output = top_pods_output.split('\n')
-        pod_mem_util_dict = {x.split()[0]: x.split()[-1] for x in top_pods_output}
-
-        pods_to_check = {}
+        
+        service_pods_containers = {}  # Dictionary to hold pod and container names for each service
         if services:
             # If services specified, lets iterate over it and get pods corresponding to them.
             # If service pod not found in the top pod list, which means the memory
@@ -114,6 +115,9 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
                 kubectl_cmd = f"kubectl get service {svc} -n {namespace} -o=jsonpath={{.spec.selector}}"
                 response = handle.run_native_cmd(kubectl_cmd)
                 svc_labels = None 
+                if response.stderr:
+                    print(f"Error occurred while executing command {kubectl_cmd}: {response.stderr}")
+                    continue
                 try:
                     if response.stdout.strip():
                         svc_labels = json.loads(response.stdout.strip())
@@ -131,38 +135,74 @@ def k8s_get_memory_utilization_of_services(handle, namespace: str = "", threshol
                 if not svc_pods:
                     # No pods attached to the given service
                     continue
+
+                # For each pod, fetch containers and their memory usage
                 for svc_pod in svc_pods.split():
-                    if svc_pod in pod_mem_util_dict.keys():
-                        pods_to_check[svc_pod] = pod_mem_util_dict[svc_pod]
+                    for line in top_pods_output.split('\n'):
+                        if svc_pod in line:
+                            parts = line.split()
+                            if len(parts) >= 3:  # Ensure line has enough parts to parse
+                                container_name = parts[1]
+                                mem_usage = parts[-1]
+                            else:
+                                print(f"Incorrect top pods output for pod:{svc_pod} namespace: {namespace}.")
+                                continue
 
-        if not pods_to_check:
-            pods_to_check = pod_mem_util_dict
+                            # Key: Service, Pod, Container; Value: Memory Usage
+                            service_pods_containers[(svc, svc_pod, container_name)] = mem_usage
+        else:
+            for line in top_pods_output.split('\n'):
+                parts = line.split()
+                if len(parts) >= 3:
+                    pod_name, container_name, mem_usage = parts[0], parts[1], parts[-1]
+                else:
+                    print(f"Incorrect top pods output for namespace: {namespace}.")
+                    continue
 
-        for pod, mem_usage in pods_to_check.items():
-            # Lets get memory requests for all containers not just the first container
-            kubectl_command = f"kubectl get pod {pod} -n {namespace} -o=jsonpath='{{.spec.containers[*].resources.requests.memory}}'"
-            response = handle.run_native_cmd(kubectl_command)
-            mem_request = response.stdout.strip()
-            _mem_request = 0
-            for _mr in mem_request.split():
-                # Lets calculate the total memory request for all containers in the POD
-                _mem_request += convert_memory_to_bytes(_mr)
-            mem_request = _mem_request
-            mem_usage = convert_memory_to_bytes(mem_usage)
+                # Key: Service: None, Pod, Container; Value: Memory Usage (when services are not specified)
+                service_pods_containers[(None, pod_name, container_name)] = mem_usage
 
-            if not mem_request:
-                # Memory limit is not set, dont calculate utilization
-                continue
-            utilization = (mem_usage / mem_request) * 100
-            utilization = round(utilization, 2)
-            if utilization > threshold:
-                exceeding_services.append({
-                    "pod": pod,
-                    "namespace": namespace,
-                    "utilization_percentage": utilization,
-                    "memory_request_bytes": mem_request,
-                    "memory_usage_bytes": mem_usage,
-                })
+        # Now, for each service's pod and container, fetch memory request and calculate utilization
+        for (service_key, pod, container), mem_usage in service_pods_containers.items():
+                # Check if the service name exists or use a placeholder
+                service_name = service_key if service_key else "N/A"
+                # Kubernetes pod must have at least one container. The container is the smallest deployable unit in 
+                # Kubernetes. A pod encapsulates one or more containers, storage resources, a unique network IP, 
+                # and options that govern how the container(s) should run. When you define a pod manifest in Kubernetes, 
+                # you define one or more containers within it. Each container has its own image, environment variables, 
+                # resources, and other configuration settings. It's the containers within the pod that execute the actual application 
+                # code or processes. Without at least one container, there would be no workloads running within the pod, and 
+                # it would essentially be an empty entity without any purpose in the Kubernetes ecosystem.
+                # The below command takes the container name that was obtained earlier and uses it to get the memory request
+                kubectl_command = f"kubectl get pod {pod} -n {namespace} -o=jsonpath='{{.spec.containers[?(@.name==\"{container}\")].resources.requests.memory}}'"
+                response = handle.run_native_cmd(kubectl_command)
+                mem_request = response.stdout.strip()
+
+                if not mem_request:
+                     # Memory limit is not set, dont calculate utilization
+                    continue
+
+                mem_request_bytes = convert_memory_to_bytes(mem_request)
+                mem_usage_bytes = convert_memory_to_bytes(mem_usage)
+
+                if mem_request_bytes > 0:
+                    utilization = (mem_usage_bytes / mem_request_bytes) * 100
+                    utilization = round(utilization, 2)
+
+                    if utilization > threshold:
+                        exceeding_services.append({
+                            "service": service_name,
+                            "pod": pod,
+                            "container_name": container,
+                            "namespace": namespace,
+                            "utilization_percentage": utilization,
+                            "memory_request_bytes": mem_request_bytes,
+                            "memory_usage_bytes": mem_usage_bytes,
+                        })
+                else:
+                    print(f"Memory request for pod: {pod}, container: {container} is 0 or not set. Skipping...")
+                    continue
+
     except Exception as e:
         raise e
 
