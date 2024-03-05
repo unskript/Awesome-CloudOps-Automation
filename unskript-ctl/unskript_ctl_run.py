@@ -54,6 +54,7 @@ class Checks(ChecksFactory):
         self.update_credentials_to_uglobal()
         self.uglobals['global'] = self.checks_globals
         self.checks_priority = self._config.get_checks_priority()
+        self.script_to_check_mapping = {}
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -78,7 +79,7 @@ class Checks(ChecksFactory):
             if "/tmp" not in sys.path:
                 sys.path.append("/tmp/")
             from jit_script import do_run_
-            temp_output = do_run_(self.logger)
+            temp_output = do_run_(self.logger, self.script_to_check_mapping)
             output_list = []
             for o in temp_output.split('\n'):
                 if not o:
@@ -320,23 +321,30 @@ class Checks(ChecksFactory):
         with open(self.temp_jit_file, 'w', encoding='utf-8') as f:
             f.write(self.get_first_cell_content(checks_list))
             f.write('\n\n')
+            f.write(self.get_timeout_decorator_function(execution_timeout=execution_timeout))
+            f.write('\n\n')
             for idx,c in enumerate(checks_list[:]):
-                idx += 1
                 _entry_func = c.get('metadata', {}).get('action_entry_function', '')
+                _check_uuid = self.check_uuids[idx]
+                idx += 1
+                self.script_to_check_mapping[f"check_{idx}"] =  _entry_func
+                self.script_to_check_mapping[_check_uuid] = _entry_func
+                exec_timeout = per_check_timeout.get(_entry_func, execution_timeout)
+                f.write(f"@timeout(seconds={exec_timeout}, error_message=\"Check check_{idx} timed out\")\n")
                 check_name = f"def check_{idx}():"
                 f.write(check_name + '\n')
                 f.write('    global w' + '\n')
-                f.write('    signal.signal(signal.SIGALRM, timeout_handler)' + '\n')
-                exec_timeout = per_check_timeout.get(_entry_func, execution_timeout)
-                f.write(f'    signal.alarm({exec_timeout})' + '\n')
                 for line in c.get('code'):
                     line = line.replace('\n', '')
                     for l in line.split('\n'):
                         l = l.replace('\n', '')
                         if l.startswith("from __future__"):
                             continue
-                        f.write('    ' + l.replace('\n', '') + '\n')
-                f.write('    signal.alarm(0)' + '\n')
+                        if 'task.execute' in l:
+                            f.write('        output =' + l.replace('\n', '') + '\n')
+                        else:
+                            f.write('    ' + l.replace('\n', '') + '\n')
+                f.write('        return output \n')
             f.write('\n')
             # Lets create the last cell content
             f.write('def last_cell():' + '\n')
@@ -376,6 +384,14 @@ class Checks(ChecksFactory):
         first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={self.check_uuids})'''
 
         return first_cell_content
+
+    def get_timeout_decorator_function(self, execution_timeout):
+        with open(os.path.join(os.path.dirname(__file__), 'templates/timeout_handler.j2'), 'r') as f:
+            content_template = f.read()
+
+        template = Template(content_template)
+        return  template.render(execution_timeout=execution_timeout)
+
 
     def get_last_cell_content(self):
         with open(os.path.join(os.path.dirname(__file__), 'templates/last_cell_content.j2'), 'r') as f:
@@ -425,6 +441,7 @@ class Script(ScriptsFactory):
         output_file = UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME
         output_file_txt = os.path.join(output_dir, output_file + ".txt")
         output_file_json = os.path.join(output_dir, output_file + ".json")
+        execution_timeout = self._config._get('global').get('execution_timeout', 60)
         current_env = os.environ.copy()
         current_env[UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV] = output_dir
         if isinstance(script, list) is False:
@@ -442,7 +459,16 @@ class Script(ScriptsFactory):
                                env=current_env,
                                shell=True,
                                stdout=f,
-                               stderr=f)
+                               stderr=f,
+                               timeout=execution_timeout)
+        except subprocess.TimeoutExpired:
+            self._error(f'{" ".join(script)} Timed out')
+            error = "Script Execution Timeout"
+            status = "TIMEOUT"
+        except subprocess.CalledProcessError as e:
+            self._error(f'{" ".join(script)} error, {e}')
+            error = str(e)
+            status = "FAIL"
         except Exception as e:
             self._error(f'{" ".join(script)} failed, {e}')
             error = str(e)
@@ -714,6 +740,7 @@ class InfoAction(ChecksFactory):
             self.logger.error("Cannot create JIT scripts to run the checks, please look at logs")
             raise ValueError("Unable to create JIT script to run the checks")
 
+        execution_timeout = self._config._get('global').get('execution_timeout', 60)
         # Internal routine to run through all python JIT script and return the output
         def _execute_script(script, idx):
             script = script.strip()
@@ -726,10 +753,18 @@ class InfoAction(ChecksFactory):
 
             try:
                 # TODO: We should consider adding Timeout to subprocess.run.
-                result = subprocess.run(['python', script], capture_output=True, check=True, text=True)
+                result = subprocess.run(['python', script], 
+                                        capture_output=True, 
+                                        check=True, 
+                                        text=True,
+                                        timeout=execution_timeout)
                 self.logger.debug(result.stdout)
+            except subprocess.TimeoutExpired as e:
+                self.logger.error(f"Timeout occurred while executing {script}: {str(e)}")
+                self.uglobals['info_action_results'][result_key] += '\n' + 'ACTION TIMEOUT'
+                return None
             except subprocess.CalledProcessError as e:
-                sys.logger.error(f"Error executing {script}: {str(e)}")
+                self.logger.error(f"Error executing {script}: {str(e)}")
                 raise ValueError(e)
 
             self.uglobals['info_action_results'][result_key] += '\n' + result.stdout
@@ -769,6 +804,7 @@ class InfoAction(ChecksFactory):
             pass
         os.makedirs(self.temp_jit_dir, exist_ok=True)
         first_cell_content = self.get_first_cell_content()
+
         for index, action in enumerate(action_list):
             jit_file = os.path.join(self.temp_jit_dir, self.temp_jit_base_name + str(index) + '.py')
             # Lets create a mapping of which action_entry_function maps to which script file
@@ -789,8 +825,9 @@ class InfoAction(ChecksFactory):
                         f.write('    ' + line.rstrip() + '\n')
                 f.write('\n')
                 # Now the Main section
-                f.write('if __name__ == "__main__":' + '\n')
-                f.write('    action()')
+                f.write(self.get_main_section_of_info_lego())
+                f.write('\n')
+                
 
         if os.path.exists(self.temp_jit_dir) is True:
             return True
@@ -829,6 +866,21 @@ class InfoAction(ChecksFactory):
 
         first_cell_content += '''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids=None)'''
         return first_cell_content
+
+    def get_timeout_decorator_function(self, execution_timeout):
+        with open(os.path.join(os.path.dirname(__file__), 'templates/timeout_handler.j2'), 'r') as f:
+            content_template = f.read()
+
+        template = Template(content_template)
+        return  template.render(execution_timeout=execution_timeout)
+
+    def get_main_section_of_info_lego(self):
+        with open(os.path.join(os.path.dirname(__file__), 'templates/template_info_lego.j2'), 'r') as f:
+            content_template = f.read()
+
+        template = Template(content_template)
+        return  template.render()
+    
 
     def insert_task_lines(self, list_of_actions: list):
         if list_of_actions and len(list_of_actions):
