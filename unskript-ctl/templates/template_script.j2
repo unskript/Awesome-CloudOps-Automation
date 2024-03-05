@@ -2,22 +2,28 @@ import signal
 import sys
 import os
 import io
+import threading
+import functools
 import polling2
 from polling2 import poll
 
 # Logger object
 _logger = None
 
+# Script to check mapping
+_script_to_check_mapping = {}
+
 class TimeoutException(Exception):
     pass
+
 
 def timeout_handler(signum, frame):
     raise TimeoutException("Checks timed out")
 
-def _run_function(fn):
+def _run_function(fname):
     global w
     l_cell = False
-    if fn == "last_cell":
+    if fname == "last_cell":
         l_cell = True
     output = None
     success = False 
@@ -28,36 +34,47 @@ def _run_function(fn):
         output = output_buffer.getvalue()
     else:
         try:
-            fn = globals().get(fn)
+            fn = globals().get(fname)
             if _logger:
-                # Since lego and lego_printer are nested within the check function
-                # we can use co_consts to extract the lego_printer and strip off the 
-                # _printer to get the lego function name
+                # Since we are using decorator for controlling the timeout, the earlier way of getting const.co_name
+                # would not work because, the decorator mapping mangles the function name with the wrapper. 
+                # We rely on the calling function to get the check name as a mapping (dictionary).
                 chk_name = ''
-                for const in fn.__code__.co_consts:
-                    if isinstance(const, type(fn.__code__)):
-                        if const.co_name.endswith('printer'):
-                            chk_name = const.co_name.replace('_printer','')
+                if _script_to_check_mapping:
+                    chk_name = _script_to_check_mapping.get(fname)
                 _logger.debug(f"Starting to execute check {fn} {chk_name}")
-            fn() 
+            
+            poll(globals().get(fname), 
+                            step=1, 
+                            timeout={{ execution_timeout }},
+                            poll_forever=False,
+                            check_success= lambda v: v is not None)
             success = True
+        except polling2.TimeoutException:
+            # Polling timeout
+            if _logger:
+                _logger.debug(f"Execution completed for {fn}")
         except Exception as e:
             # If one of the action fails dump the exception on console and proceed further
             print(str(e))
             if _logger:
                 _logger.debug(str(e))
     sys.stdout = sys.__stdout__
-    if _logger:
-        _logger.debug(f"Completed execution of check {fn}")
+    
     return output, success
 
-def do_run_(logger = None):
+def do_run_(logger = None, script_to_check_mapping = {}):
     import sys
     from tqdm import tqdm
     global _logger 
+    global _script_to_check_mapping
+
     output = None
     if logger:
         _logger = logger
+    
+    if script_to_check_mapping:
+        _script_to_check_mapping = script_to_check_mapping
 
     if _logger:
         _logger.debug("Starting to execute {{ num_checks }} number of checks")
@@ -65,32 +82,33 @@ def do_run_(logger = None):
     for i in tqdm(range({{ num_checks + 1 }}), desc="Running", leave=True, ncols=100):
         fn = "check_" + str(i)
         if hasattr(globals().get(fn), "__call__"):
-            try:
-                result = poll(lambda: _run_function(fn), 
-                                step=1, 
-                                timeout={{ execution_timeout }},
-                                poll_forever=False)
-                if result and not result[1]:
-                    print('\n. Check Did not complete')
-            except polling2.TimeoutException:
-                print("Timeout Reached")
-                continue
-            except Exception as e:
-                print(f" Exception Reached {str(e)}")
-                return 
+            result = _run_function(fn)
+            if _logger:
+                if result:
+                    if isinstance(result, tuple):
+                        if result[-1]:
+                            _logger.debug(f"Check {fn} was successful")
+                        else:
+                            _logger.debug(f"Check {fn} failed")
+                                    
     output, _ = _run_function('last_cell')
 
-    # We need to reset alarm because if any SIGALRM was triggred in the _run_function
-    # then any other operation like running info checks, or running script will also
-    # be subject to the same timeout restriction. Need to reset before running them.
-    signal.alarm(0)
+    # Lets dump the output in the log file so we can refer to the status of it 
+    # later on
+    if _logger:
+        if output:
+            _logger.debug(output)
+        else:
+            _logger.debug("No output for the checks run")
 
     return output
 
 if __name__ == "__main__":
     logger = None
+    script_to_check_mapping = None
     try:
         logger = sys.argv[1]
+        script_to_check_mapping = sys.argv[2]
     except:
         pass 
-    do_run_(logger)
+    do_run_(logger, script_to_check_mapping)
