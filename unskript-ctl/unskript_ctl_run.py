@@ -341,6 +341,7 @@ class Checks(ChecksFactory):
                         if l.startswith("from __future__"):
                             continue
                         f.write('    ' + l.replace('\n', '') + '\n')
+                f.write('        return task.output \n')
             f.write('\n')
             # Lets create the last cell content
             f.write('def last_cell():' + '\n')
