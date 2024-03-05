@@ -35,16 +35,16 @@ def _run_function(fname):
     else:
         try:
             fn = globals().get(fname)
+            # We use the _script_to_check_mapping runbook_variable to explicitly map 
+            # check name to script name.
+            chk_name = ''
+            if _script_to_check_mapping:
+                chk_name = _script_to_check_mapping.get(fname)
+
             if _logger:
-                # Since we are using decorator for controlling the timeout, the earlier way of getting const.co_name
-                # would not work because, the decorator mapping mangles the function name with the wrapper. 
-                # We rely on the calling function to get the check name as a mapping (dictionary).
-                chk_name = ''
-                if _script_to_check_mapping:
-                    chk_name = _script_to_check_mapping.get(fname)
                 _logger.debug(f"Starting to execute check {fn} {chk_name}")
             
-            poll(globals().get(fname), 
+            response = poll(globals().get(fname), 
                             step=1, 
                             timeout={{ execution_timeout }},
                             poll_forever=False,
@@ -53,7 +53,7 @@ def _run_function(fname):
         except polling2.TimeoutException:
             # Polling timeout
             if _logger:
-                _logger.debug(f"Execution completed for {fn}")
+                _logger.debug(f"Execution completed for {fn} <-> {chk_name}")
         except Exception as e:
             # If one of the action fails dump the exception on console and proceed further
             print(str(e))

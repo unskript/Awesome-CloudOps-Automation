@@ -340,8 +340,11 @@ class Checks(ChecksFactory):
                         l = l.replace('\n', '')
                         if l.startswith("from __future__"):
                             continue
-                        f.write('    ' + l.replace('\n', '') + '\n')
-                f.write('        return task.output \n')
+                        if 'task.execute' in l:
+                            f.write('        output =' + l.replace('\n', '') + '\n')
+                        else:
+                            f.write('    ' + l.replace('\n', '') + '\n')
+                f.write('        return output \n')
             f.write('\n')
             # Lets create the last cell content
             f.write('def last_cell():' + '\n')
