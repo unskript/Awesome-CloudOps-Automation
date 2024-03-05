@@ -736,6 +736,7 @@ class InfoAction(ChecksFactory):
             self.logger.error("Cannot create JIT scripts to run the checks, please look at logs")
             raise ValueError("Unable to create JIT script to run the checks")
 
+        execution_timeout = self._config._get('global').get('execution_timeout', 60)
         # Internal routine to run through all python JIT script and return the output
         def _execute_script(script, idx):
             script = script.strip()
@@ -748,8 +749,15 @@ class InfoAction(ChecksFactory):
 
             try:
                 # TODO: We should consider adding Timeout to subprocess.run.
-                result = subprocess.run(['python', script], capture_output=True, check=True, text=True)
+                result = subprocess.run(['python', script], 
+                                        capture_output=True, 
+                                        check=True, 
+                                        text=True,
+                                        timeout=execution_timeout)
                 self.logger.debug(result.stdout)
+            except subprocess.TimeoutExpired as e:
+                self.logger.error(f"Timeout occurred while executing {script}: {str(e)}")
+                return None
             except subprocess.CalledProcessError as e:
                 self.logger.error(f"Error executing {script}: {str(e)}")
                 raise ValueError(e)
@@ -791,8 +799,6 @@ class InfoAction(ChecksFactory):
             pass
         os.makedirs(self.temp_jit_dir, exist_ok=True)
         first_cell_content = self.get_first_cell_content()
-        execution_timeout = self._config._get('global').get('execution_timeout', 60)
-        timeout_decorator = self.get_timeout_decorator_function(execution_timeout=execution_timeout)
 
         for index, action in enumerate(action_list):
             jit_file = os.path.join(self.temp_jit_dir, self.temp_jit_base_name + str(index) + '.py')
@@ -803,9 +809,9 @@ class InfoAction(ChecksFactory):
             with open(jit_file, 'w') as f:
                 f.write(first_cell_content)
                 f.write('\n\n')
-                f.write(timeout_decorator)
-                f.write('\n\n')
-                f.write(f"@timeout(seconds={execution_timeout}, error_message=\"Action timed out\")\n")
+                # f.write(timeout_decorator)
+                # f.write('\n\n')
+                # f.write(f"@timeout(seconds={execution_timeout}, error_message=\"Action timed out\")\n")
                 f.write('def action():' + '\n')
                 f.write('    global w' + '\n')
                 for lines in action.get('code'):
@@ -817,7 +823,7 @@ class InfoAction(ChecksFactory):
                         f.write('    ' + line.rstrip() + '\n')
                 f.write('\n')
                 # Now the Main section
-                f.write(self.get_main_section_of_info_lego(execution_timeout=execution_timeout))
+                f.write(self.get_main_section_of_info_lego())
                 f.write('\n')
                 
 
@@ -866,12 +872,12 @@ class InfoAction(ChecksFactory):
         template = Template(content_template)
         return  template.render(execution_timeout=execution_timeout)
 
-    def get_main_section_of_info_lego(self, execution_timeout):
+    def get_main_section_of_info_lego(self):
         with open(os.path.join(os.path.dirname(__file__), 'templates/template_info_lego.j2'), 'r') as f:
             content_template = f.read()
 
         template = Template(content_template)
-        return  template.render(execution_timeout=execution_timeout)
+        return  template.render()
     
 
     def insert_task_lines(self, list_of_actions: list):
