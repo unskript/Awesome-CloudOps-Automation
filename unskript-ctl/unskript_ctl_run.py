@@ -437,6 +437,7 @@ class Script(ScriptsFactory):
         output_file = UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME
         output_file_txt = os.path.join(output_dir, output_file + ".txt")
         output_file_json = os.path.join(output_dir, output_file + ".json")
+        execution_timeout = self._config._get('global').get('execution_timeout', 60)
         current_env = os.environ.copy()
         current_env[UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV] = output_dir
         if isinstance(script, list) is False:
@@ -454,7 +455,16 @@ class Script(ScriptsFactory):
                                env=current_env,
                                shell=True,
                                stdout=f,
-                               stderr=f)
+                               stderr=f,
+                               timeout=execution_timeout)
+        except subprocess.TimeoutExpired:
+            self._error(f'{" ".join(script)} Timed out')
+            error = "Script Execution Timeout"
+            status = "TIMEOUT"
+        except subprocess.CalledProcessError as e:
+            self._error(f'{" ".join(script)} error, {e}')
+            error = str(e)
+            status = "FAIL"
         except Exception as e:
             self._error(f'{" ".join(script)} failed, {e}')
             error = str(e)
