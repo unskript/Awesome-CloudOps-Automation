@@ -757,6 +757,7 @@ class InfoAction(ChecksFactory):
                 self.logger.debug(result.stdout)
             except subprocess.TimeoutExpired as e:
                 self.logger.error(f"Timeout occurred while executing {script}: {str(e)}")
+                self.uglobals['info_action_results'][result_key] += '\n' + 'ACTION TIMEOUT'
                 return None
             except subprocess.CalledProcessError as e:
                 self.logger.error(f"Error executing {script}: {str(e)}")
@@ -809,9 +810,6 @@ class InfoAction(ChecksFactory):
             with open(jit_file, 'w') as f:
                 f.write(first_cell_content)
                 f.write('\n\n')
-                # f.write(timeout_decorator)
-                # f.write('\n\n')
-                # f.write(f"@timeout(seconds={execution_timeout}, error_message=\"Action timed out\")\n")
                 f.write('def action():' + '\n')
                 f.write('    global w' + '\n')
                 for lines in action.get('code'):
