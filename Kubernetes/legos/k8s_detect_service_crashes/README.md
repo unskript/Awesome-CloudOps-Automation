@@ -9,14 +9,15 @@ This action detects service crashes by checking the logs of each pod for specifi
 
 ## Lego Details
 
-    k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 100)
+    k8s_detect_service_crashes(handle, namespace: str, services_to_detect_crashes: list, tail_lines: int = 100)
 
         handle: Object of type unSkript K8S Connector
-        namespace: Kubernetes namespace (Optional)
+        namespace: Kubernetes namespace
+        services_to_detect_crashes: List of services to detect service crashes
         tail_lines: Number of log lines to fetch from each container. Defaults to 100.
 
 ## Lego Input
-This Lego take four input handle, namespace, tail_lines.
+This Lego take 4 inputs handle, namespace, tail_lines, services_to_detect_crashes.
 
 ## Lego Output
 Here is a sample output.
