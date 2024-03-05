@@ -807,16 +807,9 @@ class InfoAction(ChecksFactory):
                         f.write('    ' + line.rstrip() + '\n')
                 f.write('\n')
                 # Now the Main section
-                f.write('if __name__ == "__main__":' + '\n')
-                f.write("    try:\n")
-                f.write("        poll(action(), \n") 
-                f.write("             step=1, \n") 
-                f.write("             timeout=execution_timeout, \n")
-                f.write("             poll_forever=False, \n")
-                f.write("             check_success= lambda v: v is not None)\n")
-                f.write("    except polling2.TimeoutException: \n")
-                f.write("        # Poll Timeout for the info lego \n")
-                f.write("        print(\"Timeout Occurred \") \n")
+                f.write(self.get_main_section_of_info_lego(execution_timeout=execution_timeout))
+                f.write('\n')
+                
 
         if os.path.exists(self.temp_jit_dir) is True:
             return True
@@ -862,7 +855,15 @@ class InfoAction(ChecksFactory):
 
         template = Template(content_template)
         return  template.render(execution_timeout=execution_timeout)
+
+    def get_main_section_of_info_lego(self, execution_timeout):
+        with open(os.path.join(os.path.dirname(__file__), 'templates/template_info_lego.j2'), 'r') as f:
+            content_template = f.read()
+
+        template = Template(content_template)
+        return  template.render(execution_timeout=execution_timeout)
     
+
     def insert_task_lines(self, list_of_actions: list):
         if list_of_actions and len(list_of_actions):
             return self._common.insert_task_lines(list_of_actions=list_of_actions)

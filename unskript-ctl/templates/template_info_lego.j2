@@ -1,0 +1,13 @@
+if __name__ == "__main__":
+    try:
+        poll(lambda: action(),
+            step=1, 
+            timeout={{ execution_timeout }}, 
+            poll_forever=False)
+    except polling2.TimeoutException: 
+        # Poll Timeout, since we are not checking
+        # Any return value, if the check has timed out the
+        # decorator function would automatically print the error_message
+        # about the timeout. 
+        print("Info gathering action returned after {{ execution_timeout }} seconds")
+        pass
