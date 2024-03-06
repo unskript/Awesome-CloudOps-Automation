@@ -55,6 +55,8 @@ class Checks(ChecksFactory):
         self.uglobals['global'] = self.checks_globals
         self.checks_priority = self._config.get_checks_priority()
         self.script_to_check_mapping = {}
+        # Prioritized checks to uuid mapping
+        self.prioritized_checks_to_id_mapping = {}
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -172,6 +174,12 @@ class Checks(ChecksFactory):
                 else:
                     priority = self.checks_priority.get(self.check_entry_functions[idx], CHECK_PRIORITY_P2)
 
+                _action_uuid = payload.get('id')
+                if _action_uuid:
+                    c_name = self.connector_types[idx] + ':' + self.prioritized_checks_to_id_mapping[_action_uuid]
+                else:
+                    c_name = self.connector_types[idx] + ':' + self.check_names[idx]
+               
                 if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
                     result_table.append([
                         self.check_names[idx],
@@ -186,7 +194,6 @@ class Checks(ChecksFactory):
                         )
                 elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
                     failed_objects = payload.get('objects')
-                    c_name = self.connector_types[idx] + ':' + self.check_names[idx]
                     failed_result[c_name] = failed_objects
                     result_table.append([
                         self.check_names[idx],
@@ -205,7 +212,7 @@ class Checks(ChecksFactory):
                         failed_objects = payload.get('error')
                         if isinstance(failed_objects, str) is True:
                             failed_objects = [failed_objects]
-                        c_name = self.connector_types[idx] + ':' + self.check_names[idx]
+                        # c_name = self.connector_types[idx] + ':' + self.check_names[idx]
                         failed_result[c_name] = failed_objects
                         failed_result_available = True
                     error_msg = payload.get('error') if payload.get('error') else self.parse_failed_objects(failed_object=failed_objects)
@@ -326,8 +333,10 @@ class Checks(ChecksFactory):
             f.write('\n\n')
             for idx,c in enumerate(checks_list[:]):
                 _entry_func = c.get('metadata', {}).get('action_entry_function', '')
+                _action_uuid = c.get('metadata', {}).get('action_uuid', '')
                 idx += 1
                 self.script_to_check_mapping[f"check_{idx}"] =  _entry_func
+                self.prioritized_checks_to_id_mapping[str(_action_uuid)] = _entry_func
                 exec_timeout = per_check_timeout.get(_entry_func, execution_timeout)
                 f.write(f"@timeout(seconds={exec_timeout}, error_message=\"Check check_{idx} timed out\")\n")
                 check_name = f"def check_{idx}():"
