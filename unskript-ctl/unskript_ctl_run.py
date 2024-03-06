@@ -207,6 +207,7 @@ class Checks(ChecksFactory):
                             failed_objects = [failed_objects]
                         c_name = self.connector_types[idx] + ':' + self.check_names[idx]
                         failed_result[c_name] = failed_objects
+                        failed_result_available = True
                     error_msg = payload.get('error') if payload.get('error') else self.parse_failed_objects(failed_object=failed_objects)
                     result_table.append([
                         self.check_names[idx],
@@ -325,10 +326,8 @@ class Checks(ChecksFactory):
             f.write('\n\n')
             for idx,c in enumerate(checks_list[:]):
                 _entry_func = c.get('metadata', {}).get('action_entry_function', '')
-                _check_uuid = self.check_uuids[idx]
                 idx += 1
                 self.script_to_check_mapping[f"check_{idx}"] =  _entry_func
-                self.script_to_check_mapping[_check_uuid] = _entry_func
                 exec_timeout = per_check_timeout.get(_entry_func, execution_timeout)
                 f.write(f"@timeout(seconds={exec_timeout}, error_message=\"Check check_{idx} timed out\")\n")
                 check_name = f"def check_{idx}():"
