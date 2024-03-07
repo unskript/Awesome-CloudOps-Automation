@@ -98,7 +98,6 @@ def k8s_get_expiring_tls_secret_certificates(handle, namespace:str='', expiring_
                         "days_remaining": days_remaining,
                         "status": "Expiring Soon"  # Indicating the certificate is close to expiring
                             })
-                    result.append({"secret_name": secret.metadata.name, "namespace": n, "days_remaining": days_remaining})
 
     if len(result) != 0:
         return (False, result)
