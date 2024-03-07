@@ -57,8 +57,11 @@ def k8s_get_service_with_no_associated_endpoints(handle, namespace: str , core_s
             if not ep.subsets:
                 retval.append({"name": service.metadata.name, "namespace": service.metadata.namespace})
         except ApiException as e:
-            raise e
-
+            if e.status == 404:
+                print(f"Service {service_name} not found in namespace {namespace}.")
+                continue
+            else:
+                raise e
     if retval:
         return (False, retval)
 
