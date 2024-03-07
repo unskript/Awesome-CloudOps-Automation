@@ -10,8 +10,7 @@ from pydantic import BaseModel, Field
 from tabulate import tabulate 
 
 class InputSchema(BaseModel):
-    namespace: Optional[str] = Field(
-        '',
+    namespace: str = Field(
         description='K8S Namespace',
         title='K8S Namespace'
     )
@@ -19,6 +18,9 @@ class InputSchema(BaseModel):
         100,
         description='Number of log lines to fetch from each container. Defaults to 100.',
         title='No. of lines (Default: 100)'
+    )
+    core_services: list = Field(
+        description='List of services to detect service crashes on.'
     )
 
 def k8s_detect_service_crashes_printer(output):
@@ -33,7 +35,7 @@ def k8s_detect_service_crashes_printer(output):
 
 
 
-def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 100) -> Tuple:
+def k8s_detect_service_crashes(handle, namespace: str, core_services:list, tail_lines: int = 100) -> Tuple:
     """
     k8s_detect_service_crashes detects service crashes by checking the logs of each pod for specific error messages.
 
@@ -53,42 +55,48 @@ def k8s_detect_service_crashes(handle, namespace: str = '', tail_lines: int = 10
         "Exception"
         # Add more error patterns here as necessary
     ]
+    ERROR_PATTERNS = ["Worker exiting", "Exception"]  # Add more error patterns as necessary
     crash_logs = []
-    try:
-        kubectl_cmd = "kubectl "
-        if namespace:
-            kubectl_cmd += f"-n  {namespace} "
-        kubectl_cmd += "get services,pods -o json"
-        response = handle.run_native_cmd(kubectl_cmd)
-        services_and_pods = {}
 
-        if response:
-            response = response.stdout.strip()
-            services_and_pods = json.loads(response)["items"]
+    # Retrieve all services and pods in the namespace just once
+    kubectl_cmd = f"kubectl -n {namespace} get services,pods -o json"
+    try:
+        response = handle.run_native_cmd(kubectl_cmd)
+        services_and_pods = json.loads(response.stdout.strip())["items"]
+    except json.JSONDecodeError as json_err:
+        print(f"Error parsing JSON response: {str(json_err)}")
+        return (True, None)  # Return early if we can't parse the JSON at all
+    except Exception as e:
+        print(f"Unexpected error while fetching services and pods: {str(e)}")
+        return (True, None)
+
+    for service_name_to_check in core_services:
+        service_found = False
         for item in services_and_pods:
-            if item.get("kind") == "Service":
-                pass 
-                service_name = item.get("metadata", {}).get("name", None)
+            if item.get("kind") == "Service" and item.get("metadata", {}).get("name") == service_name_to_check:
+                service_found = True
                 pod_labels = item.get('spec', {}).get("selector", None)
-                if pod_labels and service_name:
+                if pod_labels:
                     pod_selector = ",".join([f"{key}={value}" for key, value in pod_labels.items()])
                     try:
-                        kubectl_logs_cmd = "kubectl "
-                        if namespace:
-                            kubectl_logs_cmd += f"-n  {namespace}"
-                        kubectl_logs_cmd += f"logs --selector  {pod_selector} --tail={tail_lines}"
-                        pod_logs = handle.run_native_cmd(kubectl_logs_cmd)
-                        pod_logs = pod_logs.stdout.strip()
-                        crash_logs = [{
-                                "pod": item.get('metadata', {}).get('name', 'N/A'),
-                                "namespace": item.get('metadata', {}).get('namespace', 'N/A'),
-                                "error": error_pattern,
-                                "timestamp": re.findall(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", pod_logs)[-1] if re.search(error_pattern, pod_logs) else "Unknown Time"
-                                } for error_pattern in ERROR_PATTERNS if re.search(error_pattern, pod_logs)]
+                        kubectl_logs_cmd = f"kubectl -n {namespace} logs --selector {pod_selector} --tail={tail_lines}"
+                        pod_logs = handle.run_native_cmd(kubectl_logs_cmd).stdout.strip()
+
+                        for error_pattern in ERROR_PATTERNS:
+                            if re.search(error_pattern, pod_logs):
+                                crash_logs.append({
+                                    "service": service_name_to_check,
+                                    "pod": item.get('metadata', {}).get('name', 'N/A'),
+                                    "namespace": item.get('metadata', {}).get('namespace', 'N/A'),
+                                    "error": error_pattern,
+                                    "timestamp": re.findall(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", pod_logs)[-1] if re.search(error_pattern, pod_logs) else "Unknown Time"
+                                })
                     except Exception as e:
-                        raise e
-                    
-    except Exception as e:
-        raise e
-    
+                        # Log the error but don't stop execution
+                        print(f"Error fetching logs for service {service_name_to_check}: {str(e)}")
+                        pass
+
+        if not service_found:
+            print(f"Service {service_name_to_check} not found in namespace {namespace}. Continuing with next service.")
+
     return (False, crash_logs) if crash_logs else (True, None)

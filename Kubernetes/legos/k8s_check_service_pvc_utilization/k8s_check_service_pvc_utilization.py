@@ -9,10 +9,10 @@ from pydantic import BaseModel, Field
 from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
-     namespace: Optional[str] = Field(..., description='The namespace in which the service resides.', title='Namespace')
-     service_name: Optional[str] = Field(
+     namespace: str = Field(..., description='The namespace in which the service resides.', title='Namespace')
+     core_services: list = Field(
          ...,
-         description='The name of the service for which the used PVC size needs to be checked.',
+         description='List of services for which the used PVC size needs to be checked.',
          title='K8s Sservice name',
      )
      threshold: Optional[int] = Field(
@@ -34,7 +34,7 @@ def k8s_check_service_pvc_utilization_printer(output):
             print(f"PVC: {pvc['pvc_name']} - Utilized: {pvc['used']} of {pvc['capacity']}")
         print("-" * 40)
 
-def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace: str = "", threshold: int = 80) -> Tuple:
+def k8s_check_service_pvc_utilization(handle, core_services: list, namespace:str, threshold: int = 80) -> Tuple:
     """
     k8s_check_service_pvc_utilization checks the utilized disk size of a service's PVC against a given threshold.
 
@@ -57,37 +57,11 @@ def k8s_check_service_pvc_utilization(handle, service_name: str = "", namespace:
 
     :return: Status and dictionary with PVC name and its size information if the PVC's disk size is below the threshold.
     """
-    # Fetch namespace based on service name
-    if service_name and not namespace:
-        get_service_namespace_command = f"kubectl get service {service_name} -o=jsonpath='{{.metadata.namespace}}'"
-        response = handle.run_native_cmd(get_service_namespace_command)
-        if not response or response.stderr:
-            raise ApiException(f"Error fetching namespace for service {service_name}: {response.stderr if response else 'empty response'}")
-        namespace = response.stdout.strip()
-        print(f"Service {service_name} belongs to namespace: {namespace}")
-
-    # Get current context's namespace if not provided
-    if not namespace:
-        get_ns_command = "kubectl config view --minify --output 'jsonpath={..namespace}'"
-        response = handle.run_native_cmd(get_ns_command)
-        if not response or response.stderr:
-            raise ApiException(f"Error fetching current namespace: {response.stderr if response else 'empty response'}")
-        namespace = response.stdout.strip() or "default"
-        print(f"Operating in the current namespace: {namespace}")
-
-    # Get all services in the namespace if service_name is not specified
-    services_to_check = [service_name] if service_name else []
-    if not service_name:
-        get_all_services_command = f"kubectl get svc -n {namespace} -o=jsonpath='{{.items[*].metadata.name}}'"
-        response = handle.run_native_cmd(get_all_services_command)
-        if not response or response.stderr:
-            raise ApiException(f"Error fetching services in namespace {namespace}: {response.stderr if response else 'empty response'}")
-        services_to_check = response.stdout.strip().split()
 
     alert_pvcs_all_services = []
     services_without_pvcs = []
 
-    for svc in services_to_check:
+    for svc in core_services:
         # Get label associated with the service
         get_service_labels_command = f"kubectl get services {svc} -n {namespace} -o=jsonpath='{{.spec.selector}}'"
         response = handle.run_native_cmd(get_service_labels_command)
