@@ -1,5 +1,5 @@
 ##
-# Copyright (c) 2023 unSkript, Inc
+# Copyright (c) 2024 unSkript, Inc
 # All rights reserved.
 ##
 from pydantic import BaseModel, Field
@@ -24,7 +24,7 @@ class InputSchema(BaseModel):
         description='Expiration Threshold of certificates (in days). Default- 90 days')
 
 
-def k8s_get_expiring_certificates_printer(output):
+def k8s_get_expiring_tls_secret_certificates_printer(output):
     if output is None:
         return
     success, data = output
@@ -40,9 +40,9 @@ def get_expiry_date(pem_data: str) -> datetime.datetime:
     return cert.not_valid_after
 
 
-def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:int=7) -> Tuple:
+def k8s_get_expiring_tls_secret_certificates(handle, namespace:str='', expiring_threshold:int=7) -> Tuple:
     """
-    Get the expiring certificates for a K8s cluster.
+    Get the expiring TLS secret certificates for a K8s cluster.
 
     Args:
         handle: Object of type unSkript K8S Connector
@@ -82,23 +82,23 @@ def k8s_get_expiring_certificates(handle, namespace:str='', expiring_threshold:i
                     cert_data_decoded = base64.b64decode(cert_data).decode("utf-8")
                     # Parse the certificate expiration date
                     cert_exp = get_expiry_date(cert_data_decoded)
-                    if cert_exp and cert_exp < datetime.datetime.now() + datetime.timedelta(days=expiring_threshold):
-                        result.append({"secret_name": secret.metadata.name, "namespace": n})
-
-    try:
-        # Fetch cluster CA certificate
-        ca_cert = handle.run_native_cmd("kubectl get secret -o jsonpath=\"{.items[?(@.type=='kubernetes.io/service-account-token')].data['ca\\.crt']}\" --all-namespaces")
-        if ca_cert.stderr:
-            raise Exception(f"Error occurred while fetching cluster CA certificate: {ca_cert.stderr}")
-
-        # Decode and check expiry date of the cluster's CA certificate
-        ca_cert_decoded = base64.b64decode(ca_cert.stdout.strip()).decode("utf-8")
-        ca_cert_exp = get_expiry_date(ca_cert_decoded)
-        if ca_cert_exp and ca_cert_exp < datetime.datetime.now() + datetime.timedelta(days=expiring_threshold):
-            result.append({"secret_name": "Kubeconfig Cluster certificate", "namespace": "N/A"})
-    except Exception as e:
-        print(f"Error occurred while checking cluster CA certificate: {e}")
-        raise e
+                    days_remaining = (cert_exp - datetime.datetime.now()).days
+                    if days_remaining < 0:
+                        # Certificate has already expired
+                        result.append({
+                            "secret_name": secret.metadata.name,
+                            "namespace": n,
+                            "days_remaining": days_remaining,
+                            "status": "Expired"
+                        })
+                    elif cert_exp and cert_exp < datetime.datetime.now() + datetime.timedelta(days=expiring_threshold):
+                        result.append({
+                        "secret_name": secret.metadata.name,
+                        "namespace": n,
+                        "days_remaining": days_remaining,
+                        "status": "Expiring Soon"  # Indicating the certificate is close to expiring
+                            })
+                    result.append({"secret_name": secret.metadata.name, "namespace": n, "days_remaining": days_remaining})
 
     if len(result) != 0:
         return (False, result)

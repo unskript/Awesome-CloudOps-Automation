@@ -10,7 +10,7 @@ from kubernetes.client.rest import ApiException
 
 class InputSchema(BaseModel):
      namespace: str = Field(..., description='The namespace in which the service resides.', title='Namespace')
-     services_to_check_pvc_utilzation: list = Field(
+     core_services: list = Field(
          ...,
          description='List of services for which the used PVC size needs to be checked.',
          title='K8s Sservice name',
@@ -34,7 +34,7 @@ def k8s_check_service_pvc_utilization_printer(output):
             print(f"PVC: {pvc['pvc_name']} - Utilized: {pvc['used']} of {pvc['capacity']}")
         print("-" * 40)
 
-def k8s_check_service_pvc_utilization(handle, services_to_check_pvc_utilzation: list, namespace:str, threshold: int = 80) -> Tuple:
+def k8s_check_service_pvc_utilization(handle, core_services: list, namespace:str, threshold: int = 80) -> Tuple:
     """
     k8s_check_service_pvc_utilization checks the utilized disk size of a service's PVC against a given threshold.
 
@@ -61,7 +61,7 @@ def k8s_check_service_pvc_utilization(handle, services_to_check_pvc_utilzation: 
     alert_pvcs_all_services = []
     services_without_pvcs = []
 
-    for svc in services_to_check_pvc_utilzation:
+    for svc in core_services:
         # Get label associated with the service
         get_service_labels_command = f"kubectl get services {svc} -n {namespace} -o=jsonpath='{{.spec.selector}}'"
         response = handle.run_native_cmd(get_service_labels_command)

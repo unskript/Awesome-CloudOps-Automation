@@ -16,9 +16,9 @@ class InputSchema(BaseModel):
         title = "K8S Namespace",
         description = "Kubernetes Namespace Where the Service exists"
     )
-    services_with_no_endpoint: list = Field(
+    core_services: list = Field(
         title = "Names of whitelisted services",
-        description = "List of services for which this check should be skipped."
+        description = "List of services"
     )
 
 def k8s_get_service_with_no_associated_endpoints_printer(output):
@@ -31,7 +31,7 @@ def k8s_get_service_with_no_associated_endpoints_printer(output):
 
         print(tabulate(table_data, headers=table_headers, tablefmt = "grid"))
 
-def k8s_get_service_with_no_associated_endpoints(handle, namespace: str , services_with_no_endpoint:list) -> Tuple:
+def k8s_get_service_with_no_associated_endpoints(handle, namespace: str , core_services:list) -> Tuple:
     """k8s_get_service_with_no_associated_endpoints This function returns Services that
        do not have any associated endpoints.
 
@@ -50,7 +50,7 @@ def k8s_get_service_with_no_associated_endpoints(handle, namespace: str , servic
 
     retval = []
 
-    for service_name in services_with_no_endpoint:
+    for service_name in core_services:
         try:
             service = v1.read_namespaced_service(name=service_name, namespace=namespace)
             ep = v1.read_namespaced_endpoints(name=service_name, namespace=namespace)

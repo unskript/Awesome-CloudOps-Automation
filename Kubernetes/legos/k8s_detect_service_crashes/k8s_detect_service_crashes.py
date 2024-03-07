@@ -19,7 +19,7 @@ class InputSchema(BaseModel):
         description='Number of log lines to fetch from each container. Defaults to 100.',
         title='No. of lines (Default: 100)'
     )
-    services_to_detect_crashes: list = Field(
+    core_services: list = Field(
         description='List of services to detect service crashes on.'
     )
 
@@ -35,7 +35,7 @@ def k8s_detect_service_crashes_printer(output):
 
 
 
-def k8s_detect_service_crashes(handle, namespace: str, services_to_detect_crashes:list, tail_lines: int = 100) -> Tuple:
+def k8s_detect_service_crashes(handle, namespace: str, core_services:list, tail_lines: int = 100) -> Tuple:
     """
     k8s_detect_service_crashes detects service crashes by checking the logs of each pod for specific error messages.
 
@@ -70,7 +70,7 @@ def k8s_detect_service_crashes(handle, namespace: str, services_to_detect_crashe
         print(f"Unexpected error while fetching services and pods: {str(e)}")
         return (True, None)
 
-    for service_name_to_check in services_to_detect_crashes:
+    for service_name_to_check in core_services:
         service_found = False
         for item in services_and_pods:
             if item.get("kind") == "Service" and item.get("metadata", {}).get("name") == service_name_to_check:
