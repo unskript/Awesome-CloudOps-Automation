@@ -47,6 +47,7 @@ def _run_function(fname):
             response = poll(globals().get(fname), 
                             step=1, 
                             timeout={{ execution_timeout }},
+                            max_tries=1,
                             poll_forever=False,
                             check_success= lambda v: v is not None)
             return response
