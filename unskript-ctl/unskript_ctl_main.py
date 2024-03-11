@@ -132,15 +132,35 @@ class UnskriptCtl(UnskriptFactory):
                 parser.print_help()
                 sys.exit(0)
 
-            status_of_run = self._check.run(checks_list=check_list)
-            self.uglobals['status_of_run'] = status_of_run
-            self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
+            # Catch any exceptions when run_checks  
+            try:
+                status_of_run = self._check.run(checks_list=check_list)
+                self.uglobals['status_of_run'] = status_of_run
+                self.update_audit_trail(collection_name='audit_trail', status_dict_list=status_of_run)
+            except Exception as e:
+                # Lets ensure we set the failed object appropriately
+                self.uglobals['failed_result'] = {'result': [f'CHECK RUN CAUGHT AN EXCEPTION:  {str(e)}']}
+                self.logger.debug(f"Exception caught running checks! {str(e)}")
+                self.logger.error(f"ERROR! caught an exception while executing checks {str(e)}")
 
         if 'script' in args and args.command == 'run' and args.script not in ('', None):
-            self._script.run(script=args.script)
+            # Catch any exceptions when run scripts 
+            try:
+                self._script.run(script=args.script)
+            except Exception as e:
+                self.logger.debug(f"Exception caught running script! {str(e)}")
+                self.logger.error(f"ERROR! caught an exception while executing script {args.script}")
+                
 
         if args.command == 'run' and args.info:
-            self.run_info()
+            # Catch any exceptions when running info lego
+            try:
+                self.run_info()
+            except Exception as e:
+                self.logger.debug(f"Exception caught running info gathering legos! {str(e)}")
+                self.logger.error(f"ERROR! caught an exception while executing info gathering legos {str(e)}")
+                 
+
 
     def run_info(self):
         """This function runs the info gathering actions"""
