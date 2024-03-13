@@ -338,15 +338,6 @@ jobs:
           # docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
       
       - name: Docker Build 
-        # uses: docker/build-push-action@v5
-        # with:
-        #   context: .
-        #   push: true
-        #   file: $HOME/devops/dockers/jupyterlab/oss_docker_lite/Dockerfile
-        #   platforms: "linux/amd64"
-        #   tags: ${{ env.BUILD_TAGS }}
-        #   cache-from: type=gha
-        #   cache-to: type=gha,mode=max
         run: |
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           docker buildx build --cache-from type=gha --cache-to type=gha,mode=max  --platform linux/amd64 --push -t ${{ env.BUILD_TAGS }} .
