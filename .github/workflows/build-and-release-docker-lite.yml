@@ -310,12 +310,12 @@ jobs:
             schema-${{ github.run_id }}
             gotty-linux-amd64-${{ github.run_id }}
             gotty-linux-arm64-${{ github.run_id }}
-      - name: Build & Push
+      - name: Copy unskript-ctl files
         run: |
-          docker buildx create --name mybuilder
-          docker buildx use mybuilder
-          docker buildx inspect --bootstrap
-          docker buildx ls
+          # docker buildx create --name mybuilder
+          # docker buildx use mybuilder
+          # docker buildx inspect --bootstrap
+          # docker buildx ls
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite
           git checkout ${{ inputs.devops_branch }}
           export BUILD_NUMBER=${{ inputs.build_number }}
@@ -335,7 +335,17 @@ jobs:
           cp -Rf awesome/unskript-ctl/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cp -Rf awesome/bin/* $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
-          docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+          # docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+      
+      - name: Docker Build 
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          platforms: "linux/amd64"
+          tags: ${{ env.BUILD_TAGS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Docker Scout
         id: docker-scout
