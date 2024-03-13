@@ -342,6 +342,7 @@ jobs:
         with:
           context: .
           push: true
+          file: $HOME/devops/dockers/jupyterlab/oss_docker_lite/Dockerfile
           platforms: "linux/amd64"
           tags: ${{ env.BUILD_TAGS }}
           cache-from: type=gha
