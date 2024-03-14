@@ -18,7 +18,7 @@ PSS_DB_PATH="/unskript/db/unskript_pss.db"
 GLOBAL_CTL_CONFIG="/etc/unskript/unskript_ctl_config.yaml"
 CREDENTIAL_DIR="/.local/share/jupyter/metadata/credential-save"
 
-UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "unskript_script_run_output"
+UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "run_output"
 UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 JIT_PYTHON_SCRIPT = "/tmp/jit_script.py"
 

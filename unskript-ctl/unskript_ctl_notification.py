@@ -194,10 +194,10 @@ class EmailNotification(NotificationFactory):
         return list_of_failed_files
 
     def create_script_summary_message(self, output_metadata_file: str):
-        message = ''
+        # message = ''
         if os.path.exists(output_metadata_file) is False:
             self.logger.error(f"ERROR: The metadata file is missing, please check if file exists? {output_metadata_file}")
-            return message
+            return ''
 
         metadata = ''
         with open(output_metadata_file, 'r', encoding='utf-8') as f:
@@ -207,24 +207,28 @@ class EmailNotification(NotificationFactory):
             self.logger.error(f'ERROR: Metadata is empty for the script. Please check content of {output_metadata_file}')
             raise ValueError("Metadata is empty")
 
-        message += f'''
-                <br>
-                <h3> Custom Script Run Result </h3>
-                <table border="1">
-                    <tr>
-                        <th> Status </th>
-                        <th> Time (in seconds) </th>
-                        <th> Error </th>
-                    </tr>
-                    <tr>
-                        <td>{metadata.get('status')}</td>
-                        <td>{metadata.get('time_taken')}</td>
-                        <td>{metadata.get('error')}</td>
-                    </tr>
-                </table>
-        '''
+        # Log the custom script run result instead of including it in the email.
+        self.logger.debug(f"\tStatus: {metadata.get('status')} \n\tTime (in seconds): {metadata.get('time_taken')} \n\tError: {metadata.get('error')} \n")
 
-        return message
+        # Remove from email 
+        # message += f'''
+        #         <br>
+        #         <h3> Custom Script Run Result </h3>
+        #         <table border="1">
+        #             <tr>
+        #                 <th> Status </th>
+        #                 <th> Time (in seconds) </th>
+        #                 <th> Error </th>
+        #             </tr>
+        #             <tr>
+        #                 <td>{metadata.get('status')}</td>
+        #                 <td>{metadata.get('time_taken')}</td>
+        #                 <td>{metadata.get('error')}</td>
+        #             </tr>
+        #         </table>
+        # '''
+
+        return ''
 
     def create_info_gathering_action_result(self):
         """create_info_gathering_action_result: This function creates an inline
@@ -369,7 +373,7 @@ class EmailNotification(NotificationFactory):
         return message
 
     def create_email_header(self, title: str = None):
-        email_title = title or "unSkript-ctl run result"
+        email_title = title or "Run result"
         message = f'''
             <!DOCTYPE html>
             <html>
@@ -378,7 +382,7 @@ class EmailNotification(NotificationFactory):
             <body>
             <center>
             <h1> {email_title} </h1>
-            <h3> <strong>Tested On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
+            <h3> <strong>Performed On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
             <h4> <strong>Version : {get_version()} </strong></h4><br>
             </center>
             '''
