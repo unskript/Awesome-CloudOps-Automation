@@ -23,7 +23,7 @@ def k8s_get_service_images_printer(output):
         print("No data available")
         return
     for service, images in output.items():
-        shortened_images = [image for image in images]
+        shortened_images = list(images)
         if not shortened_images:
             table_data.append([service, "No images found"])
         else:
