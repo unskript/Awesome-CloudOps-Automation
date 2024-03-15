@@ -231,21 +231,34 @@ class EmailNotification(NotificationFactory):
            results of all the output from info gathering action
         """
         message = ''
-        if self.uglobals.get('info_action_results'):
-            message = f'''
+        # Fetch the list of actions specified in the YAML under info_section
+        specified_actions = self._config.get_email_fmt().get('info_section', [])
+        info_action_results = self.uglobals.get('info_action_results')
+        if not specified_actions:
+            return message 
+
+        if info_action_results:
+            message += '''
                     <br>
                     <h3> Information Gathering Action Result </h3>
                     <br>
             '''
-            for k,v in self.uglobals.get('info_action_results').items():
-                message += '<h4>' + k + '</h4> <pre>'
-                if v:
-                    for line in v:
-                        message += line
-                else:
-                    message += 'NO OUTPUT \n'
-                message += '###'
-                message += '</pre>'
+            for specified_action in specified_actions:
+                action_found = False
+                for full_action_name, action_output in info_action_results.items():
+                    # Extract the part of the action name after '/'
+                    _, action_name_suffix = full_action_name.split('/', 1)
+                    self.logger.error(f'Action name: {action_name_suffix}')
+                    if action_name_suffix == specified_action:
+                        message += f'<h4>{specified_action}</h4> <pre>'
+                        message += action_output if action_output else 'NO OUTPUT'
+                        message += '</pre>'
+                        action_found = True
+                        break  # Stop looking once found
+                if not action_found:
+                    # If the specified action was not found in the results, show no output
+                    message += f'<h4>{specified_action}</h4> <pre>NO OUTPUT</pre>'
+
             message += '<br>'
 
         return message
