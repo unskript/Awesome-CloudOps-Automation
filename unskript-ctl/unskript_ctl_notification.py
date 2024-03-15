@@ -226,6 +226,23 @@ class EmailNotification(NotificationFactory):
 
         return message
 
+    def create_info_legos_output_file(self):
+        """create_info_legos_output_file: This function creates a file that will
+           be added to the final tarball
+        """
+        info_legos_output_file_path = os.path.join(self.execution_dir, "info_legos_output.txt")
+        info_action_results = self.uglobals.get('info_action_results')
+
+        # Write all info lego outputs to a single file
+        with open(info_legos_output_file_path, 'w', encoding='utf-8') as f:
+            for action_name, action_output in info_action_results.items():
+                content = f"{action_name}:\n{action_output if action_output else 'NO OUTPUT'}\n\n"
+                f.write(content)
+                self.logger.error(f"Writing to info_legos_output.txt: {content}")
+
+        return info_legos_output_file_path
+
+
     def create_info_gathering_action_result(self):
         """create_info_gathering_action_result: This function creates an inline
            results of all the output from info gathering action
@@ -411,33 +428,44 @@ class EmailNotification(NotificationFactory):
                                                     failed_result=failed_result)
             if len(failed_result) and self.send_failed_objects_as_attachment:
                 self.create_temp_files_of_failed_check_results(failed_result=failed_result)
-                parent_folder = self.execution_dir
-                target_name = os.path.basename(parent_folder)
-                tar_file_name = f"{target_name}" + '.tar.bz2'
-                if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                        output_metadata_file=None,
-                                        parent_folder=parent_folder) is False:
-                    self.logger.error("ERROR Archiving attachments")
-                    raise ValueError("ERROR: Archiving attachments failed!")
-                target_file_name = tar_file_name
-                msg = MIMEMultipart('mixed')
-                with open(target_file_name, 'rb') as f:
-                    part = MIMEApplication(f.read())
-                    part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
-                    msg.attach(part)
+            parent_folder = self.execution_dir
+            target_name = os.path.basename(parent_folder)
+            tar_file_name = f"{target_name}" + '.tar.bz2'
 
-        if output_metadata_file:
-            message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
-            temp_attachment = self.create_email_attachment(output_metadata_file=output_metadata_file)
-
-        if failed_result and len(failed_result) and self.send_failed_objects_as_attachment:
-            message += '<br> <ul>' + '\n'
-            message += '<h3> DETAILS ABOUT THE FAILED OBJECTS CAN BE FOUND IN THE ATTACHMENTS </h3>' + '\n'
-            message += '</ul> <br>' + '\n'
+            if self.execution_dir :
+                    if not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+                        raise ValueError("ERROR: Archiving attachments failed!")
+            else:
+                self.logger.error("Execution directory is empty !")
+            
+            target_file_name = tar_file_name
+            msg = MIMEMultipart('mixed')
+            with open(target_file_name, 'rb') as f:
+                part = MIMEApplication(f.read())
+                part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
+                msg.attach(part)
 
         info_result = self.create_info_gathering_action_result()
         if info_result:
             message += info_result
+
+        parent_folder = self.execution_dir
+        target_name = os.path.basename(parent_folder)
+        tar_file_name = f"{target_name}" + '.tar.bz2'
+
+        if self.execution_dir :
+                if not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+                    raise ValueError("ERROR: Archiving attachments failed!")
+        else:
+            self.logger.error("Execution directory is empty !")
+        
+        target_file_name = tar_file_name
+        msg = MIMEMultipart('mixed')
+        with open(target_file_name, 'rb') as f:
+            part = MIMEApplication(f.read())
+            part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
+            msg.attach(part)
+
 
         message += "</body> </html>"
         attachment.attach(MIMEText(message, 'html'))
@@ -446,7 +474,8 @@ class EmailNotification(NotificationFactory):
         elif msg:
             attachment.attach(msg)
 
-        return attachment
+        return attachment              
+
 
 # Sendgrid specific implementation
 class SendgridNotification(EmailNotification):
@@ -500,8 +529,7 @@ class SendgridNotification(EmailNotification):
         parent_folder = self.execution_dir
         target_name = os.path.basename(parent_folder)
         tar_file_name = f"{target_name}" + '.tar.bz2'
-        target_file_name = None
-        metadata = None
+        tar_file_path = os.path.join(parent_folder, tar_file_name)
 
         try:
             # We can have custom Title here
@@ -511,29 +539,16 @@ class SendgridNotification(EmailNotification):
                                                             failed_result=failed_result)
                 if failed_result and len(failed_result) and self.send_failed_objects_as_attachment:
                     self.create_temp_files_of_failed_check_results(failed_result=failed_result)
-            if output_metadata_file:
-                html_message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
-                with open(output_metadata_file, 'r') as f:
-                    metadata = json.loads(f.read())
-                if metadata and metadata.get('output_file'):
-                    target_file_name = os.path.basename(metadata.get('output_file'))
-                parent_folder = os.path.dirname(output_metadata_file)
-                target_name = os.path.basename(parent_folder)
-                tar_file_name = f"{target_name}" + '.tar.bz2'
-            if metadata and metadata.get('compress') is True:
-                output_metadata_file = output_metadata_file.split('/')[-1]
-                if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                            output_metadata_file=output_metadata_file,
-                                            parent_folder=parent_folder) is False:
+            self.create_info_legos_output_file()
+
+            # Check conditions for creating tarball
+            if self.execution_dir :
+                if not self.create_tarball_archive(tar_file_name=tar_file_path, output_metadata_file=None, parent_folder=parent_folder):
                     raise ValueError("ERROR: Archiving attachments failed!")
-                target_file_name = tar_file_name
             else:
-                if len(failed_result) and self.send_failed_objects_as_attachment:
-                    if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                                output_metadata_file=None,
-                                                parent_folder=parent_folder) is False:
-                        raise ValueError("ERROR: Archiving attachments failed!")
-                    target_file_name = tar_file_name
+                self.logger.error("Execution directory is empty !")
+            
+
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
@@ -544,13 +559,14 @@ class SendgridNotification(EmailNotification):
                 subject=email_subject,
                 html_content=html_message
             )
-            if target_file_name:
+            if os.path.exists(tar_file_path) and os.path.getsize(tar_file_path) > 0:
+                self.logger.error(f"FILE: {tar_file_name}, PATH: {tar_file_path}")
                 email_message = self.sendgrid_add_email_attachment(email_message=email_message,
-                                                            file_to_attach=target_file_name,
+                                                            file_to_attach=tar_file_path,
                                                             compress=True)
             try:
-                if target_file_name:
-                    os.remove(target_file_name)
+                if tar_file_path:
+                    os.remove(tar_file_path)
             except Exception as e:
                 self.logger.error(f"ERROR: {e}")
 
