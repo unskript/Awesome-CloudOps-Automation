@@ -156,10 +156,7 @@ class EmailNotification(NotificationFactory):
                                tar_file_name: str,
                                output_metadata_file: str,
                                parent_folder: str):
-        if not output_metadata_file:
-            tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
-        else:
-            tar_cmd = ["tar", "jcvf", tar_file_name, "-C" , parent_folder, "."]
+        tar_cmd = ["tar", "jcvf", os.path.join('/tmp', tar_file_name), "-C" , parent_folder, "."]
         try:
             subprocess.run(tar_cmd,
                             stdout=subprocess.PIPE,
@@ -283,7 +280,9 @@ class EmailNotification(NotificationFactory):
                                     output_metadata_file=output_metadata_file,
                                     parent_folder=parent_folder) is False:
                 raise ValueError("ERROR: Archiving attachments failed!")
-            target_file_name = tar_file_name
+            # With the non-root user support. Lets create the tar file in the
+            # common accessable area like /tmp
+            target_file_name = os.path.join("/tmp", tar_file_name)
 
         with open(target_file_name, 'rb') as f:
             part = MIMEApplication(f.read())
@@ -406,7 +405,8 @@ class EmailNotification(NotificationFactory):
                                         parent_folder=parent_folder) is False:
                     self.logger.error("ERROR Archiving attachments")
                     raise ValueError("ERROR: Archiving attachments failed!")
-                target_file_name = tar_file_name
+                # Create temp tar file in accessible directory
+                target_file_name = os.path.join('/tmp', tar_file_name)
                 msg = MIMEMultipart('mixed')
                 with open(target_file_name, 'rb') as f:
                     part = MIMEApplication(f.read())
@@ -508,9 +508,9 @@ class SendgridNotification(EmailNotification):
                 target_name = os.path.basename(parent_folder)
                 tar_file_name = f"{target_name}" + '.tar.bz2'
             if metadata and metadata.get('compress') is True:
-                output_metadata_file = output_metadata_file.split('/')[-1]
+                o_file = output_metadata_file.split('/')[-1]
                 if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                            output_metadata_file=output_metadata_file,
+                                            output_metadata_file=o_file,
                                             parent_folder=parent_folder) is False:
                     raise ValueError("ERROR: Archiving attachments failed!")
                 target_file_name = tar_file_name
@@ -533,7 +533,7 @@ class SendgridNotification(EmailNotification):
             )
             if target_file_name:
                 email_message = self.sendgrid_add_email_attachment(email_message=email_message,
-                                                            file_to_attach=target_file_name,
+                                                            file_to_attach=os.path.join('/tmp',tar_file_name),
                                                             compress=True)
             try:
                 if target_file_name:

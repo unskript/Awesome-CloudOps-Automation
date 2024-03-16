@@ -436,12 +436,14 @@ class Script(ScriptsFactory):
         super().__init__(**kwargs)
         self.logger.debug("Initialized Script Class")
         self.uglobals = UnskriptGlobals()
+        self._common = CommonAction()
 
     def run(self, **kwargs):
         if 'script' not in kwargs:
             self.logger.error("ERROR: script is a mandatory parameter to be sent, cannot run without the scripts list")
             raise ValueError("Parameter script is not present in the argument, please call run with the scripts_list=[scripts]")
         script = kwargs.get('script')
+        self._common.update_exec_id()
         if not self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
             output_dir = create_execution_run_directory()
         else:
