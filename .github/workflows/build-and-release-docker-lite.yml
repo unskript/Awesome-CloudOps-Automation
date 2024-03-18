@@ -60,6 +60,14 @@ on:
         description: 'Docker build number'
         required: true
         type: string
+      build_target:
+          required: true 
+          default: 'build-amd64'
+          options:
+            - build-amd64
+            - build-both 
+            - build-arm64
+          type: choice
       latest:
         description: 'Docker Latest tag Branch name'
         default: false
@@ -337,11 +345,18 @@ jobs:
           cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
           # docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
       
-      - name: Docker Build 
+      - name: Docker Build & Push
         run: |
-          cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
-          docker buildx build --cache-from type=gha --cache-to type=gha,mode=max  --platform linux/amd64 --push -t ${{ env.BUILD_TAGS }} .
-
+          if [ "${{ inputs.build_target }}" = "build-amd64" ]; then
+            cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
+            docker buildx build --cache-from type=gha --cache-to type=gha,mode=max  --platform linux/amd64 --push -t ${{ env.BUILD_TAGS }} .
+          elif [ "${{ inputs.build_target }}" = "build-arm64" ]; then
+            cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
+            docker buildx build --cache-from type=gha --cache-to type=gha,mode=max  --platform linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+          elif [ "${{ inputs.build_target }}" = "build-both" ]; then
+              cd $HOME/devops/dockers/jupyterlab/oss_docker_lite/
+              docker buildx build --cache-from type=gha --cache-to type=gha,mode=max  --platform linux/amd64,linux/arm64 --push -t ${{ env.BUILD_TAGS }} .
+          fi
       - name: Docker Scout
         id: docker-scout
         uses: docker/scout-action@v1
