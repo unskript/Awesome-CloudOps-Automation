@@ -287,7 +287,7 @@ class EmailNotification(NotificationFactory):
                         break  # Stop looking once found
                 if not action_found:
                     # If the specified action was not found in the results, show no output
-                    message += f'<h4>{specified_action}</h4> <pre>NO OUTPUT</pre>'
+                    message += f'<h4>{specified_action}</h4> <pre>Action not executed</pre>'
 
             message += '<br>'
 
