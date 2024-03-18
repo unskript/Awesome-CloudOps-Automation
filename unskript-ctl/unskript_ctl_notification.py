@@ -447,15 +447,10 @@ class EmailNotification(NotificationFactory):
                                                     failed_result=failed_result)
             if len(failed_result) and self.send_failed_objects_as_attachment:
                 self.create_temp_files_of_failed_check_results(failed_result=failed_result)
-            parent_folder = self.execution_dir
-            target_name = os.path.basename(parent_folder)
-            tar_file_name = f"{target_name}" + '.tar.bz2'
 
-            if self.execution_dir :
-                    if not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
-                        raise ValueError("ERROR: Archiving attachments failed!")
-            else:
-                self.logger.error("Execution directory is empty !")
+            if len(os.listdir(self.execution_dir)) == 0 or self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+                self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
+                return attachment
             
             msg = MIMEMultipart('mixed')
             with open(target_file_name, 'rb') as f:
@@ -474,11 +469,9 @@ class EmailNotification(NotificationFactory):
             message += info_result
             self.create_info_legos_output_file()
 
-        if self.execution_dir :
-                if not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
-                    raise ValueError("ERROR: Archiving attachments failed!")
-        else:
-            self.logger.error("Execution directory is empty !")
+        if len(os.listdir(self.execution_dir)) == 0 or self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+            self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
+            return attachment
         
         msg = MIMEMultipart('mixed')
         with open(target_file_name, 'rb') as f:
@@ -563,11 +556,9 @@ class SendgridNotification(EmailNotification):
             self.create_info_legos_output_file()
 
             # Check conditions for creating tarball
-            if self.execution_dir :
-                if not self.create_tarball_archive(tar_file_name=target_file_name, output_metadata_file=None, parent_folder=parent_folder):
-                    raise ValueError("ERROR: Archiving attachments failed!")
-            else:
-                self.logger.error("Execution directory is empty !")
+            if len(os.listdir(self.execution_dir)) == 0 or self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+                self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
+
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
