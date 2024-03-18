@@ -156,7 +156,10 @@ class EmailNotification(NotificationFactory):
                                tar_file_name: str,
                                output_metadata_file: str,
                                parent_folder: str):
-        tar_cmd = ["tar", "jcvf", os.path.join('/tmp', tar_file_name), "-C" , parent_folder, "."]
+        if not output_metadata_file:
+            tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
+        else:
+            tar_cmd = ["tar", "jcvf", os.path.join('/tmp', tar_file_name), "-C" , parent_folder, "."]
         try:
             subprocess.run(tar_cmd,
                             stdout=subprocess.PIPE,
@@ -392,21 +395,21 @@ class EmailNotification(NotificationFactory):
                                **kwargs):
         message = self.create_email_header(title=title)
         temp_attachment = msg = None
+        parent_folder = self.execution_dir
+        target_name = os.path.basename(parent_folder)
+        tar_file_name = f"{target_name}" + '.tar.bz2'
+        target_file_name = os.path.join('/tmp', tar_file_name)
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
             if len(failed_result) and self.send_failed_objects_as_attachment:
                 self.create_temp_files_of_failed_check_results(failed_result=failed_result)
-                parent_folder = self.execution_dir
-                target_name = os.path.basename(parent_folder)
-                tar_file_name = f"{target_name}" + '.tar.bz2'
                 if self.create_tarball_archive(tar_file_name=tar_file_name,
                                         output_metadata_file=None,
                                         parent_folder=parent_folder) is False:
                     self.logger.error("ERROR Archiving attachments")
                     raise ValueError("ERROR: Archiving attachments failed!")
                 # Create temp tar file in accessible directory
-                target_file_name = os.path.join('/tmp', tar_file_name)
                 msg = MIMEMultipart('mixed')
                 with open(target_file_name, 'rb') as f:
                     part = MIMEApplication(f.read())
