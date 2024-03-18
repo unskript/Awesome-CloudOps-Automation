@@ -250,7 +250,6 @@ class EmailNotification(NotificationFactory):
                 for action_name, action_output in info_action_results.items():
                     content = f"{action_name}:\n{action_output if action_output else 'NO OUTPUT'}\n\n"
                     f.write(content)
-                    self.logger.error(f"Writing to info_legos_output.txt: {content}")
         else:
             self.logger.error("No information gathering action result available")
             return None
