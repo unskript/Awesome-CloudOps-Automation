@@ -492,6 +492,9 @@ class SendgridNotification(EmailNotification):
         html_message = ''
         email_subject = subject
         parent_folder = self.execution_dir
+        target_name = os.path.basename(parent_folder)
+        tar_file_name = f"{target_name}" + '.tar.bz2'
+        target_file_name = os.path.join('/tmp', tar_file_name)
         metadata = None
 
         try:
@@ -509,11 +512,8 @@ class SendgridNotification(EmailNotification):
                 if metadata and metadata.get('output_file'):
                     target_file_name = os.path.basename(metadata.get('output_file'))
                 parent_folder = os.path.dirname(output_metadata_file)
-                # target_name = os.path.basename(parent_folder)
-                # tar_file_name = f"{target_name}" + '.tar.bz2'
-            target_name = os.path.basename(parent_folder)
-            tar_file_name = f"{target_name}" + '.tar.bz2'
-            target_file_name = os.path.join('/tmp', tar_file_name)
+                target_name = os.path.basename(parent_folder)
+                tar_file_name = f"{target_name}" + '.tar.bz2'
             if metadata and metadata.get('compress') is True:
                 output_metadata_file = output_metadata_file.split('/')[-1]
                 if self.create_tarball_archive(tar_file_name=tar_file_name,
