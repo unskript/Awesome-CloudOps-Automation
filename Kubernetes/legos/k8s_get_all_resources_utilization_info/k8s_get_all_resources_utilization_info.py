@@ -67,11 +67,9 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
         parts = line.split()
         if len(parts) < 3:  # Skip if line doesn't contain enough parts
             continue
-        pod_name = parts[0]
-        cpu_usage = parts[1]
-        memory_usage = parts[2]
+        pod_name, cpu_usage, memory_usage = parts[:3]
         # Use a tuple of (namespace, pod_name) as the key to ensure uniqueness across namespaces
-        key = (namespace, pod_name) if namespace else (parts[0], pod_name)  # Adjust according to your needs
+        key = (namespace, pod_name) if namespace else (parts[0], pod_name)
         utilization_map[key] = (cpu_usage, memory_usage)
 
     for resource in resources:
