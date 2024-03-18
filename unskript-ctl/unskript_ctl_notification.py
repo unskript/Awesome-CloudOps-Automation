@@ -238,15 +238,22 @@ class EmailNotification(NotificationFactory):
         """create_info_legos_output_file: This function creates a file that will
            be added to the final tarball
         """
-        info_legos_output_file_path = os.path.join(self.execution_dir, "info_legos_output.txt")
+        parent_folder = self.execution_dir
+        if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
+            parent_folder = self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')
+        info_legos_output_file_path = os.path.join(parent_folder, "info_legos_output.txt")
         info_action_results = self.uglobals.get('info_action_results')
 
         # Write all info lego outputs to a single file
-        with open(info_legos_output_file_path, 'w', encoding='utf-8') as f:
-            for action_name, action_output in info_action_results.items():
-                content = f"{action_name}:\n{action_output if action_output else 'NO OUTPUT'}\n\n"
-                f.write(content)
-                self.logger.error(f"Writing to info_legos_output.txt: {content}")
+        if info_action_results:
+            with open(info_legos_output_file_path, 'w', encoding='utf-8') as f:
+                for action_name, action_output in info_action_results.items():
+                    content = f"{action_name}:\n{action_output if action_output else 'NO OUTPUT'}\n\n"
+                    f.write(content)
+                    self.logger.error(f"Writing to info_legos_output.txt: {content}")
+        else:
+            self.logger.error("No information gathering action result available")
+            return None
 
         return info_legos_output_file_path
 
@@ -273,7 +280,6 @@ class EmailNotification(NotificationFactory):
                 for full_action_name, action_output in info_action_results.items():
                     # Extract the part of the action name after '/'
                     _, action_name_suffix = full_action_name.split('/', 1)
-                    self.logger.error(f'Action name: {action_name_suffix}')
                     if action_name_suffix == specified_action:
                         message += f'<h4>{specified_action}</h4> <pre>'
                         message += action_output if action_output else 'NO OUTPUT'
@@ -452,16 +458,11 @@ class EmailNotification(NotificationFactory):
             else:
                 self.logger.error("Execution directory is empty !")
             
-            target_file_name = tar_file_name
             msg = MIMEMultipart('mixed')
             with open(target_file_name, 'rb') as f:
                 part = MIMEApplication(f.read())
                 part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
                 msg.attach(part)
-
-        if output_metadata_file:
-            message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
-            temp_attachment = self.create_email_attachment(output_metadata_file=output_metadata_file)
 
         if failed_result and len(failed_result) and self.send_failed_objects_as_attachment:
             message += '<br> <ul>' + '\n'
@@ -472,10 +473,7 @@ class EmailNotification(NotificationFactory):
         info_result = self.create_info_gathering_action_result()
         if info_result:
             message += info_result
-
-        parent_folder = self.execution_dir
-        target_name = os.path.basename(parent_folder)
-        tar_file_name = f"{target_name}" + '.tar.bz2'
+            self.create_info_legos_output_file()
 
         if self.execution_dir :
                 if not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
@@ -483,7 +481,6 @@ class EmailNotification(NotificationFactory):
         else:
             self.logger.error("Execution directory is empty !")
         
-        target_file_name = tar_file_name
         msg = MIMEMultipart('mixed')
         with open(target_file_name, 'rb') as f:
             part = MIMEApplication(f.read())
@@ -568,14 +565,10 @@ class SendgridNotification(EmailNotification):
 
             # Check conditions for creating tarball
             if self.execution_dir :
-                if not self.create_tarball_archive(tar_file_name=tar_file_path, output_metadata_file=None, parent_folder=parent_folder):
+                if not self.create_tarball_archive(tar_file_name=target_file_name, output_metadata_file=None, parent_folder=parent_folder):
                     raise ValueError("ERROR: Archiving attachments failed!")
             else:
-                if len(failed_result) and self.send_failed_objects_as_attachment:
-                    if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                                output_metadata_file=None,
-                                                parent_folder=parent_folder) is False:
-                        raise ValueError("ERROR: Archiving attachments failed!")
+                self.logger.error("Execution directory is empty !")
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
@@ -586,14 +579,13 @@ class SendgridNotification(EmailNotification):
                 subject=email_subject,
                 html_content=html_message
             )
-            if os.path.exists(tar_file_path) and os.path.getsize(tar_file_path) > 0:
-                self.logger.error(f"FILE: {tar_file_name}, PATH: {tar_file_path}")
+            if os.path.exists(target_file_name) and os.path.getsize(target_file_name) > 0:
                 email_message = self.sendgrid_add_email_attachment(email_message=email_message,
-                                                            file_to_attach=tar_file_path,
+                                                            file_to_attach=target_file_name,
                                                             compress=True)
             try:
-                if tar_file_path:
-                    os.remove(tar_file_path)
+                if target_file_name:
+                    os.remove(target_file_name)
             except Exception as e:
                 self.logger.error(f"ERROR: {e}")
 
