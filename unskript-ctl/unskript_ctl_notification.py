@@ -156,6 +156,10 @@ class EmailNotification(NotificationFactory):
                                tar_file_name: str,
                                output_metadata_file: str,
                                parent_folder: str):
+        
+        if not tar_file_name.startswith('/tmp'):
+            tar_file_name = os.path.join('/tmp', tar_file_name)
+
         if not output_metadata_file:
             tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
         else:
@@ -287,7 +291,9 @@ class EmailNotification(NotificationFactory):
                                     output_metadata_file=output_metadata_file,
                                     parent_folder=parent_folder) is False:
                 raise ValueError("ERROR: Archiving attachments failed!")
-            target_file_name = tar_file_name
+            # With the non-root user support. Lets create the tar file in the
+            # common accessable area like /tmp
+            target_file_name = os.path.join("/tmp", tar_file_name)
 
         with open(target_file_name, 'rb') as f:
             part = MIMEApplication(f.read())
@@ -397,20 +403,21 @@ class EmailNotification(NotificationFactory):
                                **kwargs):
         message = self.create_email_header(title=title)
         temp_attachment = msg = None
+        parent_folder = self.execution_dir
+        target_name = os.path.basename(parent_folder)
+        tar_file_name = f"{target_name}" + '.tar.bz2'
+        target_file_name = os.path.join('/tmp', tar_file_name)
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
             if len(failed_result) and self.send_failed_objects_as_attachment:
                 self.create_temp_files_of_failed_check_results(failed_result=failed_result)
-                parent_folder = self.execution_dir
-                target_name = os.path.basename(parent_folder)
-                tar_file_name = f"{target_name}" + '.tar.bz2'
                 if self.create_tarball_archive(tar_file_name=tar_file_name,
                                         output_metadata_file=None,
                                         parent_folder=parent_folder) is False:
                     self.logger.error("ERROR Archiving attachments")
                     raise ValueError("ERROR: Archiving attachments failed!")
-                target_file_name = tar_file_name
+                # Create temp tar file in accessible directory
                 msg = MIMEMultipart('mixed')
                 with open(target_file_name, 'rb') as f:
                     part = MIMEApplication(f.read())
@@ -491,7 +498,7 @@ class SendgridNotification(EmailNotification):
         parent_folder = self.execution_dir
         target_name = os.path.basename(parent_folder)
         tar_file_name = f"{target_name}" + '.tar.bz2'
-        target_file_name = None
+        target_file_name = os.path.join('/tmp', tar_file_name)
         metadata = None
 
         try:
@@ -517,14 +524,12 @@ class SendgridNotification(EmailNotification):
                                             output_metadata_file=output_metadata_file,
                                             parent_folder=parent_folder) is False:
                     raise ValueError("ERROR: Archiving attachments failed!")
-                target_file_name = tar_file_name
             else:
                 if len(failed_result) and self.send_failed_objects_as_attachment:
                     if self.create_tarball_archive(tar_file_name=tar_file_name,
                                                 output_metadata_file=None,
                                                 parent_folder=parent_folder) is False:
                         raise ValueError("ERROR: Archiving attachments failed!")
-                    target_file_name = tar_file_name
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
