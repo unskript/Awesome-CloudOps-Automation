@@ -492,9 +492,6 @@ class SendgridNotification(EmailNotification):
         html_message = ''
         email_subject = subject
         parent_folder = self.execution_dir
-        target_name = os.path.basename(parent_folder)
-        tar_file_name = f"{target_name}" + '.tar.bz2'
-        target_file_name = None
         metadata = None
 
         try:
@@ -512,22 +509,23 @@ class SendgridNotification(EmailNotification):
                 if metadata and metadata.get('output_file'):
                     target_file_name = os.path.basename(metadata.get('output_file'))
                 parent_folder = os.path.dirname(output_metadata_file)
-                target_name = os.path.basename(parent_folder)
-                tar_file_name = f"{target_name}" + '.tar.bz2'
+                # target_name = os.path.basename(parent_folder)
+                # tar_file_name = f"{target_name}" + '.tar.bz2'
+            target_name = os.path.basename(parent_folder)
+            tar_file_name = f"{target_name}" + '.tar.bz2'
+            target_file_name = os.path.join('/tmp', tar_file_name)
             if metadata and metadata.get('compress') is True:
                 output_metadata_file = output_metadata_file.split('/')[-1]
                 if self.create_tarball_archive(tar_file_name=tar_file_name,
                                             output_metadata_file=output_metadata_file,
                                             parent_folder=parent_folder) is False:
                     raise ValueError("ERROR: Archiving attachments failed!")
-                target_file_name = tar_file_name
             else:
                 if len(failed_result) and self.send_failed_objects_as_attachment:
                     if self.create_tarball_archive(tar_file_name=tar_file_name,
                                                 output_metadata_file=None,
                                                 parent_folder=parent_folder) is False:
                         raise ValueError("ERROR: Archiving attachments failed!")
-                    target_file_name = tar_file_name
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
@@ -540,7 +538,7 @@ class SendgridNotification(EmailNotification):
             )
             if target_file_name:
                 email_message = self.sendgrid_add_email_attachment(email_message=email_message,
-                                                            file_to_attach=os.path.join('/tmp',tar_file_name),
+                                                            file_to_attach=target_file_name,
                                                             compress=True)
             try:
                 if target_file_name:
