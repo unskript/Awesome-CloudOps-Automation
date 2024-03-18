@@ -156,6 +156,10 @@ class EmailNotification(NotificationFactory):
                                tar_file_name: str,
                                output_metadata_file: str,
                                parent_folder: str):
+        
+        if not tar_file_name.startswith('/tmp'):
+            tar_file_name = os.path.join('/tmp', tar_file_name)
+
         if not output_metadata_file:
             tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
         else:
@@ -194,10 +198,10 @@ class EmailNotification(NotificationFactory):
         return list_of_failed_files
 
     def create_script_summary_message(self, output_metadata_file: str):
-        message = ''
+        # message = ''
         if os.path.exists(output_metadata_file) is False:
             self.logger.error(f"ERROR: The metadata file is missing, please check if file exists? {output_metadata_file}")
-            return message
+            return ''
 
         metadata = ''
         with open(output_metadata_file, 'r', encoding='utf-8') as f:
@@ -207,24 +211,28 @@ class EmailNotification(NotificationFactory):
             self.logger.error(f'ERROR: Metadata is empty for the script. Please check content of {output_metadata_file}')
             raise ValueError("Metadata is empty")
 
-        message += f'''
-                <br>
-                <h3> Custom Script Run Result </h3>
-                <table border="1">
-                    <tr>
-                        <th> Status </th>
-                        <th> Time (in seconds) </th>
-                        <th> Error </th>
-                    </tr>
-                    <tr>
-                        <td>{metadata.get('status')}</td>
-                        <td>{metadata.get('time_taken')}</td>
-                        <td>{metadata.get('error')}</td>
-                    </tr>
-                </table>
-        '''
+        # Log the custom script run result instead of including it in the email.
+        self.logger.debug(f"\tStatus: {metadata.get('status')} \n\tTime (in seconds): {metadata.get('time_taken')} \n\tError: {metadata.get('error')} \n")
 
-        return message
+        # Remove from email 
+        # message += f'''
+        #         <br>
+        #         <h3> Custom Script Run Result </h3>
+        #         <table border="1">
+        #             <tr>
+        #                 <th> Status </th>
+        #                 <th> Time (in seconds) </th>
+        #                 <th> Error </th>
+        #             </tr>
+        #             <tr>
+        #                 <td>{metadata.get('status')}</td>
+        #                 <td>{metadata.get('time_taken')}</td>
+        #                 <td>{metadata.get('error')}</td>
+        #             </tr>
+        #         </table>
+        # '''
+
+        return ''
 
     def create_info_legos_output_file(self):
         """create_info_legos_output_file: This function creates a file that will
@@ -313,7 +321,9 @@ class EmailNotification(NotificationFactory):
                                     output_metadata_file=output_metadata_file,
                                     parent_folder=parent_folder) is False:
                 raise ValueError("ERROR: Archiving attachments failed!")
-            target_file_name = tar_file_name
+            # With the non-root user support. Lets create the tar file in the
+            # common accessable area like /tmp
+            target_file_name = os.path.join("/tmp", tar_file_name)
 
         with open(target_file_name, 'rb') as f:
             part = MIMEApplication(f.read())
@@ -399,7 +409,7 @@ class EmailNotification(NotificationFactory):
         return message
 
     def create_email_header(self, title: str = None):
-        email_title = title or "unSkript-ctl run result"
+        email_title = title or "Run result"
         message = f'''
             <!DOCTYPE html>
             <html>
@@ -408,7 +418,7 @@ class EmailNotification(NotificationFactory):
             <body>
             <center>
             <h1> {email_title} </h1>
-            <h3> <strong>Tested On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
+            <h3> <strong>Performed On <br> {datetime.now().strftime("%a %b %d %I:%M:%S %p %Y %Z")} </strong></h3>
             <h4> <strong>Version : {get_version()} </strong></h4><br>
             </center>
             '''
@@ -423,6 +433,10 @@ class EmailNotification(NotificationFactory):
                                **kwargs):
         message = self.create_email_header(title=title)
         temp_attachment = msg = None
+        parent_folder = self.execution_dir
+        target_name = os.path.basename(parent_folder)
+        tar_file_name = f"{target_name}" + '.tar.bz2'
+        target_file_name = os.path.join('/tmp', tar_file_name)
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
@@ -444,6 +458,16 @@ class EmailNotification(NotificationFactory):
                 part = MIMEApplication(f.read())
                 part.add_header('Content-Disposition', 'attachment', filename=target_file_name)
                 msg.attach(part)
+
+        if output_metadata_file:
+            message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
+            temp_attachment = self.create_email_attachment(output_metadata_file=output_metadata_file)
+
+        if failed_result and len(failed_result) and self.send_failed_objects_as_attachment:
+            message += '<br> <ul>' + '\n'
+            message += '<h3> DETAILS ABOUT THE FAILED OBJECTS CAN BE FOUND IN THE ATTACHMENTS </h3>' + '\n'
+            message += '</ul> <br>' + '\n'
+
 
         info_result = self.create_info_gathering_action_result()
         if info_result:
@@ -529,7 +553,8 @@ class SendgridNotification(EmailNotification):
         parent_folder = self.execution_dir
         target_name = os.path.basename(parent_folder)
         tar_file_name = f"{target_name}" + '.tar.bz2'
-        tar_file_path = os.path.join(parent_folder, tar_file_name)
+        target_file_name = os.path.join('/tmp', tar_file_name)
+        metadata = None
 
         try:
             # We can have custom Title here
@@ -546,9 +571,11 @@ class SendgridNotification(EmailNotification):
                 if not self.create_tarball_archive(tar_file_name=tar_file_path, output_metadata_file=None, parent_folder=parent_folder):
                     raise ValueError("ERROR: Archiving attachments failed!")
             else:
-                self.logger.error("Execution directory is empty !")
-            
-
+                if len(failed_result) and self.send_failed_objects_as_attachment:
+                    if self.create_tarball_archive(tar_file_name=tar_file_name,
+                                                output_metadata_file=None,
+                                                parent_folder=parent_folder) is False:
+                        raise ValueError("ERROR: Archiving attachments failed!")
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
