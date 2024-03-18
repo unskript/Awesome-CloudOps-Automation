@@ -156,10 +156,14 @@ class EmailNotification(NotificationFactory):
                                tar_file_name: str,
                                output_metadata_file: str,
                                parent_folder: str):
+        
+        if not tar_file_name.startswith('/tmp'):
+            tar_file_name = os.path.join('/tmp', tar_file_name)
+
         if not output_metadata_file:
             tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
         else:
-            tar_cmd = ["tar", "jcvf", os.path.join('/tmp', tar_file_name), "-C" , parent_folder, "."]
+            tar_cmd = ["tar", "jcvf", tar_file_name, "-C" , parent_folder, "."]
         try:
             subprocess.run(tar_cmd,
                             stdout=subprocess.PIPE,
