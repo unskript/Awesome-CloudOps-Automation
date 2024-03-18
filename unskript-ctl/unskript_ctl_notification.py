@@ -442,13 +442,14 @@ class EmailNotification(NotificationFactory):
         target_name = os.path.basename(parent_folder)
         tar_file_name = f"{target_name}" + '.tar.bz2'
         target_file_name = os.path.join('/tmp', tar_file_name)
+
         if summary_results and len(summary_results):
             message += self.create_checks_summary_message(summary_results=summary_results,
                                                     failed_result=failed_result)
             if len(failed_result) and self.send_failed_objects_as_attachment:
                 self.create_temp_files_of_failed_check_results(failed_result=failed_result)
 
-            if len(os.listdir(self.execution_dir)) == 0 or self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+            if len(os.listdir(self.execution_dir)) == 0 or not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
                 self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
                 return attachment
             
@@ -469,7 +470,7 @@ class EmailNotification(NotificationFactory):
             message += info_result
             self.create_info_legos_output_file()
 
-        if len(os.listdir(self.execution_dir)) == 0 or self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+        if len(os.listdir(self.execution_dir)) == 0 or not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
             self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
             return attachment
         
@@ -556,7 +557,7 @@ class SendgridNotification(EmailNotification):
             self.create_info_legos_output_file()
 
             # Check conditions for creating tarball
-            if len(os.listdir(self.execution_dir)) == 0 or self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
+            if len(os.listdir(self.execution_dir)) == 0 or not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
                 self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
 
             info_result = self.create_info_gathering_action_result()

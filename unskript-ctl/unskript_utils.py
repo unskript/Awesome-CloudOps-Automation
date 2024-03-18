@@ -22,11 +22,9 @@ UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME = "run_output"
 UNSKRIPT_SCRIPT_RUN_OUTPUT_DIR_ENV = "UNSKRIPT_SCRIPT_OUTPUT_DIR"
 JIT_PYTHON_SCRIPT = "/tmp/jit_script.py"
 
-# Character count for including failed objects as INLINE text in email
-# Each line is an average 80 character approximately
-# 20000 / 80 = 250 lines approximately. If Failed object length is
-# more than 20000 characters, we will send as EMAIL attachment.
-MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS = 20000
+# With introduction emal_fmt, we want all failed objects to be included
+# in the attachment. MAX_CHARACTER COUNT is therefore set to very low value
+MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS = 10
 
 TBL_HDR_CHKS_NAME="\033[36m Checks Name \033[0m"
 TBL_HDR_INFO_NAME="\033[36m Action Name \033[0m"
