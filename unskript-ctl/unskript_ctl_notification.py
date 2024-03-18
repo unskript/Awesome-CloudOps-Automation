@@ -515,9 +515,9 @@ class SendgridNotification(EmailNotification):
                 target_name = os.path.basename(parent_folder)
                 tar_file_name = f"{target_name}" + '.tar.bz2'
             if metadata and metadata.get('compress') is True:
-                o_file = output_metadata_file.split('/')[-1]
+                output_metadata_file = output_metadata_file.split('/')[-1]
                 if self.create_tarball_archive(tar_file_name=tar_file_name,
-                                            output_metadata_file=o_file,
+                                            output_metadata_file=output_metadata_file,
                                             parent_folder=parent_folder) is False:
                     raise ValueError("ERROR: Archiving attachments failed!")
                 target_file_name = tar_file_name
