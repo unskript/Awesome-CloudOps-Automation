@@ -280,23 +280,41 @@ class ConfigParserFactory(UnskriptFactory):
     def get_info(self):
         return self.get_jobs().get('info',{})
 
+    def get_email_fmt(self):
+        notification_config = self.get_notification()
+        email_config = notification_config.get('Email', {})
+        email_fmt = email_config.get('email_fmt', {})
+        return email_fmt
+
+    def get_checks_section(self):
+        # Get the checks_section from email_fmt
+        checks_section = self.get_email_fmt().get('checks_section', {})
+        return checks_section.get('priority', {})
+
+    def get_info_section(self):
+        # Get the info_section from email_fmt
+        return self.get_email_fmt().get('info_section', [])
+
     def get_checks_priority(self)->dict:
         # This function reads the priority part of the config and converts it
         # into a dict with check_name as the key and priority as the value.
         # If the check is not found in the dict, its assigned priority P2.
 
-        # Read P0 priority if configured
+        email_fmt = self.get_email_fmt()
+        checks_section = email_fmt.get('checks_section', {})
+        priority_config = checks_section.get('priority', {})
+
         checks_priority = {}
-        priority_config = self._get('checks').get('priority')
-        if priority_config is None:
+
+        # Check if the 'priority' configuration is properly set; if not, return None
+        if not priority_config:
             return None
-        p0_priority = priority_config.get(CHECK_PRIORITY_P0)
-        if p0_priority is not None:
-            for c in p0_priority:
-                checks_priority[c] = CHECK_PRIORITY_P0
-        p1_priority = priority_config.get(CHECK_PRIORITY_P1)
-        if p1_priority is not None:
-            for c in p1_priority:
-                checks_priority[c] = CHECK_PRIORITY_P1
+
+        # Explicitly fetch and map checks for each priority level using the constants
+        for priority_level in [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]:
+            priority_checks = priority_config.get(priority_level, [])
+            for check_name in priority_checks:
+                checks_priority[check_name] = priority_level
+
         return checks_priority
 
