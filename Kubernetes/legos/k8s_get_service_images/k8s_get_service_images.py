@@ -23,7 +23,7 @@ def k8s_get_service_images_printer(output):
         print("No data available")
         return
     for service, images in output.items():
-        shortened_images = [shorten_image_name(image) for image in images]
+        shortened_images = list(images)
         if not shortened_images:
             table_data.append([service, "No images found"])
         else:
@@ -33,14 +33,6 @@ def k8s_get_service_images_printer(output):
     headers = ["Service (Namespace)", "Images"]
     table = tabulate(table_data, headers=headers, tablefmt='grid')
     print(table)
-
-
-
-def shorten_image_name(full_name: str):
-    # Return just the domain and name, which is the first part of the split
-    split_char = '@' if '@' in full_name else ':'
-    main_parts = full_name.split(split_char)
-    return main_parts[0]
 
 
 
@@ -91,7 +83,9 @@ def k8s_get_service_images(handle, namespace:str = "") -> Dict:
             get_images_command = f"kubectl get pods -n {ns} -l {label_selector} -o=jsonpath='{{.items[*].spec.containers[*].image}}'"
             response = handle.run_native_cmd(get_images_command)
             if response and not response.stderr:
-                images = list(set(response.stdout.strip().split()))  # Deduplicate images
+                # Deduplicate images and replace 'docker.io' with 'docker_io'
+                images = list(set(response.stdout.strip().split()))
+                images = [image.replace('docker.io', 'docker_io') for image in images]
                 service_key = f"{service_name} ({ns})"
                 service_images[service_key] = images
             else:

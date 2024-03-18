@@ -55,16 +55,22 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
     data['namespace'] = namespace  # Store namespace in data dict
 
     # Fetch current utilization of pods
-    pod_utilization_cmd = f"kubectl top pods {namespace_option}"
+    pod_utilization_cmd = f"kubectl top pods {namespace_option} --no-headers"
     pod_utilization = handle.run_native_cmd(pod_utilization_cmd)
-    pod_utilization_lines = pod_utilization.stdout.split('\n')[1:]  # Exclude header line
+    if pod_utilization.stderr:
+        print(f"Error occurred while fetching pod utilization: {pod_utilization.stderr}")
+        pass
 
+    pod_utilization_lines = pod_utilization.stdout.split('\n')
     utilization_map = {}
     for line in pod_utilization_lines:
         parts = line.split()
-        if len(parts) < 4:  # Skip lines that do not contain enough information
+        if len(parts) < 3:  # Skip if line doesn't contain enough parts
             continue
-        utilization_map[parts[1]] = (parts[0], parts[2], parts[3])  # Map pod name to (namespace, CPU, Memory)
+        pod_name, cpu_usage, memory_usage = parts[:3]
+        # Use a tuple of (namespace, pod_name) as the key to ensure uniqueness across namespaces
+        key = (namespace, pod_name) if namespace else (parts[0], pod_name)
+        utilization_map[key] = (cpu_usage, memory_usage)
 
     for resource in resources:
         cmd = f"kubectl get {resource} -o json {namespace_option}"
@@ -85,9 +91,9 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
 
             if resource == 'pods':
                 status = item['status']['phase']
-                ns_from_util, cpu_usage, memory_usage = utilization_map.get(name, (ns, 'N/A', 'N/A'))
-
-                data[resource].append([ns_from_util, name, status, cpu_usage, memory_usage])
+                key = (ns, name)
+                cpu_usage, memory_usage = utilization_map.get(key, ('N/A', 'N/A'))
+                data[resource].append([ns, name, status, cpu_usage, memory_usage])
             else:
                 if resource == 'jobs':
                     conditions = item['status'].get('conditions', [])
@@ -95,7 +101,6 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
                         status = conditions[-1]['type']
                 elif resource == 'persistentvolumeclaims':
                     status = item['status']['phase']
-
-                data[resource].append([name, status])
+                data[resource].append([ns, name, status])
 
     return data
