@@ -313,8 +313,9 @@ class ConfigParserFactory(UnskriptFactory):
         # Explicitly fetch and map checks for each priority level using the constants
         for priority_level in [CHECK_PRIORITY_P0, CHECK_PRIORITY_P1, CHECK_PRIORITY_P2]:
             priority_checks = priority_config.get(priority_level, [])
-            for check_name in priority_checks:
-                checks_priority[check_name] = priority_level
+            if priority_checks:
+                for check_name in priority_checks:
+                    checks_priority[check_name] = priority_level
 
         return checks_priority
 
