@@ -58,7 +58,6 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
     pod_utilization_cmd = f"kubectl top pods {namespace_option} --no-headers"
     pod_utilization = handle.run_native_cmd(pod_utilization_cmd)
     if pod_utilization.stderr:
-        print(f"Error occurred while fetching pod utilization: {pod_utilization.stderr}")
         pass
 
     pod_utilization_lines = pod_utilization.stdout.split('\n')
