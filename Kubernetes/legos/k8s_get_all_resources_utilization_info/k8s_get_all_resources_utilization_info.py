@@ -90,6 +90,9 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
 
             if resource == 'pods':
                 status = item['status']['phase']
+                 # Skip pods in Succeeded or Completed state as they dont have any utilization
+                if status in ['Succeeded', 'Completed', 'Failed']:
+                    continue
                 key = (ns, name)
                 cpu_usage, memory_usage = utilization_map.get(key, ('N/A', 'N/A'))
                 data[resource].append([ns, name, status, cpu_usage, memory_usage])
