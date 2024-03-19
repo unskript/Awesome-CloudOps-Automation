@@ -19,7 +19,7 @@ jobs:
       - run: git fetch --prune --unshallow
       - name: Bump version and push 
         id: tag_version
-        uses: mathieudutour/github-tag-action@fcfbdceb3093f6d85a3b194740f8c6cec632f4e2 # v6.1
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
         with:
           github_token: ${{ secrets.BUILDER_PAT }}
           dry_run: true
