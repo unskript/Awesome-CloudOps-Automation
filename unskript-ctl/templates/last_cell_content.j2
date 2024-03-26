@@ -7,6 +7,20 @@ try:
                 output = json.loads(output)
                 output['id'] = id
                 print(json.dumps(output))
+            # Lets take care of Timed out checks too. That output
+            # will be not included in the workflow output. Lets findout
+            # and explictly add them to the output
+            if len(w.check_output.keys()) < len(w.check_uuids):
+                existing_ids = [x for x in w.check_output.keys()]
+                missing_ids = [item for item in w.check_uuids if item not in existing_ids]
+                for id in missing_ids:
+                    temp_dict = {
+                        "status": 3,
+                        "objects": None,
+                        "error": "Check Timeout",
+                        "id": str(id)
+                    }
+                    print(json.dumps(temp_dict))
         else:
             print(json.dumps("Not a check run"))
     else:
