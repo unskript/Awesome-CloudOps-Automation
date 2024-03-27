@@ -319,3 +319,13 @@ class ConfigParserFactory(UnskriptFactory):
 
         return checks_priority
 
+    def get_diagnostic_commands(self):
+        # Retrieves the diagnostic commands for checks defined under the 'checks' section in the YAML configuration.
+        checks_section = self._get('checks')
+        diagnostic_commands_section = checks_section.get('diagnostic_commands', {})
+
+        if not isinstance(diagnostic_commands_section, dict):
+            self.logger.error("The 'diagnostic_commands' section is not properly formatted.")
+            return {}
+
+        return diagnostic_commands_section
