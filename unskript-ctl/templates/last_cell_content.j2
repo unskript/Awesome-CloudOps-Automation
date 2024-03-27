@@ -1,4 +1,5 @@
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
+global w 
 
 try:
     if 'w' in globals():
@@ -7,20 +8,27 @@ try:
                 output = json.loads(output)
                 output['id'] = id
                 print(json.dumps(output))
-            # Lets take care of Timed out checks too. That output
-            # will be not included in the workflow output. Lets findout
-            # and explictly add them to the output
-            if len(w.check_output.keys()) < len(w.check_uuids):
-                existing_ids = [x for x in w.check_output.keys()]
-                missing_ids = [item for item in w.check_uuids if item not in existing_ids]
-                for id in missing_ids:
-                    temp_dict = {
-                        "status": 3,
-                        "objects": None,
-                        "error": "Check Timeout",
-                        "id": str(id)
-                    }
-                    print(json.dumps(temp_dict))
+            # Lets check if we have errored_checks or timeout_checks
+            # exists, if yes then lets dump the output 
+            if hasattr(w, 'check_uuid_entry_function_map'):
+                if hasattr(w, 'timeout_checks') and len(w.timeout_checks):
+                    for name, err_msg in w.timeout_checks.items():
+                        _id = w.check_uuid_entry_function_map.get(name)
+                        print(json.dumps({
+                            "status": 3,
+                            "objects": None,
+                            "error": err_msg,
+                            "id": str(_id)
+                        }))
+                if hasattr(w, 'errored_checks') and len(w.errored_checks):
+                    for name, err_msg in w.errored_checks.items():
+                        _id = w.check_uuid_entry_function_map.get(name)
+                        print(json.dumps({
+                            "status": 3,
+                            "objects": None,
+                            "error": err_msg,
+                            "id": str(_id)
+                        }))
         else:
             print(json.dumps("Not a check run"))
     else:
