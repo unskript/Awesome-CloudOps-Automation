@@ -102,6 +102,8 @@ class Checks(ChecksFactory):
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
                 sys.exit(0)
+            # Create /tmp/failing_checks_dump.json for running diagnostics 
+            self.create_failing_checks_dump(outputs)
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(json.dumps(outputs))
             if len(outputs) == 0:
@@ -113,6 +115,26 @@ class Checks(ChecksFactory):
         self.uglobals['status_of_run'] = self.status_list_of_dict
 
         return self.status_list_of_dict
+
+    def create_failing_checks_dump(self, outputs):
+        structured_data = []
+        for item in outputs:
+            # Status is False (2): Check has failed
+            if item.get('status') == 2:
+                data_structure = {
+                    "id": item.get('id'),
+                    "content": {
+                        "objects": item.get('objects') if item.get('objects') is not None else [],
+                        "name": item.get('name'),
+                        "error": item.get('error')
+                    }
+                }
+                structured_data.append(data_structure)
+
+        json_data = json.dumps(structured_data, indent=4)
+        filename = '/tmp/failing_checks_dump.json'
+        with open(filename, 'w') as file:
+            file.write(json_data)
 
     def parse_failed_objects(self, failed_object):
         retVal = "N/A"
