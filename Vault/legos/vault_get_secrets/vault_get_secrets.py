@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 class InputSchema(BaseModel):
     paths: list = Field(
         title='List of paths',
-        description='List of paths'),
+        description='List of paths')
     mount_point: str = Field(
         title= 'Mount point of secrets',
         description= 'Mount point of secrets'
