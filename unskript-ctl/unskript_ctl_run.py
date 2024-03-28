@@ -90,6 +90,7 @@ class Checks(ChecksFactory):
                 if isinstance(d, dict) is False:
                     d = json.loads(d)
                 d['name'] = self.check_names[self.check_uuids.index(d.get('id'))]
+                d['check_entry_function'] = self.check_entry_functions[self.check_uuids.index(d.get('id'))]
                 output_list.append(d)
             outputs = output_list
         except Exception as e:
@@ -102,6 +103,7 @@ class Checks(ChecksFactory):
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
                 sys.exit(0)
+
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(json.dumps(outputs))
             if len(outputs) == 0:
