@@ -391,7 +391,8 @@ class Checks(ChecksFactory):
                     for index, value in enumerate(v):
                         first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
         first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={self.check_uuids})''' + '\n'
-        temp_map = {key: value for key, value in zip(self.check_entry_functions, self.check_uuids)}
+        # temp_map = {key: value for key, value in zip(self.check_entry_functions, self.check_uuids)}
+        temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
         first_cell_content += f'''w.check_uuid_entry_function_map = {temp_map}'''
 
         return first_cell_content
