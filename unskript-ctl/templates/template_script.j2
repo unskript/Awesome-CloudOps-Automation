@@ -51,15 +51,29 @@ def _run_function(fname):
                             poll_forever=False,
                             check_success= lambda v: v is not None)
             return response
-        except polling2.TimeoutException:
+        except polling2.TimeoutException as e:
             # Polling timeout
             if _logger:
                 _logger.debug(f"Execution completed for {fn} <-> {chk_name}")
+            
+            if not hasattr(w, 'timeout_checks'):
+                w.timeout_checks = {}
+            w.timeout_checks.update({chk_name: str(e).replace(fname,"")})
+            if _logger:
+                _logger.debug(f"TIMEOUT CHECKS {w.timeout_checks}")
+
         except Exception as e:
             # If one of the action fails dump the exception on console and proceed further
             print(str(e))
             if _logger:
                 _logger.debug(str(e))
+
+            if not hasattr(w, 'errored_checks'):
+                w.errored_checks = {}
+            w.errored_checks.update({chk_name: str(e).replace(fname,"")})
+            if _logger:
+                _logger.debug(f"ERRORED CHECKS {w.errored_checks}")
+
         finally:
             if _logger:
                 _logger.debug(f"Completed Execution of {fn} <-> {chk_name}")
@@ -72,6 +86,7 @@ def do_run_(logger = None, script_to_check_mapping = {}):
     from tqdm import tqdm
     global _logger 
     global _script_to_check_mapping
+    global w
 
     output = None
     if logger:
