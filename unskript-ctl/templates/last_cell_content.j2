@@ -1,34 +1,47 @@
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 global w 
 
+all_outputs = []
+other_outputs = []
 try:
     if 'w' in globals():
         if w.check_run:
             for id,output in w.check_output.items():
                 output = json.loads(output)
                 output['id'] = id
-                print(json.dumps(output))
+                all_outputs.append(output)
             # Lets check if we have errored_checks or timeout_checks
             # exists, if yes then lets dump the output 
             if hasattr(w, 'check_uuid_entry_function_map'):
                 if hasattr(w, 'timeout_checks') and len(w.timeout_checks):
                     for name, err_msg in w.timeout_checks.items():
                         _id = w.check_uuid_entry_function_map.get(name)
-                        print(json.dumps({
+                        other_outputs.append({
                             "status": 3,
                             "objects": None,
                             "error": err_msg,
                             "id": str(_id)
-                        }))
+                        })
                 if hasattr(w, 'errored_checks') and len(w.errored_checks):
                     for name, err_msg in w.errored_checks.items():
                         _id = w.check_uuid_entry_function_map.get(name)
-                        print(json.dumps({
+                        other_outputs.append({
                             "status": 3,
                             "objects": None,
                             "error": err_msg,
                             "id": str(_id)
-                        }))
+                        })
+            if other_outputs:
+               for _other in other_outputs:
+                  for _output in all_outputs:
+                     # Lets eliminate duplicate entries in the output
+                     # We could have double accounted failed and error timeout 
+                     # case 
+                     if _other.get('id') == _output.get('id'):
+                         _output = _other
+
+            for _output in all_outputs:
+                print(json.dumps(_output))
         else:
             print(json.dumps("Not a check run"))
     else:

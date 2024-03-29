@@ -79,7 +79,7 @@ class UctlLogger(logging.Logger):
     def dump_to_file(self, msg):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(self.log_file_name, 'a') as f:
-            f.write(timestamp + ' : ' + msg + '\n')
+            f.write(timestamp + ' : ' + str(msg) + '\n')
 
 # This is the Base class, Abstract class that shall be used by all the other
 # classes that are implemented. This class is implemented as a Singleton class

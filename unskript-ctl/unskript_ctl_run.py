@@ -103,7 +103,6 @@ class Checks(ChecksFactory):
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
                 sys.exit(0)
-
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(json.dumps(outputs))
             if len(outputs) == 0:
@@ -179,18 +178,20 @@ class Checks(ChecksFactory):
                 _action_uuid = payload.get('id')
                 if _action_uuid:
                     c_name = self.connector_types[idx] + ':' + self.prioritized_checks_to_id_mapping[_action_uuid]
+                    p_check_name = self.prioritized_checks_to_id_mapping[_action_uuid]
                 else:
                     c_name = self.connector_types[idx] + ':' + self.check_names[idx]
+                    p_check_name = self.check_names[idx]
                
                 if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
                     result_table.append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         self.TBL_CELL_CONTENT_PASS,
                         0,
                         'N/A'
                         ])
                     checks_per_priority_per_result_list[priority]['PASS'].append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         ids[idx],
                         self.connector_types[idx]]
                         )
@@ -198,14 +199,14 @@ class Checks(ChecksFactory):
                     failed_objects = payload.get('objects')
                     failed_result[c_name] = failed_objects
                     result_table.append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         self.TBL_CELL_CONTENT_FAIL,
                         len(failed_objects),
                         self.parse_failed_objects(failed_object=failed_objects)
                         ])
                     failed_result_available = True
                     checks_per_priority_per_result_list[priority]['FAIL'].append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         ids[idx],
                         self.connector_types[idx]
                         ])
@@ -219,14 +220,14 @@ class Checks(ChecksFactory):
                         failed_result_available = True
                     error_msg = payload.get('error') if payload.get('error') else self.parse_failed_objects(failed_object=failed_objects)
                     result_table.append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         self.TBL_CELL_CONTENT_ERROR,
                         0,
                         pprint.pformat(error_msg, width=30)
                         ])
                     checks_per_priority_per_result_list[priority]['ERROR'].append([
                         # self.check_names[idx],
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         ids[idx],
                         self.connector_types[idx]
                         ])
