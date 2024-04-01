@@ -338,9 +338,10 @@ class Checks(ChecksFactory):
             for idx,c in enumerate(checks_list[:]):
                 _entry_func = c.get('metadata', {}).get('action_entry_function', '')
                 _action_uuid = c.get('metadata', {}).get('action_uuid', '')
+                _check_name = c.get('metadata', {}).get('action_title', '')
                 idx += 1
                 self.script_to_check_mapping[f"check_{idx}"] =  _entry_func
-                self.prioritized_checks_to_id_mapping[str(_action_uuid)] = _entry_func
+                self.prioritized_checks_to_id_mapping[str(_action_uuid)] = _check_name
                 exec_timeout = per_check_timeout.get(_entry_func, execution_timeout)
                 f.write(f"@timeout(seconds={exec_timeout}, error_message=\"Check check_{idx} timed out\")\n")
                 check_name = f"def check_{idx}():"
