@@ -14,15 +14,21 @@ import json
 import os
 import sys
 import yaml
-
-# HERE WE NEED TO IMPORT THE WORKER.py file that has the 7 functions that will be
-# execute the equivalent of run_native_cmd 
-# import diagnostic_worker
+from diagnostics_worker import *
 
 
 class DiagnosticsScript:
     def __init__(self, args):
         self.args = args
+        self.calling_map = {
+            "k8s": "k8s_diagnostics",
+            "mongodb": "mongodb_diagnostics",
+            "redis": "redis_diagnostics",
+            "postgresql": "postgresql_diagnostics",
+            "elasticsearch": "elasticsearch_diagnostics",
+            "keycloak": "keycloak_diagnostics",
+            "vault": "vault_diagnostics"
+        }
 
     def get_failed_objects(self):
         failed_objects_file = self.args.failed_objects_file
@@ -45,9 +51,9 @@ class DiagnosticsScript:
 
         all_failed_entry_functions = []
         for entry in data:
-            if isinstance(entry, dict) and 'objects' in entry and entry['objects'] is not None:
-                all_failed_entry_functions.append(entry.get('action_entry_function', ''))
-
+            if isinstance(entry, dict) and entry['status']==2:
+                all_failed_entry_functions.append(entry.get('check_entry_function', ''))
+        # print("All failed entry functions",all_failed_entry_functions)
         return all_failed_entry_functions
 
     def get_diagnostic_commands(self):
@@ -67,15 +73,15 @@ class DiagnosticsScript:
             return {}
 
         diagnostics_commands = {}
-        if 'checks' in data and isinstance(data['checks'], dict) and 'diagnostics' in data['checks']:
-            for check_name, d_commands in data['checks']['diagnostics'].items():
+        if 'checks' in data and isinstance(data['checks'], dict) and 'diagnostic_commands' in data['checks']:
+            for check_name, d_commands in data['checks']['diagnostic_commands'].items():
                 if isinstance(d_commands, list):
                     diagnostics_commands[check_name] = d_commands
                 else:
                     print(f"Error: Invalid format for diagnostics commands under '{check_name}' in '{yaml_file}'.")
         else:
             print(f"Error: 'checks->diagnostics' section not found in '{yaml_file}'.")
-
+        # print("Diagnostic commands from yaml", diagnostics_commands)
         return diagnostics_commands
 
     def get_diagnostic_commands_for_failed_checks(self):
@@ -92,26 +98,20 @@ class DiagnosticsScript:
     def execute_diagnostics(self, diag_commands):
         diag_outputs = {}
         for entry_function, commands in diag_commands.items():
-            for prefix in self.calling_map:
+            for prefix, function_name in self.calling_map.items():
                 if entry_function.startswith(prefix):
                     try:
-                        function_name = self.calling_map.get(prefix)
-                        if function_name:
-                            function = globals().get(function_name)
-                            if function:
-                                diag_outputs[entry_function] = function(commands)
-                            else:
-                                raise ValueError(f"Function '{function_name}' not found in the global namespace.")
+                        # Fetch the function from globals based on the name
+                        function = globals().get(function_name)
+                        if function:
+                            # Call the function with the commands
+                            diag_outputs[entry_function] = function(commands)
+                            print(f"Function '{function_name}' is accessible.")
                         else:
-                            raise ValueError(f"No function mapping found for prefix '{prefix}'.")
+                            raise ValueError(f"Function '{function_name}' not found in the global namespace.")
                     except Exception as e:
                         print(f"Error occurred while processing '{entry_function}': {e}")
-
-        if diag_outputs:
-            diag_file = os.path.join(self.args.output_dir_path, 'diagnostics.yaml')
-            self.write_to_yaml_file(diag_outputs, diag_file)
-        else:
-            print("ERROR: Nothing to write, diagnostic outputs is empty!")
+        return diag_outputs
 
     def write_to_yaml_file(self, data, file_path):
         with open(file_path, 'w') as file:
@@ -136,12 +136,16 @@ class DiagnosticsScript:
         else:
             print("ERROR: Nothing to write, diagnostic outputs are empty!")
 
-if __name__ == "__main__":
+
+def main(args):
     parser = argparse.ArgumentParser(description="Diagnostic Script for unskript-ctl")
     parser.add_argument("--yaml-file", '-y', help="Path to YAML file", required=True)
     parser.add_argument("--failed-objects-file", '-f', help="Path to failed objects file", required=True)
     parser.add_argument("--output-dir-path", '-o', help="Path to output directory", required=True)
-    args = parser.parse_args()
+    ap = parser.parse_args(args)
 
-    diagnostics_script = DiagnosticsScript(args)
+    diagnostics_script = DiagnosticsScript(ap)
     diagnostics_script.main()
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
