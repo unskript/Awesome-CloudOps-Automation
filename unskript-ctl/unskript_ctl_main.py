@@ -42,6 +42,9 @@ class UnskriptCtl(UnskriptFactory):
         self._checks_priority = self._config.get_checks_priority()
 
         self._db = DBInterface()
+        # Create execution directory so all results
+        # gets logged there
+        create_execution_run_directory()
 
     def create_creds(self, args):
         """This method can be used to create credential"""
