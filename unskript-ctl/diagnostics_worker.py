@@ -4,6 +4,7 @@
 ##
 import os
 import subprocess
+import shlex
 
 
 def mongodb_diagnostics(commands:list):
@@ -50,7 +51,18 @@ def k8s_diagnostics(commands:list):
     command_outputs = []
 
     for command in commands:
-        cmd_list = command.split()
+        # Check if the command is a path to a shell script in /tmp
+        if command.startswith("/tmp/") and command.endswith(".sh"):
+            # Construct the full path to the script
+            script_path = shlex.quote(command)
+            # Change permissions to executable
+            chmod_command = f"sudo chmod +x {script_path}"
+            subprocess.run(chmod_command, shell=True, check=True, capture_output=True)
+            # Execute the script
+            cmd_list = [script_path]
+        else:
+            # For simple commands, use shlex.split to handle spaces and quotes correctly
+            cmd_list = shlex.split(command)
         try:
             result = subprocess.run(cmd_list, capture_output=True, text=True)
             if result.stderr:
