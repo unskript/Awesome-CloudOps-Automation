@@ -5,6 +5,10 @@
 import os
 import subprocess
 import shlex
+from unskript_ctl_factory import UctlLogger
+
+
+logger = UctlLogger('UnskriptDiagnostics')
 
 
 def mongodb_diagnostics(commands:list):
@@ -40,7 +44,8 @@ def mongodb_diagnostics(commands:list):
 
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            print(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
+            logger.debug("\nMongodb Diagnostics")
+            logger.debug(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def k8s_diagnostics(commands:list):
@@ -74,7 +79,8 @@ def k8s_diagnostics(commands:list):
             command_outputs.append({command: f"Exception: {str(e)}"})
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            print(f"K8S Command: {command}\nOutput: {cmd_output}\n")
+            logger.debug("\nK8s Diagnostics")
+            logger.debug(f"K8S Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def redis_diagnostics(commands:list):
@@ -105,7 +111,8 @@ def redis_diagnostics(commands:list):
             command_outputs.append({command: f"Exception: {str(e)}"})
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            print(f"Redis Command: {command}\nOutput: {cmd_output}\n")
+            logger.debug("\nRedis Diagnostics")
+            logger.debug(f"Redis Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def postgresql_diagnostics(commands:list):
@@ -140,7 +147,8 @@ def postgresql_diagnostics(commands:list):
 
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            print(f"Postgres Command: {command}\nOutput: {cmd_output}\n")
+            logger.debug("\nPostgresql Diagnostics")
+            logger.debug(f"Postgres Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def elasticsearch_diagnostics(commands: list) -> list:
@@ -169,7 +177,8 @@ def elasticsearch_diagnostics(commands: list) -> list:
 
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            print(f"Elasticsearch curl command: {command}\nOutput: {cmd_output}\n")
+            logger.debug("\nElasticsearch Diagnostics")
+            logger.debug(f"Elasticsearch curl command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def keycloak_diagnostics(commands: list):
@@ -233,5 +242,6 @@ def vault_diagnostics(commands: list):
 
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            print(f"Vault Command: {command}\nOutput: {cmd_output}\n")
+            logger.debug("\nVault Diagnostics")
+            logger.debug(f"Vault Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
