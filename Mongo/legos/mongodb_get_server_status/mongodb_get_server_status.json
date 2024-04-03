@@ -1,6 +1,6 @@
 {
 "action_title": "Get Mongo Server Status",
-"action_description": "Get Mongo Server Status and check for any abnormalities.",
+"action_description": "Status indicating server reachability of mongo server",
 "action_type": "LEGO_TYPE_MONGODB",
 "action_entry_function": "mongodb_get_server_status",
 "action_needs_credential": true,
