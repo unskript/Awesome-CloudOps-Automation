@@ -57,6 +57,7 @@ class Checks(ChecksFactory):
         self.script_to_check_mapping = {}
         # Prioritized checks to uuid mapping
         self.prioritized_checks_to_id_mapping = {}
+        self.map_entry_function_to_check_name = {}
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -103,7 +104,6 @@ class Checks(ChecksFactory):
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
                 sys.exit(0)
-
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(json.dumps(outputs))
             if len(outputs) == 0:
@@ -179,18 +179,21 @@ class Checks(ChecksFactory):
                 _action_uuid = payload.get('id')
                 if _action_uuid:
                     c_name = self.connector_types[idx] + ':' + self.prioritized_checks_to_id_mapping[_action_uuid]
+                    p_check_name = self.prioritized_checks_to_id_mapping[_action_uuid]
                 else:
                     c_name = self.connector_types[idx] + ':' + self.check_names[idx]
-               
+                    p_check_name = self.check_names[idx]
+                if p_check_name in self.check_entry_functions:
+                    p_check_name = self.map_entry_function_to_check_name.get(p_check_name)
                 if ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.SUCCESS:
                     result_table.append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         self.TBL_CELL_CONTENT_PASS,
                         0,
                         'N/A'
                         ])
                     checks_per_priority_per_result_list[priority]['PASS'].append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         ids[idx],
                         self.connector_types[idx]]
                         )
@@ -198,14 +201,14 @@ class Checks(ChecksFactory):
                     failed_objects = payload.get('objects')
                     failed_result[c_name] = failed_objects
                     result_table.append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         self.TBL_CELL_CONTENT_FAIL,
                         len(failed_objects),
                         self.parse_failed_objects(failed_object=failed_objects)
                         ])
                     failed_result_available = True
                     checks_per_priority_per_result_list[priority]['FAIL'].append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         ids[idx],
                         self.connector_types[idx]
                         ])
@@ -219,14 +222,14 @@ class Checks(ChecksFactory):
                         failed_result_available = True
                     error_msg = payload.get('error') if payload.get('error') else self.parse_failed_objects(failed_object=failed_objects)
                     result_table.append([
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         self.TBL_CELL_CONTENT_ERROR,
                         0,
                         pprint.pformat(error_msg, width=30)
                         ])
                     checks_per_priority_per_result_list[priority]['ERROR'].append([
                         # self.check_names[idx],
-                        self.prioritized_checks_to_id_mapping[payload.get('id')],
+                        p_check_name,
                         ids[idx],
                         self.connector_types[idx]
                         ])
@@ -337,9 +340,12 @@ class Checks(ChecksFactory):
             for idx,c in enumerate(checks_list[:]):
                 _entry_func = c.get('metadata', {}).get('action_entry_function', '')
                 _action_uuid = c.get('metadata', {}).get('action_uuid', '')
+                _check_name = c.get('metadata', {}).get('action_title', '')
                 idx += 1
                 self.script_to_check_mapping[f"check_{idx}"] =  _entry_func
                 self.prioritized_checks_to_id_mapping[str(_action_uuid)] = _entry_func
+                self.map_entry_function_to_check_name[_entry_func] = _check_name
+
                 exec_timeout = per_check_timeout.get(_entry_func, execution_timeout)
                 f.write(f"@timeout(seconds={exec_timeout}, error_message=\"Check check_{idx} timed out\")\n")
                 check_name = f"def check_{idx}():"
