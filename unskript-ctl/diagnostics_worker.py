@@ -100,7 +100,8 @@ def fetch_pod_logs_high_restarts():
     for pod in pods:
         namespace = pod['metadata']['namespace']
         name = pod['metadata']['name']
-        restarts = sum([cs['restartCount'] for cs in pod['status'].get('containerStatuses', [])])
+        pod_status = pod['status'].get('containerStatuses', [])
+        restarts = sum([cs['restartCount'] for cs in pod_status])
         if restarts > 25:
             logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} with high restarts")
             result_logs = subprocess.run(["kubectl", "logs", "--namespace", namespace, name], capture_output=True, text=True)
@@ -118,6 +119,15 @@ def k8s_diagnostics(commands:list):
 
     """
     command_outputs = []
+    if not hasattr(k8s_diagnostics, "already_called"):
+        command_outputs.extend(fetch_pod_logs_high_restarts())
+        command_outputs.extend(fetch_pod_logs_not_running())
+    
+        k8s_diagnostics.already_called = True
+        logger.debug("Logs have been fetched.")
+    else:
+        command_outputs = []
+        logger.debug("Subsequent execution: Skipping logs")
 
     for command in commands:
         cmd_list = command.split()
@@ -130,8 +140,7 @@ def k8s_diagnostics(commands:list):
                 command_outputs.append({command: output})
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
-    command_outputs.extend(fetch_pod_logs_high_restarts())
-    command_outputs.extend(fetch_pod_logs_not_running())
+
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
             logger.debug("\n Kubernetes Diagnostics")
