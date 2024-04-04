@@ -101,7 +101,7 @@ def fetch_pod_logs_high_restarts():
         namespace = pod['metadata']['namespace']
         name = pod['metadata']['name']
         pod_status = pod['status'].get('containerStatuses', [])
-        restarts = sum([cs['restartCount'] for cs in pod_status])
+        restarts = sum(cs['restartCount'] for cs in pod_status)
         if restarts > 25:
             logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} with high restarts")
             result_logs = subprocess.run(["kubectl", "logs", "--namespace", namespace, name], capture_output=True, text=True)
