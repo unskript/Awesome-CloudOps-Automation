@@ -166,8 +166,6 @@ def redis_diagnostics(commands:list):
 
     command_outputs = []
 
-    command_outputs = []
-
     for command in commands:
         cmd = [
             "redis-cli",
@@ -280,7 +278,8 @@ def keycloak_diagnostics(commands: list):
 
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            print(f"Keycloak curl command: {command}\nOutput: {cmd_output}\n")
+            logger.debug("\nKeycloak Diagnostics")
+            logger.debug(f"Keycloak curl command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def vault_diagnostics(commands: list):
