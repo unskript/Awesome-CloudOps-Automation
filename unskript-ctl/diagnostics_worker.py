@@ -4,7 +4,7 @@
 ##
 import os
 import subprocess
-import shlex
+import json
 from unskript_ctl_factory import UctlLogger
 
 
@@ -48,6 +48,70 @@ def mongodb_diagnostics(commands:list):
             logger.debug(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
+def fetch_logs(namespace, pod, container):
+    """
+    Fetches logs and previous logs for a specified container in a pod.
+    """
+    outputs = []
+    cmd_logs = ["kubectl", "logs", "--namespace", namespace, pod, "-c", container]
+    result_logs = subprocess.run(cmd_logs, capture_output=True, text=True)
+    if result_logs.stderr:
+        outputs.append(f"Error: {result_logs.stderr.strip()}")
+    else:
+        outputs.append(result_logs.stdout.strip())
+
+    cmd_logs_previous = ["kubectl", "logs", "--namespace", namespace, pod, "-c", container, "--previous"]
+    result_logs_previous = subprocess.run(cmd_logs_previous, capture_output=True, text=True)
+    if result_logs_previous.stderr:
+        outputs.append(f"Error: {result_logs_previous.stderr.strip()}")
+    else:
+        outputs.append(result_logs_previous.stdout.strip())
+    
+    return outputs
+
+def fetch_pod_logs_not_running():
+    logger.debug("\nK8s Diagnostics: Fetching logs for pods not running")
+    command_outputs = []
+    cmd = ["kubectl", "get", "pods", "--all-namespaces", "-o", "json"]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    pods = json.loads(result.stdout)['items']
+    
+    for pod in pods:
+        namespace = pod['metadata']['namespace']
+        name = pod['metadata']['name']
+        status = pod['status']['phase']
+        if status != "Running":
+            logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} (Not Running)")
+            containers = [c['name'] for c in pod['spec'].get('initContainers', []) + pod['spec'].get('containers', [])]
+            for container in containers:
+                logs_output = fetch_logs(namespace, name, container)
+                for output in logs_output:
+                    logger.debug({f"Pod Not Running: {name}, Container: {container}": output})
+                    command_outputs.append({f"Pod Not Running: {name}, Container: {container}": output})
+    return command_outputs
+
+def fetch_pod_logs_high_restarts():
+    logger.debug("\nK8s Diagnostics: Fetching logs for pods with high restarts")
+    command_outputs = []
+    cmd = ["kubectl", "get", "pods", "--all-namespaces", "-o", "json"]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    pods = json.loads(result.stdout)['items']
+    
+    for pod in pods:
+        namespace = pod['metadata']['namespace']
+        name = pod['metadata']['name']
+        restarts = sum([cs['restartCount'] for cs in pod['status'].get('containerStatuses', [])])
+        if restarts > 25:
+            logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} with high restarts")
+            result_logs = subprocess.run(["kubectl", "logs", "--namespace", namespace, name], capture_output=True, text=True)
+            if result_logs.stderr:
+                logger.debug({f"Pod high restarts: {name}": f"Error: {result_logs.stderr.strip()}"})
+                command_outputs.append({f"Pod high restarts: {name}": f"Error: {result_logs.stderr.strip()}"})
+            else:
+                logger.debug({f"Pod high restarts: {name}": result_logs.stdout.strip()})
+                command_outputs.append({f"Pod high restarts: {name}": result_logs.stdout.strip()})
+    return command_outputs
+
 def k8s_diagnostics(commands:list):
     """
     k8s_diagnostics runs kubectl command
@@ -56,18 +120,7 @@ def k8s_diagnostics(commands:list):
     command_outputs = []
 
     for command in commands:
-        # Check if the command is a path to a shell script in /tmp
-        if command.startswith("/tmp/") and command.endswith(".sh"):
-            # Construct the full path to the script
-            script_path = shlex.quote(command)
-            # Change permissions to executable
-            chmod_command = f"sudo chmod +x {script_path}"
-            subprocess.run(chmod_command, shell=True, check=True, capture_output=True)
-            # Execute the script
-            cmd_list = [script_path]
-        else:
-            # For simple commands, use shlex.split to handle spaces and quotes correctly
-            cmd_list = shlex.split(command)
+        cmd_list = command.split()
         try:
             result = subprocess.run(cmd_list, capture_output=True, text=True)
             if result.stderr:
@@ -77,9 +130,11 @@ def k8s_diagnostics(commands:list):
                 command_outputs.append({command: output})
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
+    command_outputs.extend(fetch_pod_logs_high_restarts())
+    command_outputs.extend(fetch_pod_logs_not_running())
     for result_dict in command_outputs:
         for command, cmd_output in result_dict.items():
-            logger.debug("\nK8s Diagnostics")
+            logger.debug("\n Kubernetes Diagnostics")
             logger.debug(f"K8S Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
@@ -90,16 +145,26 @@ def redis_diagnostics(commands:list):
     """
     REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME', 'localhost')
     REDIS_PORT = os.getenv('REDIS_PORT', '6379')
+    REDIS_USERNAME = os.getenv('REDIS_USERNAME')
+    REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
+
+    if REDIS_USERNAME and REDIS_PASSWORD:
+        redis_uri = f"redis://{REDIS_USERNAME}:{REDIS_PASSWORD}@{REDIS_HOSTNAME}:{REDIS_PORT}"
+    elif REDIS_PASSWORD:
+        redis_uri = f"redis://:{REDIS_PASSWORD}@{REDIS_HOSTNAME}:{REDIS_PORT}"
+    else:
+        redis_uri = f"redis://{REDIS_HOSTNAME}:{REDIS_PORT}"
+
+    command_outputs = []
 
     command_outputs = []
 
     for command in commands:
         cmd = [
-        "redis-cli",
-        "-h", REDIS_HOSTNAME,
-        "-p", REDIS_PORT,
-        command
-    ]
+            "redis-cli",
+            "-u", redis_uri,
+            command
+        ]
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.stderr:
