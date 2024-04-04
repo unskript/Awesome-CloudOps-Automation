@@ -22,7 +22,9 @@ from unskript_utils import *
 from unskript_ctl_factory import *
 from unskript_ctl_version import *
 from unskript_ctl_upload_session_logs import upload_session_logs
+from diagnostics import main as diagnostics
 
+YAML_CONFIG_FILE = "/etc/unskript/unskript_ctl_config.yaml"
 
 # UnskriptCTL class that instantiates class instance of Checks, Script, Notification and DBInterface
 # This implementation is an example how to use the different components of unskript-ctl into a single
@@ -37,6 +39,7 @@ class UnskriptCtl(UnskriptFactory):
         self.logger.debug(f"\tBUILD_NUMBER: {get_version()} \n")
         self._config = ConfigParserFactory()
         self._notification = Notification()
+        self.uglobals = UnskriptGlobals()
         self._check = Checks()
         self._script = Script()
         self._checks_priority = self._config.get_checks_priority()
@@ -144,6 +147,24 @@ class UnskriptCtl(UnskriptFactory):
 
         if args.command == 'run' and args.info:
             self.run_info()
+        
+        if args.command == 'run' and args.check_command == 'check':
+            # call diagnostics
+            if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
+                output_dir = self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')
+            else:
+                output_dir = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id'))           
+            
+            failed_objects_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
+            diag_args = [
+                '--yaml-file',
+                YAML_CONFIG_FILE,
+                '--failed-objects-file',
+                failed_objects_file,
+                '--output-dir-path',
+                output_dir
+            ]
+            diagnostics(diag_args)
 
     def run_info(self):
         """This function runs the info gathering actions"""
