@@ -40,6 +40,10 @@ def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=2
     :type namespace: str
     :param namespace: (Optional)String, K8S Namespace as python string
 
+    :type time_interval_to_check: int
+    :param time_interval_to_check: (Optional) Integer, in hours, the interval within which the
+            state of the POD should be checked.
+
     :rtype: Status, List of objects of pods, namespaces, and containers that are in OOMKilled state
     """
     result = []
