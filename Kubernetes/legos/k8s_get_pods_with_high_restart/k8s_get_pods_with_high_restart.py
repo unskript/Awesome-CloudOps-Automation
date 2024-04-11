@@ -77,6 +77,7 @@ def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int =
             if restart_count > threshold:
                 if last_state and last_state.terminated:
                     termination_time = last_state.terminated.finished_at
+                    termination_time = termination_time.replace(tzinfo=timezone.utc)
                     # We compare if the termination time is within the last 24 hours, if yes
                     # then we need to add it to the retval and return the list back
                     if termination_time and termination_time >= interval_time_to_check:

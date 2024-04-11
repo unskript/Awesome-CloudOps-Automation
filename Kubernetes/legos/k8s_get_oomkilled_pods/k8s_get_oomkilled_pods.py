@@ -94,6 +94,7 @@ def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=2
             last_state = container_status.last_state
             if last_state and last_state.terminated and last_state.terminated.reason == "OOMKilled":
                 termination_time = last_state.terminated.finished_at
+                termination_time = termination_time.replace(tzinfo=timezone.utc)
                 # If termination time is greater than interval_time_to_check meaning
                 # the POD has gotten OOMKilled in the last 24 hours, so lets flag it!
                 if termination_time and termination_time >= interval_time_to_check:
