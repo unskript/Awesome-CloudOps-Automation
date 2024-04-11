@@ -1,8 +1,13 @@
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
 global w 
+global _logger
 
 all_outputs = []
 other_outputs = []
+if _logger:
+   _logger.debug(f"ERRORED CHECKS ARE: {w.errored_checks}")
+   _logger.debug(f"TIMED OUT CHECKS ARE: {w.timeout_checks}")
+
 try:
     if 'w' in globals():
         if w.check_run:
@@ -39,9 +44,14 @@ try:
                      # case 
                      if _other.get('id') == _output.get('id'):
                          _output = _other
-
+            
+            if not all_outputs:
+                all_outputs = other_outputs
+ 
             for _output in all_outputs:
                 print(json.dumps(_output))
+                if _logger:
+                    _logger.debug(_output)
         else:
             print(json.dumps("Not a check run"))
     else:

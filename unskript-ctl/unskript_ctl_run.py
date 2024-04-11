@@ -884,7 +884,11 @@ class InfoAction(ChecksFactory):
                     for index, value in enumerate(v):
                         first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
 
-        first_cell_content += '''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids=None)'''
+        first_cell_content += '''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids=None)''' + '\n'
+        temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
+        first_cell_content += f'''w.check_uuid_entry_function_map = {temp_map}''' + '\n'
+        first_cell_content += '''w.errored_checks = {}''' + '\n'
+        first_cell_content += '''w.timeout_checks = {}''' + '\n'
         return first_cell_content
 
     def get_timeout_decorator_function(self, execution_timeout):
