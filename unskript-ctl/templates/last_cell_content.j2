@@ -48,7 +48,7 @@ try:
             if not all_outputs:
                 all_outputs = other_outputs
  
-            for _output in all_outputs:
+            for _output in all_outputs + other_outputs:
                 print(json.dumps(_output))
                 if _logger:
                     _logger.debug(_output)
