@@ -36,6 +36,7 @@ try:
                             "error": err_msg,
                             "id": str(_id)
                         })
+                        
             if other_outputs:
                for _other in other_outputs:
                   for _output in all_outputs:
@@ -43,15 +44,20 @@ try:
                      # We could have double accounted failed and error timeout 
                      # case 
                      if _other.get('id') == _output.get('id'):
-                         _output = _other
+                         _output.update(_other)
+                         if _logger:
+                             _logger.debug(f"FOUND DUPLICATE FOR {_other.get('id')}")
+
+            existing_ids = set(output.get('id') for output in all_outputs)
+            unique_other_outputs = [other_output for other_output in other_outputs if other_output.get('id') not in existing_ids]
+            if unique_other_outputs:
+                all_outputs.extend(unique_other_outputs)
             
             if not all_outputs:
                 all_outputs = other_outputs
  
-            for _output in all_outputs + other_outputs:
+            for _output in all_outputs:
                 print(json.dumps(_output))
-                if _logger:
-                    _logger.debug(_output)
         else:
             print(json.dumps("Not a check run"))
     else:
