@@ -6,8 +6,7 @@
 import pprint
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
-from kubernetes.client.rest import ApiException
-from kubernetes import client, watch
+import json
 
 
 class InputSchema(BaseModel):
@@ -34,25 +33,43 @@ def k8s_get_error_pods_from_all_jobs(handle, namespace:str="") -> Tuple:
        :rtype: Tuple Result in tuple format.
     """
     result = []
-    coreApiClient = client.CoreV1Api(api_client=handle)
-    BatchApiClient = client.BatchV1Api(api_client=handle)
-    # If namespace is provided, get jobs from the specified namespace
-    if namespace:
-        jobs = BatchApiClient.list_namespaced_job(namespace,watch=False, limit=200).items
-    # If namespace is not provided, get jobs from all namespaces
-    else:
-        jobs = BatchApiClient.list_job_for_all_namespaces(watch=False, limit=200).items
+    # Fetch jobs for a particular namespace or if not given all namespaces
+    ns_cmd = f"-n {namespace}" if namespace else "--all-namespaces"
+    kubectl_cmd = f"kubectl get jobs {ns_cmd} -o json"
+    response = handle.run_native_cmd(kubectl_cmd)
+    
+    if response.stderr:
+        raise Exception(f"Error occurred while executing command {kubectl_cmd}: {response.stderr}")
+    
+    try:
+        if response.stdout:
+            jobs = json.loads(response.stdout)
+    except json.JSONDecodeError:
+        raise Exception("Failed to parse JSON output from kubectl command.")
 
-    for job in jobs:
-        # Fetching all the pods associated with the current job
-        pods = coreApiClient.list_namespaced_pod(job.metadata.namespace, label_selector=f"job-name={job.metadata.name}",watch=False, limit=200).items
-
-        # Checking the status of each pod
-        for pod in pods:
-            # If the pod status is 'Failed', print its namespace and name
-            if pod.status.phase not in  ["Succeeded", "Running"] :
-                result.append({"namespace":pod.metadata.namespace,"pod_name":pod.metadata.name, "job_name": job.metadata.name})
-    if len(result) != 0:
+    for job in jobs.get("items", []):
+        job_name = job["metadata"]["name"]
+        job_namespace = job["metadata"]["namespace"]
+        # Fetch pods for each job
+        pod_kubectl_cmd = f"kubectl get pods -n {job_namespace} -l job-name={job_name} -o json"
+        pod_response = handle.run_native_cmd(pod_kubectl_cmd)
+        
+        if pod_response.stderr:
+            print(f"Error occurred while fetching pods for job {job_name}: {pod_response.stderr}")
+            continue
+        try:
+            if response.stdout:
+                pods = json.loads(pod_response.stdout)
+        except json.JSONDecodeError:
+            print(f"Failed to parse JSON pod response output for kubectl command: {pod_kubectl_cmd}")
+            pass
+        for pod in pods.get("items", []):
+            if pod["status"]["phase"] not in ["Succeeded", "Running"]:
+                result.append({"pod_name": pod["metadata"]["name"],
+                                "job_name": job_name,
+                                "namespace": pod["metadata"]["namespace"]
+                                })
+    if result:
         return (False, result)
     else:
         return (True, None)
