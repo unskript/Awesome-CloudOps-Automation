@@ -29,6 +29,10 @@ def k8s_get_oomkilled_pods_printer(output):
     if output is None:
         return
     pprint.pprint(output)
+
+def format_datetime(dt):
+    # Format datetime to a string 'YYYY-MM-DD HH:MM:SS UTC'
+    return dt.strftime('%Y-%m-%d %H:%M:%S UTC')
     
 
 def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=24) -> Tuple:
@@ -98,7 +102,9 @@ def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=2
                 # If termination time is greater than interval_time_to_check meaning
                 # the POD has gotten OOMKilled in the last 24 hours, so lets flag it!
                 if termination_time and termination_time >= interval_time_to_check:
-                    result.append({"pod": pod_name, "namespace": namespace, "container": container_name})
+                    formatted_termination_time = format_datetime(termination_time)
+                    formatted_interval_time_to_check = format_datetime(interval_time_to_check)
+                    result.append({"pod": pod_name, "namespace": namespace, "container": container_name, "termination_time":formatted_termination_time,"interval_time_to_check": formatted_interval_time_to_check})
     
     return (False, result) if result else (True, None)
 

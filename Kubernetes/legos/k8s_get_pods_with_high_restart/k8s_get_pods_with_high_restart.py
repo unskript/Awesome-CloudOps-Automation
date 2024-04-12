@@ -30,6 +30,10 @@ def k8s_get_pods_with_high_restart_printer(output):
 
     print(output)
 
+def format_datetime(dt):
+    # Format datetime to a string 'YYYY-MM-DD HH:MM:SS UTC'
+    return dt.strftime('%Y-%m-%d %H:%M:%S UTC')
+
 def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int = 25) -> Tuple:
     """k8s_get_pods_with_high_restart This function finds out PODS that have
        high restart count and returns them as a list of dictionaries
@@ -81,6 +85,8 @@ def k8s_get_pods_with_high_restart(handle, namespace: str = '', threshold: int =
                     # We compare if the termination time is within the last 24 hours, if yes
                     # then we need to add it to the retval and return the list back
                     if termination_time and termination_time >= interval_time_to_check:
-                        retval.append({'name': pod.metadata.name, 'namespace': pod.metadata.namespace})
+                        formatted_termination_time = format_datetime(termination_time)
+                        formatted_interval_time_to_check = format_datetime(interval_time_to_check)
+                        retval.append({"pod": pod.metadata.name, "namespace": pod.metadata.namespace, "termination_time":formatted_termination_time,"interval_time_to_check": formatted_interval_time_to_check})
 
     return (False, retval) if retval else (True, None)
