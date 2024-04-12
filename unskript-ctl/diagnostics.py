@@ -125,8 +125,8 @@ class DiagnosticsScript:
         diag_commands = self.get_diagnostic_commands_for_failed_checks()
 
         if not diag_commands:
-            print("ERROR: No diagnostic command found. Please define them in the YAML configuration file")
-            sys.exit(0)
+            print("Skipping Diagnostics: No diagnostic command found. You can define them in the YAML configuration file")
+            return 
 
         diag_outputs = self.execute_diagnostics(diag_commands)
 
@@ -134,7 +134,7 @@ class DiagnosticsScript:
             diag_file = os.path.join(self.args.output_dir_path, 'diagnostics.yaml')
             self.write_to_yaml_file(diag_outputs, diag_file)
         else:
-            print("ERROR: Nothing to write, diagnostic outputs are empty!")
+            print("WARNING: Nothing to write, diagnostic outputs are empty!")
 
 
 def main(args):

@@ -58,6 +58,7 @@ class Checks(ChecksFactory):
         # Prioritized checks to uuid mapping
         self.prioritized_checks_to_id_mapping = {}
         self.map_entry_function_to_check_name = {}
+        self.map_check_name_to_connector = {}
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -178,10 +179,10 @@ class Checks(ChecksFactory):
 
                 _action_uuid = payload.get('id')
                 if _action_uuid:
-                    c_name = self.connector_types[idx] + ':' + self.prioritized_checks_to_id_mapping[_action_uuid]
+                    #c_name = self.connector_types[idx] + ':' + self.prioritized_checks_to_id_mapping[_action_uuid]
                     p_check_name = self.prioritized_checks_to_id_mapping[_action_uuid]
                 else:
-                    c_name = self.connector_types[idx] + ':' + self.check_names[idx]
+                    #c_name = self.connector_types[idx] + ':' + self.check_names[idx]
                     p_check_name = self.check_names[idx]
                 if p_check_name in self.check_entry_functions:
                     p_check_name = self.map_entry_function_to_check_name.get(p_check_name)
@@ -195,10 +196,12 @@ class Checks(ChecksFactory):
                     checks_per_priority_per_result_list[priority]['PASS'].append([
                         p_check_name,
                         ids[idx],
-                        self.connector_types[idx]]
+                        # self.connector_types[idx]]
+                        self.map_check_name_to_connector[p_check_name]]
                         )
                 elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.FAILED:
                     failed_objects = payload.get('objects')
+                    c_name = self.map_check_name_to_connector[p_check_name] + ':' + p_check_name
                     failed_result[c_name] = failed_objects
                     result_table.append([
                         p_check_name,
@@ -210,14 +213,15 @@ class Checks(ChecksFactory):
                     checks_per_priority_per_result_list[priority]['FAIL'].append([
                         p_check_name,
                         ids[idx],
-                        self.connector_types[idx]
+                        # self.connector_types[idx]
+                        self.map_check_name_to_connector[p_check_name]
                         ])
                 elif ids and CheckOutputStatus(payload.get('status')) == CheckOutputStatus.RUN_EXCEPTION:
                     if payload.get('error') is not None:
                         failed_objects = payload.get('error')
                         if isinstance(failed_objects, str) is True:
                             failed_objects = [failed_objects]
-                        # c_name = self.connector_types[idx] + ':' + self.check_names[idx]
+                        c_name = self.map_check_name_to_connector[p_check_name] + ':' + p_check_name
                         failed_result[c_name] = failed_objects
                         failed_result_available = True
                     error_msg = payload.get('error') if payload.get('error') else self.parse_failed_objects(failed_object=failed_objects)
@@ -231,7 +235,8 @@ class Checks(ChecksFactory):
                         # self.check_names[idx],
                         p_check_name,
                         ids[idx],
-                        self.connector_types[idx]
+                        # self.connector_types[idx]
+                        self.map_check_name_to_connector[p_check_name]
                         ])
             except Exception as e:
                 self.logger.error(e)
@@ -383,6 +388,7 @@ class Checks(ChecksFactory):
         if len(list_of_checks) == 0:
             return None
         self.check_uuids, self.check_names, self.connector_types, self.check_entry_functions = self._common.get_code_cell_name_and_uuid(list_of_actions=list_of_checks)
+        self.map_check_name_to_connector = dict(zip(self.check_names, self.connector_types))
         first_cell_content = self._common.get_first_cell_content()
 
         if self.checks_globals and len(self.checks_globals):
@@ -401,7 +407,9 @@ class Checks(ChecksFactory):
         first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={self.check_uuids})''' + '\n'
         # temp_map = {key: value for key, value in zip(self.check_entry_functions, self.check_uuids)}
         temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
-        first_cell_content += f'''w.check_uuid_entry_function_map = {temp_map}'''
+        first_cell_content += f'''w.check_uuid_entry_function_map = {temp_map}''' + '\n'
+        first_cell_content += '''w.errored_checks = {}''' + '\n'
+        first_cell_content += '''w.timeout_checks = {}''' + '\n'
 
         return first_cell_content
 
