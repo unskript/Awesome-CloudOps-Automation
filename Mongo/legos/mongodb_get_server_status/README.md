@@ -7,12 +7,9 @@ This Lego Gets Mongo Server Status
 
 ## Lego Details
 
-    mongodb_get_server_status(handle, connection_threshold: int = 1000, memory_threshold: int = 2048, cache_usage_threshold: int = 80)
+    mongodb_get_server_status(handle)
 
         handle: Object of type unSkript Mongodb Connector.
-        connection_threshold: Threshold for the number of connections considered abnormal
-        memory_threshold: Threshold for the megabytes of resident memory usage considered abnormal (in megabytes)
-        cache_usage_threshold: Threshold for the percentage of WiredTiger cache usage considered abnormal
 
 ## Lego Input
 This Lego take only one input handle.

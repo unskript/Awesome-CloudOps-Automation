@@ -123,9 +123,9 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-          sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.7 unixodbc=2.3.7 odbcinst1debian2=2.3.7 odbcinst=2.3.7
-
-
+          #sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.9 unixodbc=2.3.9 odbcinst1debian2=2.3.9 odbcinst=2.3.9
+          sudo apt-get install -y --allow-downgrades unixodbc-common libodbcinst2
+          
       - name: Checkout Code
         run: |
           wget -O /tmp/pandas-2.0.1.tar.gz https://files.pythonhosted.org/packages/6c/e0/73987b6ecc7246e02ab557240843f93fd5adf45d1355abb458aa1f2a0932/pandas-2.0.1.tar.gz

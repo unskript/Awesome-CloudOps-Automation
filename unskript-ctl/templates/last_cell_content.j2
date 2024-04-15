@@ -1,4 +1,12 @@
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
+global w 
+global _logger
+
+all_outputs = []
+other_outputs = []
+if _logger:
+   _logger.debug(f"ERRORED CHECKS ARE: {w.errored_checks}")
+   _logger.debug(f"TIMED OUT CHECKS ARE: {w.timeout_checks}")
 
 try:
     if 'w' in globals():
@@ -6,7 +14,50 @@ try:
             for id,output in w.check_output.items():
                 output = json.loads(output)
                 output['id'] = id
-                print(json.dumps(output))
+                all_outputs.append(output)
+            # Lets check if we have errored_checks or timeout_checks
+            # exists, if yes then lets dump the output 
+            if hasattr(w, 'check_uuid_entry_function_map'):
+                if hasattr(w, 'timeout_checks') and len(w.timeout_checks):
+                    for name, err_msg in w.timeout_checks.items():
+                        _id = w.check_uuid_entry_function_map.get(name)
+                        other_outputs.append({
+                            "status": 3,
+                            "objects": None,
+                            "error": err_msg,
+                            "id": str(_id)
+                        })
+                if hasattr(w, 'errored_checks') and len(w.errored_checks):
+                    for name, err_msg in w.errored_checks.items():
+                        _id = w.check_uuid_entry_function_map.get(name)
+                        other_outputs.append({
+                            "status": 3,
+                            "objects": None,
+                            "error": err_msg,
+                            "id": str(_id)
+                        })
+                        
+            if other_outputs:
+               for _other in other_outputs:
+                  for _output in all_outputs:
+                     # Lets eliminate duplicate entries in the output
+                     # We could have double accounted failed and error timeout 
+                     # case 
+                     if _other.get('id') == _output.get('id'):
+                         _output.update(_other)
+                         if _logger:
+                             _logger.debug(f"FOUND DUPLICATE FOR {_other.get('id')}")
+
+            existing_ids = set(output.get('id') for output in all_outputs)
+            unique_other_outputs = [other_output for other_output in other_outputs if other_output.get('id') not in existing_ids]
+            if unique_other_outputs:
+                all_outputs.extend(unique_other_outputs)
+            
+            if not all_outputs:
+                all_outputs = other_outputs
+ 
+            for _output in all_outputs:
+                print(json.dumps(_output))
         else:
             print(json.dumps("Not a check run"))
     else:

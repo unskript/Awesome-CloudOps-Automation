@@ -22,7 +22,7 @@ def k8s_get_all_resources_utilization_info_printer(data):
 
         print(f"\n{resource.capitalize()}:")
         if not rows:  # Check if the resource list is empty
-            print(f"No {resource} found in {namespace} namespace.")
+            # print(f"No {resource} found in {namespace} namespace.")
             continue  # Skip to the next resource
 
         if resource == 'pods':
@@ -50,7 +50,9 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
 
     namespace_option = f"--namespace={namespace}" if namespace else "--all-namespaces"
 
-    resources = ['pods', 'jobs', 'persistentvolumeclaims']
+    resources = ['pods', 'jobs' 
+    # 'persistentvolumeclaims'
+    ]
     data = {resource: [] for resource in resources}
     data['namespace'] = namespace  # Store namespace in data dict
 
@@ -91,18 +93,25 @@ def k8s_get_all_resources_utilization_info(handle, namespace: str = "") -> Dict:
             if resource == 'pods':
                 status = item['status']['phase']
                  # Skip pods in Succeeded or Completed state as they dont have any utilization
-                if status in ['Succeeded', 'Completed', 'Failed']:
+                if status in ['Succeeded', 'Completed', 'Failed','Pending']:
                     continue
                 key = (ns, name)
                 cpu_usage, memory_usage = utilization_map.get(key, ('N/A', 'N/A'))
                 data[resource].append([ns, name, status, cpu_usage, memory_usage])
             else:
+                status = None
                 if resource == 'jobs':
                     conditions = item['status'].get('conditions', [])
                     if conditions:
                         status = conditions[-1]['type']
-                elif resource == 'persistentvolumeclaims':
-                    status = item['status']['phase']
-                data[resource].append([ns, name, status])
+                        if status in ['Complete']:
+                            continue
+                # elif resource == 'persistentvolumeclaims':
+                #     status = item['status']['phase']
+                if status is not None:
+                    data[resource].append([ns, name, status])
+
+    # If resource has no objects to display, filter it out
+    data = {k: v for k, v in data.items() if v}
 
     return data
