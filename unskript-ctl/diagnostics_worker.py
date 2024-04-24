@@ -6,10 +6,20 @@ import os
 import subprocess
 import json
 from unskript_ctl_factory import UctlLogger
+import yaml
 
 
 logger = UctlLogger('UnskriptDiagnostics')
 
+
+def append_to_yaml_file(data, file_path):
+    if not data:
+        return
+    try:
+        with open(file_path, 'a') as file:
+            yaml.safe_dump(data, file, default_flow_style=False, allow_unicode=True)
+    except Exception as e:
+        logger.error(f"Failed to write data to {file_path}: {e}")
 
 def mongodb_diagnostics(commands:list):
     """
@@ -48,30 +58,33 @@ def mongodb_diagnostics(commands:list):
             logger.debug(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
-def fetch_logs(namespace, pod, container):
+def fetch_logs(namespace, pod, container, output_path):
     """
-    Fetches logs and previous logs for a specified container in a pod.
+    Fetches logs and previous logs for a specified container in a pod and writes directly to a file with headers and separators.
     """
-    outputs = []
-    cmd_logs = ["kubectl", "logs", "--namespace", namespace, pod, "-c", container]
-    result_logs = subprocess.run(cmd_logs, capture_output=True, text=True)
-    if result_logs.stderr:
-        outputs.append(f"Error: {result_logs.stderr.strip()}")
-    else:
-        outputs.append(result_logs.stdout.strip())
+    logs_file_path = os.path.join(output_path, 'logs.txt')
+    separator = f"\n{'=' * 40}\n"
+    header = f"Logs for Namespace: {namespace}, Pod: {pod}, Container: {container}\n"
+    header_previous = f"Previous Logs for Namespace: {namespace}, Pod: {pod}, Container: {container}\n"
 
-    cmd_logs_previous = ["kubectl", "logs", "--namespace", namespace, pod, "-c", container, "--previous"]
-    result_logs_previous = subprocess.run(cmd_logs_previous, capture_output=True, text=True)
-    if result_logs_previous.stderr:
-        outputs.append(f"Error: {result_logs_previous.stderr.strip()}")
-    else:
-        outputs.append(result_logs_previous.stdout.strip())
-    
-    return outputs
+    try:
+        # Write header and current logs to file
+        with open(logs_file_path, 'a') as f:
+            f.write(separator + header)
+            subprocess.run(["kubectl", "logs", "--namespace", namespace, pod, "-c", container],
+                           stdout=f, stderr=f, text=True, check=False)
 
-def fetch_pod_logs_not_running():
+        # Write header for previous logs and the logs themselves to file
+        with open(logs_file_path, 'a') as f:
+            f.write(separator + header_previous)
+            subprocess.run(["kubectl", "logs", "--namespace", namespace, pod, "-c", container, "--previous"],
+                           stdout=f, stderr=f, text=True, check=False)
+
+    except Exception as e:
+        logger.error(f"Failed to fetch and write logs for {namespace}/{pod}/{container}: {e}")
+
+def fetch_pod_logs_not_running(output_path):
     logger.debug("\nK8s Diagnostics: Fetching logs for pods not running")
-    command_outputs = []
     cmd = ["kubectl", "get", "pods", "--all-namespaces", "-o", "json"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     pods = json.loads(result.stdout)['items']
@@ -81,18 +94,13 @@ def fetch_pod_logs_not_running():
         name = pod['metadata']['name']
         status = pod['status']['phase']
         if status != "Running":
-            logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} (Not Running)")
+            # logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} (Not Running)")
             containers = [c['name'] for c in pod['spec'].get('initContainers', []) + pod['spec'].get('containers', [])]
             for container in containers:
-                logs_output = fetch_logs(namespace, name, container)
-                for output in logs_output:
-                    logger.debug({f"Pod Not Running: {name}, Container: {container}": output})
-                    command_outputs.append({f"Pod Not Running: {name}, Container: {container}": output})
-    return command_outputs
+                fetch_logs(namespace, name, container, output_path)
 
-def fetch_pod_logs_high_restarts():
+def fetch_pod_logs_high_restarts(output_path):
     logger.debug("\nK8s Diagnostics: Fetching logs for pods with high restarts")
-    command_outputs = []
     cmd = ["kubectl", "get", "pods", "--all-namespaces", "-o", "json"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     pods = json.loads(result.stdout)['items']
@@ -101,17 +109,11 @@ def fetch_pod_logs_high_restarts():
         namespace = pod['metadata']['namespace']
         name = pod['metadata']['name']
         pod_status = pod['status'].get('containerStatuses', [])
-        restarts = sum(cs['restartCount'] for cs in pod_status)
-        if restarts > 25:
-            logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} with high restarts")
-            result_logs = subprocess.run(["kubectl", "logs", "--namespace", namespace, name], capture_output=True, text=True)
-            if result_logs.stderr:
-                logger.debug({f"Pod high restarts: {name}": f"Error: {result_logs.stderr.strip()}"})
-                command_outputs.append({f"Pod high restarts: {name}": f"Error: {result_logs.stderr.strip()}"})
-            else:
-                logger.debug({f"Pod high restarts: {name}": result_logs.stdout.strip()})
-                command_outputs.append({f"Pod high restarts: {name}": result_logs.stdout.strip()})
-    return command_outputs
+        for container_status in pod_status:
+            if container_status['restartCount'] > 25:
+                container_name = container_status['name']
+                # logger.debug(f"Fetching logs for Pod: {name}, Container: {container_name} in Namespace: {namespace} with high restarts")
+                fetch_logs(namespace, name, container_name, output_path)
 
 def k8s_diagnostics(commands:list):
     """
@@ -119,15 +121,6 @@ def k8s_diagnostics(commands:list):
 
     """
     command_outputs = []
-    if not hasattr(k8s_diagnostics, "already_called"):
-        command_outputs.extend(fetch_pod_logs_high_restarts())
-        command_outputs.extend(fetch_pod_logs_not_running())
-    
-        k8s_diagnostics.already_called = True
-        logger.debug("Logs have been fetched.")
-    else:
-        command_outputs = []
-        logger.debug("Subsequent execution: Skipping logs")
 
     for command in commands:
         cmd_list = command.split()
