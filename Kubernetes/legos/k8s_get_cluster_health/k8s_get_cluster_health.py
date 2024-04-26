@@ -74,45 +74,45 @@ def check_node_health(node_api):
     return health_issues
 
 def check_pod_health(handle, core_services, namespace):
-        health_issues = []
-        namespaces = [namespace] if namespace else get_namespaces(handle)
+    health_issues = []
+    namespaces = [namespace] if namespace else get_namespaces(handle)
 
-        for ns in namespaces:
-            if core_services:
-                for service in core_services:
-                    label_selector = get_label_selector_for_service(handle, ns, service)
-                    if label_selector:
-                        # Get all pods for the service
-                        command_pods = f"kubectl get pods -n {ns} -l {label_selector} -o=json"
-                        pods_info = execute_kubectl_command(handle, command_pods)
-                        if pods_info:
-                            pods_data = json.loads(pods_info)
-                            total_pods = len(pods_data['items'])
-                            running_pods = sum(1 for item in pods_data['items'] if item['status']['phase'] == "Running")
+    for ns in namespaces:
+        if core_services:
+            for service in core_services:
+                label_selector = get_label_selector_for_service(handle, ns, service)
+                if label_selector:
+                    # Get all pods for the service
+                    command_pods = f"kubectl get pods -n {ns} -l {label_selector} -o=json"
+                    pods_info = execute_kubectl_command(handle, command_pods)
+                    if pods_info:
+                        pods_data = json.loads(pods_info)
+                        total_pods = len(pods_data['items'])
+                        running_pods = sum(1 for item in pods_data['items'] if item['status']['phase'] == "Running")
 
-                            # Check if at least 70% of pods are running
-                            if total_pods > 0:
-                                running_percentage = (running_pods / total_pods) * 100
-                                if running_percentage < 70:
-                                    health_issues.append({
-                                        "type": "Pod",
-                                        "name": service,
-                                        "namespace": ns,
-                                        "issue": f"Insufficient running pods. Only {running_pods} out of {total_pods} are running."
-                                    })
-                        else:
-                            print(f"No pods found for service {service} in namespace {ns}.")
+                        # Check if at least 70% of pods are running
+                        if total_pods > 0:
+                            running_percentage = (running_pods / total_pods) * 100
+                            if running_percentage < 70:
+                                health_issues.append({
+                                    "type": "Pod",
+                                    "name": service,
+                                    "namespace": ns,
+                                    "issue": f"Insufficient running pods. Only {running_pods} out of {total_pods} are running."
+                                })
                     else:
-                        print(f"No label selector found for service {service} in namespace {ns}. Skipping...")
-            else:
-                # Check all pods in the namespace if no specific services are given
-                command = f"kubectl get pods -n {ns} -o=jsonpath='{{.items[?(@.status.phase!=\"Running\")].metadata.name}}'"
-                pods_not_running = execute_kubectl_command(handle, command)
-                if pods_not_running:
-                    for pod_name in pods_not_running.split():
-                        health_issues.append({"type": "Pod", "name": pod_name, "namespace": ns, "issue": "Pod is not running."})
+                        print(f"No pods found for service {service} in namespace {ns}.")
+                else:
+                    print(f"No label selector found for service {service} in namespace {ns}. Skipping...")
+        else:
+            # Check all pods in the namespace if no specific services are given
+            command = f"kubectl get pods -n {ns} -o=jsonpath='{{.items[?(@.status.phase!=\"Running\")].metadata.name}}'"
+            pods_not_running = execute_kubectl_command(handle, command)
+            if pods_not_running:
+                for pod_name in pods_not_running.split():
+                    health_issues.append({"type": "Pod", "name": pod_name, "namespace": ns, "issue": "Pod is not running."})
 
-        return health_issues
+    return health_issues
 
 def check_deployment_health(handle, core_services, namespace):
     health_issues = []
