@@ -165,7 +165,7 @@ class Checks(ChecksFactory):
         ids = self.check_uuids
         failed_result_available = False
         failed_result = {}
-        checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
+        #checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1
@@ -406,7 +406,10 @@ class Checks(ChecksFactory):
                         first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
         first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={self.check_uuids})''' + '\n'
         # temp_map = {key: value for key, value in zip(self.check_entry_functions, self.check_uuids)}
-        temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
+        # temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
+        temp_map = {}
+        for index,value in enumerate(self.check_uuids):
+            temp_map[value] = self.check_entry_functions[index] 
         first_cell_content += f'''w.check_uuid_entry_function_map = {temp_map}''' + '\n'
         first_cell_content += '''w.errored_checks = {}''' + '\n'
         first_cell_content += '''w.timeout_checks = {}''' + '\n'
