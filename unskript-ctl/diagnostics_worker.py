@@ -11,16 +11,6 @@ import yaml
 
 logger = UctlLogger('UnskriptDiagnostics')
 
-
-def append_to_yaml_file(data, file_path):
-    if not data:
-        return
-    try:
-        with open(file_path, 'a') as file:
-            yaml.safe_dump(data, file, default_flow_style=False, allow_unicode=True)
-    except Exception as e:
-        logger.error(f"Failed to write data to {file_path}: {e}")
-
 def mongodb_diagnostics(commands:list):
     """
     mongodb_diagnostics runs mongocli command with command as the parameter
@@ -52,10 +42,10 @@ def mongodb_diagnostics(commands:list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nMongodb Diagnostics")
-            logger.debug(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nMongodb Diagnostics")
+    #         logger.debug(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def fetch_logs(namespace, pod, container, output_path):
@@ -134,10 +124,10 @@ def k8s_diagnostics(commands:list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\n Kubernetes Diagnostics")
-            logger.debug(f"K8S Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\n Kubernetes Diagnostics")
+    #         logger.debug(f"K8S Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def redis_diagnostics(commands:list):
@@ -174,10 +164,10 @@ def redis_diagnostics(commands:list):
                 command_outputs.append({command: output})
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nRedis Diagnostics")
-            logger.debug(f"Redis Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nRedis Diagnostics")
+    #         logger.debug(f"Redis Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def postgresql_diagnostics(commands:list):
@@ -210,10 +200,10 @@ def postgresql_diagnostics(commands:list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nPostgresql Diagnostics")
-            logger.debug(f"Postgres Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nPostgresql Diagnostics")
+    #         logger.debug(f"Postgres Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def elasticsearch_diagnostics(commands: list) -> list:
@@ -240,10 +230,10 @@ def elasticsearch_diagnostics(commands: list) -> list:
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nElasticsearch Diagnostics")
-            logger.debug(f"Elasticsearch curl command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nElasticsearch Diagnostics")
+    #         logger.debug(f"Elasticsearch curl command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def keycloak_diagnostics(commands: list):
@@ -269,10 +259,10 @@ def keycloak_diagnostics(commands: list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nKeycloak Diagnostics")
-            logger.debug(f"Keycloak curl command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nKeycloak Diagnostics")
+    #         logger.debug(f"Keycloak curl command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def vault_diagnostics(commands: list):
@@ -306,8 +296,8 @@ def vault_diagnostics(commands: list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nVault Diagnostics")
-            logger.debug(f"Vault Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nVault Diagnostics")
+    #         logger.debug(f"Vault Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
