@@ -59,6 +59,7 @@ class Checks(ChecksFactory):
         self.prioritized_checks_to_id_mapping = {}
         self.map_entry_function_to_check_name = {}
         self.map_check_name_to_connector = {}
+        self.check_name_to_id_mapping = {}
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -172,12 +173,13 @@ class Checks(ChecksFactory):
                 continue
             payload = result
             try:
+                _action_uuid = payload.get('id')
                 if self.checks_priority is None:
                     priority = CHECK_PRIORITY_P2
                 else:
-                    priority = self.checks_priority.get(self.check_entry_functions[idx], CHECK_PRIORITY_P2)
+                    # priority = self.checks_priority.get(self.check_entry_functions[idx], CHECK_PRIORITY_P2)
+                    priority = self.checks_priority.get(self.check_name_to_id_mapping.get(_action_uuid), CHECK_PRIORITY_P2)
 
-                _action_uuid = payload.get('id')
                 if _action_uuid:
                     #c_name = self.connector_types[idx] + ':' + self.prioritized_checks_to_id_mapping[_action_uuid]
                     p_check_name = self.prioritized_checks_to_id_mapping[_action_uuid]
@@ -409,7 +411,9 @@ class Checks(ChecksFactory):
         # temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
         temp_map = {}
         for index,value in enumerate(self.check_uuids):
-            temp_map[value] = self.check_entry_functions[index] 
+            temp_map[self.check_entry_functions[index]] = value
+            self.check_name_to_id_mapping[value] = self.check_entry_functions[index]
+
         first_cell_content += f'''w.check_uuid_entry_function_map = {temp_map}''' + '\n'
         first_cell_content += '''w.errored_checks = {}''' + '\n'
         first_cell_content += '''w.timeout_checks = {}''' + '\n'
