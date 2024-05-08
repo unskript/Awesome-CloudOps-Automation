@@ -98,8 +98,13 @@ class Checks(ChecksFactory):
             formatted_output = formatted_output.rstrip(',\n')
             json_output = f"[{formatted_output}]"
 
-            # Parse the JSON array into a list of dictionaries
-            data = json.loads(json_output)
+            try:
+                # Parse the JSON array into a list of dictionaries
+                data = json.loads(json_output)
+            except json.JSONDecodeError as e:
+                # Handle the case where the JSON could not be decoded
+                self.logger.error(f"Failed to decode JSON: {e}")
+                raise ValueError("Invalid JSON format of output") from e
             for d in data:
                 # Assign appropriate check names
                 d['name'] = self.check_names[self.check_uuids.index(d.get('id'))]
