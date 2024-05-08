@@ -308,11 +308,11 @@ class Checks(ChecksFactory):
                     current_output['status'] = output['status']
                     current_output['objects'] = output.get('objects')
 
-                if output['status'] == 2 and 'objects' in output:
-                    # Append objects if status is FAILED
+                if output['status'] == 2 and output.get('objects'):
+                    # Append objects if status is FAILED and objects are non-empty
                     current_output.setdefault('objects', []).extend(output.get('objects', []))
 
-                # Update error message if there's a new one
+                # Update error message if there's a new one and it's non-empty
                 if 'error' in output and output['error']:
                     current_output['error'] = output['error']
 
