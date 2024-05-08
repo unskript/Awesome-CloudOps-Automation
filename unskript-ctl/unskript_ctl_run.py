@@ -86,12 +86,27 @@ class Checks(ChecksFactory):
             from jit_script import do_run_
             temp_output = do_run_(self.logger, self.script_to_check_mapping)
             output_list = []
-            for o in temp_output.split('\n'):
-                if not o:
-                    continue
-                d = json.loads(json.dumps(o))
-                if isinstance(d, dict) is False:
-                    d = json.loads(d)
+            # Combine all parts of all_outputs in template_script.j2 do_run function into a single string
+            combined_output = ''.join(temp_output)
+
+            # Correct the formatting to ensure it's proper JSON
+            formatted_output = combined_output.replace('}\n{', '},\n{')
+            if not formatted_output.endswith('\n'):
+                formatted_output += '\n'
+
+            # Strip trailing comma and newline, then wrap in array brackets
+            formatted_output = formatted_output.rstrip(',\n')
+            json_output = f"[{formatted_output}]"
+
+            try:
+                # Parse the JSON array into a list of dictionaries
+                data = json.loads(json_output)
+            except json.JSONDecodeError as e:
+                # Handle the case where the JSON could not be decoded
+                self.logger.error(f"Failed to decode JSON: {e}")
+                raise ValueError("Invalid JSON format of output") from e
+            for d in data:
+                # Assign appropriate check names
                 d['name'] = self.check_names[self.check_uuids.index(d.get('id'))]
                 d['check_entry_function'] = self.check_entry_functions[self.check_uuids.index(d.get('id'))]
                 output_list.append(d)
@@ -166,7 +181,7 @@ class Checks(ChecksFactory):
         ids = self.check_uuids
         failed_result_available = False
         failed_result = {}
-        #checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
+        checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1
@@ -274,39 +289,39 @@ class Checks(ChecksFactory):
         """output_after_merging_checks: this function combines the output from duplicated
         checks and stores the combined output.
         TBD: What if one duplicated check returns an ERROR
+        Status:
+            1 : PASS
+            2 : FAIL
+            3 : ERROR
         """
-        new_outputs = []
-        # Remove empty strings
-        filtered_output = []
+        result_dict = {}
+
         for output in outputs:
             if not output:
                 continue
-            filtered_output.append(output)
 
-        outputs = filtered_output
-        if self.uglobals.get('uuid_mapping') is None:
-            return outputs
+            check_id = output.get('id')
+            current_output = result_dict.get(check_id)
 
-        index = 0
-        while index < len(outputs):
-            if self.uglobals['uuid_mapping'].get(ids[index]) is None:
-                new_outputs.append(outputs[index])
-                index = index+1
+            if current_output is None:
+                # If no entry exists, directly use this output
+                result_dict[check_id] = output
             else:
-                parent_index = index - 1
-                while index < len(outputs):
-                    if self.uglobals['uuid_mapping'].get(ids[index]):
-                        outputs[index]['skip'] = True
-                        new_outputs.append(outputs[index])
-                        index = index + 1
-                    else:
-                        break
-                combined_output = self.calculate_combined_check_status(outputs[parent_index:index])
-                # Combined output should be the output of the parent check, so
-                # overwrite it.
-                #print(f'parent_index {parent_index}, index {index}, combined_output {combined_output}')
-                new_outputs[parent_index] = combined_output
-        return new_outputs
+                # If an entry exists, merge this output with the existing one
+                if current_output['status'] < output['status']:
+                    # If the new status is more severe, overwrite the old status
+                    current_output['status'] = output['status']
+                    current_output['objects'] = output.get('objects')
+
+                if output['status'] == 2 and output.get('objects'):
+                    # Append objects if status is FAILED and objects are non-empty
+                    current_output.setdefault('objects', []).extend(output.get('objects', []))
+
+                # Update error message if there's a new one and it's non-empty
+                if 'error' in output and output['error']:
+                    current_output['error'] = output['error']
+
+        return list(result_dict.values())
 
     def calculate_combined_check_status(self, outputs:list):
         combined_output = {}
@@ -626,8 +641,9 @@ class CommonAction(ChecksFactory):
                                         # as the one its copied from.
                                         new_uuid = str(uuid.uuid4())
                                         self.uglobals["uuid_mapping"][new_uuid] = action["uuid"]
-                                        newcheck['uuid'] = new_uuid
-                                        newcheck['id'] = str(uuid.uuid4())[:8]
+                                        # newcheck['uuid'] = new_uuid
+                                        newcheck['uuid'] = action["uuid"]
+                                        newcheck['id'] = str(action["uuid"])
                                         #print(f'Adding duplicate check {new_uuid}, parent_uuid {check.get("uuid")}')
                                     newcheck['matrixinputline'] = input_json_line.rstrip(',')
                                     action_list.append(newcheck)

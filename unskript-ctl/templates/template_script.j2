@@ -87,6 +87,7 @@ def do_run_(logger = None, script_to_check_mapping = {}):
     global _logger 
     global _script_to_check_mapping
     global w
+    all_outputs = []
 
     output = None
     if logger:
@@ -98,10 +99,13 @@ def do_run_(logger = None, script_to_check_mapping = {}):
     if _logger:
         _logger.debug("Starting to execute {{ num_checks }} number of checks")
 
-    for i in tqdm(range({{ num_checks + 1 }}), desc="Running", leave=True, ncols=100):
+    {# check_i should always start with 1 #}
+    for i in tqdm(range(1, {{ num_checks + 1 }}), desc="Running", leave=True, ncols=100):
         fn = "check_" + str(i)
         if hasattr(globals().get(fn), "__call__"):
             result = _run_function(fn)
+            {# if _logger: #}
+                {# _logger.debug(f"FUNCTION: {fn} RESULT FOR FUNCTION RUN : {result}") #}
             if _logger:
                 if result:
                     if isinstance(result, tuple):
@@ -109,8 +113,12 @@ def do_run_(logger = None, script_to_check_mapping = {}):
                             _logger.debug(f"Check {fn} was successful")
                         else:
                             _logger.debug(f"Check {fn} failed")
-                                    
-    output, _ = _run_function('last_cell')
+
+        {# Get last_output and last_status #}
+        output, _ = _run_function('last_cell')
+        all_outputs.append(output)
+        {# if _logger:
+            _logger.debug(f"ALL OUTPUTS {all_outputs} for {fn}") #}
 
     # Lets dump the output in the log file so we can refer to the status of it 
     # later on
@@ -120,7 +128,7 @@ def do_run_(logger = None, script_to_check_mapping = {}):
         else:
             _logger.debug("No output for the checks run")
 
-    return output
+    return all_outputs
 
 if __name__ == "__main__":
     logger = None
