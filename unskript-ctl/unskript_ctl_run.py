@@ -25,6 +25,7 @@ from tqdm import tqdm
 from unskript_utils import *
 from unskript_ctl_factory import ChecksFactory, ScriptsFactory
 from unskript.legos.utils import CheckOutputStatus
+from unskript_upload_results_to_s3 import S3Uploader
 
 
 # Implements Checks Class that is wrapper for All Checks Function
@@ -60,6 +61,7 @@ class Checks(ChecksFactory):
         self.map_entry_function_to_check_name = {}
         self.map_check_name_to_connector = {}
         self.check_name_to_id_mapping = {}
+        self.customer_name = os.getenv('CUSTOMER_NAME','UNKNOWN CUSTOMER NAME')
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -182,6 +184,9 @@ class Checks(ChecksFactory):
         failed_result_available = False
         failed_result = {}
         checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
+        print("Uploading failed objects to S3...")
+        uploader = S3Uploader()
+        uploader.rename_and_upload(self.customer_name, checks_output)
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1
