@@ -5,11 +5,11 @@
 import os
 import subprocess
 import json
-from unskript_ctl_factory import UctlLogger
+from unskript_ctl_factory import UctlLogger, ConfigParserFactory
+from concurrent.futures import ThreadPoolExecutor
 
 
 logger = UctlLogger('UnskriptDiagnostics')
-
 
 def mongodb_diagnostics(commands:list):
     """
@@ -42,76 +42,81 @@ def mongodb_diagnostics(commands:list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nMongodb Diagnostics")
-            logger.debug(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nMongodb Diagnostics")
+    #         logger.debug(f"Mongosh Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
-def fetch_logs(namespace, pod, container):
-    """
-    Fetches logs and previous logs for a specified container in a pod.
-    """
-    outputs = []
-    cmd_logs = ["kubectl", "logs", "--namespace", namespace, pod, "-c", container]
-    result_logs = subprocess.run(cmd_logs, capture_output=True, text=True)
-    if result_logs.stderr:
-        outputs.append(f"Error: {result_logs.stderr.strip()}")
-    else:
-        outputs.append(result_logs.stdout.strip())
+def get_matrix_namespaces():
+    config_parser = ConfigParserFactory()
+    global_params = config_parser.get_checks_params()
 
-    cmd_logs_previous = ["kubectl", "logs", "--namespace", namespace, pod, "-c", container, "--previous"]
-    result_logs_previous = subprocess.run(cmd_logs_previous, capture_output=True, text=True)
-    if result_logs_previous.stderr:
-        outputs.append(f"Error: {result_logs_previous.stderr.strip()}")
-    else:
-        outputs.append(result_logs_previous.stdout.strip())
-    
-    return outputs
+    if 'global' in global_params and 'matrix' in global_params['global']:
+        namespaces = global_params['global']['matrix'].get('namespace', [])
+        return namespaces
+    return []
 
-def fetch_pod_logs_not_running():
-    logger.debug("\nK8s Diagnostics: Fetching logs for pods not running")
-    command_outputs = []
-    cmd = ["kubectl", "get", "pods", "--all-namespaces", "-o", "json"]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    pods = json.loads(result.stdout)['items']
-    
-    for pod in pods:
-        namespace = pod['metadata']['namespace']
-        name = pod['metadata']['name']
-        status = pod['status']['phase']
-        if status != "Running":
-            logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} (Not Running)")
-            containers = [c['name'] for c in pod['spec'].get('initContainers', []) + pod['spec'].get('containers', [])]
-            for container in containers:
-                logs_output = fetch_logs(namespace, name, container)
-                for output in logs_output:
-                    logger.debug({f"Pod Not Running: {name}, Container: {container}": output})
-                    command_outputs.append({f"Pod Not Running: {name}, Container: {container}": output})
-    return command_outputs
+def fetch_logs(namespace, pod, output_path):
+    logs_file_path = os.path.join(output_path, f'logs.txt')
+    separator = "\n" + "=" * 40 + "\n"
+    header = f"Logs for Namespace: {namespace}, Pod: {pod}\n"
+    header_previous = f"Previous Logs for Namespace: {namespace}, Pod: {pod}\n"
 
-def fetch_pod_logs_high_restarts():
-    logger.debug("\nK8s Diagnostics: Fetching logs for pods with high restarts")
-    command_outputs = []
-    cmd = ["kubectl", "get", "pods", "--all-namespaces", "-o", "json"]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    pods = json.loads(result.stdout)['items']
-    
-    for pod in pods:
-        namespace = pod['metadata']['namespace']
-        name = pod['metadata']['name']
-        pod_status = pod['status'].get('containerStatuses', [])
-        restarts = sum(cs['restartCount'] for cs in pod_status)
-        if restarts > 25:
-            logger.debug(f"Fetching logs for Pod: {name} in Namespace: {namespace} with high restarts")
-            result_logs = subprocess.run(["kubectl", "logs", "--namespace", namespace, name], capture_output=True, text=True)
-            if result_logs.stderr:
-                logger.debug({f"Pod high restarts: {name}": f"Error: {result_logs.stderr.strip()}"})
-                command_outputs.append({f"Pod high restarts: {name}": f"Error: {result_logs.stderr.strip()}"})
-            else:
-                logger.debug({f"Pod high restarts: {name}": result_logs.stdout.strip()})
-                command_outputs.append({f"Pod high restarts: {name}": result_logs.stdout.strip()})
-    return command_outputs
+    with open(logs_file_path, 'a') as log_file:
+        log_file.write(separator + header)
+        # Fetch current logs
+        proc = subprocess.Popen(["kubectl", "logs", "--namespace", namespace, "--tail=100", "--all-containers", pod],
+                                stdout=log_file, stderr=subprocess.PIPE, text=True)
+        stderr = proc.communicate()[1]
+        if proc.returncode != 0:
+            logger.debug(f"Error fetching logs for {pod}: {stderr}")
+
+        log_file.write(separator + header_previous)
+        # Fetch previous logs
+        proc = subprocess.Popen(["kubectl", "logs", "--namespace", namespace, "--tail=100", "--all-containers", pod, "--previous"],
+                                stdout=log_file, stderr=subprocess.PIPE, text=True)
+        stderr = proc.communicate()[1]
+        if proc.returncode != 0:
+            logger.debug(f"Error fetching previous logs for {pod}: {stderr}")
+
+def fetch_pod_logs_for_namespace(namespace, output_path, condition='not_running'):
+    # logger.debug(f"Starting log fetch for namespace: {namespace} with condition: {condition}")
+    proc = subprocess.Popen(["kubectl", "get", "pods", "-n", namespace, "-o", "json"],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    stdout, stderr = proc.communicate()
+    if proc.returncode != 0:
+        logger.debug(f"Error fetching pods in namespace {namespace}: {stderr}")
+        return
+
+    try:
+        pods = json.loads(stdout)['items']
+        for pod in pods:
+            if condition == 'not_running' and (pod['status']['phase'] != "Running" or pod['status']['phase'] != "Succeeded"):
+                # logger.debug(f"Fetching logs for not running/succeeded pod: {pod['metadata']['name']} in {namespace}")
+                fetch_logs(namespace, pod['metadata']['name'], output_path)
+            elif condition == 'high_restarts':
+                for cs in pod['status'].get('containerStatuses', []):
+                    if cs['restartCount'] > 25:
+                        # logger.debug(f"Fetching logs for pod with high restarts: {pod['metadata']['name']} in {namespace}")
+                        fetch_logs(namespace, pod['metadata']['name'], output_path)
+    except json.JSONDecodeError:
+        logger.debug(f"Failed to decode JSON response from kubectl get pods in namespace {namespace}: {stdout}")
+
+def fetch_pod_logs_not_running(output_path):
+    allowed_namespaces = get_matrix_namespaces()
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        # logger.debug("Initiating ThreadPool to fetch logs for pods not running across namespaces")
+        for namespace in allowed_namespaces:
+            executor.submit(fetch_pod_logs_for_namespace, namespace, output_path, 'not_running')
+
+def fetch_pod_logs_high_restarts(output_path):
+    allowed_namespaces = get_matrix_namespaces()
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        # logger.debug("Initiating ThreadPool to fetch logs for pods with high restarts across namespaces")
+        for namespace in allowed_namespaces:
+            executor.submit(fetch_pod_logs_for_namespace, namespace, output_path, 'high_restarts')
+
 
 def k8s_diagnostics(commands:list):
     """
@@ -119,15 +124,6 @@ def k8s_diagnostics(commands:list):
 
     """
     command_outputs = []
-    if not hasattr(k8s_diagnostics, "already_called"):
-        command_outputs.extend(fetch_pod_logs_high_restarts())
-        command_outputs.extend(fetch_pod_logs_not_running())
-    
-        k8s_diagnostics.already_called = True
-        logger.debug("Logs have been fetched.")
-    else:
-        command_outputs = []
-        logger.debug("Subsequent execution: Skipping logs")
 
     for command in commands:
         cmd_list = command.split()
@@ -141,10 +137,10 @@ def k8s_diagnostics(commands:list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\n Kubernetes Diagnostics")
-            logger.debug(f"K8S Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\n Kubernetes Diagnostics")
+    #         logger.debug(f"K8S Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def redis_diagnostics(commands:list):
@@ -181,10 +177,10 @@ def redis_diagnostics(commands:list):
                 command_outputs.append({command: output})
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nRedis Diagnostics")
-            logger.debug(f"Redis Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nRedis Diagnostics")
+    #         logger.debug(f"Redis Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def postgresql_diagnostics(commands:list):
@@ -217,10 +213,10 @@ def postgresql_diagnostics(commands:list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nPostgresql Diagnostics")
-            logger.debug(f"Postgres Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nPostgresql Diagnostics")
+    #         logger.debug(f"Postgres Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def elasticsearch_diagnostics(commands: list) -> list:
@@ -247,10 +243,10 @@ def elasticsearch_diagnostics(commands: list) -> list:
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nElasticsearch Diagnostics")
-            logger.debug(f"Elasticsearch curl command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nElasticsearch Diagnostics")
+    #         logger.debug(f"Elasticsearch curl command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def keycloak_diagnostics(commands: list):
@@ -276,10 +272,10 @@ def keycloak_diagnostics(commands: list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nKeycloak Diagnostics")
-            logger.debug(f"Keycloak curl command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nKeycloak Diagnostics")
+    #         logger.debug(f"Keycloak curl command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
 
 def vault_diagnostics(commands: list):
@@ -313,8 +309,8 @@ def vault_diagnostics(commands: list):
         except Exception as e:
             command_outputs.append({command: f"Exception: {str(e)}"})
 
-    for result_dict in command_outputs:
-        for command, cmd_output in result_dict.items():
-            logger.debug("\nVault Diagnostics")
-            logger.debug(f"Vault Command: {command}\nOutput: {cmd_output}\n")
+    # for result_dict in command_outputs:
+    #     for command, cmd_output in result_dict.items():
+    #         logger.debug("\nVault Diagnostics")
+    #         logger.debug(f"Vault Command: {command}\nOutput: {cmd_output}\n")
     return command_outputs
