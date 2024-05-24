@@ -33,8 +33,8 @@ class S3Uploader:
 
     def rename_and_upload(self, customer_name, checks_output):
         today_date = datetime.now().strftime("%m_%d_%y")
-        file_name = f"{customer_name}_{today_date}.json"
-        folder_name = today_date
+        file_name = f"{customer_name}_{today_date}_failed_objects.json"
+        folder_name = customer_name
         file_path = f"{folder_name}/{file_name}"
 
         try:
@@ -71,5 +71,5 @@ class S3Uploader:
         except Exception as e:
             logger.debug(f"Unable to upload failed objetcs file to S3 bucket: {e}")
         # Remove the local file after upload
-        # logger.debug(f"Removing local file of check outputs json from /tmp: {local_file_name}")
+        logger.debug(f"Removing local file of check outputs json from /tmp: {local_file_name}")
         os.remove(local_file_name)
