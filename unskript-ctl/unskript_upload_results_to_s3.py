@@ -16,6 +16,7 @@ class S3Uploader:
 
         if not aws_access_key_id or not aws_secret_access_key:
             logger.debug("AWS credentials are not set in environment variables")
+            return
 
         self.bucket_name = 'lightbeam-reports'
 
@@ -24,48 +25,66 @@ class S3Uploader:
                                           aws_access_key_id=aws_access_key_id,
                                           aws_secret_access_key=aws_secret_access_key,
                                           )
+            self.s3_client.list_buckets()                       
+            logger.debug("AWS credentials are valid")
         except (NoCredentialsError, PartialCredentialsError) as e:
             logger.debug("Invalid AWS credentials")
-            pass
         except ClientError as e:
             logger.debug(f"Client error: {e}")
-            pass
 
     def rename_and_upload(self, customer_name, checks_output):
-        today_date = datetime.now().strftime("%m_%d_%y")
-        file_name = f"{customer_name}_{today_date}_failed_objects.json"
-        folder_name = customer_name
-        file_path = f"{folder_name}/{file_name}"
+        now = datetime.now()
+        rfc3339_timestamp = now.isoformat() + 'Z'
+        year = now.strftime("%Y")
+        month = now.strftime("%m")
+        day = now.strftime("%d")
+
+        file_name = f"{rfc3339_timestamp}.json"
+        folder_path = f"{customer_name}/{year}/{month}/{day}/"
+        file_path = f"{folder_path}{file_name}"
+        local_file_name = f"/tmp/{file_name}"
 
         try:
             # Convert checks_output to JSON format
             checks_output_json = json.dumps(checks_output, indent=2)
         except json.JSONDecodeError:
             logger.debug(f"Failed to decode JSON response for {customer_name}")
+            return
 
         # Write JSON data to a local file
-        local_file_name = f"/tmp/{file_name}"
-        with open(local_file_name, 'w') as json_file:
-            json_file.write(checks_output_json)
-
-        # Check if the folder already exists in the bucket
         try:
-            self.s3_client.head_object(Bucket=self.bucket_name, Key=f"{folder_name}/")
+            logger.debug(f"Writing JSON data to local file: {local_file_name}")
+            with open(local_file_name, 'w') as json_file:
+                json_file.write(checks_output_json)
+        except IOError as e:
+            logger.debug(f"Failed to write JSON data to local file: {e}")
+            return
+
+        # Ensure the folder structure exists in the bucket
+        try:
+            self.s3_client.head_object(Bucket=self.bucket_name, Key=folder_path)
             folder_exists = True
-        except:
-            folder_exists = False
-            logger.debug(f"S3 folder {folder_name} does not exist")
+            logger.debug(f"S3 folder {folder_path} exists")
+        except ClientError as e:
+            if e.response['Error']['Code'] == '404':
+                folder_exists = False
+                logger.debug(f"S3 folder {folder_path} does not exist")
+            else:
+                logger.debug(f"Error checking folder existence: {e}")
 
         # Create folder if it doesn't exist
         if not folder_exists:
-            # logger.debug(f"Creating folder {folder_name} in the bucket")
-            self.s3_client.put_object(Bucket=self.bucket_name, Key=(folder_name+'/'))
+            logger.debug(f"Creating folder {folder_path} in the bucket")
+            try:
+                self.s3_client.put_object(Bucket=self.bucket_name, Key=(folder_path))
+            except ClientError as e:
+                logger.debug(f"Failed to create folder: {e}")
 
         # Upload the JSON file
         try:
             logger.debug(f"Uploading file {file_name} to {self.bucket_name}/{file_path}")
             self.s3_client.upload_file(local_file_name, self.bucket_name, file_path)
-            logger.debug(f"File {file_name} uploaded successfully to {self.bucket_name}/{folder_name}")
+            logger.debug(f"File {file_name} uploaded successfully to {self.bucket_name}/{folder_path}")
         except NoCredentialsError:
             logger.debug("Credentials not available")
         except Exception as e:
