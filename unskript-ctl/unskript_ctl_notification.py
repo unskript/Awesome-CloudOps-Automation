@@ -614,9 +614,15 @@ class SendgridNotification(EmailNotification):
             if info_result:
                 html_message += info_result
 
+            to_email_list = []
+            if isinstance(to_email, list):
+                to_email_list = to_email
+            else:
+                to_email_list = [to_email]
+
             email_message = Mail(
                 from_email=from_email,
-                to_emails=to_email,
+                to_emails=to_email_list,
                 subject=email_subject,
                 html_content=html_message
             )
@@ -751,10 +757,16 @@ class AWSEmailNotification(EmailNotification):
             os.environ['AWS_SECRET_ACCESS_KEY'] = secret_key
 
         client = boto3.client('ses', region_name=region)
+        to_email_list = []
+        if isinstance(to_email, list):
+            to_email_list = to_email
+        else:
+            to_email_list = [to_email]
+        
         try:
             response = client.send_raw_email(
                 Source=from_email,
-                Destinations=[to_email],
+                Destinations=to_email_list,
                 RawMessage={'Data': attachment_.as_string()}
             )
             if response.get('ResponseMetadata') and response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
@@ -863,7 +875,13 @@ class SmtpNotification(EmailNotification):
         else:
             msg['From'] = smtp_user
 
-        msg['To'] = to_email
+        to_email_list = []
+        if isinstance(to_email, list):
+            to_email_list = to_email
+        else:
+            to_email_list = [to_email]
+
+        msg['To'] = ", ".join(to_email_list)
         msg['Subject'] = subject
         try:
             server = smtplib.SMTP(smtp_host, self.SMTP_TLS_PORT)
