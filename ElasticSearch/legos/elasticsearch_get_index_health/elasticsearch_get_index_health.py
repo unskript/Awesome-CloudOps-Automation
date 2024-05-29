@@ -51,59 +51,35 @@ def elasticsearch_get_index_health(handle, index_name="") -> Tuple:
     :return: A list of dictionaries where each dictionary contains stats about each index
     """
     try:
-        indices_output = []
-        # If no specific index is provided, get all indices
-        if len(index_name)==0 :
-            indices_output = handle.web_request("/_cat/indices?h=index", "GET", None)
-            indices_output = ''.join(indices_output).split('\n')
-        # If a specific index is provided, only consider that index
+        if index_name:
+            index_names = [index_name]
         else:
-            indices_output.append(index_name)
+            # Fetches all indices; ensure only non-empty lines and non-system indices are considered
+            response = handle.web_request("/_cat/indices?h=index", "GET", None)
+            index_names = [line.strip() for line in response.splitlines() if line.strip() and not line.startswith('.')]
 
         all_indices_stats = []
 
-        for current_index in indices_output:
-            # Skip system indices
-            if current_index.startswith('.'):
-                continue
-            index_stats = {}
-
-            # Get settings for the current index
-            settings_output = handle.web_request(f"/{current_index}/_settings", "GET", None)
-            if "error" in settings_output:
-                print(f"Error for settings of {current_index}")
+        for current_index in index_names:
+            health_url = f"/_cat/indices/{current_index}?format=json"
+            health_response = handle.web_request(health_url, "GET", None)
+            if not health_response or "error" in health_response:
+                print(f"Error retrieving health for index {current_index}: {health_response.get('error', 'Unknown error')}")
                 continue
 
-            # Get stats for the current index
-            stats_output = handle.web_request(f"/{current_index}/_stats", "GET", None)
-            if "error" in stats_output:
-                print(f"Error for stats of {current_index}")
-                continue
-
-            # Get any tasks associated with the current index
-            tasks_output = handle.web_request(f"/_tasks?actions=*{current_index}*&detailed", "GET", None)
-
-            # Get health of the current index
-            health_output = handle.web_request(f"/_cat/indices/{current_index}?format=json", "GET", None)
-            if "error" in health_output:
-                print(f"Error for health of {current_index}")
-                continue
-
-            if settings_output:
-                settings = settings_output.get(current_index, {}).get('settings', {}).get('index', {})
-            else:
-                settings = {}
-            # Consolidate stats for the current index
-            if health_output[0]['health'] in ['yellow', 'red']:
+            # Parsing the health data correctly assuming the correct format and keys are present
+            health_data = health_response[0]
+            if health_data.get('health') in ['yellow', 'red']:
                 index_stats = {
-                    **health_output[0],
-                    'settings': settings,
-                    'stats': stats_output['_all']['total'],
-                    'tasks': tasks_output['nodes']
+                    "index": current_index,
+                    "health": health_data.get('health'),
+                    "status": health_data.get('status'),
                 }
                 all_indices_stats.append(index_stats)
+
     except Exception as e:
-        raise e
-    if len(all_indices_stats)!=0:
-        return (False, all_indices_stats)
-    return (True, None)
+        print(f"Error processing index health: {str(e)}")
+        return (False, [])
+
+    return (False, all_indices_stats) if all_indices_stats else (True, None)
+

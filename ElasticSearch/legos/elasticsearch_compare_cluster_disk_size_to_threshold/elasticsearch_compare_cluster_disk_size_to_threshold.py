@@ -39,14 +39,18 @@ def elasticsearch_compare_cluster_disk_size_to_threshold(handle, threshold: floa
     # Split the lines and skip the header
     lines = allocation_output.splitlines()[1:]
 
-    result = []
-    # Find the max disk percentage from the lines, considering only assigned nodes
-    max_disk_percent = max(float(line.split()[5]) for line in lines if "UNASSIGNED" not in line)
+    # Calculate the max disk percentage from the lines, considering only assigned nodes
+    max_disk_percent = 0  # Initialize to 0 or an appropriately low number
+    for line in lines:
+        if "UNASSIGNED" not in line:
+            disk_usage = float(line.split()[5])
+            if disk_usage > max_disk_percent:
+                max_disk_percent = disk_usage
 
+    # Now check if the max disk percent exceeds the threshold
     if max_disk_percent > threshold:
-        result.append({"usage_disk_percentage": max_disk_percent, "threshold": threshold})
-
-    if len(result) != 0:
+        result = [{"usage_disk_percentage": max_disk_percent, "threshold": threshold}]
         return (False, result)
-    return (True, None)
+    else:
+        return (True, None)
 
