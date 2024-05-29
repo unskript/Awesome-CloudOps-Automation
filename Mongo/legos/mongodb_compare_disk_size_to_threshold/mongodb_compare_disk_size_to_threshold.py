@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 class InputSchema(BaseModel):
     threshold: Optional[float] = Field(
-        52428800, # 50GB in KB
+        83886080 , # 80GB in KB
         description='Threshold for disk size in KB.', 
         title='Threshold (in KB)'
     )
@@ -24,7 +24,7 @@ def mongodb_compare_disk_size_to_threshold_printer(output):
         print(f"Alert! Disk size of {alert['totalDiskSize']} KB for database {alert['db']} exceeds threshold of {alert['threshold']} KB.")
 
 
-def mongodb_compare_disk_size_to_threshold(handle, threshold: float=52428800) -> Tuple:
+def mongodb_compare_disk_size_to_threshold(handle, threshold: float=83886080) -> Tuple:
     """
     mongodb_compare_disk_size_to_threshold compares the total disk size used by MongoDB to a given threshold.
 

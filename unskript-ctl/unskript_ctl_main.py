@@ -766,5 +766,7 @@ def main():
     if args.command == 'run' and  args.report:
         uc.notify(args)
 
+    os._exit(0)
+
 if __name__ == '__main__':
     main()

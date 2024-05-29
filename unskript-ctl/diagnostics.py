@@ -106,7 +106,6 @@ class DiagnosticsScript:
                         if function:
                             # Call the function with the commands
                             diag_outputs[entry_function] = function(commands)
-                            print(f"Function '{function_name}' is accessible.")
                         else:
                             raise ValueError(f"Function '{function_name}' not found in the global namespace.")
                     except Exception as e:
@@ -127,7 +126,7 @@ class DiagnosticsScript:
         if not diag_commands:
             print("Skipping Diagnostics: No diagnostic command found. You can define them in the YAML configuration file")
             return 
-
+        print("\nRunning Diagnostics...")
         diag_outputs = self.execute_diagnostics(diag_commands)
 
         if diag_outputs:
@@ -143,6 +142,10 @@ def main(args):
     parser.add_argument("--failed-objects-file", '-f', help="Path to failed objects file", required=True)
     parser.add_argument("--output-dir-path", '-o', help="Path to output directory", required=True)
     ap = parser.parse_args(args)
+
+    print("\nFetching logs...")
+    fetch_pod_logs_not_running(ap.output_dir_path)
+    fetch_pod_logs_high_restarts(ap.output_dir_path)
 
     diagnostics_script = DiagnosticsScript(ap)
     diagnostics_script.main()
