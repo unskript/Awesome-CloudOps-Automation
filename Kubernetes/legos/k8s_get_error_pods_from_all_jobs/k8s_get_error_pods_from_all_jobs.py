@@ -40,7 +40,7 @@ def k8s_get_error_pods_from_all_jobs(handle, namespace:str="") -> Tuple:
     
     if response.stderr:
         raise Exception(f"Error occurred while executing command {kubectl_cmd}: {response.stderr}")
-    
+    jobs = {}
     try:
         if response.stdout:
             jobs = json.loads(response.stdout)
@@ -57,6 +57,7 @@ def k8s_get_error_pods_from_all_jobs(handle, namespace:str="") -> Tuple:
         if pod_response.stderr:
             print(f"Error occurred while fetching pods for job {job_name}: {pod_response.stderr}")
             continue
+        pods = {}
         try:
             if response.stdout:
                 pods = json.loads(pod_response.stdout)
