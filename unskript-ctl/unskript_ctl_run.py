@@ -118,7 +118,8 @@ class Checks(ChecksFactory):
             self._error(str(e))
         finally:
             self._common.update_exec_id()
-            output_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
+            output_file = os.path.join(self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'), 
+                                       self.uglobals.get('exec_id')) + '_output.txt'
             if not outputs:
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')

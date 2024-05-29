@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import json
 from unskript_ctl_factory import UctlLogger
+from unskript_utils import *
 
 logger = UctlLogger('UnskriptDiagnostics')
 
@@ -19,6 +20,7 @@ class S3Uploader:
             return
 
         self.bucket_name = 'lightbeam-reports'
+        self.uglobals = UnskriptGlobals()
 
         try:
             self.s3_client = boto3.client('s3',
@@ -41,7 +43,6 @@ class S3Uploader:
 
         file_name = f"{rfc3339_timestamp}.json"
         folder_path = f"{customer_name}/{year}/{month}/{day}/"
-        file_path = f"{folder_path}{file_name}"
         local_file_name = f"/tmp/{file_name}"
 
         try:
@@ -83,15 +84,37 @@ class S3Uploader:
             except ClientError as e:
                 logger.debug(f"Failed to create folder: {e}")
 
-        # Upload the JSON file
+        # Upload the files in the CURRENT_EXECUTION_RUN_DIRECTORY 
+        file_list_to_upload = [local_file_name]
+        if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY') and \
+            os.path.exists(self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')):
+            try:
+                for parent_dir, _, _files in os.walk(self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')):
+                    # Currently there is no need to read the sub_directories (child_dir) under CURRENT_EXECUTION_RUN_DIRECTORY
+                    # So we can ignore it. Lets create list of files that needs to be uploaded
+                    # to S3.
+                    for _file in _files:
+                        file_list_to_upload.append(os.path.join(parent_dir, _file))
+            except:
+                logger.debug(f"Failed to get contents of Execution Run directory")
+        
+        for _file in file_list_to_upload:
+            if not self.do_upload_(_file, folder_path + os.path.basename(_file)):
+                logger.debug(f"ERROR: Uploading error for {_file}")
+        
+        os.remove(local_file_name)
+    
+    def do_upload_(self, file_name, file_path):
+        """Uploads the given file_name to s3 bucket defined in file_path
+        """
         try:
             logger.debug(f"Uploading file {file_name} to {self.bucket_name}/{file_path}")
-            self.s3_client.upload_file(local_file_name, self.bucket_name, file_path)
-            logger.debug(f"File {file_name} uploaded successfully to {self.bucket_name}/{folder_path}")
+            self.s3_client.upload_file(file_name, self.bucket_name, file_path)
+            logger.debug(f"File {file_name} uploaded successfully to {self.bucket_name}/{file_path}")
+            return True
         except NoCredentialsError:
             logger.debug("Credentials not available")
         except Exception as e:
-            logger.debug(f"Unable to upload failed objetcs file to S3 bucket: {e}")
-        # Remove the local file after upload
-        logger.debug(f"Removing local file of check outputs json from /tmp: {local_file_name}")
-        os.remove(local_file_name)
+            logger.debug(f"Unable to upload failed objects file to S3 bucket: {e}")
+       
+        return False
