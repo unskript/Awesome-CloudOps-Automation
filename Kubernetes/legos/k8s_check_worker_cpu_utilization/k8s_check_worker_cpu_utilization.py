@@ -48,18 +48,25 @@ def k8s_check_worker_cpu_utilization(handle, threshold: float=70.0) -> Tuple:
     if response is None or response.stderr:
         raise Exception(f"Error while executing command ({kubectl_command}): {response.stderr if response else 'empty response'}")
 
-    lines = response.stdout.split('\n')
+    # Ensure response.stdout is processed only once and correctly
+    lines = response.stdout.strip().split('\n')
+    seen_nodes = set()  # Keep track of nodes that have already been processed
+
     for line in lines:
         parts = line.split()
         if len(parts) < 5:  # Check for correct line format
             continue
-        node_name, cpu_percentage_str = parts[0], parts[2]
-        cpu_percentage = float(cpu_percentage_str.rstrip('%'))
+        node_name, cpu_percentage_str = parts[0], parts[2].rstrip('%')
+        if node_name in seen_nodes:
+            print(f"Duplicate entry detected for node {node_name}, skipping.")
+            continue
+        seen_nodes.add(node_name)
 
+        cpu_percentage = float(cpu_percentage_str)
         if cpu_percentage > threshold:
             exceeding_nodes.append({"node": node_name, "cpu": cpu_percentage})
 
-    if len(exceeding_nodes) != 0:
+    if exceeding_nodes:
         return (False, exceeding_nodes)
     return (True, None)
 

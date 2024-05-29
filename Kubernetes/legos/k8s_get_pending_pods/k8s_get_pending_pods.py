@@ -59,7 +59,7 @@ def k8s_get_pending_pods(handle, namespace:str="") -> Tuple:
         pod_namespace = pod['metadata']['namespace']
 
         if status == 'Pending':
-            pending_pods.append([name, pod_namespace])
+            pending_pods.append({"pod_name":name,"namespace":pod_namespace})
 
     if len(pending_pods) != 0:
         return (False, pending_pods)

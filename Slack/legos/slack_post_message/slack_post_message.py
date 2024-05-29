@@ -23,8 +23,6 @@ class InputSchema(BaseModel):
 def slack_post_message_printer(output):
     if output is not None:
         pprint.pprint(output)
-    else:
-        return
 
 
 @beartype

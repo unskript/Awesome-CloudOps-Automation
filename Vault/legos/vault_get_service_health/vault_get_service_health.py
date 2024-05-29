@@ -36,11 +36,11 @@ def vault_get_service_health(handle) -> Tuple:
         else:
             error_msg = []
             if not health_data["initialized"]:
-                error_msg.append("Vault is not initialized.")
+                error_msg.append({"message":"Vault is not initialized."})
             if health_data["standby"]:
-                error_msg.append("Vault is in standby mode.")
+                error_msg.append({"message":"Vault is in standby mode."})
             if health_data["sealed"]:
-                error_msg.append("Vault is sealed.")
+                error_msg.append({"message": "Vault is sealed."})
             return (False, error_msg)
 
     except Exception as e:

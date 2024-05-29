@@ -25,8 +25,6 @@ pp = pprint.PrettyPrinter(indent=2)
 def slack_lookup_user_by_email_printer(output):
     if output is not None:
         pprint.pprint(output)
-    else:
-        return
 
 
 def slack_lookup_user_by_email(
