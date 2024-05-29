@@ -60,6 +60,9 @@ class S3Uploader:
             logger.debug(f"Failed to write JSON data to local file: {e}")
             return
 
+        # Initialize folder_exists
+        folder_exists = False
+        
         # Ensure the folder structure exists in the bucket
         try:
             self.s3_client.head_object(Bucket=self.bucket_name, Key=folder_path)
