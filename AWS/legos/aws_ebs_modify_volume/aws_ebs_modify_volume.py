@@ -74,10 +74,15 @@ def aws_ebs_modify_volume(
     # Get the current volume size.
     Volume = ec2Resource.Volume(volume_id)
     currentSize = Volume.size
+    newSize = None
+
     if resize_option == SizingOption.Add:
         newSize = currentSize + resize_value
-    elif resize_option == SizingOption.Mutiple:
+    elif resize_option == SizingOption.Multiple:
         newSize = currentSize * resize_value
+    else:
+        raise ValueError(f"Invalid resize option: {resize_option}")
+
 
     print(f'CurrentSize {currentSize}, NewSize {newSize}')
     

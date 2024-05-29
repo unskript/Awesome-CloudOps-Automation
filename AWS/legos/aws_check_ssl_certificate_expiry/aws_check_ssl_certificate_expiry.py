@@ -62,6 +62,7 @@ def aws_check_ssl_certificate_expiry(handle, threshold_days: int, region: str,) 
                 right_now = datetime.datetime.now(dateutil.tz.tzlocal())
                 diff = expiry_date-right_now
                 days_remaining = diff.days
+                days = 0
                 if 0 < days_remaining < threshold_days:
                     days = days_remaining
                 elif days_remaining < 0:

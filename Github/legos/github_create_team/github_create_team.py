@@ -74,6 +74,7 @@ def github_create_team(
     team_details = {}
     repo_names =[]
     list_of_repos = ''
+    privacy_settings = ''
     if privacy is None or len(privacy)==0:
         privacy_settings = "secret"
     organization = handle.get_organization(organization_name)
