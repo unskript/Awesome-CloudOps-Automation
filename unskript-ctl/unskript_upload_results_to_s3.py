@@ -76,7 +76,7 @@ class S3Uploader:
         if not folder_exists:
             logger.debug(f"Creating folder {folder_path} in the bucket")
             try:
-                self.s3_client.put_object(Bucket=self.bucket_name, Key=(folder_path))
+                self.s3_client.put_object(Bucket=self.bucket_name, Key=folder_path)
             except ClientError as e:
                 logger.debug(f"Failed to create folder: {e}")
 
