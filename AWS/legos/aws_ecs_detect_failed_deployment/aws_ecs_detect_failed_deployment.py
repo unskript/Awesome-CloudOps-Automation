@@ -58,6 +58,7 @@ def aws_ecs_detect_failed_deployment(handle, cluster_name: str, service_name: st
         return ["Empty deployment"]
 
     deploymentInProgress = False
+    primaryDeploymentID = ""
     for deployment in deployments:
         if deployment['status'] == "PRIMARY":
             primaryDeploymentID = deployment['id']

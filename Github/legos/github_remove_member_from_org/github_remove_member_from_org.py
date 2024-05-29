@@ -35,6 +35,7 @@ def github_remove_member_from_org(handle, organization_name:str, username:str)->
 
         :rtype: List of return status of removing a member from Org
     """
+    result = ""
     organization = handle.get_organization(organization_name)
     try:
         user = handle.get_user(username)
