@@ -52,30 +52,24 @@ def elasticsearch_get_index_health(handle, index_name="") -> Tuple:
     """
     try:
         if index_name:
-            index_names = [index_name]
-        else:
-            # Fetches all indices; ensure only non-empty lines and non-system indices are considered
-            response = handle.web_request("/_cat/indices?h=index", "GET", None)
-            index_names = [line.strip() for line in response.splitlines() if line.strip() and not line.startswith('.')]
-
-        all_indices_stats = []
-
-        for current_index in index_names:
-            health_url = f"/_cat/indices/{current_index}?format=json"
+            # Fetch specific index health
+            health_url = f"/_cat/indices/{index_name}?v&h=index,status&format=json"
             health_response = handle.web_request(health_url, "GET", None)
-            if not health_response or "error" in health_response:
-                print(f"Error retrieving health for index {current_index}: {health_response.get('error', 'Unknown error')}")
-                continue
+            index_stats = [health_response[0]] if health_response and 'error' not in health_response else []
+        else:
+            # Fetches all indices health; skips empty lines and system indices
+            health_url = "/_cat/indices?v&h=index,status&format=json"
+            health_response = handle.web_request(health_url, "GET", None)
+            index_stats = [idx for idx in health_response if not idx['index'].startswith('.')] if health_response and 'error' not in health_response else []
 
-            # Parsing the health data correctly assuming the correct format and keys are present
-            health_data = health_response[0]
-            if health_data.get('health') in ['yellow', 'red']:
-                index_stats = {
-                    "index": current_index,
-                    "health": health_data.get('health'),
-                    "status": health_data.get('status'),
-                }
-                all_indices_stats.append(index_stats)
+        if not index_stats:
+            print(f"No indices found or error retrieving indices: {health_response.get('error', 'No response') if health_response else 'No data'}")
+            return (True, None)
+
+        all_indices_stats = [
+            {"index": idx['index'], "status": idx['status']}
+            for idx in index_stats
+        ]
 
     except Exception as e:
         print(f"Error processing index health: {str(e)}")
