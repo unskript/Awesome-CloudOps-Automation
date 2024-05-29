@@ -43,6 +43,7 @@ def github_delete_branch(handle, owner:str, repository: str, branch_name: str)->
 
         :rtype: Deleted branch info
     """
+    flag_to_check_branch = 0
     try:
         user = handle.get_user(login=owner)
         repo_name = user.login+"/"+repository
