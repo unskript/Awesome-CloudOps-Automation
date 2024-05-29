@@ -110,4 +110,4 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='', time_interval_to_che
                     })
                     break
 
-    return (False if issues else True, issues if issues else None)
+    return (not issues, issues if issues else None)
