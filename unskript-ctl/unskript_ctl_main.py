@@ -157,7 +157,7 @@ class UnskriptCtl(UnskriptFactory):
             else:
                 output_dir = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id'))           
             
-            failed_objects_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
+            failed_objects_file = os.path.join(output_dir, self.uglobals.get('exec_id')) + '_output.txt'
             diag_args = [
                 '--yaml-file',
                 YAML_CONFIG_FILE,

@@ -14,9 +14,9 @@ class S3Uploader:
         aws_access_key_id = os.getenv('LIGHTBEAM_AWS_ACCESS_KEY_ID')
         aws_secret_access_key = os.getenv('LIGHTBEAM_AWS_SECRET_ACCESS_KEY')
         self.bucket_name = 'lightbeam-reports'
-        self.ts = "TS"
         now = datetime.now()
         rfc3339_timestamp = now.isoformat() + 'Z'
+        self.ts = rfc3339_timestamp
         year = now.strftime("%Y")
         month = now.strftime("%m")
         day = now.strftime("%d")
