@@ -22,6 +22,11 @@ class InputSchema(BaseModel):
         description='Time interval in hours. This time window is used to check if POD good OOMKilled. Default is 24 hours.',
         title="Time Interval"
     )
+    restart_threshold: int = Field(
+        10,
+        description='The threshold for the number of restarts within the specified time interval. Default is 10 restarts.',
+        title='Restart Threshold'
+    )
 
 
 
@@ -35,7 +40,7 @@ def format_datetime(dt):
     return dt.strftime('%Y-%m-%d %H:%M:%S UTC')
     
 
-def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=24) -> Tuple:
+def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=24, restart_threshold: int = 10) -> Tuple:
     """k8s_get_oomkilled_pods This function returns the pods that have OOMKilled event in the container last states
 
     :type handle: Object
@@ -86,6 +91,7 @@ def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=2
     for pod in pods:
         pod_name = pod.metadata.name
         namespace = pod.metadata.namespace
+        restarts = sum(container_status.restart_count for container_status in pod.status.container_statuses) if pod.status.container_statuses else 0
         
         # Ensure container_statuses is not None before iterating
         container_statuses = pod.status.container_statuses
@@ -98,13 +104,18 @@ def k8s_get_oomkilled_pods(handle, namespace: str = "", time_interval_to_check=2
             last_state = container_status.last_state
             if last_state and last_state.terminated and last_state.terminated.reason == "OOMKilled":
                 termination_time = last_state.terminated.finished_at
-                termination_time = termination_time.replace(tzinfo=timezone.utc)
-                # If termination time is greater than interval_time_to_check meaning
-                # the POD has gotten OOMKilled in the last 24 hours, so lets flag it!
-                if termination_time and termination_time >= interval_time_to_check:
-                    formatted_termination_time = format_datetime(termination_time)
-                    formatted_interval_time_to_check = format_datetime(interval_time_to_check)
-                    result.append({"pod": pod_name, "namespace": namespace, "container": container_name, "termination_time":formatted_termination_time,"interval_time_to_check": formatted_interval_time_to_check})
-    
+                if termination_time:
+                    termination_time = termination_time.replace(tzinfo=timezone.utc)
+                    # If termination time is greater than interval_time_to_check meaning
+                    # the POD has gotten OOMKilled in the last 24 hours and the number of restarts for 
+                    # that pod is greater than 10, so lets flag it!
+                    if termination_time >= interval_time_to_check and restarts > restart_threshold:
+                        formatted_termination_time = format_datetime(termination_time)
+                        result.append({
+                            "pod": pod_name,
+                            "namespace": namespace,
+                            "container": container_name,
+                            "termination_time": formatted_termination_time,
+                            "restarts": restarts,
+                        })
     return (False, result) if result else (True, None)
-
