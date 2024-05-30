@@ -8,8 +8,7 @@ from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 from tabulate import tabulate
-import datetime
-from datetime import timezone 
+from datetime import datetime, timedelta, timezone
 
 
 class InputSchema(BaseModel):
@@ -20,7 +19,13 @@ class InputSchema(BaseModel):
     time_interval_to_check: int = Field(
         24,
         description='Time interval in hours. This time window is used to check if POD was in Crashloopback. Default is 24 hours.',
-        title="Time Interval"
+        title=
+        "Time Interval"
+    )
+    restart_threshold: int = Field(
+        10,
+        description='The threshold for the number of restarts within the specified time interval. Default is 10 restarts.',
+        title='Restart Threshold'
     )
 
 
@@ -38,7 +43,7 @@ def format_datetime(dt):
     # Format datetime to a string 'YYYY-MM-DD HH:MM:SS UTC'
     return dt.strftime('%Y-%m-%d %H:%M:%S UTC')
 
-def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_interval_to_check=24) -> Tuple:
+def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_interval_to_check=24, restart_threshold=10) -> Tuple:
     """
     k8s_get_pods_in_crashloopbackoff_state returns the pods that have CrashLoopBackOff state in their container statuses within the specified time interval.
 
@@ -51,6 +56,9 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_int
     :type time_interval_to_check: int
     :param time_interval_to_check: (Optional) Integer, in hours, the interval within which the
             state of the POD should be checked.
+
+    :type restart_threshold: int
+        :param restart_threshold: (Optional) Integer, the threshold of restarts to check against.
 
     :rtype: Status, List of objects of pods, namespaces, and containers that are in CrashLoopBackOff state
     """
@@ -87,23 +95,23 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_int
         container_statuses = pod.status.container_statuses
         if container_statuses is None:
             continue
+        total_restarts = sum(container_status.restart_count for container_status in container_statuses)
         for container_status in container_statuses:
             container_name = container_status.name
             if container_status.state and container_status.state.waiting and container_status.state.waiting.reason == "CrashLoopBackOff":
-                # Check if the last transition time to CrashLoopBackOff is within the specified interval
-                if container_status.last_state and container_status.last_state.terminated:
-                    last_transition_time = container_status.last_state.terminated.finished_at
-                    if last_transition_time:
-                        last_transition_time = last_transition_time.replace(tzinfo=timezone.utc)
-                        if last_transition_time >= interval_time_to_check:
-                            formatted_transition_time = format_datetime(last_transition_time)
-                            formatted_interval_time_to_check = format_datetime(interval_time_to_check)
-                            result.append({
-                                "pod": pod_name,
-                                "namespace": namespace,
-                                "container": container_name,
-                                "last_transition_time": formatted_transition_time,
-                                "interval_time_to_check": formatted_interval_time_to_check
-                            })
+                last_transition_time = container_status.last_state.terminated.finished_at
+                if last_transition_time:
+                    last_transition_time = last_transition_time.replace(tzinfo=timezone.utc)
+                    # Check if the last transition time to CrashLoopBackOff is within the specified interval
+                    # and the number of restarts are within threshold
+                    if last_transition_time >= interval_time_to_check and total_restarts > restart_threshold:
+                        formatted_transition_time = format_datetime(last_transition_time)
+                        result.append({
+                            "pod": pod_name,
+                            "namespace": namespace,
+                            "container": container_name,
+                            "last_transition_time": formatted_transition_time,
+                            "restarts": total_restarts
+                        })
 
     return (False, result) if result else (True, None)
