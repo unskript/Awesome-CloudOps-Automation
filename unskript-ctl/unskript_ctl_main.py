@@ -23,6 +23,7 @@ from unskript_ctl_factory import *
 from unskript_ctl_version import *
 from unskript_ctl_upload_session_logs import upload_session_logs
 from diagnostics import main as diagnostics
+from unskript_upload_results_to_s3 import S3Uploader
 
 YAML_CONFIG_FILE = "/etc/unskript/unskript_ctl_config.yaml"
 
