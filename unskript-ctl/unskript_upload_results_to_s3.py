@@ -15,6 +15,16 @@ class S3Uploader:
         aws_secret_access_key = os.getenv('LIGHTBEAM_AWS_SECRET_ACCESS_KEY')
         self.bucket_name = 'lightbeam-reports'
         self.ts = "TS"
+        now = datetime.now()
+        rfc3339_timestamp = now.isoformat() + 'Z'
+        year = now.strftime("%Y")
+        month = now.strftime("%m")
+        day = now.strftime("%d")
+        self.customer_name = os.getenv('CUSTOMER_NAME','UNKNOWN_CUSTOMER_NAME')
+        self.file_name = f"dashboard_{rfc3339_timestamp}.json"
+        self.folder_path = f"{self.customer_name}/{year}/{month}/{day}/"
+        self.file_path = f"{self.folder_path}{self.file_name}"
+        self.local_file_name = f"/tmp/{self.file_name}"
 
         if not aws_access_key_id or not aws_secret_access_key:
             logger.debug("AWS credentials are not set in environment variables")
@@ -35,59 +45,66 @@ class S3Uploader:
         except ClientError as e:
             logger.debug(f"Client error: {e}")
 
-    def rename_and_upload(self, customer_name, checks_output):
-        now = datetime.now()
-        rfc3339_timestamp = now.isoformat() + 'Z'
-        self.ts = rfc3339_timestamp
-        year = now.strftime("%Y")
-        month = now.strftime("%m")
-        day = now.strftime("%d")
-
-        file_name = f"{rfc3339_timestamp}.json"
-        folder_path = f"{customer_name}/{year}/{month}/{day}/"
-        local_file_name = f"/tmp/{file_name}"
-
-        try:
-            # Convert checks_output to JSON format
-            checks_output_json = json.dumps(checks_output, indent=2)
-        except json.JSONDecodeError:
-            logger.debug(f"Failed to decode JSON response for {customer_name}")
-            return
-
-        # Write JSON data to a local file
-        try:
-            logger.debug(f"Writing JSON data to local file: {local_file_name}")
-            with open(local_file_name, 'w') as json_file:
-                json_file.write(checks_output_json)
-        except IOError as e:
-            logger.debug(f"Failed to write JSON data to local file: {e}")
-            return
-
+    def create_s3_folder_path(self):
         # Initialize folder_exists
         folder_exists = False
         
         # Ensure the folder structure exists in the bucket
         try:
-            self.s3_client.head_object(Bucket=self.bucket_name, Key=folder_path)
+            self.s3_client.head_object(Bucket=self.bucket_name, Key=self.folder_path)
             folder_exists = True
-            logger.debug(f"S3 folder {folder_path} exists")
+            logger.debug(f"S3 folder {self.folder_path} exists")
         except ClientError as e:
             if e.response['Error']['Code'] == '404':
                 folder_exists = False
-                logger.debug(f"S3 folder {folder_path} does not exist")
+                logger.debug(f"S3 folder {self.folder_path} does not exist")
             else:
                 logger.debug(f"Error checking folder existence: {e}")
 
         # Create folder if it doesn't exist
         if not folder_exists:
-            logger.debug(f"Creating folder {folder_path} in the bucket")
+            logger.debug(f"Creating folder {self.folder_path} in the bucket")
             try:
-                self.s3_client.put_object(Bucket=self.bucket_name, Key=folder_path)
+                self.s3_client.put_object(Bucket=self.bucket_name, Key=self.folder_path)
             except ClientError as e:
                 logger.debug(f"Failed to create folder: {e}")
+    
+    def rename_and_upload_failed_objects(self, checks_output):
+        try:
+            # Convert checks_output to JSON format
+            checks_output_json = json.dumps(checks_output, indent=2)
+        except json.JSONDecodeError:
+            logger.debug(f"Failed to decode JSON response for {self.customer_name}")
+            return
 
+        # Write JSON data to a local file
+        try:
+            logger.debug(f"Writing JSON data to local file: {self.local_file_name}")
+            with open(self.local_file_name, 'w') as json_file:
+                json_file.write(checks_output_json)
+        except IOError as e:
+            logger.debug(f"Failed to write JSON data to local file: {e}")
+            return
+
+        self.create_s3_folder_path()
+
+        # Upload the JSON file
+        try:
+            logger.debug(f"Uploading file {self.file_name} to {self.bucket_name}/{self.file_path}")
+            self.s3_client.upload_file(self.local_file_name, self.bucket_name, self.file_path)
+            logger.debug(f"File {self.file_name} uploaded successfully to {self.bucket_name}/{self.folder_path}")
+        except NoCredentialsError:
+            logger.debug("Credentials not available")
+        except Exception as e:
+            logger.debug(f"Unable to upload failed objetcs file to S3 bucket: {e}")
+        # Remove the local file after upload
+        logger.debug(f"Removing local file of check outputs json from /tmp: {self.local_file_name}")
+        os.remove(self.local_file_name)
+
+    def rename_and_upload_other_items(self):
+        self.create_s3_folder_path()
         # Upload the files in the CURRENT_EXECUTION_RUN_DIRECTORY 
-        file_list_to_upload = [local_file_name]
+        file_list_to_upload = [self.local_file_name]
         if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY') and \
             os.path.exists(self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')):
             try:
@@ -103,12 +120,10 @@ class S3Uploader:
         for _file in file_list_to_upload:
             base_name, extension = os.path.splitext(os.path.basename(_file))
             temp_fp = f"{base_name}_{self.ts}{extension}"
-            file_path = os.path.join(folder_path, temp_fp)
+            file_path = os.path.join(self.folder_path, temp_fp)
             if not self.do_upload_(_file, file_path):
                 logger.debug(f"ERROR: Uploading error for {_file}")
-        
-        os.remove(local_file_name)
-    
+
     def do_upload_(self, file_name, file_path):
         """Uploads the given file_name to s3 bucket defined in file_path
         """

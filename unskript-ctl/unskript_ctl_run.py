@@ -61,7 +61,6 @@ class Checks(ChecksFactory):
         self.map_entry_function_to_check_name = {}
         self.map_check_name_to_connector = {}
         self.check_name_to_id_mapping = {}
-        # self.customer_name = os.getenv('CUSTOMER_NAME','UNKNOWN CUSTOMER NAME')
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -187,9 +186,9 @@ class Checks(ChecksFactory):
         checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
         self.uglobals.create_property('CHECKS_OUTPUT')
         self.uglobals['CHECKS_OUTPUT'] = checks_output
-        # print("Uploading failed objects to S3...")
-        # uploader = S3Uploader()
-        # uploader.rename_and_upload(self.customer_name, checks_output)
+        print("Uploading failed objects to S3...")
+        uploader = S3Uploader()
+        uploader.rename_and_upload_failed_objects(checks_output)
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1

@@ -43,7 +43,6 @@ class UnskriptCtl(UnskriptFactory):
         self._check = Checks()
         self._script = Script()
         self._checks_priority = self._config.get_checks_priority()
-        self.customer_name = os.getenv('CUSTOMER_NAME','UNKNOWN CUSTOMER NAME')
 
 
         self._db = DBInterface()
@@ -170,8 +169,7 @@ class UnskriptCtl(UnskriptFactory):
 
             print("Uploading run artifacts to S3...")
             uploader = S3Uploader()
-            if self.uglobals.get('CHECKS_OUTPUT'):
-                uploader.rename_and_upload(self.customer_name, self.uglobals.get('CHECKS_OUTPUT'))
+            uploader.rename_and_upload_other_items()
 
     def run_info(self):
         """This function runs the info gathering actions"""
