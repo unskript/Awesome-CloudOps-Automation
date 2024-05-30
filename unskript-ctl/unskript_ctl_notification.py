@@ -198,10 +198,10 @@ class EmailNotification(NotificationFactory):
         return list_of_failed_files
 
     def create_script_summary_message(self, output_metadata_file: str):
-        # message = ''
+        message = ''
         if os.path.exists(output_metadata_file) is False:
             self.logger.error(f"ERROR: The metadata file is missing, please check if file exists? {output_metadata_file}")
-            return ''
+            return message
 
         metadata = ''
         with open(output_metadata_file, 'r', encoding='utf-8') as f:
@@ -215,24 +215,24 @@ class EmailNotification(NotificationFactory):
         self.logger.debug(f"\tStatus: {metadata.get('status')} \n\tTime (in seconds): {metadata.get('time_taken')} \n\tError: {metadata.get('error')} \n")
 
         # Remove from email 
-        # message += f'''
-        #         <br>
-        #         <h3> Custom Script Run Result </h3>
-        #         <table border="1">
-        #             <tr>
-        #                 <th> Status </th>
-        #                 <th> Time (in seconds) </th>
-        #                 <th> Error </th>
-        #             </tr>
-        #             <tr>
-        #                 <td>{metadata.get('status')}</td>
-        #                 <td>{metadata.get('time_taken')}</td>
-        #                 <td>{metadata.get('error')}</td>
-        #             </tr>
-        #         </table>
-        # '''
+        message += f'''
+                <br>
+                <h3> Custom Script Run Result </h3>
+                <table border="1">
+                    <tr>
+                        <th> Status </th>
+                        <th> Time (in seconds) </th>
+                        <th> Error </th>
+                    </tr>
+                    <tr>
+                        <td>{metadata.get('status')}</td>
+                        <td>{metadata.get('time_taken')}</td>
+                        <td>{metadata.get('error')}</td>
+                    </tr>
+                </table>
+        '''
 
-        return ''
+        return message
 
     def create_info_legos_output_file(self):
         """create_info_legos_output_file: This function creates a file that will
@@ -469,6 +469,10 @@ class EmailNotification(NotificationFactory):
         if info_result:
             message += info_result
             self.create_info_legos_output_file()
+        # print("Output Metadata File\n",output_metadata_file)
+        if output_metadata_file:
+            message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
+            temp_attachment = self.create_email_attachment(output_metadata_file=output_metadata_file)
 
         if len(os.listdir(self.execution_dir)) == 0 or not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
             self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
@@ -559,6 +563,9 @@ class SendgridNotification(EmailNotification):
             # Check conditions for creating tarball
             if len(os.listdir(self.execution_dir)) == 0 or not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
                 self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
+
+            if output_metadata_file:
+                html_message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
 
             info_result = self.create_info_gathering_action_result()
             if info_result:
