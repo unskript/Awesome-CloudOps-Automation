@@ -14,6 +14,7 @@ class S3Uploader:
         aws_access_key_id = os.getenv('LIGHTBEAM_AWS_ACCESS_KEY_ID')
         aws_secret_access_key = os.getenv('LIGHTBEAM_AWS_SECRET_ACCESS_KEY')
         self.bucket_name = 'lightbeam-reports'
+        self.ts = "TS"
 
         if not aws_access_key_id or not aws_secret_access_key:
             logger.debug("AWS credentials are not set in environment variables")
@@ -37,6 +38,7 @@ class S3Uploader:
     def rename_and_upload(self, customer_name, checks_output):
         now = datetime.now()
         rfc3339_timestamp = now.isoformat() + 'Z'
+        self.ts = rfc3339_timestamp
         year = now.strftime("%Y")
         month = now.strftime("%m")
         day = now.strftime("%d")
@@ -99,7 +101,10 @@ class S3Uploader:
                 logger.debug(f"Failed to get contents of Execution Run directory")
         
         for _file in file_list_to_upload:
-            if not self.do_upload_(_file, folder_path + os.path.basename(_file)):
+            base_name, extension = os.path.splitext(os.path.basename(_file))
+            temp_fp = f"{base_name}_{self.ts}{extension}"
+            file_path = os.path.join(folder_path, temp_fp)
+            if not self.do_upload_(_file, file_path):
                 logger.debug(f"ERROR: Uploading error for {_file}")
         
         os.remove(local_file_name)
