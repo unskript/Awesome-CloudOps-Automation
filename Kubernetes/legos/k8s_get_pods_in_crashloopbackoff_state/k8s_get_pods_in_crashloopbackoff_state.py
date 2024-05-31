@@ -8,8 +8,7 @@ from pydantic import BaseModel, Field
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 from tabulate import tabulate
-import datetime
-from datetime import timezone 
+from datetime import datetime, timedelta, timezone
 
 
 class InputSchema(BaseModel):
@@ -20,7 +19,13 @@ class InputSchema(BaseModel):
     time_interval_to_check: int = Field(
         24,
         description='Time interval in hours. This time window is used to check if POD was in Crashloopback. Default is 24 hours.',
-        title="Time Interval"
+        title=
+        "Time Interval"
+    )
+    restart_threshold: int = Field(
+        10,
+        description='The threshold for the number of restarts within the specified time interval. Default is 10 restarts.',
+        title='Restart Threshold'
     )
 
 
@@ -38,7 +43,21 @@ def format_datetime(dt):
     # Format datetime to a string 'YYYY-MM-DD HH:MM:SS UTC'
     return dt.strftime('%Y-%m-%d %H:%M:%S UTC')
 
-def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_interval_to_check=24) -> Tuple:
+def fetch_restart_events(v1, pod_name, namespace, time_interval):
+    """Fetch restart-related events for a specific pod within the given time interval."""
+    current_time = datetime.now(timezone.utc)
+    start_time = current_time - timedelta(hours=time_interval)
+    field_selector = f"involvedObject.name={pod_name},involvedObject.namespace={namespace}"
+    event_list = v1.list_namespaced_event(namespace, field_selector=field_selector)
+    restart_events = [
+        event for event in event_list.items
+        if event.reason in ["BackOff", "CrashLoopBackOff"] and
+        event.last_timestamp and
+        start_time <= event.last_timestamp.replace(tzinfo=timezone.utc) <= current_time
+    ]
+    return len(restart_events)
+
+def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_interval_to_check=24, restart_threshold=10) -> Tuple:
     """
     k8s_get_pods_in_crashloopbackoff_state returns the pods that have CrashLoopBackOff state in their container statuses within the specified time interval.
 
@@ -51,6 +70,9 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_int
     :type time_interval_to_check: int
     :param time_interval_to_check: (Optional) Integer, in hours, the interval within which the
             state of the POD should be checked.
+
+    :type restart_threshold: int
+        :param restart_threshold: (Optional) Integer, the threshold of restarts to check against.
 
     :rtype: Status, List of objects of pods, namespaces, and containers that are in CrashLoopBackOff state
     """
@@ -77,9 +99,7 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_int
     if pods is None:
         raise ApiException("No pods returned from the Kubernetes API.")
 
-    current_time = datetime.datetime.now(timezone.utc)
-    interval_time_to_check = current_time - datetime.timedelta(hours=time_interval_to_check)
-    interval_time_to_check = interval_time_to_check.replace(tzinfo=timezone.utc)
+    interval_time_to_check = datetime.now(timezone.utc) - timedelta(hours=time_interval_to_check)
 
     for pod in pods:
         pod_name = pod.metadata.name
@@ -87,23 +107,25 @@ def k8s_get_pods_in_crashloopbackoff_state(handle, namespace: str = '', time_int
         container_statuses = pod.status.container_statuses
         if container_statuses is None:
             continue
+        recent_restarts = fetch_restart_events(v1, pod_name, namespace, time_interval_to_check)
+
         for container_status in container_statuses:
             container_name = container_status.name
             if container_status.state and container_status.state.waiting and container_status.state.waiting.reason == "CrashLoopBackOff":
-                # Check if the last transition time to CrashLoopBackOff is within the specified interval
-                if container_status.last_state and container_status.last_state.terminated:
-                    last_transition_time = container_status.last_state.terminated.finished_at
-                    if last_transition_time:
-                        last_transition_time = last_transition_time.replace(tzinfo=timezone.utc)
-                        if last_transition_time >= interval_time_to_check:
-                            formatted_transition_time = format_datetime(last_transition_time)
-                            formatted_interval_time_to_check = format_datetime(interval_time_to_check)
+                last_state = container_status.last_state
+                if last_state and last_state.terminated:
+                    last_transition_time = last_state.terminated.finished_at
+                    # Check if the last transition time to CrashLoopBackOff is within the specified interval
+                    # and the number of restarts are greater threshold in the last 24 hours
+                    if last_transition_time and last_transition_time.replace(tzinfo=timezone.utc) >= interval_time_to_check:
+                        if recent_restarts > restart_threshold:
+                            formatted_last_transition_time = format_datetime(last_transition_time)
                             result.append({
                                 "pod": pod_name,
                                 "namespace": namespace,
                                 "container": container_name,
-                                "last_transition_time": formatted_transition_time,
-                                "interval_time_to_check": formatted_interval_time_to_check
+                                "termination_time": formatted_last_transition_time,
+                                "restarts": recent_restarts
                             })
 
     return (False, result) if result else (True, None)
