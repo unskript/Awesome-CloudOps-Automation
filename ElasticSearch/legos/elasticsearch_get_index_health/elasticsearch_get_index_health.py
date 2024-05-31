@@ -51,29 +51,25 @@ def elasticsearch_get_index_health(handle, index_name="") -> Tuple:
     :return: A list of dictionaries where each dictionary contains stats about each index
     """
     try:
-        if index_name:
-            # Fetch specific index health
-            health_url = f"/_cat/indices/{index_name}?v&h=index,status&format=json"
-            health_response = handle.web_request(health_url, "GET", None)
-            index_stats = [health_response[0]] if health_response and 'error' not in health_response else []
-        else:
-            # Fetches all indices health; skips empty lines and system indices
-            health_url = "/_cat/indices?v&h=index,status&format=json"
-            health_response = handle.web_request(health_url, "GET", None)
-            index_stats = [idx for idx in health_response if not idx['index'].startswith('.')] if health_response and 'error' not in health_response else []
-
-        if not index_stats:
+        health_url = f"/_cat/indices/{index_name}?v&h=index,health&format=json" if index_name else "/_cat/indices?v&h=index,health&format=json"
+        health_response = handle.web_request(health_url, "GET", None)
+        if not health_response:
             print(f"No indices found or error retrieving indices: {health_response.get('error', 'No response') if health_response else 'No data'}")
             return (True, None)
 
-        all_indices_stats = [
-            {"index": idx['index'], "status": idx['status']}
-            for idx in index_stats
+        # Filter indices that are not 'green'
+        problematic_indices = [
+            {"index": idx['index'], "health": idx['health']}
+            for idx in health_response if idx['health'] != 'green'
         ]
+
+        if not problematic_indices:
+            print("All indices are in good health.")
+            return (True, None)
 
     except Exception as e:
         print(f"Error processing index health: {str(e)}")
         return (False, [])
 
-    return (False, all_indices_stats) if all_indices_stats else (True, None)
+    return (False, problematic_indices)
 
