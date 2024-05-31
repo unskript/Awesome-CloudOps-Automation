@@ -23,6 +23,7 @@ from unskript_ctl_factory import *
 from unskript_ctl_version import *
 from unskript_ctl_upload_session_logs import upload_session_logs
 from diagnostics import main as diagnostics
+from unskript_upload_results_to_s3 import S3Uploader
 
 YAML_CONFIG_FILE = "/etc/unskript/unskript_ctl_config.yaml"
 
@@ -43,6 +44,7 @@ class UnskriptCtl(UnskriptFactory):
         self._check = Checks()
         self._script = Script()
         self._checks_priority = self._config.get_checks_priority()
+
 
         self._db = DBInterface()
         # Create execution directory so all results
@@ -165,6 +167,10 @@ class UnskriptCtl(UnskriptFactory):
                 output_dir
             ]
             diagnostics(diag_args)
+
+            print("Uploading run artifacts to S3...")
+            uploader = S3Uploader()
+            uploader.rename_and_upload_other_items()
 
     def run_info(self):
         """This function runs the info gathering actions"""

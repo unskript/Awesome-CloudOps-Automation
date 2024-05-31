@@ -25,6 +25,7 @@ from tqdm import tqdm
 from unskript_utils import *
 from unskript_ctl_factory import ChecksFactory, ScriptsFactory
 from unskript.legos.utils import CheckOutputStatus
+from unskript_upload_results_to_s3 import S3Uploader
 
 
 # Implements Checks Class that is wrapper for All Checks Function
@@ -116,7 +117,8 @@ class Checks(ChecksFactory):
             self._error(str(e))
         finally:
             self._common.update_exec_id()
-            output_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
+            output_file = os.path.join(self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'), 
+                                       self.uglobals.get('exec_id')) + '_output.txt'
             if not outputs:
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
@@ -182,6 +184,11 @@ class Checks(ChecksFactory):
         failed_result_available = False
         failed_result = {}
         checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
+        self.uglobals.create_property('CHECKS_OUTPUT')
+        self.uglobals['CHECKS_OUTPUT'] = checks_output
+        print("Uploading failed objects to S3...")
+        uploader = S3Uploader()
+        uploader.rename_and_upload_failed_objects(checks_output)
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1
