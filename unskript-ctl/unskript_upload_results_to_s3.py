@@ -30,7 +30,6 @@ class S3Uploader:
             logger.debug("AWS credentials are not set in environment variables")
             return
 
-        self.bucket_name = 'lightbeam-reports'
         self.uglobals = UnskriptGlobals()
 
         try:
@@ -48,6 +47,23 @@ class S3Uploader:
     def create_s3_folder_path(self):
         # Initialize folder_exists
         folder_exists = False
+
+        # Ensure the bucket exists
+        try:
+            self.s3_client.head_bucket(Bucket=self.bucket_name)
+            logger.debug(f"S3 bucket {self.bucket_name} exists")
+        except ClientError as e:
+            if e.response['Error']['Code'] == '404':
+                logger.debug(f"S3 bucket {self.bucket_name} does not exist, creating bucket")
+                try:
+                    self.s3_client.create_bucket(Bucket=self.bucket_name)
+                    logger.debug(f"S3 bucket {self.bucket_name} created")
+                except ClientError as e:
+                    logger.debug(f"Failed to create bucket: {e}")
+                    return False  # Exit if the bucket cannot be created
+            else:
+                logger.debug(f"Error checking bucket existence: {e}")
+                return False  # Exit if there is any other error
         
         # Ensure the folder structure exists in the bucket
         try:
@@ -69,6 +85,8 @@ class S3Uploader:
             except ClientError as e:
                 logger.debug(f"Failed to create folder: {e}")
     
+        return True
+
     def rename_and_upload_failed_objects(self, checks_output):
         try:
             # Convert checks_output to JSON format
@@ -86,7 +104,9 @@ class S3Uploader:
             logger.debug(f"Failed to write JSON data to local file: {e}")
             return
 
-        self.create_s3_folder_path()
+        if not self.create_s3_folder_path():
+            logger.debug("Unable to create bucket")
+            return
 
         # Upload the JSON file
         try:
@@ -102,7 +122,9 @@ class S3Uploader:
         os.remove(self.local_file_name)
 
     def rename_and_upload_other_items(self):
-        self.create_s3_folder_path()
+        if not self.create_s3_folder_path():
+            logger.debug("Unable to create bucket")
+            return
         # Upload the files in the CURRENT_EXECUTION_RUN_DIRECTORY 
         file_list_to_upload = [self.local_file_name]
         if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY') and \
