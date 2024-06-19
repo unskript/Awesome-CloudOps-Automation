@@ -290,8 +290,6 @@ class Checks(ChecksFactory):
             print('\x1B[1;4m', '\x1B[0m')
         return
 
-
-
     def output_after_merging_checks(self, outputs: list, ids: list) -> list:
         """output_after_merging_checks: this function combines the output from duplicated
         checks and stores the combined output.
@@ -318,11 +316,13 @@ class Checks(ChecksFactory):
                 if current_output['status'] < output['status']:
                     # If the new status is more severe, overwrite the old status
                     current_output['status'] = output['status']
-                    current_output['objects'] = output.get('objects')
+                    current_output['objects'] = output.get('objects', [])
 
                 if output['status'] == 2 and output.get('objects'):
                     # Append objects if status is FAILED and objects are non-empty
-                    current_output.setdefault('objects', []).extend(output.get('objects', []))
+                    if 'objects' not in current_output or not isinstance(current_output['objects'], list):
+                        current_output['objects'] = []
+                    current_output['objects'].extend(output.get('objects', []))
 
                 # Update error message if there's a new one and it's non-empty
                 if 'error' in output and output['error']:
