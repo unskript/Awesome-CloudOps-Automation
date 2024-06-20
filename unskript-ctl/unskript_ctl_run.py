@@ -186,9 +186,34 @@ class Checks(ChecksFactory):
         checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
         self.uglobals.create_property('CHECKS_OUTPUT')
         self.uglobals['CHECKS_OUTPUT'] = checks_output
-        print("Uploading failed objects to S3...")
-        uploader = S3Uploader()
-        uploader.rename_and_upload_failed_objects(checks_output)
+        self.logger.debug("Creating checks output JSON to upload to S3")
+        # print("Uploading failed objects to S3...")
+        # uploader = S3Uploader()
+        # uploader.rename_and_upload_failed_objects(checks_output)
+        now = datetime.now()
+        rfc3339_timestamp = now.isoformat() + 'Z'
+        parent_folder = '/tmp'
+        if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
+            parent_folder = self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')
+        dashboard_checks_output_file = f"dashboard_{rfc3339_timestamp}.json"
+        dashboard_checks_output_file_path = os.path.join(parent_folder, dashboard_checks_output_file)
+        try:
+            # Convert checks_output to JSON format
+            checks_output_json = json.dumps(checks_output, indent=2)
+        except json.JSONDecodeError:
+            self.logger.debug(f"Failed to decode JSON response for {self.customer_name}")
+            return
+
+        # Write checks output JSON to a separate file
+        try:
+            if checks_output_json:
+                self.logger.debug(f"Writing JSON data to dashboard json file")
+                with open(dashboard_checks_output_file_path, 'w') as json_file:
+                    json_file.write(checks_output_json)
+        except IOError as e:
+            self.logger.debug(f"Failed to write JSON data to {dashboard_checks_output_file_path}: {e}")
+            return
+
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1

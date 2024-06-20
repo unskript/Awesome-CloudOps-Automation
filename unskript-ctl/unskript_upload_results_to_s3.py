@@ -87,39 +87,39 @@ class S3Uploader:
     
         return True
 
-    def rename_and_upload_failed_objects(self, checks_output):
-        try:
-            # Convert checks_output to JSON format
-            checks_output_json = json.dumps(checks_output, indent=2)
-        except json.JSONDecodeError:
-            logger.debug(f"Failed to decode JSON response for {self.customer_name}")
-            return
+    # def rename_and_upload_failed_objects(self, checks_output):
+    #     try:
+    #         # Convert checks_output to JSON format
+    #         checks_output_json = json.dumps(checks_output, indent=2)
+    #     except json.JSONDecodeError:
+    #         logger.debug(f"Failed to decode JSON response for {self.customer_name}")
+    #         return
 
-        # Write JSON data to a local file
-        try:
-            logger.debug(f"Writing JSON data to local file: {self.local_file_name}")
-            with open(self.local_file_name, 'w') as json_file:
-                json_file.write(checks_output_json)
-        except IOError as e:
-            logger.debug(f"Failed to write JSON data to local file: {e}")
-            return
+    #     # Write JSON data to a local file
+    #     try:
+    #         logger.debug(f"Writing JSON data to local file: {self.local_file_name}")
+    #         with open(self.local_file_name, 'w') as json_file:
+    #             json_file.write(checks_output_json)
+    #     except IOError as e:
+    #         logger.debug(f"Failed to write JSON data to local file: {e}")
+    #         return
 
-        if not self.create_s3_folder_path():
-            logger.debug("Unable to create bucket")
-            return
+    #     if not self.create_s3_folder_path():
+    #         logger.debug("Unable to create bucket")
+    #         return
 
-        # Upload the JSON file
-        try:
-            logger.debug(f"Uploading file {self.file_name} to {self.bucket_name}/{self.file_path}")
-            self.s3_client.upload_file(self.local_file_name, self.bucket_name, self.file_path)
-            logger.debug(f"File {self.file_name} uploaded successfully to {self.bucket_name}/{self.folder_path}")
-        except NoCredentialsError:
-            logger.debug("Credentials not available")
-        except Exception as e:
-            logger.debug(f"Unable to upload failed objetcs file to S3 bucket: {e}")
-        # Remove the local file after upload
-        logger.debug(f"Removing local file of check outputs json from /tmp: {self.local_file_name}")
-        os.remove(self.local_file_name)
+    #     # Upload the JSON file
+    #     try:
+    #         logger.debug(f"Uploading file {self.file_name} to {self.bucket_name}/{self.file_path}")
+    #         self.s3_client.upload_file(self.local_file_name, self.bucket_name, self.file_path)
+    #         logger.debug(f"File {self.file_name} uploaded successfully to {self.bucket_name}/{self.folder_path}")
+    #     except NoCredentialsError:
+    #         logger.debug("Credentials not available")
+    #     except Exception as e:
+    #         logger.debug(f"Unable to upload failed objetcs file to S3 bucket: {e}")
+    #     # Remove the local file after upload
+    #     logger.debug(f"Removing local file of check outputs json from /tmp: {self.local_file_name}")
+    #     os.remove(self.local_file_name)
 
     def rename_and_upload_other_items(self):
         if not self.create_s3_folder_path():
@@ -137,12 +137,16 @@ class S3Uploader:
                     for _file in _files:
                         file_list_to_upload.append(os.path.join(parent_dir, _file))
             except:
-                logger.debug(f"Failed to get contents of Execution Run directory")
+                logger.debug("Failed to get contents of Execution Run directory")
         
         for _file in file_list_to_upload:
             base_name, extension = os.path.splitext(os.path.basename(_file))
-            temp_fp = f"{base_name}_{self.ts}{extension}"
-            file_path = os.path.join(self.folder_path, temp_fp)
+            if base_name.startswith("dashboard"):
+                file_path = os.path.join(self.folder_path, os.path.basename(_file))
+            else:
+                temp_fp = f"{base_name}_{self.ts}{extension}"
+                file_path = os.path.join(self.folder_path, temp_fp)
+            
             if not self.do_upload_(_file, file_path):
                 logger.debug(f"ERROR: Uploading error for {_file}")
 
