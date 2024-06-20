@@ -192,6 +192,7 @@ class Checks(ChecksFactory):
         # uploader.rename_and_upload_failed_objects(checks_output)
         now = datetime.now()
         rfc3339_timestamp = now.isoformat() + 'Z'
+        parent_folder = '/tmp'
         if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
             parent_folder = self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')
         dashboard_checks_output_file = f"dashboard_{rfc3339_timestamp}.json"
