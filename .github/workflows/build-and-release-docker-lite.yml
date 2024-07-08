@@ -273,20 +273,20 @@ jobs:
           git clone https://${{ env.USERNAME }}:${{ secrets.BUILDER_PAT }}@github.com/unskript/devops.git devops
 
 
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: schema-${{ github.run_id }}
           path: /tmp/unskript
 
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: gotty-linux-amd64-${{ github.run_id }}
           path: /tmp/gotty/linux_amd64
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: gotty-linux-arm64-${{ github.run_id }}
           path: /tmp/gotty/linux_arm64
