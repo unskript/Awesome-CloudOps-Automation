@@ -46,6 +46,7 @@ jobs:
           pip install --no-cache-dir /tmp/main_module.tar.gz
           aws s3 cp  ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} /tmp/sub_module.tar.gz
           pip install --no-cache-dir /tmp/sub_module.tar.gz
+          pip install --no-cache-dir matplotlib>=3.7.1
         
       - name: Run All Modules Check
 

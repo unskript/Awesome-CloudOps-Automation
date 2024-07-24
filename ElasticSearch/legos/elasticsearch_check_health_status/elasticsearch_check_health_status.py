@@ -27,38 +27,33 @@ def elasticsearch_check_health_status(handle, unassigned_shards:int = 20) -> Tup
 
             :rtype: Result Tuple of result
     """
-    cluster_health = {}
     output = handle.web_request("/_cluster/health?pretty", "GET", None)
-
+    
+    # Early return if cluster status is green
     if output['status'] == 'green':
         return (True, None)
-
-    cluster_health['cluster_name'] = output['cluster_name']
-    cluster_health['status'] = output['status']
-
-    # Additional checks for both red and yellow statuses
-    additional_details = False
+    
+    cluster_health = {
+        "cluster_name": output['cluster_name'],
+        "status": output['status'],
+        "unassigned_shards": output['unassigned_shards']
+    }
+    
+    # Check for significant health issues
     if output['unassigned_shards'] > unassigned_shards:
-        cluster_health['unassigned_shards'] = output['unassigned_shards']
-        additional_details = True
+        return (False, [cluster_health])  # Return immediately if unassigned shards exceed the threshold
 
-    if output['delayed_unassigned_shards'] > 0:
-        cluster_health['delayed_unassigned_shards'] = output['delayed_unassigned_shards']
-        additional_details = True
-
-    if output['initializing_shards'] > 0 or output['relocating_shards'] > 0:
-        cluster_health['initializing_shards'] = output['initializing_shards']
-        cluster_health['relocating_shards'] = output['relocating_shards']
-        additional_details = True
-
-    if output['number_of_nodes'] != output['number_of_data_nodes']:
-        cluster_health['number_of_nodes'] = output['number_of_nodes']
-        cluster_health['number_of_data_nodes'] = output['number_of_data_nodes']
-        additional_details = True
-
-    # If status is red, return the result immediately
-    if output['status'] == 'red' or (output['status'] == 'yellow' and additional_details):
+    # Additional checks for severe conditions
+    if output['status'] == 'red' or output['delayed_unassigned_shards'] > 0 or output['initializing_shards'] > 0 or output['relocating_shards'] > 0 or output['number_of_nodes'] != output['number_of_data_nodes']:
+        additional_details = {
+            "delayed_unassigned_shards": output['delayed_unassigned_shards'],
+            "initializing_shards": output['initializing_shards'],
+            "relocating_shards": output['relocating_shards'],
+            "number_of_nodes": output['number_of_nodes'],
+            "number_of_data_nodes": output['number_of_data_nodes']
+        }
+        cluster_health.update(additional_details)
         return (False, [cluster_health])
-
-    # If status is yellow but no additional conditions are met, return as healthy
+    
+    # If status is yellow but no additional critical issues, consider it healthy
     return (True, None)

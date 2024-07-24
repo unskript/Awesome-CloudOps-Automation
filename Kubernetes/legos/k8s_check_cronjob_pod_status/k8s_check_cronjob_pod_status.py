@@ -7,11 +7,17 @@ from kubernetes import client
 from typing import Tuple, Optional
 from pydantic import BaseModel, Field
 from croniter import croniter
+from datetime import datetime, timezone, timedelta
 import json
 
 
 class InputSchema(BaseModel):
     namespace: Optional[str] = Field(..., description='k8s Namespace', title='Namespace')
+    time_interval_to_check: int = Field(
+        24,
+        description='Time interval in hours. This time window is used to check if pod in a cronjob was in Pending state. Default is 24 hours.',
+        title="Time Interval"
+    )
 
 
 def k8s_check_cronjob_pod_status_printer(output):
@@ -20,10 +26,12 @@ def k8s_check_cronjob_pod_status_printer(output):
         print("CronJobs are running as expected.")
     else:
         for issue in issues:
-            print(f"CronJob '{issue['cronjob_name']}' Alert: {issue['message']}")
+            print(f"CronJob '{issue['cronjob_name']}' in namespace '{issue['namespace']}' has issues.")
 
+def format_datetime(dt):
+    return dt.strftime("%Y-%m-%d %H:%M:%S %Z")
 
-def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
+def k8s_check_cronjob_pod_status(handle, namespace: str='', time_interval_to_check=24) -> Tuple:
     """
     Checks the status of the CronJob pods.
 
@@ -39,7 +47,10 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
     batch_v1 = client.BatchV1Api(api_client=handle)
     core_v1 = client.CoreV1Api(api_client=handle)
 
-    issues = {"NotAssociated": [], "Pending": [], "UnexpectedState": []}
+    issues = []
+    current_time = datetime.now(timezone.utc)
+    interval_time_to_check = current_time - timedelta(hours=time_interval_to_check)
+    interval_time_to_check = interval_time_to_check.replace(tzinfo=timezone.utc)
 
     # Get namespaces to check
     if namespace:
@@ -68,34 +79,35 @@ def k8s_check_cronjob_pod_status(handle, namespace: str='') -> Tuple:
                 continue
             cronjob = json.loads(response.stdout)
 
-            schedule = cronjob['spec']['schedule']
-
-            # Calculate the next expected run
-            now = datetime.now(timezone.utc)
-            iter = croniter(schedule, now)
-            next_run = iter.get_next(datetime)
-            time_to_next_run = next_run - now
-
             # Fetch the most recent Job associated with the CronJob
             jobs = batch_v1.list_namespaced_job(ns)  # Fetch all jobs, and then filter by prefix.
-
             associated_jobs = [job for job in jobs.items if job.metadata.name.startswith(cronjob['metadata']['name'])]
             if not associated_jobs:
                 # If no associated jobs, that means the job is not scheduled.
-                return (True, None)
+                continue
 
             latest_job = sorted(associated_jobs, key=lambda x: x.status.start_time, reverse=True)[0]
 
             # Check job's pods for any issues
             pods = core_v1.list_namespaced_pod(ns, label_selector=f"job-name={latest_job.metadata.name}")
-
             for pod in pods.items:
-                if pod.status.phase == 'Pending' and now - pod.status.start_time > time_to_next_run:
-                    issues["Pending"].append({"pod_name": pod.metadata.name, "namespace": ns})
-                elif pod.status.phase not in ['Running', 'Succeeded']:
-                    issues["UnexpectedState"].append({"pod_name": pod.metadata.name, "namespace": ns, "state": pod.status.phase})
+                if pod.status.phase == 'Pending':
+                    start_time = pod.status.start_time
+                    if start_time and start_time >= interval_time_to_check:
+                        issues.append({
+                            "cronjob_name": cronjob_name, 
+                            "namespace": ns, 
+                            "pod_name": pod.metadata.name, 
+                            "start_time": format_datetime(start_time)
+                        })
+                        break
+                elif pod.status.phase not in ['Running', 'Succeeded','Completed']:
+                    issues.append({
+                        "cronjob_name": cronjob_name, 
+                        "namespace": ns, 
+                        "pod_name": pod.metadata.name, 
+                        "state": pod.status.phase
+                    })
+                    break
 
-    if all(not val for val in issues.values()):
-        return (True, None)
-    else:
-        return (False, issues)
+    return (not issues, issues if issues else None)

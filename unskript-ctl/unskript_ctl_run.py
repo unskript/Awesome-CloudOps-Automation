@@ -25,6 +25,7 @@ from tqdm import tqdm
 from unskript_utils import *
 from unskript_ctl_factory import ChecksFactory, ScriptsFactory
 from unskript.legos.utils import CheckOutputStatus
+from unskript_upload_results_to_s3 import S3Uploader
 
 
 # Implements Checks Class that is wrapper for All Checks Function
@@ -59,6 +60,7 @@ class Checks(ChecksFactory):
         self.prioritized_checks_to_id_mapping = {}
         self.map_entry_function_to_check_name = {}
         self.map_check_name_to_connector = {}
+        self.check_name_to_id_mapping = {}
 
         for k,v in self.checks_globals.items():
             os.environ[k] = json.dumps(v)
@@ -85,12 +87,27 @@ class Checks(ChecksFactory):
             from jit_script import do_run_
             temp_output = do_run_(self.logger, self.script_to_check_mapping)
             output_list = []
-            for o in temp_output.split('\n'):
-                if not o:
-                    continue
-                d = json.loads(json.dumps(o))
-                if isinstance(d, dict) is False:
-                    d = json.loads(d)
+            # Combine all parts of all_outputs in template_script.j2 do_run function into a single string
+            combined_output = ''.join(temp_output)
+
+            # Correct the formatting to ensure it's proper JSON
+            formatted_output = combined_output.replace('}\n{', '},\n{')
+            if not formatted_output.endswith('\n'):
+                formatted_output += '\n'
+
+            # Strip trailing comma and newline, then wrap in array brackets
+            formatted_output = formatted_output.rstrip(',\n')
+            json_output = f"[{formatted_output}]"
+
+            try:
+                # Parse the JSON array into a list of dictionaries
+                data = json.loads(json_output)
+            except json.JSONDecodeError as e:
+                # Handle the case where the JSON could not be decoded
+                self.logger.error(f"Failed to decode JSON: {e}")
+                raise ValueError("Invalid JSON format of output") from e
+            for d in data:
+                # Assign appropriate check names
                 d['name'] = self.check_names[self.check_uuids.index(d.get('id'))]
                 d['check_entry_function'] = self.check_entry_functions[self.check_uuids.index(d.get('id'))]
                 output_list.append(d)
@@ -100,7 +117,8 @@ class Checks(ChecksFactory):
             self._error(str(e))
         finally:
             self._common.update_exec_id()
-            output_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
+            output_file = os.path.join(self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'), 
+                                       self.uglobals.get('exec_id')) + '_output.txt'
             if not outputs:
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
@@ -166,18 +184,49 @@ class Checks(ChecksFactory):
         failed_result_available = False
         failed_result = {}
         checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
+        self.uglobals.create_property('CHECKS_OUTPUT')
+        self.uglobals['CHECKS_OUTPUT'] = checks_output
+        self.logger.debug("Creating checks output JSON to upload to S3")
+        # print("Uploading failed objects to S3...")
+        # uploader = S3Uploader()
+        # uploader.rename_and_upload_failed_objects(checks_output)
+        now = datetime.now()
+        rfc3339_timestamp = now.isoformat() + 'Z'
+        parent_folder = '/tmp'
+        if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
+            parent_folder = self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')
+        dashboard_checks_output_file = f"dashboard_{rfc3339_timestamp}.json"
+        dashboard_checks_output_file_path = os.path.join(parent_folder, dashboard_checks_output_file)
+        try:
+            # Convert checks_output to JSON format
+            checks_output_json = json.dumps(checks_output, indent=2)
+        except json.JSONDecodeError:
+            self.logger.debug(f"Failed to decode JSON response for {self.customer_name}")
+            return
+
+        # Write checks output JSON to a separate file
+        try:
+            if checks_output_json:
+                self.logger.debug(f"Writing JSON data to dashboard json file")
+                with open(dashboard_checks_output_file_path, 'w') as json_file:
+                    json_file.write(checks_output_json)
+        except IOError as e:
+            self.logger.debug(f"Failed to write JSON data to {dashboard_checks_output_file_path}: {e}")
+            return
+
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1
                 continue
             payload = result
             try:
+                _action_uuid = payload.get('id')
                 if self.checks_priority is None:
                     priority = CHECK_PRIORITY_P2
                 else:
-                    priority = self.checks_priority.get(self.check_entry_functions[idx], CHECK_PRIORITY_P2)
+                    # priority = self.checks_priority.get(self.check_entry_functions[idx], CHECK_PRIORITY_P2)
+                    priority = self.checks_priority.get(self.check_name_to_id_mapping.get(_action_uuid), CHECK_PRIORITY_P2)
 
-                _action_uuid = payload.get('id')
                 if _action_uuid:
                     #c_name = self.connector_types[idx] + ':' + self.prioritized_checks_to_id_mapping[_action_uuid]
                     p_check_name = self.prioritized_checks_to_id_mapping[_action_uuid]
@@ -266,45 +315,45 @@ class Checks(ChecksFactory):
             print('\x1B[1;4m', '\x1B[0m')
         return
 
-
-
     def output_after_merging_checks(self, outputs: list, ids: list) -> list:
         """output_after_merging_checks: this function combines the output from duplicated
         checks and stores the combined output.
         TBD: What if one duplicated check returns an ERROR
+        Status:
+            1 : PASS
+            2 : FAIL
+            3 : ERROR
         """
-        new_outputs = []
-        # Remove empty strings
-        filtered_output = []
+        result_dict = {}
+
         for output in outputs:
             if not output:
                 continue
-            filtered_output.append(output)
 
-        outputs = filtered_output
-        if self.uglobals.get('uuid_mapping') is None:
-            return outputs
+            check_id = output.get('id')
+            current_output = result_dict.get(check_id)
 
-        index = 0
-        while index < len(outputs):
-            if self.uglobals['uuid_mapping'].get(ids[index]) is None:
-                new_outputs.append(outputs[index])
-                index = index+1
+            if current_output is None:
+                # If no entry exists, directly use this output
+                result_dict[check_id] = output
             else:
-                parent_index = index - 1
-                while index < len(outputs):
-                    if self.uglobals['uuid_mapping'].get(ids[index]):
-                        outputs[index]['skip'] = True
-                        new_outputs.append(outputs[index])
-                        index = index + 1
-                    else:
-                        break
-                combined_output = self.calculate_combined_check_status(outputs[parent_index:index])
-                # Combined output should be the output of the parent check, so
-                # overwrite it.
-                #print(f'parent_index {parent_index}, index {index}, combined_output {combined_output}')
-                new_outputs[parent_index] = combined_output
-        return new_outputs
+                # If an entry exists, merge this output with the existing one
+                if current_output['status'] < output['status']:
+                    # If the new status is more severe, overwrite the old status
+                    current_output['status'] = output['status']
+                    current_output['objects'] = output.get('objects', [])
+
+                if output['status'] == 2 and output.get('objects'):
+                    # Append objects if status is FAILED and objects are non-empty
+                    if 'objects' not in current_output or not isinstance(current_output['objects'], list):
+                        current_output['objects'] = []
+                    current_output['objects'].extend(output.get('objects', []))
+
+                # Update error message if there's a new one and it's non-empty
+                if 'error' in output and output['error']:
+                    current_output['error'] = output['error']
+
+        return list(result_dict.values())
 
     def calculate_combined_check_status(self, outputs:list):
         combined_output = {}
@@ -406,7 +455,12 @@ class Checks(ChecksFactory):
                         first_cell_content += f'{k}{index} = \"{value}\"' + '\n'
         first_cell_content += f'''w = Workflow(env, secret_store_cfg, None, global_vars=globals(), check_uuids={self.check_uuids})''' + '\n'
         # temp_map = {key: value for key, value in zip(self.check_entry_functions, self.check_uuids)}
-        temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
+        # temp_map = dict(zip(self.check_entry_functions, self.check_uuids))
+        temp_map = {}
+        for index,value in enumerate(self.check_uuids):
+            temp_map[self.check_entry_functions[index]] = value
+            self.check_name_to_id_mapping[value] = self.check_entry_functions[index]
+
         first_cell_content += f'''w.check_uuid_entry_function_map = {temp_map}''' + '\n'
         first_cell_content += '''w.errored_checks = {}''' + '\n'
         first_cell_content += '''w.timeout_checks = {}''' + '\n'
@@ -619,8 +673,9 @@ class CommonAction(ChecksFactory):
                                         # as the one its copied from.
                                         new_uuid = str(uuid.uuid4())
                                         self.uglobals["uuid_mapping"][new_uuid] = action["uuid"]
-                                        newcheck['uuid'] = new_uuid
-                                        newcheck['id'] = str(uuid.uuid4())[:8]
+                                        # newcheck['uuid'] = new_uuid
+                                        newcheck['uuid'] = action["uuid"]
+                                        newcheck['id'] = str(action["uuid"])
                                         #print(f'Adding duplicate check {new_uuid}, parent_uuid {check.get("uuid")}')
                                     newcheck['matrixinputline'] = input_json_line.rstrip(',')
                                     action_list.append(newcheck)

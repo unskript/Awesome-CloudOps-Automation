@@ -1,12 +1,19 @@
 from unskript.legos.utils import CheckOutput, CheckOutputStatus
+
 global w 
 global _logger
 
 all_outputs = []
 other_outputs = []
+id_to_name = {}
 if _logger:
    _logger.debug(f"ERRORED CHECKS ARE: {w.errored_checks}")
    _logger.debug(f"TIMED OUT CHECKS ARE: {w.timeout_checks}")
+
+if hasattr(w, 'check_uuid_entry_function_map'):
+    for key,value in w.check_uuid_entry_function_map.items():
+        if value not in id_to_name:
+            id_to_name[value] = key
 
 try:
     if 'w' in globals():
@@ -14,6 +21,7 @@ try:
             for id,output in w.check_output.items():
                 output = json.loads(output)
                 output['id'] = id
+                #output['name'] = id_to_name.get(id) if id else str()
                 all_outputs.append(output)
             # Lets check if we have errored_checks or timeout_checks
             # exists, if yes then lets dump the output 
@@ -26,6 +34,7 @@ try:
                             "objects": None,
                             "error": err_msg,
                             "id": str(_id)
+                            #"name": str(name)
                         })
                 if hasattr(w, 'errored_checks') and len(w.errored_checks):
                     for name, err_msg in w.errored_checks.items():
@@ -35,6 +44,7 @@ try:
                             "objects": None,
                             "error": err_msg,
                             "id": str(_id)
+                            #"name": str(name)
                         })
                         
             if other_outputs:
@@ -48,14 +58,33 @@ try:
                          if _logger:
                              _logger.debug(f"FOUND DUPLICATE FOR {_other.get('id')}")
 
+            if _logger:
+                _logger.debug(f"OTHER OUTPUTS: {other_outputs}")
             existing_ids = set(output.get('id') for output in all_outputs)
             unique_other_outputs = [other_output for other_output in other_outputs if other_output.get('id') not in existing_ids]
             if unique_other_outputs:
-                all_outputs.extend(unique_other_outputs)
+                # Lets insert the unique other outputs at the same respective place
+                #all_outputs.extend(unique_other_outputs)
+                if _logger:
+                    _logger.debug(f"LENGTH OF ALL OUTPUT BEFORE INSERT IS: {len(all_outputs)}")
+                for uo in unique_other_outputs:
+                    insert_index = w.check_uuids.index(uo.get('id'))
+                    if _logger:
+                        _logger.debug(f"INSERTING RESULT FOR {uo.get('id')} at {insert_index} position")
+                    if insert_index:
+                        all_outputs.insert(insert_index, uo)
+                
             
             if not all_outputs:
                 all_outputs = other_outputs
  
+            _outputs_with_valid_names = []
+            for _output in all_outputs:
+                if id_to_name.get(_output.get('id')):
+                    _outputs_with_valid_names.append(_output)
+                    if _logger:
+                        _logger.debug(f"All output has result for ID: {_output.get('id')} Name: {id_to_name.get(_output.get('id'))} Status: {_output.get('status')}")
+            all_outputs = _outputs_with_valid_names
             for _output in all_outputs:
                 print(json.dumps(_output))
         else:
