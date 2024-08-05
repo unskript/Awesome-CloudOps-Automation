@@ -143,7 +143,7 @@ jobs:
           python3 ./setup.py sdist
           mv dist/elyra*.tar.gz /tmp
 
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      - uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
           name: elyra-${{ github.run_id }}
           path: /tmp/elyra-3.0.0.dev0.tar.gz
@@ -221,12 +221,12 @@ jobs:
           mv dist/code*tar /tmp
           mv dist/unskript-0.1.0-py2.py3-none-any.whl /tmp
 
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      - uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
           name: schema-${{ github.run_id }}
           path: /tmp/code_snippet_schemas.tar
 
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      - uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
           name: unskript-${{ github.run_id }}
           path: /tmp/unskript-0.1.0-py2.py3-none-any.whl
@@ -281,7 +281,7 @@ jobs:
           mv dist/*.whl /tmp
 
 
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      - uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
           name: toolbar-${{ github.run_id }}
           path: /tmp/jlab_enhanced_cell_toolbar-3.4.0-py3-none-any.whl
@@ -334,7 +334,7 @@ jobs:
           mv dist/*.whl /tmp
 
 
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      - uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
           name: code-snippets-${{ github.run_id }}
           path: /tmp/jupyterlab_code_snippets-2.1.1-py3-none-any.whl
