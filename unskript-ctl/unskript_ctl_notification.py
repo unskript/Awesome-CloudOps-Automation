@@ -858,11 +858,30 @@ class Notification(NotificationFactory):
         super().__init__(**kwargs)
         self.notify_config = self._config.get_notification()
         self.email_config = self.notify_config.get('Email')
+        if self.email_config and self.email_config.get('enable'):
+            self.email_attachment_password = (
+                self.email_config.get('email_attachment_password')
+            )
+            self.skip_report_generation = (
+                self.email_config.get('skip_generating_summary_report')
+            )
+            self.vault_smtp_path = (
+                self.email_config.get('vault', {}).get('smtp_credential_path')
+            )
+            self.smtp_credential_schema = (
+                self.email_config.get('vault', {}).get('smtp_credential_schema')
+            )
 
     def notify(self, **kwargs):
         retval = False
         mode = kwargs.get('mode', 'slack')
 
+        if self.vault_smtp_path:
+            data = self._retrieve_vault_smtp_settings()
+            if data:
+                for k,v in data.items():
+                    kwargs[k] = v
+        
         if mode.lower() == 'slack':
             retval = SlackNotification().notify(**kwargs)
         elif mode.lower() == 'email':
@@ -871,6 +890,58 @@ class Notification(NotificationFactory):
             retval = SlackNotification().notify(**kwargs)
             retval = self._send_email(**kwargs)
         return retval
+
+    def _retrieve_vault_smtp_settings(self):
+        vault_addr = os.environ.get('VAULT_ADDR')
+        vault_token = os.environ.get('VAULT_TOKEN')
+
+        # Lets remove any trailing / in the vault_addr
+        vault_addr = vault_addr.rstrip('/')
+        if not self.vault_smtp_path:
+            self.logger.error(f"VAULT SMTP PATH IS EMPTY {self.vault_smtp_path}")
+            return 
+        
+        if not self.smtp_credential_schema:
+            self.logger.error("VAULT SMTP CREDENTIAL SCHEMA IS EMPTY")
+            return 
+        
+        # url = f"{vault_addr}/v1/lb-secrets/smtp-server/credentials"
+        url = f"{vault_addr}/{self.vault_smtp_path}"
+
+        # Set the headers including the Vault token
+        headers = {
+            "X-Vault-Token": vault_token
+        }
+
+        # Make the GET request, ignoring SSL certificate verification
+        response = requests.get(url, headers=headers, verify=False)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Print the secret's data
+            self.logger.info(f"Response OK from Vault server")
+        else:
+            self.logger.error(f"Error: {response.status_code}")
+            return
+        
+        # Validate response against the schema
+        credModel = create_pydantic_model_from_schema(
+            schema=self.smtp_credential_schema
+        )
+        try:
+            data = json.loads(response.text).get('data')
+            credModel(**data)
+            self.logger.info("Validation of credential data Successful")
+        except ValidationError as e:
+            self.logger.error(f"Credential Data Validation error {e}")
+        
+        # Return fetched data back
+        return  {
+            "access_key": data.get('username'),
+            "secret_access": data.get('password'),
+            "from_email": data.get('sender')
+        }
+
 
     def _send_email(self, **kwargs):
         retval = False
