@@ -12,8 +12,6 @@ import os
 import sys
 
 from datetime import datetime
-from pydantic import BaseModel, Field, create_model, constr
-from typing import Any, Dict, Type
 
 UNSKRIPT_EXECUTION_DIR="/unskript/data/execution/"
 PSS_DB_PATH="/unskript/db/unskript_pss.db"
