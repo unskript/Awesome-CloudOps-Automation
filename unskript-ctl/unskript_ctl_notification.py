@@ -31,6 +31,8 @@ from unskript_utils import *
 from unskript_ctl_version import *
 from unskript_ctl_factory import NotificationFactory
 
+OFFICE365_OAUTH2_SUCCESS_CODE = 235
+
 # This class implements Notification function for Slack
 class SlackNotification(NotificationFactory):
     def __init__(self, **kwargs):
@@ -835,8 +837,9 @@ class SmtpNotification(EmailNotification):
 
 class CustomOffice365EmailNotification(AWSEmailNotification):
     def __init__(self, **kwargs):
-        self.SMTP_TLS_PORT = 587
         super().__init__(**kwargs)
+        self.SMTP_TLS_PORT = 587
+        self.smtp_config = self.email_config.get('SMTP')
 
     def notify(self, **kwargs):
         if kwargs.get('auth-type').lower() == "basic auth":
@@ -853,8 +856,9 @@ class CustomOffice365EmailNotification(AWSEmailNotification):
         to_email = kwargs.get('to_email', self.smtp_config.get('to-email'))
         subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
 
-        if not failed_objects:
-            failed_objects = {}
+        if not failed_result:
+            failed_result = {}
+
         tenant_id = kwargs.get('tenant-id')
         scope = kwargs.get('scope')
         client_id = kwargs.get('client-id')
@@ -885,7 +889,7 @@ class CustomOffice365EmailNotification(AWSEmailNotification):
         msg['To'] = ", ".join(to_email_list)
         msg['Subject'] = subject
 
-        auth_string = f"user={from_email}\1auth=Bearer {access_token}\1\1"
+        auth_string = f"user={from_email}\x01auth=Bearer {access_token}\x01\x01"
         auth_string = base64.b64encode(auth_string.encode()).decode()
 
         try:
@@ -893,7 +897,10 @@ class CustomOffice365EmailNotification(AWSEmailNotification):
                 server.ehlo()
                 server.starttls()
                 server.ehlo()
-                server.docmd("AUTH", "XOAUTH2 " + auth_string)
+                code, message = server.docmd("AUTH", "XOAUTH2 " + auth_string)
+                if code != OFFICE365_OAUTH2_SUCCESS_CODE:
+                    self.logger.error(f"Authentication failed: {message}")
+                    return retval 
             
                 msg = self.prepare_combined_email(summary_results=summary_results,
                                             failed_result=failed_result,
@@ -906,7 +913,10 @@ class CustomOffice365EmailNotification(AWSEmailNotification):
         except Exception as e:
             self.logger.error(f"ERROR: {e}")
         finally:
-            self.logger.info(f"Notification sent successfully to {to_email}")
+            if retval:
+                self.logger.info(f"Notification sent successfully to {to_email}")
+            else:
+                self.logger.info(f"Email notification failed for {to_email}")
         
         return retval
 
@@ -1004,8 +1014,6 @@ class Notification(NotificationFactory):
             self.logger.error(f"VAULT SMTP PATH IS EMPTY {self.vault_smtp_path}")
             return 
         
-        
-        # url = f"{vault_addr}/v1/lb-secrets/smtp-server/credentials"
         url = f"{vault_addr}/{self.vault_smtp_path}"
 
         # Set the headers including the Vault token
@@ -1027,8 +1035,7 @@ class Notification(NotificationFactory):
         try:
             if self.vault_smtp_auth_type.lower() == "Basic Auth".lower():
                 data = json.loads(response.text).get('data')
-                self.email_config['provider'] = 'SES'
-                self.logger.info("SMTP Credentials successfully retrieved from Vault")
+                self.logger.info("SMTP Credentials successfully retrieved from Vault for Basic Auth")
                 return  {
                     "access_key": data.get('username'),
                     "secret_access": data.get('password'),
@@ -1036,20 +1043,20 @@ class Notification(NotificationFactory):
                     "auth-type": "basic auth"
                 }
             elif self.vault_smtp_auth_type.lower() == 'OAuth2'.lower():
-                data = json.loads(response.text).get('credentials')
-                self.email_config['provider'] = 'SMTP'
-                self.logger.info("SMTP Credentials successfully retrieved from Vault")
+                data = json.loads(response.text).get('data')
+                creds_data = json.loads(data.get('credentials'))
+                self.logger.info("SMTP Credentials successfully retrieved from Vault Data for OAuth2 Type")
                 return {
-                    "smtp-host": data.get('smtpHost'),
-                    "smtp-user": data.get('smtpSender'),
-                    "oauth-provider": data.get('oauthProvider'),
-                    "client-id": data.get('clientId'),
-                    "client-secret": data.get('clientSecret'),
-                    "tenand-id": data.get('tenantId'),
-                    "scope": data.get('scope'),
-                    "tls-enabled": data.get('tlsEnabled'),
-                    "oath-provider": data.get('oauthProvider', 'NO_PROVIDER'),
-                    "auth-type": data.get("authType")
+                    "smtp-host": creds_data.get('smtpHost'),
+                    "smtp-user": creds_data.get('smtpSender'),
+                    "oauth-provider": creds_data.get('oauthProvider'),
+                    "client-id": creds_data.get('clientId'),
+                    "client-secret": creds_data.get('clientSecret'),
+                    "tenant-id": creds_data.get('tenantId'),
+                    "scope": creds_data.get('scope'),
+                    "tls-enabled": creds_data.get('tlsEnabled'),
+                    "oath-provider": creds_data.get('oauthProvider', 'NO_PROVIDER'),
+                    "auth-type": creds_data.get("authType")
                 }
             else:
                 self.logger.error("Unsupported Vault SMTP Schema")
