@@ -170,33 +170,3 @@ def is_creds_json_file_valid(creds_file: str = None):
 
     # If reached to this point, return true
     return True
-
-
-
-# Function to dynamically create a Pydantic model from a schema dictionary
-def create_pydantic_model_from_schema(schema: Dict[str, Any]) -> Type[BaseModel]:
-    fields = {}
-    
-    for field_name, field_props in schema.items():
-        field_type = field_props.get('type')
-        field_default = field_props.get('default')
-        field_enum = field_props.get('enum')
-        
-        # Determine the correct Pydantic type
-        if field_type == 'string':
-            if field_enum:
-                field_type = constr(regex=f'^({"|".join(field_enum)})$')
-            else:
-                field_type = str
-        elif field_type == 'integer':
-            field_type = int
-        
-        # Create a Pydantic Field with the appropriate default and description
-        field = (field_type, Field(default=field_default, description=field_props.get('description')))
-        
-        # Add the field to the fields dictionary
-        fields[field_name] = field
-
-    # Dynamically create the Pydantic model
-    model = create_model('DynamicModel', **fields)
-    return model
