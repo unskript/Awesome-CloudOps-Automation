@@ -842,10 +842,14 @@ class CustomOffice365EmailNotification(AWSEmailNotification):
         self.smtp_config = self.email_config.get('SMTP')
 
     def notify(self, **kwargs):
+        retval = False 
         if kwargs.get('auth-type').lower() == "basic auth":
-            super().notify(**kwargs)
+            retval = super().notify(**kwargs)
         else:
-            self._send_email_with_oauth(**kwargs)
+            retval = self._send_email_with_oauth(**kwargs)
+        
+        return retval
+
     
 
     def _send_email_with_oauth(self, **kwargs):
