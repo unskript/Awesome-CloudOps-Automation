@@ -15,7 +15,9 @@ import subprocess
 import smtplib
 import os
 import base64
+import ssl
 
+from smtplib import SMTP
 from pathlib import Path
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
@@ -28,6 +30,8 @@ from jsonschema import validate, ValidationError
 from unskript_utils import *
 from unskript_ctl_version import *
 from unskript_ctl_factory import NotificationFactory
+
+OFFICE365_OAUTH2_SUCCESS_CODE = 235
 
 # This class implements Notification function for Slack
 class SlackNotification(NotificationFactory):
@@ -831,6 +835,111 @@ class SmtpNotification(EmailNotification):
             self.logger.info(f"Notification sent successfully to {to_email}")
         return True
 
+class CustomOffice365EmailNotification(AWSEmailNotification):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.SMTP_TLS_PORT = 587
+        self.smtp_config = self.email_config.get('SMTP')
+
+    def notify(self, **kwargs):
+        retval = False 
+        if kwargs.get('auth-type').lower() == "basic auth":
+            retval = super().notify(**kwargs)
+        else:
+            retval = self._send_email_with_oauth(**kwargs)
+        
+        return retval
+
+    
+
+    def _send_email_with_oauth(self, **kwargs):
+        retval = False
+        summary_results = kwargs.get('summary_result', [])
+        failed_result = kwargs.get('failed_result', {})
+        output_metadata_file = kwargs.get('output_metadata_file')
+        to_email = kwargs.get('to_email', self.smtp_config.get('to-email'))
+        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+
+        if not failed_result:
+            failed_result = {}
+
+        tenant_id = kwargs.get('tenant-id')
+        scope = kwargs.get('scope')
+        client_id = kwargs.get('client-id')
+        client_secret = kwargs.get('client-secret')
+        url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+        
+        access_token = self.get_access_token(
+            url,
+            tenant_id,
+            client_id,
+            client_secret,
+            scope
+        )
+        msg = MIMEMultipart('mixed')
+        from_email = kwargs.get('smtp-user')
+        smtp_host = kwargs.get('smtp-host')
+        if from_email:
+            msg['From'] =  from_email
+        else:
+            msg['From'] = from_email
+
+        to_email_list = []
+        if isinstance(to_email, list):
+            to_email_list = to_email
+        else:
+            to_email_list = [to_email]
+
+        msg['To'] = ", ".join(to_email_list)
+        msg['Subject'] = subject
+
+        auth_string = f"user={from_email}\x01auth=Bearer {access_token}\x01\x01"
+        auth_string = base64.b64encode(auth_string.encode()).decode()
+
+        try:
+            with smtplib.SMTP(smtp_host, self.SMTP_TLS_PORT) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                code, message = server.docmd("AUTH", "XOAUTH2 " + auth_string)
+                if code != OFFICE365_OAUTH2_SUCCESS_CODE:
+                    self.logger.error(f"Authentication failed: {message}")
+                    return retval 
+            
+                msg = self.prepare_combined_email(summary_results=summary_results,
+                                            failed_result=failed_result,
+                                            output_metadata_file=output_metadata_file,
+                                            title=None,
+                                            attachment=msg)
+
+                server.sendmail(from_email, to_email, msg.as_string())
+            retval = True
+        except Exception as e:
+            self.logger.error(f"ERROR: {e}")
+        finally:
+            if retval:
+                self.logger.info(f"Notification sent successfully to {to_email}")
+            else:
+                self.logger.info(f"Email notification failed for {to_email}")
+        
+        return retval
+
+        
+
+    def get_access_token(self, url, tenant_id, client_id, client_secret, scope):
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        data = {
+            "grant_type": "client_credentials",
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "scope": scope
+        }
+
+        response = requests.post(url, headers=headers, data=data)
+        response.raise_for_status()
+        return response.json()["access_token"]
 # Usage:
 # n = Notification()
 # n.notify(
@@ -858,19 +967,109 @@ class Notification(NotificationFactory):
         super().__init__(**kwargs)
         self.notify_config = self._config.get_notification()
         self.email_config = self.notify_config.get('Email')
+        if self.email_config and self.email_config.get('enable'):
+            self.email_attachment_password = (
+                self.email_config.get('email_attachment_password')
+            )
+            self.skip_report_generation = (
+                self.email_config.get('skip_generating_summary_report')
+            )
+            self.vault_smtp_path = (
+                self.email_config.get('vault', {}).get('smtp_credential_path')
+            )
+            self.vault_smtp_auth_type = (
+                self.email_config.get('vault', {}).get('auth_type')
+            )
 
     def notify(self, **kwargs):
         retval = False
         mode = kwargs.get('mode', 'slack')
 
+        oauth_notification = False
+        if self.vault_smtp_path:
+            data = self._retrieve_vault_smtp_settings()
+            oauth_notification = True
+            if data:
+                for k,v in data.items():
+                    kwargs[k] = v
+        
         if mode.lower() == 'slack':
             retval = SlackNotification().notify(**kwargs)
         elif mode.lower() == 'email':
-            retval = self._send_email(**kwargs)
+            if not oauth_notification:
+                retval = self._send_email(**kwargs)
+            else:
+                retval = CustomOffice365EmailNotification().notify(**kwargs)
         elif mode.lower() == 'both':
             retval = SlackNotification().notify(**kwargs)
-            retval = self._send_email(**kwargs)
+            if not oauth_notification:
+                retval = self._send_email(**kwargs)
+            else:
+                retval = CustomOffice365EmailNotification().notify(**kwargs)
         return retval
+
+    def _retrieve_vault_smtp_settings(self):
+        vault_addr = os.environ.get('VAULT_ADDR')
+        vault_token = os.environ.get('VAULT_TOKEN')
+
+        # Lets remove any trailing / in the vault_addr
+        vault_addr = vault_addr.rstrip('/')
+        if not self.vault_smtp_path:
+            self.logger.error(f"VAULT SMTP PATH IS EMPTY {self.vault_smtp_path}")
+            return 
+        
+        url = f"{vault_addr}/{self.vault_smtp_path}"
+
+        # Set the headers including the Vault token
+        headers = {
+            "X-Vault-Token": vault_token
+        }
+
+        # Make the GET request, ignoring SSL certificate verification
+        response = requests.get(url, headers=headers, verify=False)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Print the secret's data
+            self.logger.info(f"Response OK from Vault server")
+        else:
+            self.logger.error(f"Error: {response.status_code}")
+            return
+        
+        try:
+            if self.vault_smtp_auth_type.lower() == "Basic Auth".lower():
+                data = json.loads(response.text).get('data')
+                self.logger.info("SMTP Credentials successfully retrieved from Vault for Basic Auth")
+                return  {
+                    "access_key": data.get('username'),
+                    "secret_access": data.get('password'),
+                    "from_email": data.get('sender'),
+                    "auth-type": "basic auth"
+                }
+            elif self.vault_smtp_auth_type.lower() == 'OAuth2'.lower():
+                data = json.loads(response.text).get('data')
+                creds_data = json.loads(data.get('credentials'))
+                self.logger.info("SMTP Credentials successfully retrieved from Vault Data for OAuth2 Type")
+                return {
+                    "smtp-host": creds_data.get('smtpHost'),
+                    "smtp-user": creds_data.get('smtpSender'),
+                    "oauth-provider": creds_data.get('oauthProvider'),
+                    "client-id": creds_data.get('clientId'),
+                    "client-secret": creds_data.get('clientSecret'),
+                    "tenant-id": creds_data.get('tenantId'),
+                    "scope": creds_data.get('scope'),
+                    "tls-enabled": creds_data.get('tlsEnabled'),
+                    "oath-provider": creds_data.get('oauthProvider', 'NO_PROVIDER'),
+                    "auth-type": creds_data.get("authType")
+                }
+            else:
+                self.logger.error("Unsupported Vault SMTP Schema")
+                return  
+        except ValidationError as e:
+                self.logger.error(f"Unable to parse SMTP credential from Vault {e}")
+
+
+
 
     def _send_email(self, **kwargs):
         retval = False
