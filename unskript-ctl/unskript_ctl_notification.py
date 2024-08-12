@@ -15,7 +15,9 @@ import subprocess
 import smtplib
 import os
 import base64
+import ssl
 
+from smtplib import SMTP
 from pathlib import Path
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
@@ -831,6 +833,99 @@ class SmtpNotification(EmailNotification):
             self.logger.info(f"Notification sent successfully to {to_email}")
         return True
 
+class CustomOffice365EmailNotification(AWSEmailNotification):
+    def __init__(self, **kwargs):
+        self.SMTP_TLS_PORT = 587
+        super().__init__(**kwargs)
+
+    def notify(self, **kwargs):
+        if kwargs.get('auth-type').lower() == "basic auth":
+            super().notify(**kwargs)
+        else:
+            self._send_email_with_oauth(**kwargs)
+    
+
+    def _send_email_with_oauth(self, **kwargs):
+        retval = False
+        summary_results = kwargs.get('summary_result', [])
+        failed_result = kwargs.get('failed_result', {})
+        output_metadata_file = kwargs.get('output_metadata_file')
+        to_email = kwargs.get('to_email', self.smtp_config.get('to-email'))
+        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+
+        if not failed_objects:
+            failed_objects = {}
+        tenant_id = kwargs.get('tenant-id')
+        scope = kwargs.get('scope')
+        client_id = kwargs.get('client-id')
+        client_secret = kwargs.get('client-secret')
+        url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+        
+        access_token = self.get_access_token(
+            url,
+            tenant_id,
+            client_id,
+            client_secret,
+            scope
+        )
+        msg = MIMEMultipart('mixed')
+        from_email = kwargs.get('smtp-user')
+        smtp_host = kwargs.get('smtp-host')
+        if from_email:
+            msg['From'] =  from_email
+        else:
+            msg['From'] = from_email
+
+        to_email_list = []
+        if isinstance(to_email, list):
+            to_email_list = to_email
+        else:
+            to_email_list = [to_email]
+
+        msg['To'] = ", ".join(to_email_list)
+        msg['Subject'] = subject
+
+        auth_string = f"user={from_email}\1auth=Bearer {access_token}\1\1"
+        auth_string = base64.b64encode(auth_string.encode()).decode()
+
+        try:
+            with smtplib.SMTP(smtp_host, self.SMTP_TLS_PORT) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.docmd("AUTH", "XOAUTH2 " + auth_string)
+            
+                msg = self.prepare_combined_email(summary_results=summary_results,
+                                            failed_result=failed_result,
+                                            output_metadata_file=output_metadata_file,
+                                            title=None,
+                                            attachment=msg)
+
+                server.sendmail(from_email, to_email, msg.as_string())
+            retval = True
+        except Exception as e:
+            self.logger.error(f"ERROR: {e}")
+        finally:
+            self.logger.info(f"Notification sent successfully to {to_email}")
+        
+        return retval
+
+        
+
+    def get_access_token(self, url, tenant_id, client_id, client_secret, scope):
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        data = {
+            "grant_type": "client_credentials",
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "scope": scope
+        }
+
+        response = requests.post(url, headers=headers, data=data)
+        response.raise_for_status()
+        return response.json()["access_token"]
 # Usage:
 # n = Notification()
 # n.notify(
@@ -868,16 +963,18 @@ class Notification(NotificationFactory):
             self.vault_smtp_path = (
                 self.email_config.get('vault', {}).get('smtp_credential_path')
             )
-            self.smtp_credential_schema = (
-                self.email_config.get('vault', {}).get('smtp_credential_schema')
+            self.vault_smtp_auth_type = (
+                self.email_config.get('vault', {}).get('auth_type')
             )
 
     def notify(self, **kwargs):
         retval = False
         mode = kwargs.get('mode', 'slack')
 
+        oauth_notification = False
         if self.vault_smtp_path:
             data = self._retrieve_vault_smtp_settings()
+            oauth_notification = True
             if data:
                 for k,v in data.items():
                     kwargs[k] = v
@@ -885,10 +982,16 @@ class Notification(NotificationFactory):
         if mode.lower() == 'slack':
             retval = SlackNotification().notify(**kwargs)
         elif mode.lower() == 'email':
-            retval = self._send_email(**kwargs)
+            if not oauth_notification:
+                retval = self._send_email(**kwargs)
+            else:
+                retval = CustomOffice365EmailNotification().notify(**kwargs)
         elif mode.lower() == 'both':
             retval = SlackNotification().notify(**kwargs)
-            retval = self._send_email(**kwargs)
+            if not oauth_notification:
+                retval = self._send_email(**kwargs)
+            else:
+                retval = CustomOffice365EmailNotification().notify(**kwargs)
         return retval
 
     def _retrieve_vault_smtp_settings(self):
@@ -901,9 +1004,6 @@ class Notification(NotificationFactory):
             self.logger.error(f"VAULT SMTP PATH IS EMPTY {self.vault_smtp_path}")
             return 
         
-        if not self.smtp_credential_schema:
-            self.logger.error("VAULT SMTP CREDENTIAL SCHEMA IS EMPTY")
-            return 
         
         # url = f"{vault_addr}/v1/lb-secrets/smtp-server/credentials"
         url = f"{vault_addr}/{self.vault_smtp_path}"
@@ -924,23 +1024,40 @@ class Notification(NotificationFactory):
             self.logger.error(f"Error: {response.status_code}")
             return
         
-        # Validate response against the schema
-        credModel = create_pydantic_model_from_schema(
-            schema=self.smtp_credential_schema
-        )
         try:
-            data = json.loads(response.text).get('data')
-            credModel(**data)
-            self.logger.info("Validation of credential data Successful")
+            if self.vault_smtp_auth_type.lower() == "Basic Auth".lower():
+                data = json.loads(response.text).get('data')
+                self.email_config['provider'] = 'SES'
+                self.logger.info("SMTP Credentials successfully retrieved from Vault")
+                return  {
+                    "access_key": data.get('username'),
+                    "secret_access": data.get('password'),
+                    "from_email": data.get('sender'),
+                    "auth-type": "basic auth"
+                }
+            elif self.vault_smtp_auth_type.lower() == 'OAuth2'.lower():
+                data = json.loads(response.text).get('credentials')
+                self.email_config['provider'] = 'SMTP'
+                self.logger.info("SMTP Credentials successfully retrieved from Vault")
+                return {
+                    "smtp-host": data.get('smtpHost'),
+                    "smtp-user": data.get('smtpSender'),
+                    "oauth-provider": data.get('oauthProvider'),
+                    "client-id": data.get('clientId'),
+                    "client-secret": data.get('clientSecret'),
+                    "tenand-id": data.get('tenantId'),
+                    "scope": data.get('scope'),
+                    "tls-enabled": data.get('tlsEnabled'),
+                    "oath-provider": data.get('oauthProvider', 'NO_PROVIDER'),
+                    "auth-type": data.get("authType")
+                }
+            else:
+                self.logger.error("Unsupported Vault SMTP Schema")
+                return  
         except ValidationError as e:
-            self.logger.error(f"Credential Data Validation error {e}")
-        
-        # Return fetched data back
-        return  {
-            "access_key": data.get('username'),
-            "secret_access": data.get('password'),
-            "from_email": data.get('sender')
-        }
+                self.logger.error(f"Unable to parse SMTP credential from Vault {e}")
+
+
 
 
     def _send_email(self, **kwargs):
