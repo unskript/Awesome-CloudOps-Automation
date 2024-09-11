@@ -11,7 +11,7 @@ jobs:
       GITHUB_CHANGELOG: ${{ steps.tag_version.outputs.changelog }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
         with:
           egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
