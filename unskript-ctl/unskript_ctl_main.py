@@ -520,7 +520,7 @@ class UnskriptCtl(UnskriptFactory):
             return
 
         openvpn_log_file = "/tmp/openvpn_client.log"
-        command = [f"openvpn --config {remote_config_file} > {openvpn_log_file}"]
+        command = [f"sudo openvpn --config {remote_config_file} > {openvpn_log_file}"]
         try:
             process = subprocess.Popen(command,
                                     stdout=subprocess.PIPE,
@@ -577,9 +577,17 @@ class UnskriptCtl(UnskriptFactory):
             # Search for openvpn process. On Docker, we dont expect
             # Multiple process of openvpn to run.
             if proc.info['name'] == "openvpn":
-                process = psutil.Process(proc.info['pid'])
-                process.terminate()
-                process.wait()
+                p_id = proc.info['pid']
+                command = [f"sudo kill -9 {p_id}"]
+                try:
+                    process = subprocess.Popen(command,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE,
+                                    shell=True)
+                except Exception as e:
+                    self.logger.debug(f"Unable to stop debug session: {e}")
+                    print(f"ERROR: Unable to stop the debug session {e}")
+                    return
 
         self.logger.debug("Stopped Active Debug session successfully")
         print("Stopped Active Debug session successfully")

@@ -15,6 +15,7 @@ import subprocess
 import smtplib
 import os
 import base64
+import logging 
 
 from pathlib import Path
 from datetime import datetime
@@ -23,6 +24,8 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
 from jsonschema import validate, ValidationError
+from tenacity import retry, stop_after_attempt, wait_exponential, before_log, after_log
+
 
 
 from unskript_utils import *
@@ -131,6 +134,9 @@ class EmailNotification(NotificationFactory):
 
     def notify(self, **kwargs):
         failed_result = kwargs.get('failed_result', {})
+        if failed_result is None:
+            failed_result = {}
+        
         failed_object_character_count = sum((len(str(value)) for value in failed_result.values()))
 
         if failed_object_character_count >= MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS:
@@ -157,17 +163,29 @@ class EmailNotification(NotificationFactory):
                                output_metadata_file: str,
                                parent_folder: str):
         
+        log_file_path = None
+        
+        if os.path.exists(os.path.expanduser("~/unskript_ctl.log")):
+            log_file_path = os.path.expanduser("~/unskript_ctl.log")
+
         if not tar_file_name.startswith('/tmp'):
             tar_file_name = os.path.join('/tmp', tar_file_name)
 
-        if not output_metadata_file:
-            tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
+        if output_metadata_file:
+            tar_cmd = ["tar", "Jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
         else:
-            tar_cmd = ["tar", "jcvf", tar_file_name, "-C" , parent_folder, "."]
+            tar_cmd = ["tar", "Jcvf", tar_file_name, "-C" , parent_folder, "."]
+        
+        if log_file_path:
+            tar_cmd.append(str(log_file_path))
+
         try:
-            subprocess.run(tar_cmd,
+            result = subprocess.run(tar_cmd,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
+            if result.returncode != 0:
+                self.logger.error(f"ERROR: Tar command returned Non Zero value {result.returncode}")
+                return False 
         except Exception as e:
             self.logger.error(f"ERROR: {e}")
             return False
@@ -873,48 +891,64 @@ class Notification(NotificationFactory):
         return retval
 
     def _send_email(self, **kwargs):
-        retval = False
-        summary_results = kwargs.get('summary_results')
-        failed_objects = kwargs.get('failed_objects')
-        if not failed_objects:
-            failed_objects = {}
+        @retry(
+            stop=stop_after_attempt(5),  # Retry up to 5 times
+            wait=wait_exponential(multiplier=1, min=4, max=60),  # Exponential backoff, min 4s, max 60s
+            before=before_log(self.logger, logging.INFO),
+            after=after_log(self.logger, logging.INFO)
+        )
+        def _do_send_email():
+            retval = False
+            summary_results = kwargs.get('summary_results')
+            failed_objects = kwargs.get('failed_objects')
+            if failed_objects is None:
+                failed_objects = {}
 
-        if self.email_config.get('provider').lower() == 'smtp':
-            smtp = self.email_config.get('SMTP')
-            retval = SmtpNotification().notify(
-                        summary_result = summary_results,
-                        failed_result = failed_objects,
-                        output_metadata_file = kwargs.get('output_metadata_file'),
-                        smtp_host = kwargs.get('smtp_host', smtp.get('smtp-host')),
-                        smtp_user = kwargs.get('smtp_user', smtp.get('smtp-user')),
-                        smtp_password = kwargs.get('smtp_password', smtp.get('smtp-password')),
-                        to_email = kwargs.get('to_email', smtp.get('to-email')),
-                        from_email = kwargs.get('from_email', smtp.get('from-email')),
-                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        )
-        elif self.email_config.get('provider').lower() == 'sendgrid':
-            sendgrid = self.email_config.get('Sendgrid')
-            retval = SendgridNotification().notify(
-                        summary_result = summary_results,
-                        failed_result = failed_objects,
-                        output_metadata_file = kwargs.get('output_metadata_file'),
-                        from_email = kwargs.get('from_email', sendgrid.get('from-email')),
-                        to_email = kwargs.get('to_email', sendgrid.get('to-email')),
-                        api_key = kwargs.get('api_key', sendgrid.get('api_key')),
-                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        )
-        elif self.email_config.get('provider').lower() == 'ses':
-            aws = self.email_config.get('SES')
-            retval = AWSEmailNotification().notify(
-                        summary_result = summary_results,
-                        failed_result = failed_objects,
-                        output_metadata_file = kwargs.get('output_metadata_file'),
-                        access_key = kwargs.get('access_key', aws.get('access_key')),
-                        secret_access = kwargs.get('secret_access', aws.get('secret_access')),
-                        to_email = kwargs.get('to_email', aws.get('to-email')),
-                        from_email = kwargs.get('from_email', aws.get('from-email')),
-                        region = kwargs.get('region', aws.get('region')),
-                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        )
 
-        return retval
+            if self.email_config.get('provider').lower() == 'smtp':
+                smtp = self.email_config.get('SMTP')
+                retval = SmtpNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
+                            smtp_host = kwargs.get('smtp_host', smtp.get('smtp-host')),
+                            smtp_user = kwargs.get('smtp_user', smtp.get('smtp-user')),
+                            smtp_password = kwargs.get('smtp_password', smtp.get('smtp-password')),
+                            to_email = kwargs.get('to_email', smtp.get('to-email')),
+                            from_email = kwargs.get('from_email', smtp.get('from-email')),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+            elif self.email_config.get('provider').lower() == 'sendgrid':
+                sendgrid = self.email_config.get('Sendgrid')
+                retval = SendgridNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
+                            from_email = kwargs.get('from_email', sendgrid.get('from-email')),
+                            to_email = kwargs.get('to_email', sendgrid.get('to-email')),
+                            api_key = kwargs.get('api_key', sendgrid.get('api_key')),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+            elif self.email_config.get('provider').lower() == 'ses':
+                aws = self.email_config.get('SES')
+                retval = AWSEmailNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
+                            access_key = kwargs.get('access_key', aws.get('access_key')),
+                            secret_access = kwargs.get('secret_access', aws.get('secret_access')),
+                            to_email = kwargs.get('to_email', aws.get('to-email')),
+                            from_email = kwargs.get('from_email', aws.get('from-email')),
+                            region = kwargs.get('region', aws.get('region')),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+
+            return retval
+        
+        try:
+            # Call the retry-wrapped do send email
+            return _do_send_email()
+
+        except Exception as e:
+            self.logger.error(f"Error sending email: {e}")
+            return False
