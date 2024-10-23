@@ -26,6 +26,7 @@ from diagnostics import main as diagnostics
 from unskript_upload_results_to_s3 import S3Uploader
 
 YAML_CONFIG_FILE = "/etc/unskript/unskript_ctl_config.yaml"
+ON_DEMAND_SCRIPT_FOLDER = "/unskript/ondemand"
 
 # UnskriptCTL class that instantiates class instance of Checks, Script, Notification and DBInterface
 # This implementation is an example how to use the different components of unskript-ctl into a single
@@ -157,20 +158,54 @@ class UnskriptCtl(UnskriptFactory):
             else:
                 output_dir = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id'))           
             
-            failed_objects_file = os.path.join(output_dir, self.uglobals.get('exec_id')) + '_output.txt'
-            diag_args = [
-                '--yaml-file',
-                YAML_CONFIG_FILE,
-                '--failed-objects-file',
-                failed_objects_file,
-                '--output-dir-path',
-                output_dir
-            ]
-            diagnostics(diag_args)
+            if not os.environ.get('SKIP_DEBUGS'):
+                failed_objects_file = os.path.join(output_dir, self.uglobals.get('exec_id')) + '_output.txt'
+                diag_args = [
+                    '--yaml-file',
+                    YAML_CONFIG_FILE,
+                    '--failed-objects-file',
+                    failed_objects_file,
+                    '--output-dir-path',
+                    output_dir
+                ]
+                diagnostics(diag_args)
 
-            print("Uploading run artifacts to S3...")
-            uploader = S3Uploader()
-            uploader.rename_and_upload_other_items()
+                print("Uploading run artifacts to S3...")
+                uploader = S3Uploader()
+                uploader.rename_and_upload_other_items()
+        
+        # Run any on-demand scripts
+        self.run_on_demand_script()
+
+    def run_on_demand_script(self):
+        """This function runs scripts that are present in ON_DEMAND_SCRIPT_FOLDER folder recursively."""
+        if not os.path.exists(ON_DEMAND_SCRIPT_FOLDER):
+            self.logger.error(f"Folder '{ON_DEMAND_SCRIPT_FOLDER}' does not exist")
+            return
+
+        # List all files in the folder recursively
+        executable_found = False  # Track if any executables are found
+
+        for root, _, files in os.walk(ON_DEMAND_SCRIPT_FOLDER):
+            for file_name in files:
+                file_path = os.path.join(root, file_name)
+
+                # Check if it is a file and is executable
+                if os.path.isfile(file_path) and os.access(file_path, os.X_OK):
+                    executable_found = True
+                    self.logger.info(f"Found executable: {file_name} at {file_path}")
+                    try:
+                        self._script.run(script=file_path,  # Use the full path for execution
+                                        output_file=f"{file_name}.output")
+                        self.logger.info(f"Executed '{file_name}' successfully.")
+                    except Exception as e:
+                        self.logger.error(f"Error executing '{file_name}': {e}")
+                else:
+                    self.logger.debug(f"'{file_name}' is not executable or not a regular file.")
+
+        if not executable_found:
+            self.logger.warning("No executable scripts found in on-demand folder.")
+
 
     def run_info(self):
         """This function runs the info gathering actions"""
@@ -559,8 +594,8 @@ class UnskriptCtl(UnskriptFactory):
         if running is True:
             print ("Successfully Started the Debug Session")
         else:
-            self.logger.debug(f"Error Occured while starting the Debug Session. Here are the logs from openvpn")
-            print(f"{bcolors.FAIL}Error Occured while starting the Debug Session. Here are the logs from openvpn{bcolors.ENDC}")
+            self.logger.debug(f"Error Occurred while starting the Debug Session. Here are the logs from openvpn")
+            print(f"{bcolors.FAIL}Error Occurred while starting the Debug Session. Here are the logs from openvpn{bcolors.ENDC}")
             print("===============================================================================================")
             with open(openvpn_log_file, "r") as fp:
                 print(fp.read())
@@ -568,26 +603,43 @@ class UnskriptCtl(UnskriptFactory):
             print("===============================================================================================")
             self.stop_debug()
 
-    def stop_debug(self):
-        """stop_debug Stops the Active Debug session.
-        """
-        # Upload proxy session logs to storage bucket
-        upload_session_logs()
+    def _kill_process(self, name):
         for proc in psutil.process_iter(['pid', 'name']):
-            # Search for openvpn process. On Docker, we dont expect
-            # Multiple process of openvpn to run.
-            if proc.info['name'] == "openvpn":
+            if proc.info['name'] == name:
                 p_id = proc.info['pid']
-                command = [f"sudo kill -9 {p_id}"]
+                # Attempt graceful termination first
+                command = ["sudo", "kill", "-15", str(p_id)]
                 try:
-                    process = subprocess.Popen(command,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE,
-                                    shell=True)
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    stdout, stderr = process.communicate()
+                    if process.returncode != 0:
+                        self.logger.debug(f"Unable to stop {name} process with PID {p_id}: {stderr.decode()}")
+                        return False
                 except Exception as e:
-                    self.logger.debug(f"Unable to stop debug session: {e}")
-                    print(f"ERROR: Unable to stop the debug session {e}")
-                    return
+                    self.logger.debug(f"Unable to stop {name} process: {e}")
+                    return False
+                
+                # If not stopped, force termination
+                if psutil.pid_exists(p_id):
+                    command = ["sudo", "kill", "-9", str(p_id)]
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    stdout, stderr = process.communicate()
+                    if process.returncode != 0:
+                        self.logger.debug(f"Unable to force stop {name} process with PID {p_id}: {stderr.decode()}")
+                        return False
+        return True
+    
+    def stop_debug(self):
+        """stop_debug Stops the Active Debug session."""
+        upload_session_logs()
+
+        if not self._kill_process("openvpn"):
+            print("ERROR: Unable to stop the debug session")
+            return
+
+        if not self._kill_process("script"):
+            print("ERROR: Unable to stop session log capture")
+            return
 
         self.logger.debug("Stopped Active Debug session successfully")
         print("Stopped Active Debug session successfully")
