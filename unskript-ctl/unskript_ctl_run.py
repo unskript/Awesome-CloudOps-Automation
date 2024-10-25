@@ -516,11 +516,11 @@ class Script(ScriptsFactory):
             self.logger.error("ERROR: script is a mandatory parameter to be sent, cannot run without the scripts list")
             raise ValueError("Parameter script is not present in the argument, please call run with the scripts_list=[scripts]")
         script = kwargs.get('script')
+        output_file = kwargs.get('output_file', UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME)
         if not self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
             output_dir = create_execution_run_directory()
         else:
             output_dir = self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')
-        output_file = UNSKRIPT_SCRIPT_RUN_OUTPUT_FILE_NAME
         output_file_txt = os.path.join(output_dir, output_file + ".txt")
         output_file_json = os.path.join(output_dir, output_file + ".json")
         execution_timeout = self._config._get('global').get('execution_timeout', 60)

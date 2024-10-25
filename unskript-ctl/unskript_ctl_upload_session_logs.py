@@ -109,7 +109,7 @@ def upload_logs_files(session_end_times):
                 else:
                     logger.error("Status Code: %s. Response: %s", response.status_code, response.text)
             except Exception as err:
-                logger.error("Error Occured while uploading: %s", str(err))
+                logger.error("Error Occurred while uploading: %s", str(err))
     except FileNotFoundError:
         logger.error("File not found. Tar file path: %s",TAR_FILE_PATH)
         return
