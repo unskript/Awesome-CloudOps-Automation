@@ -193,18 +193,21 @@ notification:
     #    - Sendgrid - Sendgrid
     provider: ""
     SMTP:
+      vault-secret-path: ""
       smtp-host: ""
       smtp-user: ""
       smtp-password: ""
       to-email: ""
       from-email: ""
     SES:
+      vault-secret-path: ""
       access_key: ""
       secret_access: ""
       region: ""
       to-email: ""
       from-email: ""
     Sendgrid:
+      vault-secret-path: ""
       api_key: ""
       to-email: ""
       from-email: ""

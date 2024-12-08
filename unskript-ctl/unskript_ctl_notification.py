@@ -31,6 +31,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential, before_log, af
 from unskript_utils import *
 from unskript_ctl_version import *
 from unskript_ctl_factory import NotificationFactory
+from unskript_ctl_custom_notification import custom_email_notification_main
 
 # This class implements Notification function for Slack
 class SlackNotification(NotificationFactory):
@@ -65,8 +66,8 @@ class SlackNotification(NotificationFactory):
             self.logger.error("Result Empty: No results to notify")
             return False
 
-        if not self.validate_data(summary_results):
-            self.logger.debug("Given Summary Result does not validate against Slack Schema")
+        # if not self.validate_data(summary_results):
+        #     self.logger.debug("Given Summary Result does not validate against Slack Schema")
 
         message = self._generate_notification_message(summary_results)
         if not message:
@@ -199,8 +200,8 @@ class EmailNotification(NotificationFactory):
         if not failed_result:
             self.logger.error("Failed Result is Empty")
             return list_of_failed_files
-        if not self.validate_data(failed_result, self.checks_schema_file):
-            self.logger.debug("Validation of Given Result failed against Notification Schema")
+        # if not self.validate_data(failed_result, self.checks_schema_file):
+        #     self.logger.debug("Validation of Given Result failed against Notification Schema")
 
         if failed_result and len(failed_result.get('result', [])):
             for result_item in failed_result['result']:
@@ -446,6 +447,7 @@ class EmailNotification(NotificationFactory):
             </center>
             '''
         return message
+
 
     def prepare_combined_email(self,
                                summary_results: list,
@@ -849,6 +851,80 @@ class SmtpNotification(EmailNotification):
             self.logger.info(f"Notification sent successfully to {to_email}")
         return True
 
+
+class CustomSMTPNotification(EmailNotification):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def notify(self, **kwargs):
+        super().notify(**kwargs)
+
+        summary_results = kwargs.get('summary_result', [])
+        failed_result = kwargs.get('failed_result', {})
+        output_metadata_file = kwargs.get('output_metadata_file')
+        to_email = os.environ.get("LB_NOTIFICATION_RECEIVER_EMAIL",
+                                  "name@example.com")
+
+        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+
+        parent_folder = self.execution_dir
+        target_file_name = None
+        tar_file_name = None
+        if output_metadata_file:
+            parent_folder = os.path.dirname(output_metadata_file)
+            target_name = os.path.basename(parent_folder)
+            tar_file_name = f"{target_name}" + '.tar.bz2'
+            target_file_name = os.path.join('/tmp', tar_file_name)
+            output_metadata_file = output_metadata_file.split('/')[-1]
+
+        message = self.create_email_header(title=None)
+        if summary_results and len(summary_results):
+            message += self.create_checks_summary_message(
+                summary_results=summary_results,
+                failed_result=failed_result
+            )
+        if len(failed_result) and self.send_failed_objects_as_attachment:
+            self.create_temp_files_of_failed_check_results(failed_result=failed_result)
+
+
+        if tar_file_name and len(os.listdir(self.execution_dir)):
+            self.create_tarball_archive(
+                tar_file_name=tar_file_name,
+                output_metadata_file=output_metadata_file,
+                parent_folder=parent_folder
+            )
+
+        email_attach_name = None
+        if target_file_name and os.path.exists(target_file_name):
+            email_attach_name = target_file_name
+
+        info_result = self.create_info_gathering_action_result()
+        if info_result:
+            message += info_result
+            self.create_info_legos_output_file()
+
+        if output_metadata_file:
+            message += self.create_script_summary_message(
+                output_metadata_file=output_metadata_file
+            )
+        message += "</body></html>"
+
+
+        retval = custom_email_notification_main(
+            _logger=self.logger,
+            email_subject=subject,
+            email_content = message,
+            email_recipient = to_email,
+            file_path = email_attach_name
+        )
+        if retval:
+            self.logger.info("Successfully Sent Email via SMTP Relay")
+        else:
+            self.logger.error("Failed to send email via SMTP Relay")
+
+        return retval
+
+
 # Usage:
 # n = Notification()
 # n.notify(
@@ -916,6 +992,13 @@ class Notification(NotificationFactory):
                             smtp_password = kwargs.get('smtp_password', smtp.get('smtp-password')),
                             to_email = kwargs.get('to_email', smtp.get('to-email')),
                             from_email = kwargs.get('from_email', smtp.get('from-email')),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+            elif self.email_config.get('provider').lower() == 'custom':
+                retval = CustomSMTPNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
                             subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
                             )
             elif self.email_config.get('provider').lower() == 'sendgrid':
