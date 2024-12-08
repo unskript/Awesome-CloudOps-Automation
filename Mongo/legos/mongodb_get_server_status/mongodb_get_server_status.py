@@ -35,4 +35,4 @@ def mongodb_get_server_status(handle) -> Tuple:
             return (True, None)
     except Exception as e:
         return (False, str(e))
-    return (False, "Unable to check Mongo server status")
+    return (False, {"message":"Unable to check Mongo server status"})

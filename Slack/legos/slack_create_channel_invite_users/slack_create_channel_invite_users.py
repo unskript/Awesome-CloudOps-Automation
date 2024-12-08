@@ -31,8 +31,6 @@ pp = pprint.PrettyPrinter(indent=2)
 def slack_create_channel_invite_users_printer(output):
     if output is not None:
         pprint.pprint(output)
-    else:
-        return
 
 
 def slack_create_channel_invite_users(

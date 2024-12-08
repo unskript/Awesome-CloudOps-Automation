@@ -25,6 +25,7 @@ from tqdm import tqdm
 from unskript_utils import *
 from unskript_ctl_factory import ChecksFactory, ScriptsFactory
 from unskript.legos.utils import CheckOutputStatus
+from unskript_upload_results_to_s3 import S3Uploader
 
 
 # Implements Checks Class that is wrapper for All Checks Function
@@ -116,7 +117,8 @@ class Checks(ChecksFactory):
             self._error(str(e))
         finally:
             self._common.update_exec_id()
-            output_file = os.path.join(UNSKRIPT_EXECUTION_DIR, self.uglobals.get('exec_id')) + '_output.txt'
+            output_file = os.path.join(self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'), 
+                                       self.uglobals.get('exec_id')) + '_output.txt'
             if not outputs:
                 self.logger.error("Output is None from check's output")
                 self._error('OUTPUT IS EMPTY FROM CHECKS RUN!')
@@ -182,6 +184,36 @@ class Checks(ChecksFactory):
         failed_result_available = False
         failed_result = {}
         checks_output = self.output_after_merging_checks(checks_output, self.check_uuids)
+        self.uglobals.create_property('CHECKS_OUTPUT')
+        self.uglobals['CHECKS_OUTPUT'] = checks_output
+        self.logger.debug("Creating checks output JSON to upload to S3")
+        # print("Uploading failed objects to S3...")
+        # uploader = S3Uploader()
+        # uploader.rename_and_upload_failed_objects(checks_output)
+        now = datetime.now()
+        rfc3339_timestamp = now.isoformat() + 'Z'
+        parent_folder = '/tmp'
+        if self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY'):
+            parent_folder = self.uglobals.get('CURRENT_EXECUTION_RUN_DIRECTORY')
+        dashboard_checks_output_file = f"dashboard_{rfc3339_timestamp}.json"
+        dashboard_checks_output_file_path = os.path.join(parent_folder, dashboard_checks_output_file)
+        try:
+            # Convert checks_output to JSON format
+            checks_output_json = json.dumps(checks_output, indent=2)
+        except json.JSONDecodeError:
+            self.logger.debug(f"Failed to decode JSON response for {self.customer_name}")
+            return
+
+        # Write checks output JSON to a separate file
+        try:
+            if checks_output_json:
+                self.logger.debug(f"Writing JSON data to dashboard json file")
+                with open(dashboard_checks_output_file_path, 'w') as json_file:
+                    json_file.write(checks_output_json)
+        except IOError as e:
+            self.logger.debug(f"Failed to write JSON data to {dashboard_checks_output_file_path}: {e}")
+            return
+
         for result in checks_output:
             if result.get('skip') and result.get('skip') is True:
                 idx += 1
@@ -283,8 +315,6 @@ class Checks(ChecksFactory):
             print('\x1B[1;4m', '\x1B[0m')
         return
 
-
-
     def output_after_merging_checks(self, outputs: list, ids: list) -> list:
         """output_after_merging_checks: this function combines the output from duplicated
         checks and stores the combined output.
@@ -311,11 +341,13 @@ class Checks(ChecksFactory):
                 if current_output['status'] < output['status']:
                     # If the new status is more severe, overwrite the old status
                     current_output['status'] = output['status']
-                    current_output['objects'] = output.get('objects')
+                    current_output['objects'] = output.get('objects', [])
 
                 if output['status'] == 2 and output.get('objects'):
                     # Append objects if status is FAILED and objects are non-empty
-                    current_output.setdefault('objects', []).extend(output.get('objects', []))
+                    if 'objects' not in current_output or not isinstance(current_output['objects'], list):
+                        current_output['objects'] = []
+                    current_output['objects'].extend(output.get('objects', []))
 
                 # Update error message if there's a new one and it's non-empty
                 if 'error' in output and output['error']:

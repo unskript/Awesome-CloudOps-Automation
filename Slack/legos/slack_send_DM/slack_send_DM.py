@@ -26,8 +26,6 @@ pp = pprint.PrettyPrinter(indent=2)
 def slack_send_DM_printer(output):
     if output is not None:
         pprint.pprint(output)
-    else:
-        return
 
 
 def slack_send_DM(
