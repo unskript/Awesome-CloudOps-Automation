@@ -15,7 +15,7 @@ import subprocess
 import smtplib
 import os
 import base64
-import hvac
+import logging 
 
 from pathlib import Path
 from datetime import datetime
@@ -24,11 +24,14 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
 from jsonschema import validate, ValidationError
+from tenacity import retry, stop_after_attempt, wait_exponential, before_log, after_log
+
 
 
 from unskript_utils import *
 from unskript_ctl_version import *
 from unskript_ctl_factory import NotificationFactory
+from unskript_ctl_custom_notification import custom_email_notification_main
 
 # This class implements Notification function for Slack
 class SlackNotification(NotificationFactory):
@@ -63,8 +66,8 @@ class SlackNotification(NotificationFactory):
             self.logger.error("Result Empty: No results to notify")
             return False
 
-        if not self.validate_data(summary_results):
-            self.logger.debug("Given Summary Result does not validate against Slack Schema")
+        # if not self.validate_data(summary_results):
+        #     self.logger.debug("Given Summary Result does not validate against Slack Schema")
 
         message = self._generate_notification_message(summary_results)
         if not message:
@@ -132,6 +135,9 @@ class EmailNotification(NotificationFactory):
 
     def notify(self, **kwargs):
         failed_result = kwargs.get('failed_result', {})
+        if failed_result is None:
+            failed_result = {}
+        
         failed_object_character_count = sum((len(str(value)) for value in failed_result.values()))
 
         if failed_object_character_count >= MAX_CHARACTER_COUNT_FOR_FAILED_OBJECTS:
@@ -158,17 +164,29 @@ class EmailNotification(NotificationFactory):
                                output_metadata_file: str,
                                parent_folder: str):
         
+        log_file_path = None
+        
+        if os.path.exists(os.path.expanduser("~/unskript_ctl.log")):
+            log_file_path = os.path.expanduser("~/unskript_ctl.log")
+
         if not tar_file_name.startswith('/tmp'):
             tar_file_name = os.path.join('/tmp', tar_file_name)
 
-        if not output_metadata_file:
-            tar_cmd = ["tar", "jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
+        if output_metadata_file:
+            tar_cmd = ["tar", "Jcvf", tar_file_name, f"--exclude={output_metadata_file}", "-C" , parent_folder, "."]
         else:
-            tar_cmd = ["tar", "jcvf", tar_file_name, "-C" , parent_folder, "."]
+            tar_cmd = ["tar", "Jcvf", tar_file_name, "-C" , parent_folder, "."]
+        
+        if log_file_path:
+            tar_cmd.append(str(log_file_path))
+
         try:
-            subprocess.run(tar_cmd,
+            result = subprocess.run(tar_cmd,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
+            if result.returncode != 0:
+                self.logger.error(f"ERROR: Tar command returned Non Zero value {result.returncode}")
+                return False 
         except Exception as e:
             self.logger.error(f"ERROR: {e}")
             return False
@@ -182,8 +200,8 @@ class EmailNotification(NotificationFactory):
         if not failed_result:
             self.logger.error("Failed Result is Empty")
             return list_of_failed_files
-        if not self.validate_data(failed_result, self.checks_schema_file):
-            self.logger.debug("Validation of Given Result failed against Notification Schema")
+        # if not self.validate_data(failed_result, self.checks_schema_file):
+        #     self.logger.debug("Validation of Given Result failed against Notification Schema")
 
         if failed_result and len(failed_result.get('result', [])):
             for result_item in failed_result['result']:
@@ -199,10 +217,10 @@ class EmailNotification(NotificationFactory):
         return list_of_failed_files
 
     def create_script_summary_message(self, output_metadata_file: str):
-        # message = ''
+        message = ''
         if os.path.exists(output_metadata_file) is False:
             self.logger.error(f"ERROR: The metadata file is missing, please check if file exists? {output_metadata_file}")
-            return ''
+            return message
 
         metadata = ''
         with open(output_metadata_file, 'r', encoding='utf-8') as f:
@@ -216,24 +234,24 @@ class EmailNotification(NotificationFactory):
         self.logger.debug(f"\tStatus: {metadata.get('status')} \n\tTime (in seconds): {metadata.get('time_taken')} \n\tError: {metadata.get('error')} \n")
 
         # Remove from email 
-        # message += f'''
-        #         <br>
-        #         <h3> Custom Script Run Result </h3>
-        #         <table border="1">
-        #             <tr>
-        #                 <th> Status </th>
-        #                 <th> Time (in seconds) </th>
-        #                 <th> Error </th>
-        #             </tr>
-        #             <tr>
-        #                 <td>{metadata.get('status')}</td>
-        #                 <td>{metadata.get('time_taken')}</td>
-        #                 <td>{metadata.get('error')}</td>
-        #             </tr>
-        #         </table>
-        # '''
+        message += f'''
+                <br>
+                <h3> Custom Script Run Result </h3>
+                <table border="1">
+                    <tr>
+                        <th> Status </th>
+                        <th> Time (in seconds) </th>
+                        <th> Error </th>
+                    </tr>
+                    <tr>
+                        <td>{metadata.get('status')}</td>
+                        <td>{metadata.get('time_taken')}</td>
+                        <td>{metadata.get('error')}</td>
+                    </tr>
+                </table>
+        '''
 
-        return ''
+        return message
 
     def create_info_legos_output_file(self):
         """create_info_legos_output_file: This function creates a file that will
@@ -430,6 +448,7 @@ class EmailNotification(NotificationFactory):
             '''
         return message
 
+
     def prepare_combined_email(self,
                                summary_results: list,
                                failed_result: dict,
@@ -470,6 +489,10 @@ class EmailNotification(NotificationFactory):
         if info_result:
             message += info_result
             self.create_info_legos_output_file()
+        # print("Output Metadata File\n",output_metadata_file)
+        if output_metadata_file:
+            message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
+            temp_attachment = self.create_email_attachment(output_metadata_file=output_metadata_file)
 
         if len(os.listdir(self.execution_dir)) == 0 or not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
             self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
@@ -491,61 +514,12 @@ class EmailNotification(NotificationFactory):
 
         return attachment              
 
-    def fetch_secret_from_vault(self, secret_path: str = None):
-        vault_addr = os.environ.get('VAULT_ADDR', '')
-        vault_token = os.environ.get('VAULT_TOKEN', '')
-        use_ssl = os.environ.get('VAULT_USE_SSL', False)
-        if not secret_path:
-            return None 
-        
-        vault_client = hvac.Client(
-            url=vault_addr,
-            token=vault_token,
-            verify=use_ssl  
-        )
-        secret_data = None
-        try:
-            # Retrieve the secret
-            response = vault_client.read(secret_path)
-            if response is None:
-                self.logger.debug(f"Secret not found at {secret_path}.")
-                return None
-            elif 'data' not in response:
-                self.logger.debug(f"No data found in the response for {secret_path}.")
-                return None
-            else:
-                secret_data = response['data']
-                if secret_data:
-                    secret_data = json.loads(secret_data)
-        except hvac.exceptions.InvalidPath as e:
-            self.logger.debug(f"Invalid path: {e}")
-            return None
-        except hvac.exceptions.Forbidden as e:
-            self.logger.debug(f"Access denied: {e}")
-            return None
-        except hvac.exceptions.VaultError as e:
-            self.logger.debug(f"Vault error: {e}")
-            return None
-        except Exception as e:
-            self.logger.debug(f"Error: {e}")
-            return None
-        
-        
-        return secret_data
-
 
 # Sendgrid specific implementation
 class SendgridNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.sendgrid_config = self.email_config.get('Sendgrid')
-        # Check if vault_secret_path exist for sendgrid, if it does, use it
-        if 'vault-secret-path' in self.sendgrid_config:
-            self.logger.debug(f"Vault secret path is {self.sendgrid_config.get('vault-secret-path')}")
-            self.logger.debug("CURRENTLY NOT IMPLEMENTED")
-        else:
-            self.logger.debug("NO Vault path mentioned for secret, will use YAML file content to send notification")
-
 
     def notify(self, **kwargs):
         super().notify(**kwargs)
@@ -610,6 +584,9 @@ class SendgridNotification(EmailNotification):
             if len(os.listdir(self.execution_dir)) == 0 or not self.create_tarball_archive(tar_file_name=tar_file_name, output_metadata_file=None, parent_folder=parent_folder):
                 self.logger.error("Execution directory is empty , tarball creation unsuccessful!")
 
+            if output_metadata_file:
+                html_message += self.create_script_summary_message(output_metadata_file=output_metadata_file)
+
             info_result = self.create_info_gathering_action_result()
             if info_result:
                 html_message += info_result
@@ -673,13 +650,6 @@ class AWSEmailNotification(EmailNotification):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.aws_config = self.email_config.get('SES')
-        # Check if vault_secret_path exist for SES, if it does, use it
-        if 'vault-secret-path' in self.aws_config:
-            self.logger.debug(f"Vault secret path is {self.aws_config.get('vault-secret-path')}")
-            self.logger.debug("CURRENTLY NOT IMPLEMENTED")
-        else:
-            self.logger.debug("NO Vault path mentioned for secret, will use YAML file content to send notification")
-
 
     def notify(self, **kwargs):
         super().notify(**kwargs)
@@ -803,30 +773,6 @@ class SmtpNotification(EmailNotification):
         super().__init__(**kwargs)
         self.SMTP_TLS_PORT = 587
         self.smtp_config = self.email_config.get('SMTP')
-        # Check if vault-secret-path mentioned for SMTP
-        if 'vault-secret-path' in self.smtp_config:
-            self.logger.debug(f"Vault secret path is {self.smtp_config.get('vault-secret-path')}")
-            vault_secret = self.fetch_secret_from_vault(self.smtp_config.get('vault-secret-path'))
-            if vault_secret:
-                smtp_host = vault_secret.get('value', {}).get('credentials', {}).get('smtpHost')
-                from_email = vault_secret.get('value', {}).get('credentials', {}).get('smtpSender')
-                smtp_user = vault_secret.get('value', {}).get('credentials', {}).get('smtpUsername')
-                smtp_password = vault_secret.get('value', {}).get('credentials', {}).get('smtpPassword')
-                smtp_port = vault_secret.get('value', {}).get('credentials', {}).get('smtpPort')
-                
-                if not smtp_host:
-                    self.smtp_config['smtp-host'] = smtp_host 
-                if not from_email:
-                    self.smtp_config['from-email'] = from_email 
-                if not smtp_user:
-                    self.smtp_config['smtp-user'] = smtp_user
-                if not smtp_password:
-                    self.smtp_config['smtp-password'] = smtp_password
-                if not smtp_port:
-                    self.SMTP_TLS_PORT = smtp_port
-                
-        else:
-            self.logger.debug("NO Vault path mentioned for secret, will use YAML file content to send notification")
 
     def notify(self, **kwargs):
         super().notify(**kwargs)
@@ -905,6 +851,80 @@ class SmtpNotification(EmailNotification):
             self.logger.info(f"Notification sent successfully to {to_email}")
         return True
 
+
+class CustomSMTPNotification(EmailNotification):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def notify(self, **kwargs):
+        super().notify(**kwargs)
+
+        summary_results = kwargs.get('summary_result', [])
+        failed_result = kwargs.get('failed_result', {})
+        output_metadata_file = kwargs.get('output_metadata_file')
+        to_email = os.environ.get("LB_NOTIFICATION_RECEIVER_EMAIL",
+                                  "name@example.com")
+
+        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+
+        parent_folder = self.execution_dir
+        target_file_name = None
+        tar_file_name = None
+        if output_metadata_file:
+            parent_folder = os.path.dirname(output_metadata_file)
+            target_name = os.path.basename(parent_folder)
+            tar_file_name = f"{target_name}" + '.tar.bz2'
+            target_file_name = os.path.join('/tmp', tar_file_name)
+            output_metadata_file = output_metadata_file.split('/')[-1]
+
+        message = self.create_email_header(title=None)
+        if summary_results and len(summary_results):
+            message += self.create_checks_summary_message(
+                summary_results=summary_results,
+                failed_result=failed_result
+            )
+        if len(failed_result) and self.send_failed_objects_as_attachment:
+            self.create_temp_files_of_failed_check_results(failed_result=failed_result)
+
+
+        if tar_file_name and len(os.listdir(self.execution_dir)):
+            self.create_tarball_archive(
+                tar_file_name=tar_file_name,
+                output_metadata_file=output_metadata_file,
+                parent_folder=parent_folder
+            )
+
+        email_attach_name = None
+        if target_file_name and os.path.exists(target_file_name):
+            email_attach_name = target_file_name
+
+        info_result = self.create_info_gathering_action_result()
+        if info_result:
+            message += info_result
+            self.create_info_legos_output_file()
+
+        if output_metadata_file:
+            message += self.create_script_summary_message(
+                output_metadata_file=output_metadata_file
+            )
+        message += "</body></html>"
+
+
+        retval = custom_email_notification_main(
+            _logger=self.logger,
+            email_subject=subject,
+            email_content = message,
+            email_recipient = to_email,
+            file_path = email_attach_name
+        )
+        if retval:
+            self.logger.info("Successfully Sent Email via SMTP Relay")
+        else:
+            self.logger.error("Failed to send email via SMTP Relay")
+
+        return retval
+
+
 # Usage:
 # n = Notification()
 # n.notify(
@@ -947,48 +967,71 @@ class Notification(NotificationFactory):
         return retval
 
     def _send_email(self, **kwargs):
-        retval = False
-        summary_results = kwargs.get('summary_results')
-        failed_objects = kwargs.get('failed_objects')
-        if not failed_objects:
-            failed_objects = {}
+        @retry(
+            stop=stop_after_attempt(5),  # Retry up to 5 times
+            wait=wait_exponential(multiplier=1, min=4, max=60),  # Exponential backoff, min 4s, max 60s
+            before=before_log(self.logger, logging.INFO),
+            after=after_log(self.logger, logging.INFO)
+        )
+        def _do_send_email():
+            retval = False
+            summary_results = kwargs.get('summary_results')
+            failed_objects = kwargs.get('failed_objects')
+            if failed_objects is None:
+                failed_objects = {}
 
-        if self.email_config.get('provider').lower() == 'smtp':
-            smtp = self.email_config.get('SMTP')
-            retval = SmtpNotification().notify(
-                        summary_result = summary_results,
-                        failed_result = failed_objects,
-                        output_metadata_file = kwargs.get('output_metadata_file'),
-                        smtp_host = kwargs.get('smtp_host', smtp.get('smtp-host')),
-                        smtp_user = kwargs.get('smtp_user', smtp.get('smtp-user')),
-                        smtp_password = kwargs.get('smtp_password', smtp.get('smtp-password')),
-                        to_email = kwargs.get('to_email', smtp.get('to-email')),
-                        from_email = kwargs.get('from_email', smtp.get('from-email')),
-                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        )
-        elif self.email_config.get('provider').lower() == 'sendgrid':
-            sendgrid = self.email_config.get('Sendgrid')
-            retval = SendgridNotification().notify(
-                        summary_result = summary_results,
-                        failed_result = failed_objects,
-                        output_metadata_file = kwargs.get('output_metadata_file'),
-                        from_email = kwargs.get('from_email', sendgrid.get('from-email')),
-                        to_email = kwargs.get('to_email', sendgrid.get('to-email')),
-                        api_key = kwargs.get('api_key', sendgrid.get('api_key')),
-                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        )
-        elif self.email_config.get('provider').lower() == 'ses':
-            aws = self.email_config.get('SES')
-            retval = AWSEmailNotification().notify(
-                        summary_result = summary_results,
-                        failed_result = failed_objects,
-                        output_metadata_file = kwargs.get('output_metadata_file'),
-                        access_key = kwargs.get('access_key', aws.get('access_key')),
-                        secret_access = kwargs.get('secret_access', aws.get('secret_access')),
-                        to_email = kwargs.get('to_email', aws.get('to-email')),
-                        from_email = kwargs.get('from_email', aws.get('from-email')),
-                        region = kwargs.get('region', aws.get('region')),
-                        subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
-                        )
 
-        return retval
+            if self.email_config.get('provider').lower() == 'smtp':
+                smtp = self.email_config.get('SMTP')
+                retval = SmtpNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
+                            smtp_host = kwargs.get('smtp_host', smtp.get('smtp-host')),
+                            smtp_user = kwargs.get('smtp_user', smtp.get('smtp-user')),
+                            smtp_password = kwargs.get('smtp_password', smtp.get('smtp-password')),
+                            to_email = kwargs.get('to_email', smtp.get('to-email')),
+                            from_email = kwargs.get('from_email', smtp.get('from-email')),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+            elif self.email_config.get('provider').lower() == 'custom':
+                retval = CustomSMTPNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+            elif self.email_config.get('provider').lower() == 'sendgrid':
+                sendgrid = self.email_config.get('Sendgrid')
+                retval = SendgridNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
+                            from_email = kwargs.get('from_email', sendgrid.get('from-email')),
+                            to_email = kwargs.get('to_email', sendgrid.get('to-email')),
+                            api_key = kwargs.get('api_key', sendgrid.get('api_key')),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+            elif self.email_config.get('provider').lower() == 'ses':
+                aws = self.email_config.get('SES')
+                retval = AWSEmailNotification().notify(
+                            summary_result = summary_results,
+                            failed_result = failed_objects,
+                            output_metadata_file = kwargs.get('output_metadata_file'),
+                            access_key = kwargs.get('access_key', aws.get('access_key')),
+                            secret_access = kwargs.get('secret_access', aws.get('secret_access')),
+                            to_email = kwargs.get('to_email', aws.get('to-email')),
+                            from_email = kwargs.get('from_email', aws.get('from-email')),
+                            region = kwargs.get('region', aws.get('region')),
+                            subject = kwargs.get('subject', self.email_config.get('email_subject_line', 'Run Result'))
+                            )
+
+            return retval
+        
+        try:
+            # Call the retry-wrapped do send email
+            return _do_send_email()
+
+        except Exception as e:
+            self.logger.error(f"Error sending email: {e}")
+            return False
