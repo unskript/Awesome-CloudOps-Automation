@@ -178,6 +178,15 @@ notification:
     verbose: true #Not yet supported
     enable: false
     email_subject_line: ""
+    # Skip Generating Summary pdf
+    skip_generating_summary_report: false
+    # Specify if SMTP credentials vault path
+    vault:
+      enable: false
+      smtp_credential_path: "v1/lb-secrets/smtp-server/credentials"
+      # Auth Type: "Basic Auth" or OAuth2
+      auth_type: "Basic Auth"
+
     # provider for the email. Possible values:
     #    - SMTP - SMTP server
     #    - SES -  AWS SES
@@ -202,6 +211,7 @@ notification:
       api_key: ""
       to-email: ""
       from-email: ""
+      
 
 #
 # Job section
