@@ -99,7 +99,7 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@55d479fb1c5bcad5a4f9099a5d9f37c8857b2845 # v2.4.1
         with:
-          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+          egress-policy: audit
 
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
 
@@ -107,27 +107,36 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
 
-      # - name: Update Spy2 to workaround for repo timeout issue
-      #   run: |
-      #      sudo gem install apt-spy2
-      #      sudo sed -i '/mirror.enzu.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/*.list
-      #      sudo apt-spy2 fix --commit --launchpad --country=US
-      #      sudo apt-get update
-
-      - name: Configure APT
+      - name: Configure APT and Install Dependencies
         run: |
-          sudo rm -rf /etc/apt/sources.list.d/*
+          # Remove existing lists and clean apt cache
+          sudo rm -rf /var/lib/apt/lists/*
+          sudo apt-get clean
+          
+          # Configure main repository
+          echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main restricted universe multiverse" | sudo tee /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+          
+          # Update package lists
+          sudo apt-get update -y
+          
+          # Install ODBC packages
+          sudo apt-get install -y --no-install-recommends \
+            unixodbc-dev \
+            unixodbc \
+            unixodbc-common \
+            libodbcinst2
+          
+          # Clean up
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
-          sudo apt-get update -y
-          sudo apt-get install -y ca-certificates curl gnupg
 
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: '3.9'
 
-      - name: Install system dependencies
+      - name: Install Python dependencies
         run: |
           pip install shyaml
           sudo apt-get update -y
