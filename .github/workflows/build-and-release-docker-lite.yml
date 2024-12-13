@@ -107,12 +107,12 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
 
-      - name: Update Spy2 to workaround for repo timeout issue
-        run: |
-           sudo gem install apt-spy2
-           sudo sed -i '/mirror.enzu.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/*.list
-           sudo apt-spy2 fix --commit --launchpad --country=US
-           sudo apt-get update
+      # - name: Update Spy2 to workaround for repo timeout issue
+      #   run: |
+      #      sudo gem install apt-spy2
+      #      sudo sed -i '/mirror.enzu.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/*.list
+      #      sudo apt-spy2 fix --commit --launchpad --country=US
+      #      sudo apt-get update
 
 
       - name: Set up Python 3.x
@@ -232,11 +232,11 @@ jobs:
 
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.0
 
-      - name: Update Spy2 to workaround for repo timeout issue
-        run: |
-           sudo gem install apt-spy2
-           sudo apt-spy2 fix --commit --launchpad --country=US
-           sudo apt-get update
+      # - name: Update Spy2 to workaround for repo timeout issue
+      #   run: |
+      #      sudo gem install apt-spy2
+      #      sudo apt-spy2 fix --commit --launchpad --country=US
+      #      sudo apt-get update
 
 
       - name: Set up Python 3.x
