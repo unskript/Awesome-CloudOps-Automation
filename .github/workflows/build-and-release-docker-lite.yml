@@ -110,6 +110,7 @@ jobs:
       - name: Update Spy2 to workaround for repo timeout issue
         run: |
            sudo gem install apt-spy2
+           sudo sed -i '/mirror.enzu.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/*.list
            sudo apt-spy2 fix --commit --launchpad --country=US
            sudo apt-get update
 
