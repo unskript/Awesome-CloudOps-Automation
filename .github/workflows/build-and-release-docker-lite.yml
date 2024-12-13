@@ -114,18 +114,38 @@ jobs:
       #      sudo apt-spy2 fix --commit --launchpad --country=US
       #      sudo apt-get update
 
+      - name: Configure APT
+        run: |
+          sudo rm -rf /etc/apt/sources.list.d/*
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+          sudo apt-get update -y
+          sudo apt-get install -y ca-certificates curl gnupg
 
       - name: Set up Python 3.x
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
-          # Restricting python version to 3.9
           python-version: '3.9'
 
       - name: Install system dependencies
         run: |
           pip install shyaml
-          #sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.9 unixodbc=2.3.9 odbcinst1debian2=2.3.9 odbcinst=2.3.9
-          sudo apt-get install -y --allow-downgrades unixodbc-common libodbcinst2
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends unixodbc-dev unixodbc unixodbc-common libodbcinst2
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+
+      # - name: Set up Python 3.x
+      #   uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
+      #   with:
+      #     # Restricting python version to 3.9
+      #     python-version: '3.9'
+
+      # - name: Install system dependencies
+      #   run: |
+      #     pip install shyaml
+      #     #sudo apt-get install -y --allow-downgrades unixodbc-dev=2.3.9 unixodbc=2.3.9 odbcinst1debian2=2.3.9 odbcinst=2.3.9
+      #     sudo apt-get install -y --allow-downgrades unixodbc-common libodbcinst2
           
       - name: Checkout Code
         run: |
