@@ -39,10 +39,9 @@ jobs:
           pip install --upgrade pip==22.2.2
           sudo apt update
           sudo apt install -y wget
-          #sudo apt install -y awscli
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+          #curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          #unzip awscliv2.zip
+          #sudo ./aws/install
           aws s3 cp ${{ secrets.BUILD_REQUIREMENTS }} /tmp/requirements.txt
           pip install --no-cache-dir -r /tmp/requirements.txt
           aws s3 cp   ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }}  /tmp/main_module.tar.gz
