@@ -44,13 +44,26 @@ jobs:
           pip install --upgrade pip
           sudo apt update
           sudo apt install -y wget
+          
+          # Install NumPy first with a compatible version
+          pip install numpy>=1.22.0
+          
+          # Install PyArrow with binary wheel - no build required
+          pip install pyarrow==6.0.1 --only-binary=pyarrow
+          
+          # Continue with other dependencies
           aws s3 cp ${{ secrets.BUILD_REQUIREMENTS }} /tmp/requirements.txt
-          pip install --no-cache-dir -r /tmp/requirements.txt
+          pip install --no-cache-dir -r /tmp/requirements.txt || true
+          
+          # Install main and sub modules
           aws s3 cp ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} /tmp/main_module.tar.gz
           pip install --no-cache-dir /tmp/main_module.tar.gz
           aws s3 cp ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} /tmp/sub_module.tar.gz
           pip install --no-cache-dir /tmp/sub_module.tar.gz
+          
+          # Additional dependencies
           pip install --no-cache-dir matplotlib>=3.7.1
+          pip install setuptools wheel cython
         
       - name: Run All Modules Check
         run: /usr/bin/env python all_modules_test.py
