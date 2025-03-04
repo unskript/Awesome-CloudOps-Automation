@@ -49,7 +49,7 @@ jobs:
           pip install numpy>=1.22.0
           
           # Install PyArrow with binary wheel - no build required
-          pip install pyarrow==6.0.1 --only-binary=pyarrow
+          pip install pyarrow --only-binary=pyarrow
           
           # Continue with other dependencies
           aws s3 cp ${{ secrets.BUILD_REQUIREMENTS }} /tmp/requirements.txt
