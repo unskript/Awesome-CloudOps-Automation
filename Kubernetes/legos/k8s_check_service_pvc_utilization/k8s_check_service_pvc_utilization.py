@@ -26,24 +26,8 @@ class InputSchema(BaseModel):
         title="Threshold (in %)",
     )
 
-
-def k8s_check_service_pvc_utilization_printer(output):
-    status, pvc_info = output
-
-    if status:
-        print("Disk sizes for all checked services are within the threshold.")
-    else:
-        print("ALERT: One or more PVC disk sizes are above threshold:")
-        print("-" * 40)
-        for pvc in pvc_info:
-            print(
-                f"PVC: {pvc['pvc_name']} - Utilized: {pvc['used']} of {pvc['capacity']}"
-            )
-        print("-" * 40)
-
-
 def k8s_check_service_pvc_utilization(
-    handle, core_services: list, namespace: str, threshold: int = 80
+    handle, core_services: list, namespace: str, threshold: int = 60
 ) -> Tuple:
     """
     k8s_check_service_pvc_utilization checks the utilized disk size of a service's PVC against a given threshold.
@@ -70,6 +54,9 @@ def k8s_check_service_pvc_utilization(
 
     alert_pvcs_all_services = []
     services_without_pvcs = []
+    
+    # Keep track of processed PVCs to avoid duplicates
+    processed_pvcs = set()
 
     for svc in core_services:
         # Get label associated with the service
@@ -110,9 +97,7 @@ def k8s_check_service_pvc_utilization(
         else:
             json_path_cmd = "{.metadata.name}:{range .spec.volumes[*].persistentVolumeClaim}{.claimName}{end}"
 
-        get_pvc_names_command = (
-            f"kubectl get pod {pod_names} -n {namespace} -o=jsonpath='{json_path_cmd}'"
-        )
+        get_pvc_names_command = f"kubectl get pod {pod_names} -n {namespace} -o=jsonpath='{json_path_cmd}'"
 
         response = handle.run_native_cmd(get_pvc_names_command)
         if not response or response.stderr:
@@ -129,7 +114,6 @@ def k8s_check_service_pvc_utilization(
 
         pvc_mounts = []
         alert_pvcs = []
-        all_pvcs = []
 
         for element in pod_and_pvc_names:
             pod_name, claim_name = element.split(":")
@@ -146,7 +130,9 @@ def k8s_check_service_pvc_utilization(
             # df -kh is the command used to get the disk utilization. This is accurate as we get
             # the disk utilization from the POD directly, rather than checking the resource limit
             # and resource request from the deployment / stateful YAML file.
-            get_pod_json_command = f"kubectl get pod {pod_name} -n {namespace} -o json"
+            get_pod_json_command = (
+                f"kubectl get pod {pod_name} -n {namespace} -o json"
+            )
             pod_json_output = handle.run_native_cmd(get_pod_json_command)
             if not pod_json_output or pod_json_output.stderr:
                 raise ApiException(
@@ -165,13 +151,22 @@ def k8s_check_service_pvc_utilization(
                                 claim_name = volume["persistentVolumeClaim"][
                                     "claimName"
                                 ]
-                                pvc_mounts.append(
-                                    {
-                                        "container_name": container["name"],
-                                        "mount_path": mount["mountPath"],
-                                        "pvc_name": claim_name if claim_name else None,
-                                    }
-                                )
+                                print(f"ClaimName: {claim_name}: MountName: {mount['name']} ContainerName: {container['name']}")
+                                
+                                # Add mount info if not already added
+                                mount_info = {
+                                    "container_name": container["name"],
+                                    "mount_path": mount["mountPath"],
+                                    "pvc_name": claim_name if claim_name else None,
+                                    "pod_name": pod_name
+                                }
+                                
+                                # Only add if this specific mount combination hasn't been processed yet
+                                mount_key = f"{pod_name}:{container['name']}:{mount['mountPath']}:{claim_name}"
+                                if mount_key not in processed_pvcs:
+                                    pvc_mounts.append(mount_info)
+                                    processed_pvcs.add(mount_key)
+                                    
                             except KeyError as e:
                                 # Handle the KeyError (e.g., log the error, skip this iteration, etc.)
                                 print(f"KeyError: {e}. Skipping this entry.")
@@ -179,22 +174,21 @@ def k8s_check_service_pvc_utilization(
                                 # Handle the IndexError (e.g., log the error, skip this iteration, etc.)
                                 print(f"IndexError: {e}. Skipping this entry.")
 
-        all_mounts = [mount.get("mount_path") for mount in pvc_mounts]
-        all_mounts = " ".join(all_mounts).strip()
+        # Create a dictionary to store processed PVC info
+        pvc_info_dict = {}
+            
+        # Process each mount separately with a single df command
         for mount in pvc_mounts:
             container_name = mount["container_name"]
             mount_path = mount["mount_path"]
             pvc_name = mount["pvc_name"]
-            all_pvcs.append(
-                {
-                    "pvc_name": pvc_name,
-                    "mount_path": mount_path,
-                    "used": None,
-                    "capacity": None,
-                }
-            )
-
-            du_command = f"kubectl exec -n {namespace} {pod_name} -c {container_name} -- df -kh {all_mounts} | grep -v Filesystem"
+            pod_name = mount["pod_name"]
+            
+            # Skip if we've already processed this PVC
+            if pvc_name in pvc_info_dict:
+                continue
+                
+            du_command = f"kubectl exec -n {namespace} {pod_name} -c {container_name} -- df -kh {mount_path} | grep -v Filesystem"
             du_output = handle.run_native_cmd(du_command)
 
             if du_output and not du_output.stderr:
@@ -228,16 +222,25 @@ def k8s_check_service_pvc_utilization(
                         "used": used_percentage,
                         "capacity": total_capacity,
                     }
+                    
+                    # Store in dictionary to prevent duplicates
+                    pvc_info_dict[pvc_name] = pvc_info
 
                     # Check if usage exceeds threshold
                     if used_percentage > threshold:
                         alert_pvcs.append(pvc_info)
 
-        alert_pvcs_all_services.extend(alert_pvcs)
+        # Add unique alert PVCs to the main list
+        for pvc_info in alert_pvcs:
+            if pvc_info not in alert_pvcs_all_services:
+                alert_pvcs_all_services.append(pvc_info)
 
     if services_without_pvcs:
         print("Following services do not have any PVCs attached:")
         for service in services_without_pvcs:
             print(f"- {service}")
+
+    if alert_pvcs_all_services:
+        print(json.dumps(alert_pvcs_all_services, indent=4))
 
     return (not bool(alert_pvcs_all_services), alert_pvcs_all_services)
