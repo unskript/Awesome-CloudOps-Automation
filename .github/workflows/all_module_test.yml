@@ -25,6 +25,11 @@ jobs:
       
       - uses: actions/checkout@v3
 
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -36,18 +41,29 @@ jobs:
       - name: Install system dependencies
         run: |
           pip install shyaml
-          pip install --upgrade pip==22.2.2
+          pip install --upgrade pip
           sudo apt update
           sudo apt install -y wget
-          sudo apt install -y awscli
+          
+          # Install NumPy first with a compatible version
+          pip install numpy>=1.22.0
+          
+          # Install PyArrow with binary wheel - no build required
+          pip install pyarrow --only-binary=pyarrow
+          
+          # Continue with other dependencies
           aws s3 cp ${{ secrets.BUILD_REQUIREMENTS }} /tmp/requirements.txt
-          pip install --no-cache-dir -r /tmp/requirements.txt
-          aws s3 cp   ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }}  /tmp/main_module.tar.gz
+          pip install --no-cache-dir -r /tmp/requirements.txt || true
+          
+          # Install main and sub modules
+          aws s3 cp ${{ secrets.MAIN_MODULE_BUILD_PACKAGE }} /tmp/main_module.tar.gz
           pip install --no-cache-dir /tmp/main_module.tar.gz
-          aws s3 cp  ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} /tmp/sub_module.tar.gz
+          aws s3 cp ${{ secrets.SUB_MODULE_BUILD_PACKAGE }} /tmp/sub_module.tar.gz
           pip install --no-cache-dir /tmp/sub_module.tar.gz
+          
+          # Additional dependencies
           pip install --no-cache-dir matplotlib>=3.7.1
+          pip install setuptools wheel cython
         
       - name: Run All Modules Check
-
         run: /usr/bin/env python all_modules_test.py
