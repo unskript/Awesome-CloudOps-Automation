@@ -71,7 +71,7 @@ class Job():
         self.connectors = connectors
         self.custom_scripts = custom_scripts
         self.notify = notify
-    
+
 
     def parse(self):
         cmds = []
@@ -267,6 +267,75 @@ class ConfigParser():
                     print(f'{bcolors.FAIL}Credential: Failed to program {cred_type}, name {name}{bcolors.ENDC}')
                     continue
 
+    def validate_cron_format(self, cron_expression):
+        """Validate if a cron expression is in proper format
+        Returns tuple: (is_valid: bool, error_message: str)
+        """
+        if not cron_expression or not isinstance(cron_expression, str):
+            return False, "Cron expression cannot be empty"
+
+        # Remove extra whitespace and split
+        parts = cron_expression.strip().split()
+
+        # Standard cron should have 5 parts: minute hour day month day_of_week
+        if len(parts) != 5:
+            return False, f"Cron expression must have exactly 5 parts (minute hour day month day_of_week), got {len(parts)}: {cron_expression}"
+
+        # Define valid ranges for each field
+        field_ranges = [
+            (0, 59, "minute"),      # minute: 0-59
+            (0, 23, "hour"),        # hour: 0-23
+            (1, 31, "day"),         # day: 1-31
+            (1, 12, "month"),       # month: 1-12
+            (0, 7, "day_of_week")   # day_of_week: 0-7 (0 and 7 are Sunday)
+        ]
+
+        for i, (part, (min_val, max_val, field_name)) in enumerate(zip(parts, field_ranges)):
+            if not self._validate_cron_field(part, min_val, max_val, field_name):
+                return False, f"Invalid {field_name} field: '{part}' (should be {min_val}-{max_val} or valid cron syntax)"
+
+        return True, "Valid cron expression"
+
+    def _validate_cron_field(self, field, min_val, max_val, field_name):
+        """Validate individual cron field"""
+        # Allow wildcards
+        if field == "*":
+            return True
+
+        # Allow step values (*/5, */10, etc.)
+        if field.startswith("*/"):
+            try:
+                step = int(field[2:])
+                return step > 0 and step <= max_val
+            except ValueError:
+                return False
+
+        # Allow ranges (1-5, 10-15, etc.)
+        if "-" in field:
+            try:
+                start, end = field.split("-", 1)
+                start_num = int(start)
+                end_num = int(end)
+                return (min_val <= start_num <= max_val and
+                       min_val <= end_num <= max_val and
+                       start_num <= end_num)
+            except ValueError:
+                return False
+
+        # Allow comma-separated lists (1,3,5 or 10,20,30, etc.)
+        if "," in field:
+            try:
+                values = [int(x.strip()) for x in field.split(",")]
+                return all(min_val <= val <= max_val for val in values)
+            except ValueError:
+                return False
+
+        # Allow single numbers
+        try:
+            num = int(field)
+            return min_val <= num <= max_val
+        except ValueError:
+            return False
 
 
     def configure_schedule(self):
@@ -280,6 +349,27 @@ class ConfigParser():
             print(f"{bcolors.WARNING}Scheduler: No scheduler configuration found{bcolors.ENDC}")
             return
 
+        # Check for LB_JOB_SCHEDULE environment variable
+        lb_job_schedule = os.environ.get('LB_JOB_SCHEDULE')
+        if lb_job_schedule:
+            print(f'{bcolors.OKGREEN}Found LB_JOB_SCHEDULE environment variable: {lb_job_schedule}{bcolors.ENDC}')
+
+            # Validate the cron format
+            is_valid, validation_message = self.validate_cron_format(lb_job_schedule)
+            if not is_valid:
+                print(f'{bcolors.FAIL}ERROR: LB_JOB_SCHEDULE has invalid cron format: {validation_message}{bcolors.ENDC}')
+                print(f'{bcolors.FAIL}Examples of valid cron formats:{bcolors.ENDC}')
+                print(f'{bcolors.FAIL}  */15 * * * *    (every 15 minutes){bcolors.ENDC}')
+                print(f'{bcolors.FAIL}  0 */2 * * *     (every 2 hours){bcolors.ENDC}')
+                print(f'{bcolors.FAIL}  30 9 * * 1-5    (9:30 AM, Monday to Friday){bcolors.ENDC}')
+                print(f'{bcolors.FAIL}  0 0 1 * *       (first day of every month){bcolors.ENDC}')
+                print(f'{bcolors.FAIL}Falling back to YAML configuration cadence values{bcolors.ENDC}')
+                lb_job_schedule = None  # Disable override
+            else:
+                print(f'{bcolors.OKGREEN}LB_JOB_SCHEDULE validation passed: {validation_message}{bcolors.ENDC}')
+                print(f'{bcolors.OKGREEN}This will override all cadence values in the scheduler configuration{bcolors.ENDC}')
+
+
         unskript_crontab_file = "/etc/unskript/unskript_crontab.tab"
         crons = []
         try:
@@ -287,7 +377,12 @@ class ConfigParser():
                 if schedule.get('enable') is False:
                     print(f'Skipping')
                     continue
-                cadence = schedule.get('cadence')
+                if lb_job_schedule:
+                    cadence = lb_job_schedule
+                    print(f"{bcolors.OKGREEN}Using LB_JOB_SCHEDULE override: {cadence}{bcolors.ENDC}")
+                else:
+                    cadence = schedule.get('cadence')
+
                 job_name = schedule.get('job_name')
                 # look up the job name and get the commands
                 job = self.jobs.get(job_name)
