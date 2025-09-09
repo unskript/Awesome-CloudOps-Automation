@@ -13,7 +13,7 @@ import os
 import yaml
 import shutil
 import ZODB
-import datetime
+from datetime import datetime, timedelta
 import ZODB.FileStorage
 from ZODB import DB
 
@@ -25,13 +25,13 @@ from unskript_utils import *
 def remove_old_directories():
     # Read the Audit period from config file
     audit_period = get_audit_period()
-    current_date = datetime.datetime.now()
-    threshold_date = current_date - datetime.timedelta(days=audit_period)
+    current_date = datetime.now()
+    threshold_date = current_date - timedelta(days=audit_period)
     directories_deleted = False
     for directory in os.listdir(UNSKRIPT_EXECUTION_DIR):
         dir_path = os.path.join(UNSKRIPT_EXECUTION_DIR, directory)
         if os.path.isdir(dir_path):
-            dir_ts = datetime.datetime.fromtimestamp(os.path.getmtime(dir_path))
+            dir_ts = datetime.fromtimestamp(os.path.getmtime(dir_path))
             if dir_ts < threshold_date:
                 try:
                     # Use shutil.rmtree instead of os.rmdir to remove non-empty directories
